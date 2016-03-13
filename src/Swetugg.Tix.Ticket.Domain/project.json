@@ -1,0 +1,18 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Swetugg.Tix.Ticket.Domain Class Library",
+  "authors": [ "Anders" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+  "frameworks": {
+    "net451": {
+      "dependencies": {
+        "NEventStore": "5.2.0"
+      }
+    }
+  },
+  "dependencies": {
+    "Swetugg.Tix.Ticket.Events": "1.0.0-*"
+  }
+}

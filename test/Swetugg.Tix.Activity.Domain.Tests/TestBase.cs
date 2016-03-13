@@ -1,0 +1,128 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using NEventStore;
+using Xunit.Abstractions;
+
+namespace Swetugg.Tix.Activity.Domain.Tests
+{
+    /// <summary>
+    /// Base class for all domain tests
+    /// </summary>
+    public abstract class TestBase
+    {
+        private readonly GivenCommandsImpl _givenInternal = new GivenCommandsImpl();
+
+        /// <summary>
+        /// Used to setup any commands that are preconditions
+        /// to this test
+        /// </summary>
+        protected IGivenCommands Given => _givenInternal;
+
+        private readonly List<ICommit> _commitsInternal = new List<ICommit>();
+
+        /// <summary>
+        /// Commits that have been commited as a result of the
+        /// command under test
+        /// </summary>
+        protected IEnumerable<ICommit> Commits => _commitsInternal;
+
+        /// <summary>
+        /// Exception that has been thrown as a result of the
+        /// command under test
+        /// </summary>
+        protected Exception ThrownException = null;
+
+        /// <summary>
+        /// Use this for logging test output
+        /// </summary>
+        protected readonly ITestOutputHelper Output;
+
+        class GivenCommandsImpl : IGivenCommands
+        {
+            private readonly List<object> _commands = new List<object>();
+
+            public void AddCommand(object cmd)
+            {
+                _commands.Add(cmd);
+            }
+
+            public IEnumerable<object> Commands => _commands;
+        }
+
+        class RepositoryTestObserver : PipelineHookBase
+        {
+            private readonly ICollection<ICommit> _commits;
+
+            public RepositoryTestObserver(ICollection<ICommit> commits)
+            {
+                _commits = commits;
+            }
+
+            public override void PostCommit(ICommit committed)
+            {
+                if (CollectCommits)
+                {
+                    _commits.Add(committed);
+                }
+            }
+
+            public bool CollectCommits;
+        }
+
+        [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor", Justification = "Overriding classes should not implement their own constructors")]
+        protected TestBase(ITestOutputHelper output)
+        {
+            Output = output;
+            var testHook = new RepositoryTestObserver(_commitsInternal);
+            // Setup an InMemory EventStore with a hook
+            // for recording commits
+            var eventStore = Wireup.Init()
+                .UsingInMemoryPersistence()
+                .HookIntoPipelineUsing(testHook)
+                .Build();
+            
+            // The DomainHost is the main entry-point
+            // of the Activity domain, so let's create one
+            var host = DomainHost.Build(eventStore);
+
+            // Let the actual test setup any preconditions
+            Setup();
+
+            // Dispatch all commands that should be preconditions
+            foreach (var givenCommand in _givenInternal.Commands)
+            {
+                host.Dispatch(givenCommand);
+            }
+
+            // Make sure the test hook starts recording commits
+            testHook.CollectCommits = true;
+
+            // Get the command under test
+            var whenCommand = When();
+            try
+            {
+                // Dispatch the command
+                host.Dispatch(whenCommand);
+            }
+            catch (Exception ex)
+            {
+                // If any exception is thrown when dispatching
+                // the command, store it for testing
+                ThrownException = ex;
+                Output.WriteLine(ex.ToString());
+            }
+        }
+
+        /// <summary>
+        /// Override to setup any preconditions
+        /// </summary>
+        protected abstract void Setup();
+
+        /// <summary>
+        /// Overide to return the command under test
+        /// </summary>
+        /// <returns></returns>
+        protected abstract object When();
+    }
+}

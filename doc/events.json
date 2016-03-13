@@ -1,0 +1,57 @@
+{
+	"eventCreated": {
+		"name": ""
+	},
+	"seatsAdded": {
+		"seats": 50
+	},
+	"ticketTypeLimitIncreased": {
+		"ticketTypeId": "",
+		"seats": 10	
+	},
+	"ticketTypeLimitDecreased": {
+		"ticketTypeId": "",
+		"seats": 10	
+	},
+	"couponLimitDecreased": {
+		"couponId": "",
+		"seats": 5	
+	},
+	"seatReserved": {
+		"ticketTypeId": "",
+		"couponId": "",
+		"reference": ""
+	},
+	"seatReleased": {
+		"ticketTypeId": "",
+		"couponId": "",
+		"reference": ""
+	}
+}
+
+{
+	"ticketCreated": {
+		"eventId": "",
+		"ticketId": "",
+		"ticketTypeId": "",
+		"couponId": ""
+	},
+	"seatReserved": {
+		
+	},
+	"ticketConfirmed": {
+		
+	},
+	"paymentRecieved":{
+		
+	}
+	"ticketCancelled": {
+		
+	},
+	"seatReleased": {
+		
+	},
+	"paymentRefunded": {
+		
+	},
+}

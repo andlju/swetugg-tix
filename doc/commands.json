@@ -1,0 +1,42 @@
+{
+	"createEvent": {
+		"name":""
+	}
+}
+
+/* Create tickets */
+// Command
+{
+	"createTickets": {
+		"ticketTypeId": "",
+		"couponId": "",
+		"amount": 5
+	}
+}
+
+// Event aggregate
+{
+	"seatsReserved" :{
+		"ticketTypeId":"",
+		"couponId": "",
+		"amount": 5
+	}
+}
+
+// Ticket aggregates
+{
+	"ticketCreated": {
+		"eventId": "",
+		"ticketId": "",
+		"ticketTypeId": "",
+		"couponId": ""
+	},
+	"ticketReserved": {
+		
+	}
+}
+
+/* Confirm tickets */
+{
+	
+}
