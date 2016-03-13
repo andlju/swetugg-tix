@@ -43,7 +43,7 @@ namespace Swetugg.Tix.Activity.Domain
         public void RemoveSeats(int seats)
         {
             if (_seatLimit - _seatsReserved < seats)
-                throw new ActivityException("Not enough seats left");
+                throw new ActivityException("NotEnoughSeats", "Not enough seats left to remove");
             Raise(new SeatsRemoved() { Seats = seats });
         }
 
@@ -64,18 +64,54 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
+        public void IncreaseTicketTypeLimit(Guid ticketTypeId, int seats)
+        {
+            GuardTicketType(ticketTypeId);
+            var ticketType = _ticketTypes[ticketTypeId];
+            if (ticketType.SeatLimit.GetValueOrDefault(0) + seats > _seatLimit)
+            {
+                throw new ActivityException("LimitTooHigh", "A ticket type limit cannot be higher than the total number of seats");
+            }
+
+            Raise(new TicketTypeLimitIncreased()
+            {
+                TicketTypeId = ticketTypeId,
+                Seats = seats
+            });
+        }
+
+        public void DecreaseTicketTypeLimit(Guid ticketTypeId, int seats)
+        {
+            GuardTicketType(ticketTypeId);
+            var ticketType = _ticketTypes[ticketTypeId];
+            if (ticketType.SeatLimit.GetValueOrDefault(0) - seats < 0)
+            {
+                throw new ActivityException("LimitTooLow", "The ticket type limit cannot be below 0");
+            }
+            Raise(new TicketTypeLimitDecreased()
+            {
+                TicketTypeId = ticketTypeId,
+                Seats = seats
+            });
+        }
+
+        public void RemoveTicketTypeLimit(Guid ticketTypeId)
+        {
+            throw new NotImplementedException();
+        }
+
         public void ReserveSeat(Guid ticketTypeId, Guid? couponId, string reference)
         {
             if (_seatsReserved >= _seatLimit)
             {
-                throw new ActivityException("No seats left");
+                throw new ActivityException("NoSeatsLeft", "No seats left");
             }
             GuardTicketType(ticketTypeId);
 
             var ticketType = _ticketTypes[ticketTypeId];
             if (ticketType.SeatLimit.HasValue && ticketType.SeatLimit <= ticketType.SeatsReserved)
             {
-                throw new ActivityException("No seats left for this ticket type");
+                throw new ActivityException("NoSeatsLeft", "No seats left for this ticket type");
             }
 
             Raise(new SeatReserved()
@@ -103,7 +139,7 @@ namespace Swetugg.Tix.Activity.Domain
         {
             if (!_ticketTypes.ContainsKey(ticketTypeId))
             {
-                throw new ActivityException("No such ticket type");
+                throw new ActivityException("UnknownTicketType", "No such ticket type");
             }
         }
 
@@ -134,6 +170,18 @@ namespace Swetugg.Tix.Activity.Domain
             _ticketTypes.Add(evt.TicketTypeId, new TicketType());
         }
 
+        private void Apply(TicketTypeLimitIncreased evt)
+        {
+            var seatLimit = _ticketTypes[evt.TicketTypeId].SeatLimit.GetValueOrDefault(0);
+            _ticketTypes[evt.TicketTypeId].SeatLimit = seatLimit + evt.Seats;
+        }
+
+        private void Apply(TicketTypeLimitDecreased evt)
+        {
+            var seatLimit = _ticketTypes[evt.TicketTypeId].SeatLimit.GetValueOrDefault(0);
+            _ticketTypes[evt.TicketTypeId].SeatLimit = seatLimit - evt.Seats;
+        }
+
         private void Apply(TicketTypeRemoved evt)
         {
             _ticketTypes.Remove(evt.TicketTypeId);
@@ -154,5 +202,6 @@ namespace Swetugg.Tix.Activity.Domain
 
             _seatsReserved--;
         }
+
     }
 }

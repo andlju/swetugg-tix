@@ -9,6 +9,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
     /// <summary>
     /// Base class for all domain tests
     /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public abstract class TestBase
     {
         private readonly GivenCommandsImpl _givenInternal = new GivenCommandsImpl();

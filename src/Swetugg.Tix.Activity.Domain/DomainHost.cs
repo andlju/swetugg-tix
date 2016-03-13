@@ -25,6 +25,12 @@ namespace Swetugg.Tix.Activity.Domain
             dispatcher.Register(() => new RemoveSeatsHandler(repository));
             dispatcher.Register(() => new AddTicketTypeHandler(repository));
             dispatcher.Register(() => new RemoveTicketTypeHandler(repository));
+            dispatcher.Register(() => new ReserveSeatHandler(repository));
+            dispatcher.Register(() => new ReturnSeatHandler(repository));
+            dispatcher.Register(() => new IncreaseTicketTypeLimitHandler(repository));
+            dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repository));
+            dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repository));
+
             _commandDispatcher = dispatcher;
         }
 

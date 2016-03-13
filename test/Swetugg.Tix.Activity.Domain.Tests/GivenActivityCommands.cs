@@ -14,10 +14,13 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             _activityId = activityId;
         }
 
+        public Guid ActivityId => _activityId;
+
         public void AddCommand(ActivityCommand cmd)
         {
             cmd.ActivityId = _activityId;
             _parent.AddCommand(cmd);
         }
     }
+    
 }
