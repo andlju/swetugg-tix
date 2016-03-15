@@ -1,4 +1,4 @@
-﻿namespace Swetugg.Tix.Activity.Domain
+﻿namespace Swetugg.Tix.Infrastructure
 {
     public interface ICommandDispatcher
     {

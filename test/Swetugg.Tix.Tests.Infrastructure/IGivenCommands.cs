@@ -1,4 +1,4 @@
-namespace Swetugg.Tix.Activity.Domain.Tests
+namespace Swetugg.Tix.Tests.Infrastructure
 {
     public interface IGivenCommands
     {

@@ -1,11 +1,12 @@
 using System;
 using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Tests.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class when_reserving_seat_with_unknown_ticket_type : TestBase
+    public class when_reserving_seat_with_unknown_ticket_type : with_activity
     {
         public when_reserving_seat_with_unknown_ticket_type(ITestOutputHelper output) : base(output)
         {

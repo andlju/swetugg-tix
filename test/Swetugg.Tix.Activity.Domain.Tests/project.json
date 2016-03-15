@@ -16,6 +16,7 @@
     "xunit": "2.1.0-*",
     "Swetugg.Tix.Activity.Events": "1.0.0-*",
     "Swetugg.Tix.Activity.Domain": "1.0.0-*",
+    "Swetugg.Tix.Tests.Infrastructure": "1.0.0-*",
     "NEventStore": "5.2.0"
   },
   "commands": {

@@ -1362,12 +1362,20 @@
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
-          "Swetugg.Tix.Activity.Events": "1.0.0"
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
         }
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
       },
       "System.Collections/4.0.0": {
         "type": "package",
@@ -2944,12 +2952,20 @@
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
-          "Swetugg.Tix.Activity.Events": "1.0.0"
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
         }
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
       },
       "System.Collections/4.0.0": {
         "type": "package",
@@ -4526,12 +4542,20 @@
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
-          "Swetugg.Tix.Activity.Events": "1.0.0"
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
         }
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
       },
       "System.Collections/4.0.0": {
         "type": "package",
@@ -4754,6 +4778,10 @@
     "Swetugg.Tix.Activity.Events/1.0.0": {
       "type": "project",
       "path": "../Swetugg.Tix.Activity.Events/project.json"
+    },
+    "Swetugg.Tix.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Infrastructure/project.json"
     },
     "Microsoft.AspNet.Antiforgery/1.0.0-rc1-final": {
       "type": "package",

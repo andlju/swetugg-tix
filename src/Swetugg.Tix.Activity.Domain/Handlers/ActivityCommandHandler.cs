@@ -1,6 +1,7 @@
 using System;
 using CommonDomain.Persistence;
 using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {

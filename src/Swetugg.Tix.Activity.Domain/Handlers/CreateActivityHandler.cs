@@ -17,7 +17,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
 
         protected override Activity GetActivity(Guid activityId)
         {
-            return new Activity(activityId); ;
+            return new Activity(activityId);
         }
     }
 }

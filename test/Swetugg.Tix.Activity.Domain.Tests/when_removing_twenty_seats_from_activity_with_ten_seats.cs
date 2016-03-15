@@ -1,11 +1,12 @@
 using System;
 using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Tests.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class when_removing_twenty_seats_from_activity_with_ten_seats : TestBase
+    public class when_removing_twenty_seats_from_activity_with_ten_seats : with_activity
     {
         public when_removing_twenty_seats_from_activity_with_ten_seats(ITestOutputHelper output) : base(output)
         {

@@ -1,10 +1,11 @@
 using System;
 using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Tests.Infrastructure;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class when_removing_tickettype : TestBase
+    public class when_removing_tickettype : with_activity
     {
         protected Guid ActivityId = Guid.NewGuid();
 

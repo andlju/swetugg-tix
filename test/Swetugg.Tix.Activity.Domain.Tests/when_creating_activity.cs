@@ -7,11 +7,12 @@ using CommonDomain;
 using NEventStore.Persistence.InMemory;
 using Swetugg.Tix.Activity.Domain.Commands;
 using Swetugg.Tix.Activity.Events;
+using Swetugg.Tix.Tests.Infrastructure;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class when_creating_activity : TestBase
+    public class when_creating_activity : with_activity
     {
         public when_creating_activity(ITestOutputHelper output) : base(output)
         {

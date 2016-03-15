@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "NEventStore": "5.2.0",
-    "Swetugg.Tix.Activity.Events": "1.0.0-*"
+    "Swetugg.Tix.Activity.Events": "1.0.0-*",
+    "Swetugg.Tix.Infrastructure": "1.0.0-*"
   }
 }

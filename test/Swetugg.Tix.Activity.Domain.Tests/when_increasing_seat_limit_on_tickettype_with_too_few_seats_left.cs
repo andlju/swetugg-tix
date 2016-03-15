@@ -2,12 +2,13 @@ using System;
 using System.Linq;
 using Swetugg.Tix.Activity.Domain.Commands;
 using Swetugg.Tix.Activity.Events;
+using Swetugg.Tix.Tests.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class when_increasing_seat_limit_on_tickettype_with_too_few_seats_left : TestBase
+    public class when_increasing_seat_limit_on_tickettype_with_too_few_seats_left : with_activity
     {
         public when_increasing_seat_limit_on_tickettype_with_too_few_seats_left(ITestOutputHelper output) : base(output)
         {

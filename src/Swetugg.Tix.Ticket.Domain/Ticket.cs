@@ -10,11 +10,21 @@ namespace Swetugg.Tix.Ticket.Domain
         private Guid _ticketTypeId;
         private Guid? _couponId;
 
-        public Ticket(Guid aggregateId, Guid ticketTypeId, Guid? couponId)
+        internal static Ticket Build()
+        {
+            return new Ticket();
+        }
+
+        private Ticket()
+        {
+            
+        }
+
+        public Ticket(Guid ticketId, Guid ticketTypeId, Guid? couponId)
         {
             Raise(new TicketCreated()
             {
-                AggregateId = aggregateId,
+                AggregateId = ticketId,
                 TicketTypeId = ticketTypeId,
                 CouponId = couponId
             });
@@ -27,7 +37,7 @@ namespace Swetugg.Tix.Ticket.Domain
             RaiseEvent(evt);
         }
 
-        private void Handle(TicketCreated evt)
+        private void Apply(TicketCreated evt)
         {
             _aggregateId = evt.AggregateId;
             _ticketTypeId = evt.TicketTypeId;

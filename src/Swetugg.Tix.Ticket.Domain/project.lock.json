@@ -2,7 +2,7 @@
   "locked": false,
   "version": 2,
   "targets": {
-    ".NETFramework,Version=v4.5.1": {
+    "DNX,Version=v4.5.1": {
       "NEventStore/5.2.0": {
         "type": "package",
         "compile": {
@@ -12,12 +12,19 @@
           "lib/net40/NEventStore.dll": {}
         }
       },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
       "Swetugg.Tix.Ticket.Events/1.0.0": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.5.1"
+        "framework": "DNX,Version=v4.5.1"
       }
     },
-    ".NETFramework,Version=v4.5.1/win7-x86": {
+    "DNX,Version=v4.5.1/win7-x86": {
       "NEventStore/5.2.0": {
         "type": "package",
         "compile": {
@@ -27,12 +34,19 @@
           "lib/net40/NEventStore.dll": {}
         }
       },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
       "Swetugg.Tix.Ticket.Events/1.0.0": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.5.1"
+        "framework": "DNX,Version=v4.5.1"
       }
     },
-    ".NETFramework,Version=v4.5.1/win7-x64": {
+    "DNX,Version=v4.5.1/win7-x64": {
       "NEventStore/5.2.0": {
         "type": "package",
         "compile": {
@@ -42,13 +56,24 @@
           "lib/net40/NEventStore.dll": {}
         }
       },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
       "Swetugg.Tix.Ticket.Events/1.0.0": {
         "type": "project",
-        "framework": ".NETFramework,Version=v4.5.1"
+        "framework": "DNX,Version=v4.5.1"
       }
     }
   },
   "libraries": {
+    "Swetugg.Tix.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Infrastructure/project.json"
+    },
     "Swetugg.Tix.Ticket.Events/1.0.0": {
       "type": "project",
       "path": "../Swetugg.Tix.Ticket.Events/project.json"
@@ -68,10 +93,10 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "Swetugg.Tix.Ticket.Events >= 1.0.0-*"
+      "NEventStore >= 5.2.0",
+      "Swetugg.Tix.Ticket.Events >= 1.0.0-*",
+      "Swetugg.Tix.Infrastructure >= 1.0.0-*"
     ],
-    ".NETFramework,Version=v4.5.1": [
-      "NEventStore >= 5.2.0"
-    ]
+    "DNX,Version=v4.5.1": []
   }
 }

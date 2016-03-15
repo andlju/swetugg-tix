@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using NEventStore;
+using Swetugg.Tix.Infrastructure;
 using Xunit.Abstractions;
 
-namespace Swetugg.Tix.Activity.Domain.Tests
+namespace Swetugg.Tix.Tests.Infrastructure
 {
     /// <summary>
     /// Base class for all domain tests
@@ -71,6 +72,8 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             public bool CollectCommits;
         }
 
+        protected abstract ICommandDispatcher WithDispatcher(IStoreEvents eventStore);
+
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor", Justification = "Overriding classes should not implement their own constructors")]
         protected TestBase(ITestOutputHelper output)
         {
@@ -82,10 +85,8 @@ namespace Swetugg.Tix.Activity.Domain.Tests
                 .UsingInMemoryPersistence()
                 .HookIntoPipelineUsing(testHook)
                 .Build();
-            
-            // The DomainHost is the main entry-point
-            // of the Activity domain, so let's create one
-            var host = DomainHost.Build(eventStore);
+
+            var dispatcher = WithDispatcher(eventStore);
 
             // Let the actual test setup any preconditions
             Setup();
@@ -93,7 +94,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             // Dispatch all commands that should be preconditions
             foreach (var givenCommand in _givenInternal.Commands)
             {
-                host.Dispatch(givenCommand);
+                dispatcher.Dispatch(givenCommand);
             }
 
             // Make sure the test hook starts recording commits
@@ -104,7 +105,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             try
             {
                 // Dispatch the command
-                host.Dispatch(whenCommand);
+                dispatcher.Dispatch(whenCommand);
             }
             catch (Exception ex)
             {

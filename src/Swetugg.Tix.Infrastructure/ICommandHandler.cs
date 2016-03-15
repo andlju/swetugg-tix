@@ -1,4 +1,4 @@
-﻿namespace Swetugg.Tix.Activity.Domain.Handlers
+﻿namespace Swetugg.Tix.Infrastructure
 {
     public interface ICommandHandler<T>
     {

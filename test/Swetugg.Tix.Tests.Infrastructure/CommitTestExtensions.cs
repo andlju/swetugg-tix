@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using NEventStore;
 
-namespace Swetugg.Tix.Activity.Domain.Tests
+namespace Swetugg.Tix.Tests.Infrastructure
 {
     public static class CommitTestExtensions
     {

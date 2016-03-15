@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Swetugg.Tix.Activity.Domain
+namespace Swetugg.Tix.Infrastructure
 {
     [Serializable]
     public class CommandHandlerException : Exception

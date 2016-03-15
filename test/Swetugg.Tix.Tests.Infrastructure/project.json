@@ -1,0 +1,17 @@
+﻿{
+  "version": "1.0.0-*",
+  "description": "Swetugg.Tix.Tests.Infrastructure Class Library",
+  "authors": [ "Anders" ],
+  "tags": [ "" ],
+  "projectUrl": "",
+  "licenseUrl": "",
+
+  "frameworks": {
+    "dnx451": { }
+  },
+  "dependencies": {
+    "Swetugg.Tix.Infrastructure": "1.0.0-*",
+    "NEventStore": "5.2.0",
+    "xunit": "2.1.0"
+  }
+}

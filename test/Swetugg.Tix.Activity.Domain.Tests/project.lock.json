@@ -147,12 +147,29 @@
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
-          "Swetugg.Tix.Activity.Events": "1.0.0"
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
         }
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
+      "Swetugg.Tix.Tests.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0",
+          "xunit": "2.1.0"
+        }
       },
       "xunit/2.1.0": {
         "type": "package",
@@ -409,12 +426,29 @@
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
-          "Swetugg.Tix.Activity.Events": "1.0.0"
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
         }
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
+      "Swetugg.Tix.Tests.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0",
+          "xunit": "2.1.0"
+        }
       },
       "xunit/2.1.0": {
         "type": "package",
@@ -671,12 +705,29 @@
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
-          "Swetugg.Tix.Activity.Events": "1.0.0"
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
         }
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
+      "Swetugg.Tix.Tests.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0",
+          "xunit": "2.1.0"
+        }
       },
       "xunit/2.1.0": {
         "type": "package",
@@ -797,6 +848,14 @@
     "Swetugg.Tix.Activity.Events/1.0.0": {
       "type": "project",
       "path": "../../src/Swetugg.Tix.Activity.Events/project.json"
+    },
+    "Swetugg.Tix.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../../src/Swetugg.Tix.Infrastructure/project.json"
+    },
+    "Swetugg.Tix.Tests.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Tests.Infrastructure/project.json"
     },
     "Microsoft.Dnx.Compilation.Abstractions/1.0.0-rc1-final": {
       "type": "package",
@@ -1106,6 +1165,7 @@
       "xunit >= 2.1.0-*",
       "Swetugg.Tix.Activity.Events >= 1.0.0-*",
       "Swetugg.Tix.Activity.Domain >= 1.0.0-*",
+      "Swetugg.Tix.Tests.Infrastructure >= 1.0.0-*",
       "NEventStore >= 5.2.0"
     ],
     "DNX,Version=v4.5.1": [

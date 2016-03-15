@@ -2,6 +2,7 @@ using CommonDomain.Core;
 using CommonDomain.Persistence.EventStore;
 using NEventStore;
 using Swetugg.Tix.Activity.Domain.Handlers;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Domain
 {
@@ -34,10 +35,7 @@ namespace Swetugg.Tix.Activity.Domain
             _commandDispatcher = dispatcher;
         }
 
-        public void Dispatch(object cmd)
-        {
-            _commandDispatcher.Dispatch(cmd);
-        }
+        public ICommandDispatcher Dispatcher => _commandDispatcher;
 
     }
 }

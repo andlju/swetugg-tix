@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using CommonDomain.Persistence;
-using Swetugg.Tix.Activity.Domain.Commands;
-using Swetugg.Tix.Activity.Domain.Handlers;
 
-namespace Swetugg.Tix.Activity.Domain
+namespace Swetugg.Tix.Infrastructure
 {
     public class CommandDispatcher : ICommandDispatcher
     {
@@ -29,8 +24,8 @@ namespace Swetugg.Tix.Activity.Domain
         /// Finds the correct command handler for this message, creates an instance
         /// and uses it to handle the command
         /// </remarks>
-        /// <exception cref="CommandHandlerException">
-        /// If no handler is found, a <see cref="CommandHandlerException" /> is thrown
+        /// <exception cref="Swetugg.Tix.Activity.Domain.CommandHandlerException">
+        /// If no handler is found, a <see cref="Swetugg.Tix.Activity.Domain.CommandHandlerException" /> is thrown
         /// </exception>
         /// <param name="cmd">Command to dispatch</param>
         public void Dispatch(object cmd)
