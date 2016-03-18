@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Swetugg.Tix.Activity.Domain.Commands
+﻿namespace Swetugg.Tix.Activity.Commands
 {
     public class AddSeats : ActivityCommand
     {

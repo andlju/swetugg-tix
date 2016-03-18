@@ -1357,11 +1357,16 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Activity.Domain/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
+          "Swetugg.Tix.Activity.Commands": "1.0.0",
           "Swetugg.Tix.Activity.Events": "1.0.0",
           "Swetugg.Tix.Infrastructure": "1.0.0"
         }
@@ -2947,11 +2952,16 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Activity.Domain/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
+          "Swetugg.Tix.Activity.Commands": "1.0.0",
           "Swetugg.Tix.Activity.Events": "1.0.0",
           "Swetugg.Tix.Infrastructure": "1.0.0"
         }
@@ -4537,11 +4547,16 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Activity.Domain/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1",
         "dependencies": {
           "NEventStore": "5.2.0",
+          "Swetugg.Tix.Activity.Commands": "1.0.0",
           "Swetugg.Tix.Activity.Events": "1.0.0",
           "Swetugg.Tix.Infrastructure": "1.0.0"
         }
@@ -4771,6 +4786,10 @@
     }
   },
   "libraries": {
+    "Swetugg.Tix.Activity.Commands/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Commands/project.json"
+    },
     "Swetugg.Tix.Activity.Domain/1.0.0": {
       "type": "project",
       "path": "../Swetugg.Tix.Activity.Domain/project.json"

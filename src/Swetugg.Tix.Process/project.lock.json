@@ -11,6 +11,14 @@
         "runtime": {
           "lib/net40/NEventStore.dll": {}
         }
+      },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Ticket.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
       }
     },
     "DNX,Version=v4.5.1/win7-x86": {
@@ -22,6 +30,14 @@
         "runtime": {
           "lib/net40/NEventStore.dll": {}
         }
+      },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Ticket.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
       }
     },
     "DNX,Version=v4.5.1/win7-x64": {
@@ -33,10 +49,26 @@
         "runtime": {
           "lib/net40/NEventStore.dll": {}
         }
+      },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Ticket.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
       }
     }
   },
   "libraries": {
+    "Swetugg.Tix.Activity.Commands/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Commands/project.json"
+    },
+    "Swetugg.Tix.Ticket.Events/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Ticket.Events/project.json"
+    },
     "NEventStore/5.2.0": {
       "type": "package",
       "sha512": "3ev22hhinX0lKkn5OQI+q61bLVWUv9mjUgjpMKFlwasmpwuKT2yU3jtQJK1uSTh0zoAoShjGRLrvAUduJwXxlA==",
@@ -52,7 +84,9 @@
   },
   "projectFileDependencyGroups": {
     "": [
-      "NEventStore >= 5.2.0"
+      "NEventStore >= 5.2.0",
+      "Swetugg.Tix.Activity.Commands >= 1.0.0-*",
+      "Swetugg.Tix.Ticket.Events >= 1.0.0-*"
     ],
     "DNX,Version=v4.5.1": []
   }

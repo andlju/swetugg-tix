@@ -1,5 +1,5 @@
 ﻿using System;
-using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Tests.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Domain.Tests

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Xunit;
 using CommonDomain;
 using NEventStore.Persistence.InMemory;
-using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Tests.Infrastructure;
 using Xunit.Abstractions;

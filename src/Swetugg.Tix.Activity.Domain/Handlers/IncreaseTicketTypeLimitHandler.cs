@@ -1,5 +1,5 @@
 using CommonDomain.Persistence;
-using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Activity.Commands;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {

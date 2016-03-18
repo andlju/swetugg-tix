@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using Swetugg.Tix.Activity.Domain.Commands;
+using Swetugg.Tix.Activity.Commands;
 
 namespace Swetugg.Tix.Activity.Web.Controllers
 {

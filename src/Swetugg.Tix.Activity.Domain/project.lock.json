@@ -12,6 +12,10 @@
           "lib/net40/NEventStore.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
@@ -33,6 +37,10 @@
         "runtime": {
           "lib/net40/NEventStore.dll": {}
         }
+      },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
       },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
@@ -56,6 +64,10 @@
           "lib/net40/NEventStore.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Activity.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
@@ -70,6 +82,10 @@
     }
   },
   "libraries": {
+    "Swetugg.Tix.Activity.Commands/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Commands/project.json"
+    },
     "Swetugg.Tix.Activity.Events/1.0.0": {
       "type": "project",
       "path": "../Swetugg.Tix.Activity.Events/project.json"
@@ -94,6 +110,7 @@
   "projectFileDependencyGroups": {
     "": [
       "NEventStore >= 5.2.0",
+      "Swetugg.Tix.Activity.Commands >= 1.0.0-*",
       "Swetugg.Tix.Activity.Events >= 1.0.0-*",
       "Swetugg.Tix.Infrastructure >= 1.0.0-*"
     ],
