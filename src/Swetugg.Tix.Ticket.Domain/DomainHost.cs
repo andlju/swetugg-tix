@@ -10,9 +10,9 @@ namespace Swetugg.Tix.Ticket.Domain
     {
         private readonly ICommandDispatcher _commandDispatcher;
 
-        public static DomainHost Build(IStoreEvents eventStore)
+        public static DomainHost Build(Wireup eventStoreWireup)
         {
-            return new DomainHost(eventStore);
+            return new DomainHost(eventStoreWireup.Build());
         }
 
         private DomainHost(IStoreEvents eventStore)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Swetugg.Tix.Ticket.Domain.Commands
+namespace Swetugg.Tix.Ticket.Commands
 {
     public interface ITicketCommand
     {

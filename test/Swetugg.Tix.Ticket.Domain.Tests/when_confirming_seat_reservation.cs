@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 using Swetugg.Tix.Tests.Infrastructure;
-using Swetugg.Tix.Ticket.Domain.Commands;
+using Swetugg.Tix.Ticket.Commands;
 using Swetugg.Tix.Ticket.Events;
 using Xunit;
 using Xunit.Abstractions;

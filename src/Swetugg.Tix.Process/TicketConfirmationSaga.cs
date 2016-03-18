@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using CommonDomain;
 using CommonDomain.Core;
-using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Ticket.Events;
+using ActivityCommands = Swetugg.Tix.Activity.Commands;
+using ActivityEvents = Swetugg.Tix.Activity.Events;
+using TicketCommands = Swetugg.Tix.Ticket.Commands;
+using TicketEvents = Swetugg.Tix.Ticket.Events;
+
 
 namespace Swetugg.Tix.Process
 {
@@ -16,24 +14,36 @@ namespace Swetugg.Tix.Process
         private Guid _ticketTypeId;
         private Guid? _couponId;
 
-        public TicketConfirmationSaga()
+        public TicketConfirmationSaga(string id)
         {
-            Register<TicketCreated>(Handle);
+            Id = id;
+            Register<TicketEvents.TicketCreated>(Handle);
+            Register<ActivityEvents.SeatReserved>(Handle);
         }
 
-        public void Handle(TicketCreated evt)
+        void Handle(TicketEvents.TicketCreated evt)
         {
             _activityId = evt.AggregateId;
             _ticketTypeId = evt.TicketTypeId;
             _couponId = evt.CouponId;
 
-            // Reserve a seat
-            Dispatch(new ReserveSeat()
+            // Try to reserve a seat for this ticket
+            Dispatch(new ActivityCommands.ReserveSeat()
             {
                 CommandId = Guid.NewGuid(),
                 ActivityId = _activityId,
                 TicketTypeId = _ticketTypeId,
                 CouponId = _couponId
+            });
+        }
+
+        void Handle(ActivityEvents.SeatReserved evt)
+        {
+            var ticketId = Guid.Parse(evt.Reference);
+            // A seat has been reserved for this ticket. Let's confirm it.
+            Dispatch(new TicketCommands.ConfirmSeatReservation()
+            {
+                TicketId = ticketId
             });
         }
     }

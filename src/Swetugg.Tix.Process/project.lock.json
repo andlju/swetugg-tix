@@ -16,6 +16,14 @@
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
       },
+      "Swetugg.Tix.Activity.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Ticket.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Ticket.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
@@ -32,6 +40,14 @@
         }
       },
       "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Activity.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Ticket.Commands/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
       },
@@ -54,6 +70,14 @@
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
       },
+      "Swetugg.Tix.Activity.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Ticket.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
       "Swetugg.Tix.Ticket.Events/1.0.0": {
         "type": "project",
         "framework": "DNX,Version=v4.5.1"
@@ -64,6 +88,14 @@
     "Swetugg.Tix.Activity.Commands/1.0.0": {
       "type": "project",
       "path": "../Swetugg.Tix.Activity.Commands/project.json"
+    },
+    "Swetugg.Tix.Activity.Events/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Events/project.json"
+    },
+    "Swetugg.Tix.Ticket.Commands/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Ticket.Commands/project.json"
     },
     "Swetugg.Tix.Ticket.Events/1.0.0": {
       "type": "project",
@@ -86,6 +118,8 @@
     "": [
       "NEventStore >= 5.2.0",
       "Swetugg.Tix.Activity.Commands >= 1.0.0-*",
+      "Swetugg.Tix.Activity.Events >= 1.0.0-*",
+      "Swetugg.Tix.Ticket.Commands >= 1.0.0-*",
       "Swetugg.Tix.Ticket.Events >= 1.0.0-*"
     ],
     "DNX,Version=v4.5.1": []

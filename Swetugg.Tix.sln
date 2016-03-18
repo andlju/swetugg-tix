@@ -40,6 +40,10 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Ticket.Domain.T
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Activity.Commands", "src\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.xproj", "{8D53CDEC-B777-4BDC-8741-533ED0667900}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Ticket.Commands", "src\Swetugg.Tix.Ticket.Commands\Swetugg.Tix.Ticket.Commands.xproj", "{25299238-3974-4F76-ACA5-3ABE96043484}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Process.Tests", "test\Swetugg.Tix.Process.Tests\Swetugg.Tix.Process.Tests.xproj", "{F26F419D-5E3E-4767-9D89-DDC2299A6D06}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +94,14 @@ Global
 		{8D53CDEC-B777-4BDC-8741-533ED0667900}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D53CDEC-B777-4BDC-8741-533ED0667900}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8D53CDEC-B777-4BDC-8741-533ED0667900}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25299238-3974-4F76-ACA5-3ABE96043484}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25299238-3974-4F76-ACA5-3ABE96043484}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25299238-3974-4F76-ACA5-3ABE96043484}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25299238-3974-4F76-ACA5-3ABE96043484}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F26F419D-5E3E-4767-9D89-DDC2299A6D06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F26F419D-5E3E-4767-9D89-DDC2299A6D06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F26F419D-5E3E-4767-9D89-DDC2299A6D06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F26F419D-5E3E-4767-9D89-DDC2299A6D06}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -109,5 +121,7 @@ Global
 		{E707597C-A29C-4A2E-A7D0-A5E85DD32BEA} = {DC2DBBB0-2971-4A53-A5CA-715670F7B96C}
 		{8ADA0F0E-2D3A-463E-B0E2-C11D5887426E} = {215D0673-615F-4F25-9C6E-B0BDF576CF14}
 		{8D53CDEC-B777-4BDC-8741-533ED0667900} = {2519B307-402B-4D3C-8BC2-C03949540CB6}
+		{25299238-3974-4F76-ACA5-3ABE96043484} = {B6F287B7-A3B3-4910-BAD7-83F2599A97F2}
+		{F26F419D-5E3E-4767-9D89-DDC2299A6D06} = {215D0673-615F-4F25-9C6E-B0BDF576CF14}
 	EndGlobalSection
 EndGlobal

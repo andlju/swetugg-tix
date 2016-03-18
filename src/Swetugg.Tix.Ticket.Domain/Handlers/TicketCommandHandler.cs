@@ -1,7 +1,7 @@
 ﻿using System;
 using CommonDomain.Persistence;
 using Swetugg.Tix.Infrastructure;
-using Swetugg.Tix.Ticket.Domain.Commands;
+using Swetugg.Tix.Ticket.Commands;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {

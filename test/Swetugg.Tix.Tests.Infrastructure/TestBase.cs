@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using NEventStore;
 using Swetugg.Tix.Infrastructure;
 using Xunit.Abstractions;
@@ -11,7 +12,7 @@ namespace Swetugg.Tix.Tests.Infrastructure
     /// Base class for all domain tests
     /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public abstract class TestBase
+    public abstract class AggregateTestBase
     {
         private readonly GivenCommandsImpl _givenInternal = new GivenCommandsImpl();
 
@@ -72,21 +73,20 @@ namespace Swetugg.Tix.Tests.Infrastructure
             public bool CollectCommits;
         }
 
-        protected abstract ICommandDispatcher WithDispatcher(IStoreEvents eventStore);
+        protected abstract ICommandDispatcher WithDispatcher(Wireup eventStoreWireup);
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor", Justification = "Overriding classes should not implement their own constructors")]
-        protected TestBase(ITestOutputHelper output)
+        protected AggregateTestBase(ITestOutputHelper output)
         {
             Output = output;
             var testHook = new RepositoryTestObserver(_commitsInternal);
             // Setup an InMemory EventStore with a hook
             // for recording commits
-            var eventStore = Wireup.Init()
+            var eventStoreWireup = Wireup.Init()
                 .UsingInMemoryPersistence()
-                .HookIntoPipelineUsing(testHook)
-                .Build();
+                .HookIntoPipelineUsing(testHook);
 
-            var dispatcher = WithDispatcher(eventStore);
+            var dispatcher = WithDispatcher(eventStoreWireup);
 
             // Let the actual test setup any preconditions
             Setup();

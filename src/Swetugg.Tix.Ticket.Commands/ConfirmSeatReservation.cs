@@ -1,4 +1,4 @@
-﻿namespace Swetugg.Tix.Ticket.Domain.Commands
+﻿namespace Swetugg.Tix.Ticket.Commands
 {
     public class ConfirmSeatReservation : TicketCommand
     {

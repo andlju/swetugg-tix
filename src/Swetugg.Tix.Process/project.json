@@ -13,6 +13,8 @@
   "dependencies": {
     "NEventStore": "5.2.0",
     "Swetugg.Tix.Activity.Commands": "1.0.0-*",
+    "Swetugg.Tix.Activity.Events": "1.0.0-*",
+    "Swetugg.Tix.Ticket.Commands": "1.0.0-*",
     "Swetugg.Tix.Ticket.Events": "1.0.0-*"
   }
 }
