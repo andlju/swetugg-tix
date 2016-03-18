@@ -4,6 +4,7 @@ namespace Swetugg.Tix.Ticket.Domain.Commands
 {
     public class CreateTicket : TicketCommand
     {
+        public Guid ActivityId { get; set; }
         public Guid TicketTypeId { get; set; }
         public Guid? CouponId { get; set; }
     }

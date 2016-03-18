@@ -27,6 +27,10 @@ namespace Swetugg.Tix.Activity.Domain
             
         }
 
+        /// <summary>
+        /// Create a new Activity
+        /// </summary>
+        /// <param name="aggregateId"></param>
         public Activity(Guid aggregateId) 
         {
             Raise(new ActivityCreated()
@@ -35,11 +39,20 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
+        /// <summary>
+        /// Add available seats to this activity
+        /// </summary>
+        /// <param name="seats">Number of seats to add</param>
         public void AddSeats(int seats)
         {
             Raise(new SeatsAdded() {Seats = seats});
         }
 
+        /// <summary>
+        /// Remove available seats from this activity
+        /// </summary>
+        /// <param name="seats">The number of seats to remove</param>
+        /// <remarks>If there are not enough free seats left, an <exception cref="ActivityException"></exception> will be thrown.</remarks>
         public void RemoveSeats(int seats)
         {
             if (_seatLimit - _seatsReserved < seats)
@@ -47,6 +60,10 @@ namespace Swetugg.Tix.Activity.Domain
             Raise(new SeatsRemoved() { Seats = seats });
         }
 
+        /// <summary>
+        /// Add a new ticket type to this activity
+        /// </summary>
+        /// <param name="ticketTypeId"></param>
         public void AddTicketType(Guid ticketTypeId)
         {
             Raise(new TicketTypeAdded()
@@ -55,19 +72,42 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
+        /// <summary>
+        /// Remove a ticket type from this activity
+        /// </summary>
+        /// <param name="ticketTypeId"></param>
+        /// <remarks>If the ticket type has reserved seats, an <exception cref="ActivityException"></exception> is thrown</remarks>
         public void RemoveTicketType(Guid ticketTypeId)
         {
             GuardTicketType(ticketTypeId);
+            var ticketType = _ticketTypes[ticketTypeId];
+            if (ticketType.SeatsReserved > 0)
+            {
+                throw new ActivityException("TicketTypeInUse", "Unable to remove a ticket type that currently has reserved seats");
+            }
             Raise(new TicketTypeRemoved()
             {
                 TicketTypeId = ticketTypeId
             });
         }
 
+        /// <summary>
+        /// Increase the seat limit of a ticket type
+        /// </summary>
+        /// <param name="ticketTypeId"></param>
+        /// <param name="seats">Number of seats to add to the limit</param>
+        /// <remarks>
+        /// You can not set a limit higher than the total number of seats for the activity.
+        /// You can not set a limit lower than the number of already reserved seats
+        /// </remarks>
         public void IncreaseTicketTypeLimit(Guid ticketTypeId, int seats)
         {
             GuardTicketType(ticketTypeId);
             var ticketType = _ticketTypes[ticketTypeId];
+            if (!ticketType.SeatLimit.HasValue && ticketType.SeatsReserved > seats)
+            {
+                throw new ActivityException("LimitTooLow", "You can not set a seat limit that is lower than the number of reserved seats.");
+            }
             if (ticketType.SeatLimit.GetValueOrDefault(0) + seats > _seatLimit)
             {
                 throw new ActivityException("LimitTooHigh", "A ticket type limit cannot be higher than the total number of seats");
@@ -80,13 +120,22 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
+        /// <summary>
+        /// Decrease the seat limit of a ticket type
+        /// </summary>
+        /// <param name="ticketTypeId"></param>
+        /// <param name="seats">The number of seats to decrease the limit with</param>
+        /// <remarks>
+        /// You can not set a limit lower than the number of already reserved seats
+        /// You can not set a limit lower than 0.
+        /// </remarks>
         public void DecreaseTicketTypeLimit(Guid ticketTypeId, int seats)
         {
             GuardTicketType(ticketTypeId);
             var ticketType = _ticketTypes[ticketTypeId];
-            if (ticketType.SeatLimit.GetValueOrDefault(0) - seats < 0)
+            if (ticketType.SeatLimit.GetValueOrDefault(0) - seats < ticketType.SeatsReserved)
             {
-                throw new ActivityException("LimitTooLow", "The ticket type limit cannot be below 0");
+                throw new ActivityException("LimitTooLow", "You can not set a seat limit that is lower than the number of reserved seats or below zero.");
             }
             Raise(new TicketTypeLimitDecreased()
             {
@@ -95,11 +144,21 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
+        /// <summary>
+        /// Remove the seat limit for this ticket type. 
+        /// </summary>
+        /// <param name="ticketTypeId"></param>
         public void RemoveTicketTypeLimit(Guid ticketTypeId)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Reserve a seat for an activity
+        /// </summary>
+        /// <param name="ticketTypeId">The ticket type this seat is reserved using</param>
+        /// <param name="couponId">Optional coupon id</param>
+        /// <param name="reference">External reference for this seat (typically the ticket id)</param>
         public void ReserveSeat(Guid ticketTypeId, Guid? couponId, string reference)
         {
             if (_seatsReserved >= _seatLimit)
@@ -122,6 +181,12 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
+        /// <summary>
+        /// Return a seat for this activity
+        /// </summary>
+        /// <param name="ticketTypeId">The ticket type this seat was reserved using</param>
+        /// <param name="couponId">Optional coupon id</param>
+        /// <param name="reference">External reference for this seat (typically the ticket id)</param>
         public void ReturnSeat(Guid ticketTypeId, Guid? couponId, string reference)
         {
             GuardTicketType(ticketTypeId);

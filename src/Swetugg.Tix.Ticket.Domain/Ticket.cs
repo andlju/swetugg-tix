@@ -10,6 +10,8 @@ namespace Swetugg.Tix.Ticket.Domain
         private Guid _ticketTypeId;
         private Guid? _couponId;
 
+        private bool _seatReserved;
+
         internal static Ticket Build()
         {
             return new Ticket();
@@ -30,6 +32,11 @@ namespace Swetugg.Tix.Ticket.Domain
             });
         }
 
+        public void ConfirmSeatReservation()
+        {
+            Raise(new SeatReserved());
+        }
+
         protected void Raise(EventBase evt)
         {
             if (_aggregateId != Guid.Empty)
@@ -42,6 +49,11 @@ namespace Swetugg.Tix.Ticket.Domain
             _aggregateId = evt.AggregateId;
             _ticketTypeId = evt.TicketTypeId;
             _couponId = evt.CouponId;
+        }
+
+        private void Apply(SeatReserved evt)
+        {
+            _seatReserved = true;
         }
     }
 }

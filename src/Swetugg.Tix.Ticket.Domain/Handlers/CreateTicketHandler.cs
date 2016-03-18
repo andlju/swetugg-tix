@@ -19,6 +19,17 @@ namespace Swetugg.Tix.Ticket.Domain.Handlers
             var ticket = new Ticket(cmd.TicketId, cmd.TicketTypeId, cmd.CouponId);
             _repository.Save(ticket, Guid.NewGuid());
         }
+    }
 
+    public class ConfirmSeatReservationHandler : TicketCommandHandler<ConfirmSeatReservation>
+    {
+        public ConfirmSeatReservationHandler(IRepository repository) : base(repository)
+        {
+        }
+
+        protected override void HandleCommand(Ticket ticket, ConfirmSeatReservation cmd)
+        {
+            ticket.ConfirmSeatReservation();
+        }
     }
 }

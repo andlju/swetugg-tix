@@ -8,9 +8,9 @@ using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Ticket.Domain.Tests
 {
-    public class when_creating_ticket : with_ticket
+    public class when_confirming_seat_reservation : with_ticket
     {
-        public when_creating_ticket(ITestOutputHelper output) : base(output)
+        public when_confirming_seat_reservation(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -20,18 +20,18 @@ namespace Swetugg.Tix.Ticket.Domain.Tests
 
         protected override void Setup()
         {
-            
+            Given.AddCommand(new CreateTicket() { TicketId = TicketId, ActivityId = ActivityId, TicketTypeId = TicketTypeId });
         }
 
         protected override object When()
         {
-            return new CreateTicket() { TicketId = TicketId, ActivityId = ActivityId, TicketTypeId = TicketTypeId };
+            return new ConfirmSeatReservation() { TicketId = TicketId };
         }
 
         [Fact]
-        public void then_TicketCreated_event_is_raised()
+        public void then_SeatReserved_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<TicketCreated>());
+            Assert.True(Commits.First().HasEvent<SeatReserved>());
         }
     }
 }

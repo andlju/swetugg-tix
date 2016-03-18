@@ -22,6 +22,7 @@ namespace Swetugg.Tix.Ticket.Domain
 
             // Register all command handlers
             dispatcher.Register(() => new CreateTicketHandler(repository));
+            dispatcher.Register(() => new ConfirmSeatReservationHandler(repository));
 
             _commandDispatcher = dispatcher;
         }
