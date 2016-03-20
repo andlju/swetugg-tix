@@ -11,7 +11,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         {
         }
 
-        protected override ICommandDispatcher WithDispatcher(Wireup eventStoreWireup)
+        protected override IMessageDispatcher WithDispatcher(Wireup eventStoreWireup)
         {
             var host = DomainHost.Build(eventStoreWireup);
             return host.Dispatcher;

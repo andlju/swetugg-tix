@@ -4,17 +4,17 @@ using System.Runtime.Serialization;
 namespace Swetugg.Tix.Infrastructure
 {
     [Serializable]
-    public class CommandHandlerException : Exception
+    public class MessageHandlerException : Exception
     {
-        public CommandHandlerException(string message) : base(message)
+        public MessageHandlerException(string message) : base(message)
         {
         }
 
-        public CommandHandlerException(string message, Exception inner) : base(message, inner)
+        public MessageHandlerException(string message, Exception inner) : base(message, inner)
         {
         }
 
-        protected CommandHandlerException(
+        protected MessageHandlerException(
             SerializationInfo info,
             StreamingContext context) : base(info, context)
         {

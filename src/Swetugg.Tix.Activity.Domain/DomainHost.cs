@@ -8,7 +8,7 @@ namespace Swetugg.Tix.Activity.Domain
 {
     public class DomainHost
     {
-        private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IMessageDispatcher _messageDispatcher;
 
         
         public static DomainHost Build(Wireup eventStoreWireup)
@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.Domain
         private DomainHost(IStoreEvents eventStore)
         {
             var repository = new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
-            var dispatcher = new CommandDispatcher();
+            var dispatcher = new MessageDispatcher();
 
             // Register all command handlers
             dispatcher.Register(() => new CreateActivityHandler(repository));
@@ -33,10 +33,10 @@ namespace Swetugg.Tix.Activity.Domain
             dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repository));
             dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repository));
 
-            _commandDispatcher = dispatcher;
+            _messageDispatcher = dispatcher;
         }
 
-        public ICommandDispatcher Dispatcher => _commandDispatcher;
+        public IMessageDispatcher Dispatcher => _messageDispatcher;
 
     }
 }

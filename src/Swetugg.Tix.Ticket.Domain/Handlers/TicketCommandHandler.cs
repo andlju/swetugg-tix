@@ -5,22 +5,22 @@ using Swetugg.Tix.Ticket.Commands;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {
-    public abstract class TicketCommandHandler<TCmd> :
-        ICommandHandler<TCmd>
+    public abstract class TicketMessageHandler<TCmd> :
+        IMessageHandler<TCmd>
         where TCmd : ITicketCommand
     {
         private readonly IRepository _repository;
 
-        protected TicketCommandHandler(IRepository repository)
+        protected TicketMessageHandler(IRepository repository)
         {
             _repository = repository;
         }
 
-        public void Handle(TCmd cmd)
+        public void Handle(TCmd msg)
         {
-            var ticket = GetTicket(cmd.TicketId);
+            var ticket = GetTicket(msg.TicketId);
 
-            HandleCommand(ticket, cmd);
+            HandleCommand(ticket, msg);
 
             _repository.Save(ticket, Guid.NewGuid());
         }

@@ -8,7 +8,7 @@ namespace Swetugg.Tix.Ticket.Domain
 {
     public class DomainHost
     {
-        private readonly ICommandDispatcher _commandDispatcher;
+        private readonly IMessageDispatcher _messageDispatcher;
 
         public static DomainHost Build(Wireup eventStoreWireup)
         {
@@ -18,16 +18,16 @@ namespace Swetugg.Tix.Ticket.Domain
         private DomainHost(IStoreEvents eventStore)
         {
             var repository = new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
-            var dispatcher = new CommandDispatcher();
+            var dispatcher = new MessageDispatcher();
 
             // Register all command handlers
             dispatcher.Register(() => new CreateTicketHandler(repository));
             dispatcher.Register(() => new ConfirmSeatReservationHandler(repository));
 
-            _commandDispatcher = dispatcher;
+            _messageDispatcher = dispatcher;
         }
 
-        public ICommandDispatcher Dispatcher => _commandDispatcher;
+        public IMessageDispatcher Dispatcher => _messageDispatcher;
 
     }
 }

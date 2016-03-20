@@ -73,7 +73,7 @@ namespace Swetugg.Tix.Tests.Infrastructure
             public bool CollectCommits;
         }
 
-        protected abstract ICommandDispatcher WithDispatcher(Wireup eventStoreWireup);
+        protected abstract IMessageDispatcher WithDispatcher(Wireup eventStoreWireup);
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor", Justification = "Overriding classes should not implement their own constructors")]
         protected AggregateTestBase(ITestOutputHelper output)

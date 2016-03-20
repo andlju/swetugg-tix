@@ -3,21 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc;
-using Swetugg.Tix.Activity.Commands;
 
-namespace Swetugg.Tix.Activity.Web.Controllers
+namespace Swetugg.Tix.Api.Controllers
 {
-    [Route("api/activities/{activityId}/commands/{commandId}")]
-    public class CommandsController : Controller
-    {
-
-        [HttpPut("create")]
-        public void Create(CreateActivity cmd)
-        {
-            
-        }
-    }
-
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {

@@ -7,8 +7,9 @@ using Microsoft.AspNet.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Swetugg.Tix.Api.Controllers;
 
-namespace Swetugg.Tix.Activity.Web
+namespace Swetugg.Tix.Api
 {
     public class Startup
     {
@@ -17,7 +18,8 @@ namespace Swetugg.Tix.Activity.Web
             // Set up configuration sources.
             var builder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables()
+                .AddUserSecrets();
             Configuration = builder.Build();
         }
 
@@ -26,6 +28,9 @@ namespace Swetugg.Tix.Activity.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+            services.Configure<StorageOptions>(Configuration);
+
             // Add framework services.
             services.AddMvc();
         }

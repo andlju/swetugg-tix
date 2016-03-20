@@ -5,7 +5,7 @@ using Swetugg.Tix.Ticket.Commands;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {
-    public class CreateTicketHandler : ICommandHandler<CreateTicket>
+    public class CreateTicketHandler : IMessageHandler<CreateTicket>
     {
         private readonly IRepository _repository;
 
@@ -14,14 +14,14 @@ namespace Swetugg.Tix.Ticket.Domain.Handlers
             _repository = repository;
         }
 
-        public void Handle(CreateTicket cmd)
+        public void Handle(CreateTicket msg)
         {
-            var ticket = new Ticket(cmd.TicketId, cmd.TicketTypeId, cmd.CouponId);
+            var ticket = new Ticket(msg.TicketId, msg.TicketTypeId, msg.CouponId);
             _repository.Save(ticket, Guid.NewGuid());
         }
     }
 
-    public class ConfirmSeatReservationHandler : TicketCommandHandler<ConfirmSeatReservation>
+    public class ConfirmSeatReservationHandler : TicketMessageHandler<ConfirmSeatReservation>
     {
         public ConfirmSeatReservationHandler(IRepository repository) : base(repository)
         {

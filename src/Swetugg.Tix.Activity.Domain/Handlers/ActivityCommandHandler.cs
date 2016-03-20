@@ -6,7 +6,7 @@ using Swetugg.Tix.Infrastructure;
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {
     public abstract class ActivityCommandHandler<TCmd> : 
-        ICommandHandler<TCmd>
+        IMessageHandler<TCmd>
         where TCmd : IActivityCommand
     {
         private readonly IRepository _repository;
@@ -16,11 +16,11 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
             _repository = repository;
         }
 
-        public void Handle(TCmd cmd)
+        public void Handle(TCmd msg)
         {
-            var activity = GetActivity(cmd.ActivityId);
+            var activity = GetActivity(msg.ActivityId);
 
-            HandleCommand(activity, cmd);
+            HandleCommand(activity, msg);
             
             _repository.Save(activity, Guid.NewGuid());
         }
