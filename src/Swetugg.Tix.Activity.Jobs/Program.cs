@@ -15,9 +15,16 @@ namespace Swetugg.Tix.Activity.Jobs
         {
             var configBuilder = new ConfigurationBuilder();
             configBuilder.AddJsonFile("appsettings.json");
+            configBuilder.AddEnvironmentVariables();
             configBuilder.AddUserSecrets();
 
             var config = configBuilder.Build();
+
+            foreach (var envVar in config.GetChildren())
+            {
+                Console.WriteLine($"{envVar.Key}: {envVar.Value}");
+            }
+
             JobHostConfiguration jobHostConfig =
                 new JobHostConfiguration(config["Data:AzureWebJobsStorage:ConnectionString"]);
 
