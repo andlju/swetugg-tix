@@ -20,11 +20,6 @@ namespace Swetugg.Tix.Activity.Jobs
 
             var config = configBuilder.Build();
 
-            foreach (var envVar in config.GetChildren())
-            {
-                Console.WriteLine($"{envVar.Key}: {envVar.Value}");
-            }
-
             JobHostConfiguration jobHostConfig =
                 new JobHostConfiguration(config["Data:AzureWebJobsStorage:ConnectionString"]);
 
@@ -38,7 +33,7 @@ namespace Swetugg.Tix.Activity.Jobs
             host.RunAndBlock();
         }
 
-        public static void GenerateThumbnail([ServiceBusTrigger("activitycommands")] string command)
+        public static void DispatchCommand([ServiceBusTrigger("activitycommands")] string command)
         {
             Console.Out.WriteLine("Got command");
             Console.Out.WriteLine(command);
