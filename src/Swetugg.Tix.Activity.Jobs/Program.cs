@@ -22,16 +22,16 @@ namespace Swetugg.Tix.Activity.Jobs
                 new JobHostConfiguration(config["Data:AzureWebJobsStorage:ConnectionString"]);
 
             /*jobHostConfig.StorageConnectionString = config["Data:AzureWebJobsStorage:ConnectionString"];
-            
+            */
             jobHostConfig.UseServiceBus(new ServiceBusConfiguration()
             {
-                ConnectionString = config["Data:AzureWebJobsServiceBus:ConnectionString"]
-            });*/
+                ConnectionString = config["Data:AzureServiceBus:ConnectionString"]
+            });
             JobHost host = new JobHost(jobHostConfig);
             host.RunAndBlock();
         }
 
-        public static void GenerateThumbnail([QueueTrigger("activitycommands")] string command)
+        public static void GenerateThumbnail([ServiceBusTrigger("activitycommands")] string command)
         {
             Console.Out.WriteLine("Got command");
             Console.Out.WriteLine(command);

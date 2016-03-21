@@ -1758,6 +1758,20 @@
           "lib/net45/_._": {}
         }
       },
+      "WindowsAzure.ServiceBus/3.1.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net45-full/Microsoft.ServiceBus.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Microsoft.ServiceBus.dll": {}
+        }
+      },
       "WindowsAzure.Storage/6.2.0": {
         "type": "package",
         "dependencies": {
@@ -3538,6 +3552,20 @@
           "lib/net45/_._": {}
         }
       },
+      "WindowsAzure.ServiceBus/3.1.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net45-full/Microsoft.ServiceBus.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Microsoft.ServiceBus.dll": {}
+        }
+      },
       "WindowsAzure.Storage/6.2.0": {
         "type": "package",
         "dependencies": {
@@ -5316,6 +5344,20 @@
         },
         "runtime": {
           "lib/net45/_._": {}
+        }
+      },
+      "WindowsAzure.ServiceBus/3.1.5": {
+        "type": "package",
+        "frameworkAssemblies": [
+          "System.Runtime.Serialization",
+          "System.ServiceModel",
+          "System.Xml"
+        ],
+        "compile": {
+          "lib/net45-full/Microsoft.ServiceBus.dll": {}
+        },
+        "runtime": {
+          "lib/net45-full/Microsoft.ServiceBus.dll": {}
         }
       },
       "WindowsAzure.Storage/6.2.0": {
@@ -7427,6 +7469,19 @@
         "System.Threading.nuspec"
       ]
     },
+    "WindowsAzure.ServiceBus/3.1.5": {
+      "type": "package",
+      "sha512": "Int5TKYOL70dNbN2WVOXQ87cd+Zz+d7G3p5cDzZwXKsGm+2jMah+Fp8dBg6P9rIg+DqDbO1HdwrnIhdmPkN4WA==",
+      "files": [
+        "content/app.config.install.xdt",
+        "content/web.config.install.xdt",
+        "lib/net45-full/Microsoft.ServiceBus.dll",
+        "lib/net45-full/Microsoft.ServiceBus.xml",
+        "WindowsAzure.ServiceBus.3.1.5.nupkg",
+        "WindowsAzure.ServiceBus.3.1.5.nupkg.sha512",
+        "WindowsAzure.ServiceBus.nuspec"
+      ]
+    },
     "WindowsAzure.Storage/6.2.0": {
       "type": "package",
       "sha512": "goOiCbpHmw/H3CJYhWorrQ9kbLYMyqPaUi4IXE8ke0rZXeA9VuzXZe8bjQAPuoJT84sPWuXMqu5rSUBQTXN0dQ==",
@@ -7460,6 +7515,7 @@
       "Microsoft.Extensions.Logging.Debug >= 1.0.0-rc1-final",
       "NEventStore >= 5.2.0",
       "Swetugg.Tix.Activity.Commands >= 1.0.0-*",
+      "WindowsAzure.ServiceBus >= 3.1.5",
       "WindowsAzure.Storage >= 6.2.0"
     ],
     "DNX,Version=v4.5.1": []

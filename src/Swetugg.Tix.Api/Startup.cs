@@ -29,7 +29,7 @@ namespace Swetugg.Tix.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddOptions();
-            services.Configure<StorageOptions>(Configuration);
+            services.Configure<StorageOptions>(Configuration.GetSection("Data"));
 
             // Add framework services.
             services.AddMvc();
