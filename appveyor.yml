@@ -13,16 +13,12 @@ install:
 before_build:
  - ps: dnu restore
 
+build:
+  publish_wap: true
+
 test_script:
 - cmd: >-
     dnx -p test\Swetugg.Tix.Activity.Domain.Tests\project.json test
 
     dnx -p test\Swetugg.Tix.Ticket.Domain.Tests\project.json test
 
-artifacts:
-- path: artifacts\bin\Swetugg.Tix.Web\Debug\*.nupkg
-  name: SwetuggWeb
-  
-- path: artifacts\bin\Swetugg.Tix.Activity.Jobs\Debug\*.nupkg
-  name: SwetuggActivityWebJob
-  
