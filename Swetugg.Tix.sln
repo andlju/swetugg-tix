@@ -7,8 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DC2DBBB0-297
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02A67D42-BD31-4003-8CB5-158148DB65E2}"
 	ProjectSection(SolutionItems) = preProject
-		deploy.api.cmd = deploy.api.cmd
 		deploy.cmd = deploy.cmd
+		deploy.web.cmd = deploy.web.cmd
 		deploy.webjob.cmd = deploy.webjob.cmd
 		global.json = global.json
 		run.cmd = run.cmd
@@ -48,9 +48,9 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Process.Tests",
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Activity.Jobs", "src\Swetugg.Tix.Activity.Jobs\Swetugg.Tix.Activity.Jobs.xproj", "{9FAE9BFE-8898-4EC7-AB07-2E0393E7E68E}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Api", "Api", "{99DCDE99-FC7E-4F7B-A0F1-F2790F7F3DC6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Web", "Web", "{99DCDE99-FC7E-4F7B-A0F1-F2790F7F3DC6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Api", "src\Swetugg.Tix.Api\Swetugg.Tix.Api.xproj", "{76DA10C2-547C-406C-921A-4EB4DDEF7DE2}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Swetugg.Tix.Web", "src\Swetugg.Tix.Web\Swetugg.Tix.Web.xproj", "{06BEA79A-2545-4592-97D9-29BBF08B71E8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -110,10 +110,10 @@ Global
 		{9FAE9BFE-8898-4EC7-AB07-2E0393E7E68E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FAE9BFE-8898-4EC7-AB07-2E0393E7E68E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FAE9BFE-8898-4EC7-AB07-2E0393E7E68E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76DA10C2-547C-406C-921A-4EB4DDEF7DE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76DA10C2-547C-406C-921A-4EB4DDEF7DE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76DA10C2-547C-406C-921A-4EB4DDEF7DE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76DA10C2-547C-406C-921A-4EB4DDEF7DE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06BEA79A-2545-4592-97D9-29BBF08B71E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06BEA79A-2545-4592-97D9-29BBF08B71E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06BEA79A-2545-4592-97D9-29BBF08B71E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06BEA79A-2545-4592-97D9-29BBF08B71E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -136,6 +136,6 @@ Global
 		{F26F419D-5E3E-4767-9D89-DDC2299A6D06} = {215D0673-615F-4F25-9C6E-B0BDF576CF14}
 		{9FAE9BFE-8898-4EC7-AB07-2E0393E7E68E} = {2519B307-402B-4D3C-8BC2-C03949540CB6}
 		{99DCDE99-FC7E-4F7B-A0F1-F2790F7F3DC6} = {DC2DBBB0-2971-4A53-A5CA-715670F7B96C}
-		{76DA10C2-547C-406C-921A-4EB4DDEF7DE2} = {99DCDE99-FC7E-4F7B-A0F1-F2790F7F3DC6}
+		{06BEA79A-2545-4592-97D9-29BBF08B71E8} = {99DCDE99-FC7E-4F7B-A0F1-F2790F7F3DC6}
 	EndGlobalSection
 EndGlobal

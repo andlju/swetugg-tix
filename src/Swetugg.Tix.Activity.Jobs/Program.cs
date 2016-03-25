@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.Jobs
     {
         public static Assembly CommandAssembly = typeof(CreateActivity).Assembly;
 
-        public static DomainHost _domainHost;
+        private static DomainHost _domainHost;
 
         public static void Main(string[] args)
         {
@@ -39,15 +39,18 @@ namespace Swetugg.Tix.Activity.Jobs
 
             JobHostConfiguration jobHostConfig =
                 new JobHostConfiguration(config["Data:AzureWebJobsStorage:ConnectionString"]);
+            jobHostConfig.NameResolver = new ConfigurationNameResolver(config);
             jobHostConfig.UseServiceBus(new ServiceBusConfiguration()
             {
                 ConnectionString = config["Data:AzureServiceBus:ConnectionString"]
             });
+
             JobHost host = new JobHost(jobHostConfig);
+            
             host.RunAndBlock();
         }
 
-        public static void DispatchCommand([ServiceBusTrigger("activitycommands")] BrokeredMessage commandMsg)
+        public static void DispatchCommand([ServiceBusTrigger("%Messaging:CommandDispatchQueue:QueueName%")] BrokeredMessage commandMsg)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)
