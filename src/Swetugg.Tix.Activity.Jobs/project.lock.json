@@ -319,6 +319,31 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Activity.Domain/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0",
+          "Swetugg.Tix.Activity.Commands": "1.0.0",
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
+        }
+      },
+      "Swetugg.Tix.Activity.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
       "System.Spatial/5.6.2": {
         "type": "package",
         "compile": {
@@ -707,6 +732,31 @@
         },
         "runtime": {
           "lib/net45/Newtonsoft.Json.dll": {}
+        }
+      },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Activity.Domain/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0",
+          "Swetugg.Tix.Activity.Commands": "1.0.0",
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
+        }
+      },
+      "Swetugg.Tix.Activity.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
         }
       },
       "System.Spatial/5.6.2": {
@@ -1099,6 +1149,31 @@
           "lib/net45/Newtonsoft.Json.dll": {}
         }
       },
+      "Swetugg.Tix.Activity.Commands/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Activity.Domain/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0",
+          "Swetugg.Tix.Activity.Commands": "1.0.0",
+          "Swetugg.Tix.Activity.Events": "1.0.0",
+          "Swetugg.Tix.Infrastructure": "1.0.0"
+        }
+      },
+      "Swetugg.Tix.Activity.Events/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1"
+      },
+      "Swetugg.Tix.Infrastructure/1.0.0": {
+        "type": "project",
+        "framework": "DNX,Version=v4.5.1",
+        "dependencies": {
+          "NEventStore": "5.2.0"
+        }
+      },
       "System.Spatial/5.6.2": {
         "type": "package",
         "compile": {
@@ -1174,6 +1249,22 @@
     }
   },
   "libraries": {
+    "Swetugg.Tix.Activity.Commands/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Commands/project.json"
+    },
+    "Swetugg.Tix.Activity.Domain/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Domain/project.json"
+    },
+    "Swetugg.Tix.Activity.Events/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Activity.Events/project.json"
+    },
+    "Swetugg.Tix.Infrastructure/1.0.0": {
+      "type": "project",
+      "path": "../Swetugg.Tix.Infrastructure/project.json"
+    },
     "Microsoft.Azure.WebJobs/1.1.1": {
       "type": "package",
       "serviceable": true,
@@ -1603,7 +1694,9 @@
       "NEventStore >= 5.2.0",
       "Microsoft.Web.WebJobs.Publish >= 1.0.11",
       "Microsoft.Extensions.Configuration.UserSecrets >= 1.0.0-rc1-final",
-      "WindowsAzure.ServiceBus >= 3.1.5"
+      "WindowsAzure.ServiceBus >= 3.1.5",
+      "Swetugg.Tix.Activity.Commands >= 1.0.0-*",
+      "Swetugg.Tix.Activity.Domain >= 1.0.0-*"
     ],
     "DNX,Version=v4.5.1": []
   }

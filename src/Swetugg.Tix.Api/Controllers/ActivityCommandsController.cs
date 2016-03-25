@@ -51,7 +51,8 @@ namespace Swetugg.Tix.Api.Controllers
             };
 
             var client = QueueClient.CreateFromConnectionString(_options.AzureServiceBus.ConnectionString, "activitycommands");
-            await client.SendAsync(new BrokeredMessage(JsonConvert.SerializeObject(createActivityCommand)));
+            
+            await client.SendAsync(new BrokeredMessage(JsonConvert.SerializeObject(createActivityCommand)) {Label = createActivityCommand.GetType().FullName});
 
             return "Command sent";
         }
