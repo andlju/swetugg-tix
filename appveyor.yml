@@ -13,8 +13,9 @@ install:
 before_build:
  - ps: dnu restore
  
- test_script:
-
+test_script:
 - cmd: >-
     dnx -p test\Swetugg.Tix.Activity.Domain.Tests\project.json test
+
     dnx -p test\Swetugg.Tix.Ticket.Domain.Tests\project.json test
+    
