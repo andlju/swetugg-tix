@@ -16,13 +16,13 @@ before_build:
 
 build_script:
 - dnu publish "src\Swetugg.Tix.Web" --out SwetuggTixWeb --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update1 --wwwroot-out "wwwroot" --quiet
-- dnu publish "src\Swetugg.Tix.Activity.Job" --out SwetuggTixActivityJob --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update1 --quiet
+- dnu publish "src\Swetugg.Tix.Activity.Jobs" --out SwetuggTixActivityJobs --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update1 --quiet
 
 artifacts:
 - path: SwetuggTixWeb
   name: SwetuggTixWeb
-- path: SwetuggTixActivityJob
-  name: SwetuggTixActivityJob
+- path: SwetuggTixActivityJobs
+  name: SwetuggTixActivityJobs
   
 test_script:
 - cmd: >-
