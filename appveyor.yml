@@ -30,3 +30,8 @@ test_script:
 
     dnx -p test\Swetugg.Tix.Ticket.Domain.Tests\project.json test
 
+deploy:
+- provider: Environment
+  name: Swetugg Tix Lab ActivityJob
+- provider: Environment
+  name: Swetugg Tix Lab Web
