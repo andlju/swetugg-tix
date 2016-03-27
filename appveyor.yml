@@ -14,8 +14,12 @@ before_build:
  - ps: dnu restore
 
 build:
-  publish_wap: true
+- dnu publish "src\Swetugg.Tix.Web" --out SwetuggTixWeb --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-final --wwwroot-out "wwwroot" --quiet
 
+artifacts:
+- path: SwetuggTixWeb
+  name: SwetuggTixWeb
+  
 test_script:
 - cmd: >-
     dnx -p test\Swetugg.Tix.Activity.Domain.Tests\project.json test
