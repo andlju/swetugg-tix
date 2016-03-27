@@ -13,7 +13,7 @@ install:
 before_build:
  - ps: dnu restore
 
-build:
+build_script:
 - dnu publish "src\Swetugg.Tix.Web" --out SwetuggTixWeb --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-final --wwwroot-out "wwwroot" --quiet
 
 artifacts:
