@@ -7,9 +7,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DC2DBBB0-297
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{02A67D42-BD31-4003-8CB5-158148DB65E2}"
 	ProjectSection(SolutionItems) = preProject
-		deploy.cmd = deploy.cmd
-		deploy.web.cmd = deploy.web.cmd
-		deploy.webjob.cmd = deploy.webjob.cmd
 		global.json = global.json
 	EndProjectSection
 EndProject

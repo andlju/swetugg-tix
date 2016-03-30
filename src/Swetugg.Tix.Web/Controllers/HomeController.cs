@@ -31,5 +31,10 @@ namespace Swetugg.Tix.Web.Controllers
         {
             return View();
         }
+
+        public IActionResult Activity()
+        {
+            return View();
+        }
     }
 }

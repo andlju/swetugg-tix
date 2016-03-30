@@ -6,17 +6,17 @@ install:
  - ps: "&{$Branch='dev';iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/aspnet/Home/dev/dnvminstall.ps1'))}"
  - ps: dnvm update-self
  - ps: dnvm upgrade
- - ps: dnvm install 1.0.0-rc1-update1
+ - ps: dnvm install 1.0.0-rc1-update2
  - ps: dnvm list
- - ps: dnvm use 1.0.0-rc1-update1
+ - ps: dnvm use 1.0.0-rc1-update2
  - npm install -g gulp bower
 
 before_build:
  - ps: dnu restore
 
 build_script:
-- dnu publish "src\Swetugg.Tix.Web" --out SwetuggTixWeb --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update1 --wwwroot-out "wwwroot" --quiet
-- dnu publish "src\Swetugg.Tix.Activity.Jobs" --out SwetuggTixActivityJobs --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update1 --quiet
+- dnu publish "src\Swetugg.Tix.Web" --out SwetuggTixWeb --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update2 --wwwroot-out "wwwroot" --quiet
+- dnu publish "src\Swetugg.Tix.Activity.Jobs" --out SwetuggTixActivityJobs --configuration Release --runtime dnx-clr-win-x86.1.0.0-rc1-update2 --quiet
 
 artifacts:
 - path: SwetuggTixWeb
