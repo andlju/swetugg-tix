@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Swetugg.Tix.Activity.Commands;
 
 namespace Swetugg.Tix.Web.Controllers.Api

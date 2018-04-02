@@ -1,6 +1,6 @@
 using System;
 using System.Linq;
-using Swetugg.Tix.Tests.Infrastructure;
+using Swetugg.Tix.Tests.Helpers;
 using Swetugg.Tix.Ticket.Commands;
 using Swetugg.Tix.Ticket.Events;
 using Xunit;

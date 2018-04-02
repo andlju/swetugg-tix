@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Activity.Events\Swetugg.Tix.Activity.Events.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Ticket.Commands\Swetugg.Tix.Ticket.Commands.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Ticket.Events\Swetugg.Tix.Ticket.Events.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="NEventStore">
+      <HintPath>..\..\..\..\Users\Codin\.nuget\packages\neventstore\5.2.0\lib\net40\NEventStore.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

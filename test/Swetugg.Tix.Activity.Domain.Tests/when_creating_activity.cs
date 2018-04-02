@@ -7,7 +7,7 @@ using CommonDomain;
 using NEventStore.Persistence.InMemory;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Tests.Infrastructure;
+using Swetugg.Tix.Tests.Helpers;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests

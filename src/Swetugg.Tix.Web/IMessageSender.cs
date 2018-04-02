@@ -1,9 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Web
 {
     public interface IMessageSender
     {
         Task Send(object message);
+        Task Close();
     }
 }

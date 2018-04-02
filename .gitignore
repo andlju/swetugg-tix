@@ -135,6 +135,13 @@ publish/
 packages/
 node_modules/
 
+# .NET Core stuff
+project.lock.json
+.vs/
+.vscode/
+
+*.local.json
+
 # Windows Azure Build Output
 csx
 *.build.csdef

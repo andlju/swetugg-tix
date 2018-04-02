@@ -1,7 +1,8 @@
+using System;
+using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Extensions.OptionsModel;
-using Microsoft.ServiceBus;
-using Microsoft.ServiceBus.Messaging;
+using Microsoft.Azure.ServiceBus;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swetugg.Tix.Web.Options;
 
@@ -11,25 +12,30 @@ namespace Swetugg.Tix.Web
     {
         private readonly string _queueName;
         private readonly string _serviceBusConnectionString;
+        private readonly QueueClient _client;
 
         public CommandMessageSender(IOptions<StorageOptions> storageOptions, IOptions<MessagingOptions> messagingOptions)
         {
             _queueName = messagingOptions.Value.CommandDispatchQueue.QueueName;
             _serviceBusConnectionString = storageOptions.Value.AzureServiceBus.ConnectionString;
-
-            var namespaceManager = NamespaceManager.CreateFromConnectionString(_serviceBusConnectionString);
-
-            if (!namespaceManager.QueueExists(_queueName))
-            {
-                namespaceManager.CreateQueue(_queueName);
-            }
+            _client = new QueueClient(_serviceBusConnectionString, _queueName);
         }
 
-        public async Task Send(object message)
+        public async Task Send(object body)
         {
-            var client = QueueClient.CreateFromConnectionString(_serviceBusConnectionString, _queueName);
+            var byteBody = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(body));
+            var message = new Message(byteBody)
+            {
+                Label = body.GetType().FullName
+            };
 
-            await client.SendAsync(new BrokeredMessage(JsonConvert.SerializeObject(message)) { Label = message.GetType().FullName });
+            await _client.SendAsync(message);
         }
+
+        public Task Close()
+        {
+            return _client.CloseAsync();
+        }
+
     }
 }

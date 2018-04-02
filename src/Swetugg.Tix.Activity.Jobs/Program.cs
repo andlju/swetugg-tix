@@ -1,67 +1,67 @@
-﻿using Microsoft.Azure.WebJobs;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using Swetugg.Tix.Activity.Commands;
-using Microsoft.Azure.WebJobs.ServiceBus;
+﻿using System;
+using System.IO;
+using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Logging;
 using Microsoft.Extensions.Configuration;
-using Microsoft.ServiceBus.Messaging;
-using Newtonsoft.Json;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NEventStore;
 using Swetugg.Tix.Activity.Domain;
 
 namespace Swetugg.Tix.Activity.Jobs
 {
-    public class Program
+    class Program
     {
-        public static Assembly CommandAssembly = typeof(CreateActivity).Assembly;
-
-        private static DomainHost _domainHost;
-
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            var configBuilder = new ConfigurationBuilder();
-            configBuilder.AddJsonFile("appsettings.json");
-            configBuilder.AddEnvironmentVariables();
-            configBuilder.AddUserSecrets();
+            var configRoot = BuildConfiguration();
 
-            var config = configBuilder.Build();
+            IServiceCollection serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection, configRoot);
 
-            // Setup an InMemory EventStore 
-            var eventStoreWireup = Wireup.Init()
-                .UsingInMemoryPersistence();
+            var configuration = new JobHostConfiguration(configRoot.GetSection("AzureWebJobs"));
 
-            // Build the domain host
-            _domainHost = DomainHost.Build(eventStoreWireup);
-
-            JobHostConfiguration jobHostConfig =
-                new JobHostConfiguration(config["Data:AzureWebJobsStorage:ConnectionString"]);
-            jobHostConfig.NameResolver = new ConfigurationNameResolver(config);
-            jobHostConfig.UseServiceBus(new ServiceBusConfiguration()
+            configuration.Queues.VisibilityTimeout = TimeSpan.FromSeconds(15);
+            configuration.Queues.MaxDequeueCount = 3;
+            configuration.LoggerFactory = new LoggerFactory().AddConsole();
+            configuration.JobActivator = new CustomJobActivator(serviceCollection.BuildServiceProvider());
+            // configuration.UseTimers();
+            configuration.UseServiceBus();
+            if (configuration.IsDevelopment)
             {
-                ConnectionString = config["Data:AzureServiceBus:ConnectionString"]
-            });
+                configuration.UseDevelopmentSettings();
+            }
 
-            JobHost host = new JobHost(jobHostConfig);
-            
+            var host = new JobHost(configuration);
             host.RunAndBlock();
+            
         }
 
-        public static void DispatchCommand([ServiceBusTrigger("%Messaging:CommandDispatchQueue:QueueName%")] BrokeredMessage commandMsg)
+        private static IConfigurationRoot BuildConfiguration()
         {
-            var messageType = CommandAssembly.GetType(commandMsg.Label, false);
-            if (messageType == null)
-            {
-                throw new InvalidOperationException($"Unknown message type '{commandMsg.Label}'");
-            }
-            var command = JsonConvert.DeserializeObject(commandMsg.GetBody<string>(), messageType);
+            return new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .Build();
+        }
 
-            Console.Out.WriteLine($"Dispatching {messageType.Name} command");
-            _domainHost.Dispatcher.Dispatch(command);
-            Console.Out.WriteLine("Command handled successfully");
+        private static void ConfigureServices(IServiceCollection serviceCollection, IConfiguration configuration)
+        {
+            // Setup your container here, just like a asp.net core app
+
+            // serviceCollection.Configure<MySettings>(configuration);
+
+            var eventStore = Wireup.Init().UsingInMemoryPersistence();
+
+            serviceCollection.AddSingleton(DomainHost.Build(eventStore));
+
+            serviceCollection.AddScoped<CommandDispatcher, CommandDispatcher>();
+
+            // One more thing - tell azure where your azure connection strings are
+            // Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
+            // Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));
         }
     }
 }

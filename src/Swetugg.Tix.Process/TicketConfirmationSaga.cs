@@ -5,7 +5,6 @@ using ActivityEvents = Swetugg.Tix.Activity.Events;
 using TicketCommands = Swetugg.Tix.Ticket.Commands;
 using TicketEvents = Swetugg.Tix.Ticket.Events;
 
-
 namespace Swetugg.Tix.Process
 {
     public class TicketConfirmationSaga : SagaBase<object>

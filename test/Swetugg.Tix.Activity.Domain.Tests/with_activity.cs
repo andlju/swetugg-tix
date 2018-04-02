@@ -1,6 +1,6 @@
 using NEventStore;
 using Swetugg.Tix.Infrastructure;
-using Swetugg.Tix.Tests.Infrastructure;
+using Swetugg.Tix.Tests.Helpers;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
