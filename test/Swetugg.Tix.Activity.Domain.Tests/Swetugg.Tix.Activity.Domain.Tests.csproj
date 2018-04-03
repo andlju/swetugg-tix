@@ -20,10 +20,4 @@
     <ProjectReference Include="..\Swetugg.Tix.Tests.Helpers\Swetugg.Tix.Tests.Helpers.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="NEventStore">
-      <HintPath>..\..\..\..\Users\Codin\.nuget\packages\neventstore\5.2.0\lib\net40\NEventStore.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
