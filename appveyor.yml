@@ -1,4 +1,9 @@
+version: 1.0.{build}
+image: Visual Studio 2017
 build_script:
-- cmd: powershell -NoProfile -ExecutionPolicy unrestricted -Command .\build.ps1 -Target "Publish"
-
-test: off
+- ps: .\build.ps1 -Target "Default"
+#deploy:
+#- provider: Environment
+#  name: Swetugg Tix Lab ActivityJob
+#- provider: Environment
+#  name: Swetugg Tix Lab Web
