@@ -5,15 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
-    <ProjectReference Include="..\Swetugg.Tix.Ticket.Commands\Swetugg.Tix.Ticket.Commands.csproj" />
-    <ProjectReference Include="..\Swetugg.Tix.Ticket.Events\Swetugg.Tix.Ticket.Events.csproj" />
+    <PackageReference Include="NEventStore" Version="5.2.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="NEventStore">
-      <HintPath>..\..\..\..\Users\Codin\.nuget\packages\neventstore\5.2.0\lib\net40\NEventStore.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Ticket.Commands\Swetugg.Tix.Ticket.Commands.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Ticket.Events\Swetugg.Tix.Ticket.Events.csproj" />
   </ItemGroup>
 
 </Project>
