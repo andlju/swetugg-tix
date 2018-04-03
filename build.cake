@@ -40,7 +40,7 @@ Task("Build")
       MSBuild("./Swetugg.Tix.sln", settings =>
         {
             settings.SetConfiguration(configuration);
-        }
+        });
     }
     else
     {
