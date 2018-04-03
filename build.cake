@@ -39,7 +39,7 @@ Task("Build")
       // Use MSBuild
       MSBuild("./Swetugg.Tix.sln", settings =>
         {
-            settings.SetConfiguration(configuration));
+            settings.SetConfiguration(configuration);
         }
     }
     else
