@@ -1,5 +1,4 @@
 build_script:
-
 - cmd: powershell -NoProfile -ExecutionPolicy unrestricted -Command .\build.ps1 -Target "Publish"
 
 test: off
