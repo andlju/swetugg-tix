@@ -27,6 +27,12 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return given;
         }
 
+        public static GivenActivityCommands WithRemovedTicketTypeLimit(this GivenActivityCommands given, Guid ticketTypeId)
+        {
+            given.AddCommand(new RemoveTicketTypeLimit() { TicketTypeId = ticketTypeId });
+            return given;
+        }
+
         public static GivenActivityCommands WithIncreasedTicketTypeLimit(this GivenActivityCommands given, Guid ticketTypeId, int seats)
         {
             given.AddCommand(new IncreaseTicketTypeLimit() { TicketTypeId = ticketTypeId, Seats = seats });

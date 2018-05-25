@@ -150,7 +150,9 @@ namespace Swetugg.Tix.Activity.Domain
         /// <param name="ticketTypeId"></param>
         public void RemoveTicketTypeLimit(Guid ticketTypeId)
         {
-            throw new NotImplementedException();
+            GuardTicketType(ticketTypeId);
+
+            Raise(new TicketTypeLimitRemoved() { TicketTypeId = ticketTypeId });
         }
 
         /// <summary>
@@ -165,9 +167,8 @@ namespace Swetugg.Tix.Activity.Domain
             {
                 throw new ActivityException("NoSeatsLeft", "No seats left");
             }
-            GuardTicketType(ticketTypeId);
 
-            var ticketType = _ticketTypes[ticketTypeId];
+            var ticketType = GuardTicketType(ticketTypeId);
             if (ticketType.SeatLimit.HasValue && ticketType.SeatLimit <= ticketType.SeatsReserved)
             {
                 throw new ActivityException("NoSeatsLeft", "No seats left for this ticket type");
@@ -199,13 +200,15 @@ namespace Swetugg.Tix.Activity.Domain
             });
         }
 
-        [SuppressMessage("ReSharper", "UnusedParameter.Local")]
-        private void GuardTicketType(Guid ticketTypeId)
+        private TicketType GuardTicketType(Guid ticketTypeId)
         {
-            if (!_ticketTypes.ContainsKey(ticketTypeId))
+            TicketType ticketType;
+            if (!_ticketTypes.TryGetValue(ticketTypeId, out ticketType))
             {
                 throw new ActivityException("UnknownTicketType", "No such ticket type");
             }
+
+            return ticketType;
         }
 
         protected void Raise(EventBase evt)
@@ -245,6 +248,11 @@ namespace Swetugg.Tix.Activity.Domain
         {
             var seatLimit = _ticketTypes[evt.TicketTypeId].SeatLimit.GetValueOrDefault(0);
             _ticketTypes[evt.TicketTypeId].SeatLimit = seatLimit - evt.Seats;
+        }
+
+        private void Apply(TicketTypeLimitRemoved evt)
+        {
+            _ticketTypes[evt.TicketTypeId].SeatLimit = null;
         }
 
         private void Apply(TicketTypeRemoved evt)

@@ -34,7 +34,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_ActivityException_is_thrown()
         {
-            Assert.IsAssignableFrom<ActivityException>(ThrownException);
+            Assert.IsType<ActivityException>(ThrownException);
         }
 
         [Fact]

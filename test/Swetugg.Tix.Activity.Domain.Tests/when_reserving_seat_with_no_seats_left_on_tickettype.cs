@@ -6,9 +6,9 @@ using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class when_reserving_seat_with_no_seats_left : with_activity
+    public class when_reserving_seat_with_no_seats_left_on_tickettype : with_activity
     {
-        public when_reserving_seat_with_no_seats_left(ITestOutputHelper output) : base(output)
+        public when_reserving_seat_with_no_seats_left_on_tickettype(ITestOutputHelper output) : base(output)
         {
         }
 

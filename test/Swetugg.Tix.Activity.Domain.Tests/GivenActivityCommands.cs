@@ -22,6 +22,5 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             cmd.ActivityId = _activityId;
             _parent.AddCommand(cmd);
         }
-    }
-    
+    }    
 }
