@@ -8,3 +8,7 @@ artifacts:
   type: WebDeployPackage
 - path: .\dist\Swetugg.Tix.Activity.Jobs.zip
   type: WebDeployPackage
+
+deploy:
+- provider: Environment
+  name: Swetugg Tix Latest
