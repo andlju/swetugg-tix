@@ -1,5 +1,7 @@
 version: 1.0.{build}
+skip_tags: true
 image: Visual Studio 2017
+
 build_script:
 - ps: .\build.ps1 -Target "Default"
 
