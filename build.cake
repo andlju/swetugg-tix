@@ -57,7 +57,7 @@ Task("Test")
 public void CreatePackage(string projectName)
 {
     var distFolder = distDirectory.Path.Combine(projectName);
-    var zipFile = distDirectory.Path.Combine($"{projectName}.zip");
+    var zipFile = distDirectory.Path.GetFilePath($"{projectName}.zip");
     var projectFile = $"./src/{projectName}/{projectName}.csproj"; 
     
     DotNetCorePublish(
@@ -69,15 +69,8 @@ public void CreatePackage(string projectName)
             ArgumentCustomization = args => args.Append("--no-restore"),
         });
 
-    MsDeploy(new MsDeploySettings() {
-        Source = new DirPathProvider() {
-            Path = MakeAbsolute(distFolder).ToString()
-        },
-        Destination = new PackageProvider() {
-            Path = MakeAbsolute(zipFile).ToString(),
-            Direction = Direction.dest
-        }
-    });}
+    Zip(distFolder, zipFile);
+}
 
 // Publish the app to the /dist folder
 Task("Package")  

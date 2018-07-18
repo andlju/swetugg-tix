@@ -11,7 +11,7 @@
     },
     "swetuggTixClientName": {
       "type": "string",
-      "defaultValue": "swetugg-tix-client",
+      "defaultValue": "[swetuggtix.makeUnique('swetugg-tix-client')]",
       "metadata": {
         "description": "Name of the Swetugg Tix Client web app"
       }
@@ -129,22 +129,7 @@
       ],
       "properties": {
         "serverFarmId": "[parameters('hostingPlanName')]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2015-08-01",
-          "name": "web",
-          "type": "sourcecontrols",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/Sites', parameters('swetuggTixClientName'))]"
-          ],
-          "properties": {
-            "RepoUrl": "[parameters('repoURL')]",
-            "branch": "[parameters('branch')]",
-            "IsManualIntegration": true
-          }
-        }
-      ]
+      }
     },
     {
       "name": "[variables('storageName')]",
@@ -157,58 +142,29 @@
       "location": "[resourceGroup().location]",
       "tags": {},
       "properties": {
-        "encryption":{
-          "services":{
-            "blob":{
-              "enabled":true
+        "encryption": {
+          "services": {
+            "blob": {
+              "enabled": true
             }
           },
-          "keySource":"Microsoft.Storage"
+          "keySource": "Microsoft.Storage"
         }
       }
-    },
-    {
-      "name": "[variables('serviceBusName')]",
-      "type": "Microsoft.ServiceBus/namespaces",
-      "apiVersion": "2017-04-01",
-      "location": "[resourceGroup().location]",
-      "tags": {},
-      "sku": {
-        "name": "Standard"
-      },
-      "properties": {},
-      "resources": [
-        {
-          "name": "activitycommands",
-          "type": "Queues",
-          "apiVersion": "2017-04-01",
-          "dependsOn": [
-            "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusName'))]"
-          ],
-          "properties": {
-            "requiresDuplicateDetection": false,
-            "requiresSession": false,
-            "deadLetteringOnMessageExpiration": true,
-            "enablePartitioning": false,
-            "enableExpress": false
-          },
-          "resources": []
-        }
-      ]
     }
   ],
-  "outputs": { 
+  "outputs": {
     "groupLocation": {
       "type": "string",
       "value": "[resourceGroup().location]"
     },
-    "storageUri": {
-      "type": "string", 
-      "value": "[reference(variables('storageName')).primaryEndpoints.blob]"
-    },
-    "serviceBusConnectionString": {
+    "swetuggTixClientName": {
       "type": "string",
-      "value": "[listkeys(variables('authRuleResourceId'), '2017-04-01').primaryConnectionString]"
+      "value": "[parameters('swetuggTixClientName')]"
+    },
+    "storageUri": {
+      "type": "string",
+      "value": "[reference(variables('storageName')).primaryEndpoints.blob]"
     }
   }
 }
