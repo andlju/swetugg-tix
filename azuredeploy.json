@@ -129,7 +129,10 @@
         "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
       ],
       "properties": {
-        "serverFarmId": "[parameters('hostingPlanName')]"
+        "serverFarmId": "[parameters('hostingPlanName')]",
+        "siteConfig": {
+          "AlwaysOn": true
+        }
       },
       "resources": [
         {

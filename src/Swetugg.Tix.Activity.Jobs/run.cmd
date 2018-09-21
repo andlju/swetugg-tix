@@ -1,2 +1,3 @@
 @echo off
-dotnet Swetugg.Activity.Jobs.dll %*
+dotnet --version
+dotnet Swetugg.Tix.Activity.Jobs.dll %*
