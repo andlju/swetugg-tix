@@ -58,6 +58,8 @@ $Headers = @{
 
 $sourceFilePath = ".\deploytmp\Swetugg.Tix.Web.zip" # this is what you want to go into wwwroot
 
+Write-Host "Deploying Swetugg Client"
+
 # use kudu deploy from zip file
 $deployResult = Invoke-WebRequest -Uri https://$appName.scm.azurewebsites.net/api/zipdeploy -Headers $Headers `
     -InFile $sourceFilePath -ContentType "multipart/form-data" -Method Post
@@ -74,6 +76,9 @@ $Headers = @{
     "Content-Disposition" = "attachement; filename=run.cmd"
 }
 
+$sourceFilePath = ".\deploytmp\Swetugg.Tix.Activity.Jobs.zip" # this is what you want to go into wwwroot
+
+Write-Host "Deploying Activity Jobs"
 # Now deploy the first web job
 $deployResult = Invoke-WebRequest -Uri https://$appName.scm.azurewebsites.net/api/triggeredwebjobs/ActivityJobs -Headers $Headers `
     -InFile $sourceFilePath -ContentType "application/zip" -Method Put
