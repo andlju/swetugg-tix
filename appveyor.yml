@@ -7,9 +7,9 @@ build_script:
 
 artifacts:
 - path: .\dist\Swetugg.Tix.Web.zip
-  type: WebDeployPackage
+  type: Auto
 - path: .\dist\Swetugg.Tix.Activity.Jobs.zip
-  type: WebDeployPackage
+  type: Auto
 
 deploy:
 - provider: Environment
