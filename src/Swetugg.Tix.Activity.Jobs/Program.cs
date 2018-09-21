@@ -35,6 +35,8 @@ namespace Swetugg.Tix.Activity.Jobs
             }
 
             var host = new JobHost(configuration);
+            Console.WriteLine($"StorageConn: {configuration.StorageConnectionString}"); 
+            Console.WriteLine($"DashConn: {configuration.DashboardConnectionString}"); 
             host.RunAndBlock();
             
         }

@@ -150,8 +150,8 @@
               "Data:AzureWebJobsStorage:ConnectionString": "",
               "Messaging:CommandDispatchQueue:QueueName": "[variables('serviceBusQueueName')]",
               
-              "AzureWebJobs:AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
-              "AzureWebJobs:AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
+              "AzureWebJobs:AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
+              "AzureWebJobs:AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
               "AzureWebJobs:AzureWebJobsServiceBus": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]"
           }
       }]
@@ -211,17 +211,9 @@
       "type": "string",
       "value": "[reference(variables('storageName')).primaryEndpoints.blob]"
     },
-    "storageConnectionString": {
-      "type": "string",
-      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]"
-    },
     "serviceBusNamespace": {
       "type": "string",
       "value": "[reference(variables('serviceBusNamespaceName')).serviceBusEndpoint]"
-    },
-    "serviceBusConnectionString": {
-      "type": "string",
-      "value": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]"
     }
   }
 }
