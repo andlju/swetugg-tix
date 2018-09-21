@@ -2,6 +2,7 @@
 using System.IO;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Logging;
+using Microsoft.Azure.WebJobs.ServiceBus;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -27,6 +28,7 @@ namespace Swetugg.Tix.Activity.Jobs
             configuration.JobActivator = new CustomJobActivator(serviceCollection.BuildServiceProvider());
             // configuration.UseTimers();
             configuration.UseServiceBus();
+            
             if (configuration.IsDevelopment)
             {
                 configuration.UseDevelopmentSettings();

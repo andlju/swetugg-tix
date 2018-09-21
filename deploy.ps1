@@ -80,7 +80,7 @@ $sourceFilePath = ".\deploytmp\Swetugg.Tix.Activity.Jobs.zip" # this is what you
 
 Write-Host "Deploying Activity Jobs"
 # Now deploy the first web job
-$deployResult = Invoke-WebRequest -Uri https://$appName.scm.azurewebsites.net/api/triggeredwebjobs/ActivityJobs -Headers $Headers `
+$deployResult = Invoke-WebRequest -Uri https://$appName.scm.azurewebsites.net/api/continuouswebjobs/ActivityJobs -Headers $Headers `
     -InFile $sourceFilePath -ContentType "application/zip" -Method Put
 
 if ($deployResult.StatusCode -ne 200) {

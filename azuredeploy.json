@@ -74,7 +74,7 @@
     "serviceBusNamePrefix": {
       "type": "string",
       "maxLength": 11,
-      "defaultValue": "servicebus",
+      "defaultValue": "tixsb",
       "metadata": {
         "description": "The value to use for starting the service bus name."
       }
@@ -82,9 +82,10 @@
   },
   "variables": {
     "storageName": "[swetuggtix.makeUnique(parameters('storageNamePrefix'))]",
-    "serviceBusName": "[swetuggtix.makeUnique(parameters('serviceBusNamePrefix'))]",
+    "serviceBusNamespaceName": "[swetuggtix.makeUnique(parameters('serviceBusNamePrefix'))]",
+    "serviceBusQueueName": "activitycommands",
     "defaultSASKeyName": "RootManageSharedAccessKey",
-    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusName'), variables('defaultSASKeyName'))]"
+    "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]"
   },
   "functions": [
     {
@@ -129,7 +130,28 @@
       ],
       "properties": {
         "serverFarmId": "[parameters('hostingPlanName')]"
-      }
+      },
+      "resources": [
+        {
+          "name": "appsettings",
+          "type": "config",
+          "apiVersion": "2015-08-01",
+          "dependsOn": [
+              "[concat('Microsoft.Web/sites/', parameters('swetuggTixClientName'))]"
+          ],
+          "tags": {
+              "displayName": "WebAppSettings"
+          },
+          "properties": {
+              "Data:AzureServiceBus:ConnectionString": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]",
+              "Data:AzureWebJobsStorage:ConnectionString": "",
+              "Messaging:CommandDispatchQueue:QueueName": "[variables('serviceBusQueueName')]",
+              
+              "AzureWebJobs:AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
+              "AzureWebJobs:AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
+              "AzureWebJobs:AzureWebJobsServiceBus": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]"
+          }
+      }]
     },
     {
       "name": "[variables('storageName')]",
@@ -151,8 +173,28 @@
           "keySource": "Microsoft.Storage"
         }
       }
-    }
-  ],
+    },
+    {
+      "apiVersion": "2017-04-01",
+      "name": "[variables('serviceBusNamespaceName')]",
+      "type": "Microsoft.ServiceBus/namespaces",
+      "location": "[resourceGroup().location]",
+      "kind": "Messaging",
+      "sku": {
+          "name": "Standard"
+      },
+      "resources": [{
+          "apiVersion": "2017-04-01",
+          "name": "[variables('serviceBusQueueName')]",
+          "type": "queues",
+          "dependsOn": [
+              "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusNamespaceName'))]"
+          ],
+          "properties": {
+              "path": "[variables('serviceBusQueueName')]"
+          }
+      }]
+  }],
   "outputs": {
     "groupLocation": {
       "type": "string",
@@ -165,6 +207,18 @@
     "storageUri": {
       "type": "string",
       "value": "[reference(variables('storageName')).primaryEndpoints.blob]"
+    },
+    "storageConnectionString": {
+      "type": "string",
+      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=',variables('storageName'),';AccountKey=',concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]"
+    },
+    "serviceBusNamespace": {
+      "type": "string",
+      "value": "[reference(variables('serviceBusNamespaceName')).serviceBusEndpoint]"
+    },
+    "serviceBusConnectionString": {
+      "type": "string",
+      "value": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]"
     }
   }
 }
