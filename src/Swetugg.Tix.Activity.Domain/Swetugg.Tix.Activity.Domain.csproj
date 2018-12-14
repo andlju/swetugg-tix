@@ -14,4 +14,13 @@
     <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="Microsoft.Azure.ServiceBus">
+      <HintPath>..\..\..\..\Users\Anders\.nuget\packages\microsoft.azure.servicebus\3.2.0\lib\netstandard2.0\Microsoft.Azure.ServiceBus.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options">
+      <HintPath>..\..\..\..\Users\Anders\.nuget\packages\microsoft.extensions.options\3.0.0-preview.18572.1\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

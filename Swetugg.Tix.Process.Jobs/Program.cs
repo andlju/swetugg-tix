@@ -9,12 +9,28 @@ using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using NEventStore;
-using Swetugg.Tix.Activity.Domain;
-using Swetugg.Tix.Activity.Jobs.Options;
 
-namespace Swetugg.Tix.Activity.Jobs
+namespace Swetugg.Tix.Process.Jobs
 {
+
+    public class LogSagaMessageDispatcher : ISagaMessageDispatcher
+    {
+        private readonly ILogger _logger;
+
+        public LogSagaMessageDispatcher(ILogger logger)
+        {
+            _logger = logger;
+        }
+
+        public void Dispatch(object message)
+        {
+            var json = JsonConvert.SerializeObject(message);
+            _logger.LogInformation(json);
+        }
+    }
+
     class Program
     {
         static async Task Main(string[] args)
@@ -74,16 +90,12 @@ namespace Swetugg.Tix.Activity.Jobs
             // Setup your container here, just like a asp.net core app
 
             // serviceCollection.Configure<MySettings>(configuration);
-            serviceCollection.AddOptions();
-            var dataSect = configuration.GetSection("Data");
-            serviceCollection.Configure<StorageOptions>(configuration.GetSection("Data"));
-            serviceCollection.Configure<MessagingOptions>(configuration.GetSection("Messaging"));
 
             var eventStore = Wireup.Init().UsingInMemoryPersistence();
-            serviceCollection.AddSingleton<IEventPublisher, ServiceBusPublisher>();
-            serviceCollection.AddSingleton(sp => DomainHost.Build(eventStore, sp.GetService<IEventPublisher>()));
 
-            serviceCollection.AddScoped<CommandListener, CommandListener>();
+            serviceCollection.AddSingleton((sp) => new ProcessHost(eventStore, sp.GetService<LogSagaMessageDispatcher>()));
+
+            serviceCollection.AddScoped<EventListener, EventListener>();
 
             // One more thing - tell azure where your azure connection strings are
             // Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));

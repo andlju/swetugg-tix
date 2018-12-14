@@ -6,6 +6,7 @@ using CommonDomain.Persistence;
 using CommonDomain.Persistence.EventStore;
 using NEventStore;
 using NEventStore.Dispatcher;
+using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Events;
 
 namespace Swetugg.Tix.Process
@@ -23,33 +24,40 @@ namespace Swetugg.Tix.Process
         }
     }
 
-    public class Host
+    public class ProcessHost 
+        : IMessageHandler<TicketCreated>
     {
         private readonly ISagaRepository _sagaRepository;
 
-        public Host(Wireup eventStoreWireup, IMessageDispatcher dispatcher)
+        public ProcessHost(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher)
         {
             var eventStore = eventStoreWireup
-                .HookIntoPipelineUsing(new MessageDispatcherHook(dispatcher))
+                .HookIntoPipelineUsing(new MessageDispatcherHook(sagaMessageDispatcher))
                 .Build();
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
+
+            var dispatcher = new MessageDispatcher();
+            dispatcher.Register<TicketCreated>(() => this);
+
+            Dispatcher = dispatcher;
         }
 
-        public void HandleEvent(TicketCreated evt)
+        public IMessageDispatcher Dispatcher { get; }
+
+        public void Handle(TicketCreated evt)
         {
             var processId = evt.AggregateId;
             var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
             saga.Transition(evt);
 
             _sagaRepository.Save(saga, Guid.NewGuid(), null);
-
         }
 
         class MessageDispatcherHook : PipelineHookBase
         {
-            private readonly IMessageDispatcher _dispatcher;
+            private readonly ISagaMessageDispatcher _dispatcher;
 
-            public MessageDispatcherHook(IMessageDispatcher dispatcher)
+            public MessageDispatcherHook(ISagaMessageDispatcher dispatcher)
             {
                 _dispatcher = dispatcher;
             }

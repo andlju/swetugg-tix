@@ -93,6 +93,7 @@
     "dashStorageName": "[swetuggtix.makeUnique(parameters('dashboardNamePrefix'))]",
     "serviceBusNamespaceName": "[swetuggtix.makeUnique(parameters('serviceBusNamePrefix'))]",
     "serviceBusQueueName": "activitycommands",
+    "activityEventsTopicName": "activityevents",
     "defaultSASKeyName": "RootManageSharedAccessKey",
     "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]"
   },
@@ -231,7 +232,20 @@
           "properties": {
               "path": "[variables('serviceBusQueueName')]"
           }
-      }]
+      },
+      {
+        "apiVersion": "2017-04-01",
+        "name": "[variables('activityEventsTopicName')]",
+        "type": "topics",
+        "dependsOn": [
+            "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusNamespaceName'))]"
+        ],
+        "properties": {
+            "path": "[variables('activityEventsTopicName')]"
+        }
+
+        // TODO Setup topic subscription "tixprocess"
+    }]
   }],
   "outputs": {
     "groupLocation": {

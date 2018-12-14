@@ -1,6 +1,6 @@
 namespace Swetugg.Tix.Process
 {
-    public interface IMessageDispatcher
+    public interface ISagaMessageDispatcher
     {
         void Dispatch(object message);
     }

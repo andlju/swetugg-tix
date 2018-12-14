@@ -11,18 +11,18 @@ using Swetugg.Tix.Activity.Domain;
 
 namespace Swetugg.Tix.Activity.Jobs
 {
-    public class CommandDispatcher
+    public class CommandListener
     {
         public static Assembly CommandAssembly = typeof(CreateActivity).Assembly;
 
         private readonly DomainHost _domainHost;
 
-        public CommandDispatcher(DomainHost domainHost)
+        public CommandListener(DomainHost domainHost)
         {
             _domainHost = domainHost;
         }
 
-        public async Task DispatchCommand([ServiceBusTrigger("activitycommands",Connection="ServiceBus")] Message commandMsg)
+        public async Task HandleCommand([ServiceBusTrigger("activitycommands",Connection="ServiceBus")] Message commandMsg)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)

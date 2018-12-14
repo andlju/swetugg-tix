@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using CommonDomain.Core;
 using CommonDomain.Persistence.EventStore;
 using NEventStore;
@@ -10,10 +11,14 @@ namespace Swetugg.Tix.Activity.Domain
     {
         private readonly IMessageDispatcher _messageDispatcher;
 
-        
-        public static DomainHost Build(Wireup eventStoreWireup)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher)
         {
-            return new DomainHost(eventStoreWireup.Build());
+            var eventStore =
+                eventStoreWireup
+                    .HookIntoPipelineUsing(new EventPublisherHook(eventPublisher))
+                    .Build();
+
+            return new DomainHost(eventStore);
         }
 
         private DomainHost(IStoreEvents eventStore)
@@ -37,6 +42,28 @@ namespace Swetugg.Tix.Activity.Domain
         }
 
         public IMessageDispatcher Dispatcher => _messageDispatcher;
+    }
 
+    class EventPublisherHook : PipelineHookBase
+    {
+        private readonly IEventPublisher _publisher;
+
+        public EventPublisherHook(IEventPublisher publisher)
+        {
+            _publisher = publisher;
+        }
+
+        public override void PostCommit(ICommit committed)
+        {
+            foreach (var evt in committed.Events)
+            {
+                _publisher.Publish(evt.Body);
+            }
+        }
+    }
+
+    public interface IEventPublisher
+    {
+        Task Publish(object evt);
     }
 }
