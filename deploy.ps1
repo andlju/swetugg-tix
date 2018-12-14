@@ -1,5 +1,5 @@
 Param(
-    [string]$resourceGroupName = "swetugg-tix",
+    [string]$resourceGroupName = "swetugg-tix-new",
     [string]$deploymentName = "swetugg-tix",
     [string]$version = "latest"
 )

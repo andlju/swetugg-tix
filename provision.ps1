@@ -1,6 +1,6 @@
 Param(
     [string]$location = "northeurope",
-    [string]$resourceGroupName = "swetugg-tix",
+    [string]$resourceGroupName = "swetugg-tix-new",
     [string]$deploymentName = "swetugg-tix"
 )
 
