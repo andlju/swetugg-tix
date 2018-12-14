@@ -10,6 +10,8 @@ artifacts:
   type: Auto
 - path: .\dist\Swetugg.Tix.Activity.Jobs.zip
   type: Auto
+- path: .\dist\Swetugg.Tix.Ticket.Jobs.zip
+  type: Auto
 
 deploy:
 - provider: Environment
