@@ -78,6 +78,7 @@ Task("Package")
     {
         CreatePackage("Swetugg.Tix.Web");
         CreatePackage("Swetugg.Tix.Activity.Jobs");
+        CreatePackage("Swetugg.Tix.Ticket.Jobs");
     });
 
 // A meta-task that runs all the steps to Build and Test the app
