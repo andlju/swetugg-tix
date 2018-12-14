@@ -1,24 +1,19 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Logging;
-using Microsoft.Azure.WebJobs.ServiceBus;
+using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using NEventStore;
-using Swetugg.Tix.Activity.Domain;
 
-namespace Swetugg.Tix.Activity.Jobs
+namespace Swetugg.Tix.Ticket.Jobs
 {
     class Program
     {
         static async Task Main(string[] args)
         {
-            var configRoot = BuildConfiguration(args);
+            var configRoot = BuildConfiguration();
 
             var builder = new HostBuilder()
                 .UseEnvironment("Development")
@@ -57,14 +52,14 @@ namespace Swetugg.Tix.Activity.Jobs
             }
 
         }
-        private static IConfigurationRoot BuildConfiguration(string[] args)
+
+        private static IConfigurationRoot BuildConfiguration()
         {
             return new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile("appsettings.local.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables()
-                .AddCommandLine(args)
                 .Build();
         }
 
@@ -73,16 +68,6 @@ namespace Swetugg.Tix.Activity.Jobs
             // Setup your container here, just like a asp.net core app
 
             // serviceCollection.Configure<MySettings>(configuration);
-
-            var eventStore = Wireup.Init().UsingInMemoryPersistence();
-
-            serviceCollection.AddSingleton(DomainHost.Build(eventStore));
-
-            serviceCollection.AddScoped<CommandDispatcher, CommandDispatcher>();
-
-            // One more thing - tell azure where your azure connection strings are
-            // Environment.SetEnvironmentVariable("AzureWebJobsDashboard", configuration.GetConnectionString("WebJobsDashboard"));
-            // Environment.SetEnvironmentVariable("AzureWebJobsStorage", configuration.GetConnectionString("WebJobsStorage"));
         }
     }
 }

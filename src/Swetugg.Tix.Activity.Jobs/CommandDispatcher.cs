@@ -22,7 +22,7 @@ namespace Swetugg.Tix.Activity.Jobs
             _domainHost = domainHost;
         }
 
-        public async Task DispatchCommand([ServiceBusTrigger("activitycommands")] Message commandMsg)
+        public async Task DispatchCommand([ServiceBusTrigger("activitycommands",Connection="ServiceBus")] Message commandMsg)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)
