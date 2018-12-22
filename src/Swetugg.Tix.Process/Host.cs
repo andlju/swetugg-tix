@@ -4,6 +4,7 @@ using System.Linq;
 using CommonDomain;
 using CommonDomain.Persistence;
 using CommonDomain.Persistence.EventStore;
+using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Dispatcher;
 using Swetugg.Tix.Infrastructure;
@@ -29,14 +30,14 @@ namespace Swetugg.Tix.Process
     {
         private readonly ISagaRepository _sagaRepository;
 
-        public ProcessHost(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher)
+        public ProcessHost(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher, ILoggerFactory loggerFactory)
         {
             var eventStore = eventStoreWireup
                 .HookIntoPipelineUsing(new MessageDispatcherHook(sagaMessageDispatcher))
                 .Build();
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
 
-            var dispatcher = new MessageDispatcher();
+            var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
             dispatcher.Register<TicketCreated>(() => this);
 
             Dispatcher = dispatcher;

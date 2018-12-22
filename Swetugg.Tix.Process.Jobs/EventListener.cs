@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.ServiceBus.InteropExtensions;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
 namespace Swetugg.Tix.Process.Jobs
@@ -14,10 +15,12 @@ namespace Swetugg.Tix.Process.Jobs
         public static Assembly ActivityEventAssembly = typeof(Swetugg.Tix.Activity.Events.ActivityCreated).Assembly;
 
         private readonly ProcessHost _processHost;
+        private readonly ILogger _logger;
 
-        public EventListener(ProcessHost processHost)
+        public EventListener(ProcessHost processHost, ILogger<EventListener> logger)
         {
             _processHost = processHost;
+            _logger = logger;
         }
 
         public async Task HandleActivityEvent([ServiceBusTrigger("activityevents", "tixprocess", Connection = "ServiceBus")] Message eventMessage)
@@ -31,9 +34,7 @@ namespace Swetugg.Tix.Process.Jobs
             var evtString = Encoding.UTF8.GetString(eventMessage.Body);
             var evt = JsonConvert.DeserializeObject(evtString, messageType);
 
-            Console.Out.WriteLine($"Dispatching {messageType.Name} event to saga host");
-            _processHost.Dispatcher.Dispatch(evt);
-            Console.Out.WriteLine("Event handled successfully");
+            _processHost.Dispatcher.Dispatch(evt, false);
         }
 
     }

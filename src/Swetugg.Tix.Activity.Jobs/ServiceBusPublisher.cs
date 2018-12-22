@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Jobs.Options;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Jobs
 {

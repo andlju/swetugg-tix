@@ -1,6 +1,8 @@
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
 using CommonDomain.Core;
 using CommonDomain.Persistence.EventStore;
+using Microsoft.Extensions.Logging;
 using NEventStore;
 using Swetugg.Tix.Activity.Domain.Handlers;
 using Swetugg.Tix.Infrastructure;
@@ -11,20 +13,24 @@ namespace Swetugg.Tix.Activity.Domain
     {
         private readonly IMessageDispatcher _messageDispatcher;
 
-        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPubliser, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
         {
+            var hooks = new IPipelineHook[] {new EventPublisherHook(eventPubliser)};
+            if (extraHooks != null)
+                hooks = hooks.Concat(extraHooks).ToArray();
+
             var eventStore =
                 eventStoreWireup
-                    .HookIntoPipelineUsing(new EventPublisherHook(eventPublisher))
+                    .HookIntoPipelineUsing(hooks)
                     .Build();
 
-            return new DomainHost(eventStore);
+            return new DomainHost(eventStore, loggerFactory);
         }
 
-        private DomainHost(IStoreEvents eventStore)
+        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory)
         {
             var repository = new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
-            var dispatcher = new MessageDispatcher();
+            var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
 
             // Register all command handlers
             dispatcher.Register(() => new CreateActivityHandler(repository));
@@ -60,10 +66,5 @@ namespace Swetugg.Tix.Activity.Domain
                 _publisher.Publish(evt.Body);
             }
         }
-    }
-
-    public interface IEventPublisher
-    {
-        Task Publish(object evt);
     }
 }

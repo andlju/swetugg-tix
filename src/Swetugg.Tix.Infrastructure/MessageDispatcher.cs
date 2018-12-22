@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Swetugg.Tix.Infrastructure
 {
     public class MessageDispatcher : IMessageDispatcher
     {
         private readonly IDictionary<Type, Action<object>> _handlers = new Dictionary<Type, Action<object>>();
+        private readonly ILogger _logger;
+
+        public MessageDispatcher(ILogger<MessageDispatcher> logger)
+        {
+            _logger = logger;
+        }
 
         /// <summary>
         /// Register a handler factory for a message. 
@@ -33,13 +40,21 @@ namespace Swetugg.Tix.Infrastructure
         /// If no handler is found, a <see cref="MessageHandlerException" /> is thrown
         /// </exception>
         /// <param name="msg">Message to dispatch</param>
-        public void Dispatch(object msg)
+        public void Dispatch(object msg, bool throwOnMissing)
         {
-            Action<object> handler;
+            Action<object> handler = null;
             var messageType = msg.GetType();
-            if (!_handlers.TryGetValue(messageType, out handler))
+            if (throwOnMissing && !_handlers.TryGetValue(messageType, out handler))
                 throw new MessageHandlerException($"No handler found for {messageType}");
-            handler(msg);
+            if (handler != null)
+            {
+                _logger.LogDebug("Handling message {MessageType}", messageType);
+                handler(msg);
+            }
+            else
+            {
+                _logger.LogDebug("Unhandled message {MessageType}", messageType);
+            }
         }
     }
 }

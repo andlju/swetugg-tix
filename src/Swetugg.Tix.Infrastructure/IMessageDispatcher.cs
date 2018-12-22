@@ -2,6 +2,6 @@
 {
     public interface IMessageDispatcher
     {
-        void Dispatch(object msg);
+        void Dispatch(object msg, bool throwOnMissing = true);
     }
 }

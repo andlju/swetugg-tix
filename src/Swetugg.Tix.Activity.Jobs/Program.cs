@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using NEventStore;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Jobs.Options;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Jobs
 {
@@ -81,7 +82,7 @@ namespace Swetugg.Tix.Activity.Jobs
 
             var eventStore = Wireup.Init().UsingInMemoryPersistence();
             serviceCollection.AddSingleton<IEventPublisher, ServiceBusPublisher>();
-            serviceCollection.AddSingleton(sp => DomainHost.Build(eventStore, sp.GetService<IEventPublisher>()));
+            serviceCollection.AddSingleton(sp => DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(), sp.GetService<ILoggerFactory>(), null));
 
             serviceCollection.AddScoped<CommandListener, CommandListener>();
 

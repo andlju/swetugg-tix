@@ -73,7 +73,7 @@ namespace Swetugg.Tix.Tests.Helpers
             public bool CollectCommits;
         }
 
-        protected abstract IMessageDispatcher WithDispatcher(Wireup eventStoreWireup);
+        protected abstract IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, IEnumerable<IPipelineHook> extraHooks);
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor", Justification = "Overriding classes should not implement their own constructors")]
         protected AggregateTestBase(ITestOutputHelper output)
@@ -83,10 +83,9 @@ namespace Swetugg.Tix.Tests.Helpers
             // Setup an InMemory EventStore with a hook
             // for recording commits
             var eventStoreWireup = Wireup.Init()
-                .UsingInMemoryPersistence()
-                .HookIntoPipelineUsing(testHook);
+                .UsingInMemoryPersistence();
 
-            var dispatcher = WithDispatcher(eventStoreWireup);
+            var dispatcher = WithDispatcher(eventStoreWireup, new []{testHook});
 
             // Let the actual test setup any preconditions
             Setup();

@@ -95,6 +95,7 @@
     "serviceBusQueueName": "activitycommands",
     "activityEventsTopicName": "activityevents",
     "defaultSASKeyName": "RootManageSharedAccessKey",
+    "tixProcessSubscriptionName": "tixprocess",
     "authRuleResourceId": "[resourceId('Microsoft.ServiceBus/namespaces/authorizationRules', variables('serviceBusNamespaceName'), variables('defaultSASKeyName'))]"
   },
   "functions": [
@@ -146,7 +147,8 @@
             {
               "name": "AzureWebJobsDashboard",
               "connectionString": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]"
-            }]
+            }
+          ]
         }
       },
       "resources": [
@@ -155,21 +157,21 @@
           "type": "config",
           "apiVersion": "2015-08-01",
           "dependsOn": [
-              "[concat('Microsoft.Web/sites/', parameters('swetuggTixClientName'))]"
+            "[concat('Microsoft.Web/sites/', parameters('swetuggTixClientName'))]"
           ],
           "tags": {
-              "displayName": "WebAppSettings"
+            "displayName": "WebAppSettings"
           },
           "properties": {
-              "Data:AzureServiceBus:ConnectionString": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]",
-              "Data:AzureWebJobsStorage:ConnectionString": "",
-              "Messaging:CommandDispatchQueue:QueueName": "[variables('serviceBusQueueName')]",
-              
-              "AzureWebJobs:AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
-              "AzureWebJobs:AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('dashStorageName'), ';AccountKey=', concat(listKeys(variables('dashStorageName'),'2018-07-01').keys[0].value))]",
-              "AzureWebJobs:AzureWebJobsServiceBus": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]"
-            }
-      }]
+            "Data:AzureServiceBus:ConnectionString": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]",
+            "Data:AzureWebJobsStorage:ConnectionString": "",
+            "Messaging:CommandDispatchQueue:QueueName": "[variables('serviceBusQueueName')]",
+            "AzureWebJobs:AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageName'), ';AccountKey=', concat(listKeys(variables('storageName'),'2018-07-01').keys[0].value))]",
+            "AzureWebJobs:AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('dashStorageName'), ';AccountKey=', concat(listKeys(variables('dashStorageName'),'2018-07-01').keys[0].value))]",
+            "AzureWebJobs:AzureWebJobsServiceBus": "[listKeys(resourceId(concat('Microsoft.ServiceBus/namespaces/AuthorizationRules'),variables('serviceBusNamespaceName'),'RootManageSharedAccessKey'),'2015-08-01').primaryConnectionString]"
+          }
+        }
+      ]
     },
     {
       "name": "[variables('storageName')]",
@@ -220,33 +222,44 @@
       "location": "[resourceGroup().location]",
       "kind": "Messaging",
       "sku": {
-          "name": "Standard"
+        "name": "Standard"
       },
-      "resources": [{
+      "resources": [
+        {
           "apiVersion": "2017-04-01",
           "name": "[variables('serviceBusQueueName')]",
           "type": "queues",
           "dependsOn": [
-              "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusNamespaceName'))]"
+            "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusNamespaceName'))]"
           ],
           "properties": {
-              "path": "[variables('serviceBusQueueName')]"
+            "path": "[variables('serviceBusQueueName')]"
           }
-      },
-      {
-        "apiVersion": "2017-04-01",
-        "name": "[variables('activityEventsTopicName')]",
-        "type": "topics",
-        "dependsOn": [
+        },
+        {
+          "apiVersion": "2017-04-01",
+          "name": "[variables('activityEventsTopicName')]",
+          "type": "topics",
+          "dependsOn": [
             "[concat('Microsoft.ServiceBus/namespaces/', variables('serviceBusNamespaceName'))]"
-        ],
-        "properties": {
+          ],
+          "properties": {
             "path": "[variables('activityEventsTopicName')]"
+          },
+          "resources": [
+            {
+              "apiVersion": "2017-04-01",
+              "name": "[variables('tixProcessSubscriptionName')]",
+              "type": "subscriptions",
+              "dependsOn": [
+                "[variables('activityEventsTopicName')]"
+              ]
+            }
+          ]
         }
-
-        // TODO Setup topic subscription "tixprocess"
-    }]
-  }],
+      ]
+    }
+  ],
   "outputs": {
     "groupLocation": {
       "type": "string",
