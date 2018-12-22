@@ -21,7 +21,7 @@
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview.18572.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\Swetugg.Tix.Process\Swetugg.Tix.Process.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Process\Swetugg.Tix.Process.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="appsettings.json">
