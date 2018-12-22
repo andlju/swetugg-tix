@@ -4,6 +4,25 @@ Param(
     [string]$version = "latest"
 )
 
+function DeployWebJob {
+    param (
+        [string]$sourceFilePath,
+        [string]$jobName
+    )
+    
+    Write-Host "Deploying Activity Jobs"
+    # Now deploy the first web job
+    $deployResult = Invoke-WebRequest -Uri https://$appName.scm.azurewebsites.net/api/continuouswebjobs/$jobName -Headers $Headers `
+        -InFile $sourceFilePath -ContentType "application/zip" -Method Put
+    
+    if ($deployResult.StatusCode -ne 200) {
+        Write-Error "Failed when uploading to Kudu"
+        Write-Error $deployResult.Content
+    
+        Exit 1
+    }
+}
+
 [Net.ServicePointManager]::SecurityProtocol = "tls12, tls11, tls"
 
 Write-Host "Downloading $version release"
@@ -76,19 +95,8 @@ $Headers = @{
     "Content-Disposition" = "attachement; filename=run.cmd"
 }
 
-$sourceFilePath = ".\deploytmp\Swetugg.Tix.Activity.Jobs.zip" # this is what you want to go into wwwroot
-
-Write-Host "Deploying Activity Jobs"
-# Now deploy the first web job
-$deployResult = Invoke-WebRequest -Uri https://$appName.scm.azurewebsites.net/api/continuouswebjobs/ActivityJobs -Headers $Headers `
-    -InFile $sourceFilePath -ContentType "application/zip" -Method Put
-
-if ($deployResult.StatusCode -ne 200) {
-    Write-Error "Failed when uploading to Kudu"
-    Write-Error $deployResult.Content
-
-    Exit 1
-}
+DeployWebJob -sourceFilePath ".\deploytmp\Swetugg.Tix.Activity.Jobs.zip" .jobName "ActivityJobs"
+DeployWebJob -sourceFilePath ".\deploytmp\Swetugg.Tix.Process.Jobs.zip" -jobName "ProcessJobs"
 
 # Cleanup the temporary files
 Remove-Item -Path ".\deploytmp" -Recurse -Force
