@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NEventStore" Version="5.2.0" />
+    <PackageReference Include="NEventStore" Version="5.2.0">
+      <NoWarn>NU1701</NoWarn>
+    </PackageReference>
     <PackageReference Include="xunit.abstractions" Version="2.0.3" />
   </ItemGroup>
 

@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using CommonDomain.Core;
 using CommonDomain.Persistence.EventStore;
+using Microsoft.Extensions.Logging.Abstractions;
 using NEventStore;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Tests.Helpers;

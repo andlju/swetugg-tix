@@ -12,29 +12,26 @@ using Swetugg.Tix.Ticket.Events;
 
 namespace Swetugg.Tix.Process
 {
-
-    public class SagaFactory : IConstructSagas
-    {
-        public ISaga Build(Type type, string id)
-        {
-            if (type == typeof(TicketConfirmationSaga))
-            {
-                return new TicketConfirmationSaga(id);
-            }
-            return null;
-        }
-    }
-
     public class ProcessHost 
         : IMessageHandler<TicketCreated>
     {
         private readonly ISagaRepository _sagaRepository;
 
-        public ProcessHost(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher, ILoggerFactory loggerFactory)
+        public static ProcessHost Build(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher,
+            ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
         {
+            var hooks = new IPipelineHook[] { new MessageDispatcherHook(sagaMessageDispatcher) };
+            if (extraHooks != null)
+                hooks = hooks.Concat(extraHooks).ToArray();
+
             var eventStore = eventStoreWireup
-                .HookIntoPipelineUsing(new MessageDispatcherHook(sagaMessageDispatcher))
+                .HookIntoPipelineUsing(hooks)
                 .Build();
+            return new ProcessHost(eventStore, sagaMessageDispatcher, loggerFactory);
+        }
+
+        private ProcessHost(IStoreEvents eventStore, ISagaMessageDispatcher sagaMessageDispatcher, ILoggerFactory loggerFactory)
+        {
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
 
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
@@ -72,6 +69,18 @@ namespace Swetugg.Tix.Process
                 {
                     _dispatcher.Dispatch(message);
                 }
+            }
+        }
+
+        class SagaFactory : IConstructSagas
+        {
+            public ISaga Build(Type type, string id)
+            {
+                if (type == typeof(TicketConfirmationSaga))
+                {
+                    return new TicketConfirmationSaga(id);
+                }
+                return null;
             }
         }
     }

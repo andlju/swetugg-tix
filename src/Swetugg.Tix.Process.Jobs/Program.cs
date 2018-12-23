@@ -93,7 +93,7 @@ namespace Swetugg.Tix.Process.Jobs
 
             var eventStore = Wireup.Init().UsingInMemoryPersistence();
 
-            serviceCollection.AddSingleton((sp) => new ProcessHost(eventStore, sp.GetService<LogSagaMessageDispatcher>(), sp.GetService<ILoggerFactory>()));
+            serviceCollection.AddSingleton((sp) => ProcessHost.Build(eventStore, sp.GetService<LogSagaMessageDispatcher>(), sp.GetService<ILoggerFactory>(), null));
 
             serviceCollection.AddScoped<EventListener, EventListener>();
 

@@ -25,7 +25,7 @@ namespace Swetugg.Tix.Tests.Helpers
         private readonly List<ICommit> _commitsInternal = new List<ICommit>();
 
         /// <summary>
-        /// Commits that have been commited as a result of the
+        /// Commits that have been committed as a result of the
         /// command under test
         /// </summary>
         protected IEnumerable<ICommit> Commits => _commitsInternal;
@@ -51,26 +51,6 @@ namespace Swetugg.Tix.Tests.Helpers
             }
 
             public IEnumerable<object> Commands => _commands;
-        }
-
-        class RepositoryTestObserver : PipelineHookBase
-        {
-            private readonly ICollection<ICommit> _commits;
-
-            public RepositoryTestObserver(ICollection<ICommit> commits)
-            {
-                _commits = commits;
-            }
-
-            public override void PostCommit(ICommit committed)
-            {
-                if (CollectCommits)
-                {
-                    _commits.Add(committed);
-                }
-            }
-
-            public bool CollectCommits;
         }
 
         protected abstract IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, IEnumerable<IPipelineHook> extraHooks);
