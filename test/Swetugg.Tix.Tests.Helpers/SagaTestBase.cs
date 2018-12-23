@@ -9,8 +9,23 @@ namespace Swetugg.Tix.Tests.Helpers
 {
     public abstract class SagaTestBase
     {
-        protected abstract IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, IEnumerable<IPipelineHook> extraHooks);
+        private readonly GivenEventsImpl _givenInternal = new GivenEventsImpl();
 
+        /// <summary>
+        /// Used to setup any commands that are preconditions
+        /// to this test
+        /// </summary>
+        protected IGivenEvents Given => _givenInternal;
+
+        protected abstract IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher, IEnumerable<IPipelineHook> extraHooks);
+
+        /// <summary>
+        /// Commits that have been committed as a result of the
+        /// command under test
+        /// </summary>
+        protected IEnumerable<ICommit> Commits => _commitsInternal;
+
+        protected IEnumerable<object> DispatchedMessages => _dispatchedMessagesInternal;
         /// <summary>
         /// Exception that has been thrown as a result of the
         /// command under test
@@ -23,23 +38,42 @@ namespace Swetugg.Tix.Tests.Helpers
         protected readonly ITestOutputHelper Output;
 
         private readonly List<ICommit> _commitsInternal = new List<ICommit>();
+        private readonly List<object> _dispatchedMessagesInternal = new List<object>();
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected SagaTestBase(ITestOutputHelper output)
         {
             Output = output;
             var testHook = new RepositoryTestObserver(_commitsInternal);
+            var sagaMessageDispatcher = new TestSagaMessageDispatcher(_dispatchedMessagesInternal);
             // Setup an InMemory EventStore with a hook
             // for recording commits
             var eventStoreWireup = Wireup.Init()
                 .UsingInMemoryPersistence();
 
-            var dispatcher = WithDispatcher(eventStoreWireup, new[] { testHook });
+            var dispatcher = WithDispatcher(eventStoreWireup, sagaMessageDispatcher, new[] { testHook });
 
             // Let the actual test setup any preconditions
             Setup();
 
-            
+            var givenEvents = _givenInternal.Events;
+            foreach (var givenEvt in givenEvents)
+            {
+                dispatcher.Dispatch(givenEvt);
+            }
+
+            testHook.CollectCommits = true;
+            sagaMessageDispatcher.CollectMessages = true;
+
+            var evt = When();
+            try
+            {
+                dispatcher.Dispatch(evt);
+            }
+            catch (Exception ex)
+            {
+                ThrownException = ex;
+            }
         }
 
         /// <summary>
@@ -52,6 +86,18 @@ namespace Swetugg.Tix.Tests.Helpers
         /// </summary>
         /// <returns></returns>
         protected abstract object When();
+
+        class GivenEventsImpl : IGivenEvents
+        {
+            private readonly List<object> _events = new List<object>();
+
+            public void AddEvent(object evt)
+            {
+                _events.Add(evt);
+            }
+
+            public IEnumerable<object> Events => _events;
+        }
 
     }
 }

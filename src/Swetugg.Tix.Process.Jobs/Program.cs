@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using NEventStore;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Process.Jobs
 {

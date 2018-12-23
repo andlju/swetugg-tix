@@ -9,8 +9,8 @@ namespace Swetugg.Tix.Process
 {
     public class TicketConfirmationSaga : SagaBase<object>
     {
-        private Guid _activityId;
-        private Guid _ticketTypeId;
+        private Guid? _activityId;
+        private Guid? _ticketTypeId;
         private Guid? _couponId;
 
         public TicketConfirmationSaga(string id)
@@ -22,7 +22,7 @@ namespace Swetugg.Tix.Process
 
         void Handle(TicketEvents.TicketCreated evt)
         {
-            _activityId = evt.AggregateId;
+            _activityId = evt.ActivityId;
             _ticketTypeId = evt.TicketTypeId;
             _couponId = evt.CouponId;
 
@@ -30,8 +30,8 @@ namespace Swetugg.Tix.Process
             Dispatch(new ActivityCommands.ReserveSeat()
             {
                 CommandId = Guid.NewGuid(),
-                ActivityId = _activityId,
-                TicketTypeId = _ticketTypeId,
+                ActivityId = _activityId.Value,
+                TicketTypeId = _ticketTypeId.Value,
                 CouponId = _couponId
             });
         }
@@ -42,7 +42,8 @@ namespace Swetugg.Tix.Process
             // A seat has been reserved for this ticket. Let's confirm it.
             Dispatch(new TicketCommands.ConfirmSeatReservation()
             {
-                TicketId = ticketId
+                CommandId = Guid.NewGuid(),
+                TicketId = ticketId,
             });
         }
     }

@@ -36,6 +36,5 @@ namespace Swetugg.Tix.Process.Jobs
 
             _processHost.Dispatcher.Dispatch(evt, false);
         }
-
     }
 }

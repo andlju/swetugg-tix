@@ -1,4 +1,4 @@
-namespace Swetugg.Tix.Process
+namespace Swetugg.Tix.Infrastructure
 {
     public interface ISagaMessageDispatcher
     {

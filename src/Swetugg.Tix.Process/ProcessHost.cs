@@ -8,12 +8,12 @@ using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Dispatcher;
 using Swetugg.Tix.Infrastructure;
-using Swetugg.Tix.Ticket.Events;
 
 namespace Swetugg.Tix.Process
 {
-    public class ProcessHost 
-        : IMessageHandler<TicketCreated>
+    public class ProcessHost : 
+        IMessageHandler<Ticket.Events.TicketCreated>,
+        IMessageHandler<Activity.Events.SeatReserved>
     {
         private readonly ISagaRepository _sagaRepository;
 
@@ -35,16 +35,26 @@ namespace Swetugg.Tix.Process
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
 
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
-            dispatcher.Register<TicketCreated>(() => this);
+            dispatcher.Register<Ticket.Events.TicketCreated>(() => this);
+            dispatcher.Register<Activity.Events.SeatReserved>(() => this);
 
             Dispatcher = dispatcher;
         }
 
         public IMessageDispatcher Dispatcher { get; }
 
-        public void Handle(TicketCreated evt)
+        public void Handle(Ticket.Events.TicketCreated evt)
         {
             var processId = evt.AggregateId;
+            var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
+            saga.Transition(evt);
+
+            _sagaRepository.Save(saga, Guid.NewGuid(), null);
+        }
+
+        public void Handle(Activity.Events.SeatReserved evt)
+        {
+            var processId = Guid.Parse(evt.Reference);
             var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
             saga.Transition(evt);
 
@@ -67,7 +77,7 @@ namespace Swetugg.Tix.Process
 
                 foreach (var message in messages)
                 {
-                    _dispatcher.Dispatch(message);
+                    _dispatcher.Dispatch(message.Value);
                 }
             }
         }
