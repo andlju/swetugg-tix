@@ -1,4 +1,4 @@
-using CommonDomain.Persistence;
+using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers

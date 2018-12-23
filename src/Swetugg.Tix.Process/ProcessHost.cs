@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CommonDomain;
-using CommonDomain.Persistence;
-using CommonDomain.Persistence.EventStore;
 using Microsoft.Extensions.Logging;
 using NEventStore;
-using NEventStore.Dispatcher;
+using NEventStore.Domain;
+using NEventStore.Domain.Persistence;
+using NEventStore.Domain.Persistence.EventStore;
 using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Process

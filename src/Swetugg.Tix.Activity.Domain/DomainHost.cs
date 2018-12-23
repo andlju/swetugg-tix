@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
-using CommonDomain.Core;
-using CommonDomain.Persistence.EventStore;
 using Microsoft.Extensions.Logging;
 using NEventStore;
+using NEventStore.Domain.Core;
+using NEventStore.Domain.Persistence.EventStore;
 using Swetugg.Tix.Activity.Domain.Handlers;
 using Swetugg.Tix.Infrastructure;
 

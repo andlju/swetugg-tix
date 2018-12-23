@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
-using CommonDomain;
-using NEventStore.Persistence.InMemory;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Tests.Helpers;

@@ -1,5 +1,5 @@
 ﻿using System;
-using CommonDomain.Persistence;
+using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Commands;
 

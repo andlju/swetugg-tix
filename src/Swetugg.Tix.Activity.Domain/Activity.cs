@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommonDomain.Core;
+using NEventStore.Domain.Core;
 using Swetugg.Tix.Activity.Events;
 
 namespace Swetugg.Tix.Activity.Domain

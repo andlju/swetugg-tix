@@ -19,6 +19,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.0.0-preview.18572.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="3.0.0-preview.18572.1" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="3.0.0-preview.18572.1" />
+    <PackageReference Include="NEventStore.Domain" Version="6.0.0-rc-0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Swetugg.Tix.Process\Swetugg.Tix.Process.csproj" />

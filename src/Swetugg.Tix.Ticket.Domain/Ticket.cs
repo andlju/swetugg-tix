@@ -1,5 +1,5 @@
 ﻿using System;
-using CommonDomain.Core;
+using NEventStore.Domain.Core;
 using Swetugg.Tix.Ticket.Events;
 
 namespace Swetugg.Tix.Ticket.Domain
