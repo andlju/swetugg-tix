@@ -15,10 +15,4 @@
     <ProjectReference Include="..\..\src\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions">
-      <HintPath>..\..\..\..\Users\Anders\.nuget\packages\microsoft.extensions.logging.abstractions\3.0.0-preview.18572.1\lib\netstandard2.0\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
