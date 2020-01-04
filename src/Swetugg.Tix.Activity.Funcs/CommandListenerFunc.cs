@@ -1,29 +1,31 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.InteropExtensions;
 using Microsoft.Azure.WebJobs;
+using Microsoft.Azure.WebJobs.Host;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Domain;
 
-namespace Swetugg.Tix.Activity.Jobs
+namespace Swetugg.Tix.Activity.Funcs
 {
-    public class CommandListener
+    public class CommandListenerFunc
     {
         public static Assembly CommandAssembly = typeof(CreateActivity).Assembly;
 
         private readonly DomainHost _domainHost;
 
-        public CommandListener(DomainHost domainHost)
+        public CommandListenerFunc(DomainHost domainHost)
         {
             _domainHost = domainHost;
         }
 
-        public async Task HandleCommand([ServiceBusTrigger("activitycommands",Connection="ServiceBus")] Message commandMsg)
+        [FunctionName("CommandListenerFunc")]
+        public void Run([ServiceBusTrigger("activitycommands", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
         {
+            log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)
             {
@@ -37,6 +39,5 @@ namespace Swetugg.Tix.Activity.Jobs
             _domainHost.Dispatcher.Dispatch(command);
             Console.Out.WriteLine("Command handled successfully");
         }
-
     }
 }

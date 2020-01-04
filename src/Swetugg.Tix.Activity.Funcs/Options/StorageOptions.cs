@@ -1,4 +1,4 @@
-﻿namespace Swetugg.Tix.Activity.Jobs.Options
+﻿namespace Swetugg.Tix.Activity.Funcs.Options
 {
     public class ConnectionStringOption
     {

@@ -5,10 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NEventStore" Version="6.0.0-rc-0">
+    <PackageReference Include="NEventStore" Version="7.0.0">
       <NoWarn></NoWarn>
     </PackageReference>
-    <PackageReference Include="NEventStore.Domain" Version="6.0.0-rc-0" />
+    <PackageReference Include="NEventStore.Domain" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>

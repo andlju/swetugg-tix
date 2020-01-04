@@ -3,11 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using Swetugg.Tix.Activity.Domain;
-using Swetugg.Tix.Activity.Jobs.Options;
+using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Infrastructure;
 
-namespace Swetugg.Tix.Activity.Jobs
+namespace Swetugg.Tix.Activity.Funcs
 {
     public class ServiceBusPublisher : IEventPublisher
     {
