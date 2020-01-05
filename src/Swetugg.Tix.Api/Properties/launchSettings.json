@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Swetugg.Tix.Api": {
+      "commandName": "Project",
+      "commandLineArgs": "start --port:4711"
+    }
+  }
+}

@@ -14,10 +14,10 @@ namespace Swetugg.Tix.Activity.Funcs
         private string _topicName;
         private string _serviceBusConnectionString;
 
-        public ServiceBusPublisher(IOptions<StorageOptions> storageOptions, IOptions<MessagingOptions> messagingOptions)
+        public ServiceBusPublisher(IOptions<ActivityOptions> activityOptions)
         {
-            _topicName = messagingOptions.Value.EventPublisherTopic.TopicName;
-            _serviceBusConnectionString = storageOptions.Value.AzureServiceBus.ConnectionString;
+            _topicName = activityOptions.Value.EventPublisherTopic;
+            _serviceBusConnectionString = activityOptions.Value.AzureServiceBus;
             _client = new TopicClient(_serviceBusConnectionString, _topicName);
         }
 

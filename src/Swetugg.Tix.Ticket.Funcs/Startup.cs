@@ -15,10 +15,8 @@ namespace Swetugg.Tix.Ticket.Funcs
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            builder.Services.AddOptions<MessagingOptions>()
-                .Configure<IConfiguration>((settings, configuration) => { configuration.Bind("Messaging", settings); });
-            builder.Services.AddOptions<StorageOptions>()
-                .Configure<IConfiguration>((settings, configuration) => { configuration.Bind("Storage", settings); });
+            builder.Services.AddOptions<TicketOptions>()
+                .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
             var eventStore = Wireup.Init().UsingInMemoryPersistence();
             builder.Services.AddSingleton<IEventPublisher, ServiceBusPublisher>();
