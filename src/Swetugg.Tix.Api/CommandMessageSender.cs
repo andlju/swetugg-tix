@@ -16,8 +16,8 @@ namespace Swetugg.Tix.Api
 
         public ActivityCommandMessageSender(IOptions<ApiOptions> apiOptions)
         {
-            _queueName = apiOptions.Value.ActivityCommandDispatchQueue;
-            _serviceBusConnectionString = apiOptions.Value.AzureServiceBus;
+            _queueName = apiOptions.Value.ActivityCommandsQueue;
+            _serviceBusConnectionString = apiOptions.Value.TixServiceBus;
             _client = new QueueClient(_serviceBusConnectionString, _queueName);
         }
 

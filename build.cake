@@ -76,9 +76,10 @@ public void CreatePackage(string projectName)
 Task("Package")  
     .Does(() =>
     {
-        CreatePackage("Swetugg.Tix.Web");
-        CreatePackage("Swetugg.Tix.Activity.Jobs");
-        CreatePackage("Swetugg.Tix.Ticket.Jobs");
+        CreatePackage("Swetugg.Tix.Activity.Funcs");
+        CreatePackage("Swetugg.Tix.Ticket.Funcs");
+        CreatePackage("Swetugg.Tix.Process.Funcs");
+        CreatePackage("Swetugg.Tix.Api");
     });
 
 // A meta-task that runs all the steps to Build and Test the app

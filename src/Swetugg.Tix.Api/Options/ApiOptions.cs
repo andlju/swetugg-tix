@@ -2,7 +2,7 @@
 {
     public class ApiOptions
     {
-        public string ActivityCommandDispatchQueue { get; set; }
-        public string AzureServiceBus { get; set; }
+        public string ActivityCommandsQueue { get; set; }
+        public string TixServiceBus { get; set; }
     }
 }

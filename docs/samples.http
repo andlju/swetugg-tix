@@ -1,0 +1,5 @@
+@host = https://tix-dev-api99a2624a.azurewebsites.net
+#@host = https://localhost:4711
+
+###
+GET {{host}}/api/CreateActivity

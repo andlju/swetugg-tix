@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("ActivityCommandListenerFunc")]
-        public void Run([ServiceBusTrigger("activitycommands", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
+        public void Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
