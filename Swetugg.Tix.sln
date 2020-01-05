@@ -43,8 +43,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swetugg.Tix.Ticket.Funcs", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swetugg.Tix.Api", "src\Swetugg.Tix.Api\Swetugg.Tix.Api.csproj", "{A9C73E0E-D091-4565-B5A8-6A8DD62C8526}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Web", "src\Swetugg.Tix.WebOld\Swetugg.Tix.Web.csproj", "{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -247,18 +245,6 @@ Global
 		{A9C73E0E-D091-4565-B5A8-6A8DD62C8526}.Release|x64.Build.0 = Release|Any CPU
 		{A9C73E0E-D091-4565-B5A8-6A8DD62C8526}.Release|x86.ActiveCfg = Release|Any CPU
 		{A9C73E0E-D091-4565-B5A8-6A8DD62C8526}.Release|x86.Build.0 = Release|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Debug|x64.Build.0 = Debug|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Debug|x86.Build.0 = Debug|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Release|x64.ActiveCfg = Release|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Release|x64.Build.0 = Release|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Release|x86.ActiveCfg = Release|Any CPU
-		{EDA97DB4-2A7C-40EF-91CF-F01503E4C8EB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
