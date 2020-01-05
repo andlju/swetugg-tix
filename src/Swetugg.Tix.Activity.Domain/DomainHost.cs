@@ -13,9 +13,9 @@ namespace Swetugg.Tix.Activity.Domain
     {
         private readonly IMessageDispatcher _messageDispatcher;
 
-        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPubliser, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
         {
-            var hooks = new IPipelineHook[] {new EventPublisherHook(eventPubliser)};
+            var hooks = new IPipelineHook[] {new EventPublisherHook(eventPublisher)};
             if (extraHooks != null)
                 hooks = hooks.Concat(extraHooks).ToArray();
 
@@ -48,23 +48,5 @@ namespace Swetugg.Tix.Activity.Domain
         }
 
         public IMessageDispatcher Dispatcher => _messageDispatcher;
-    }
-
-    class EventPublisherHook : PipelineHookBase
-    {
-        private readonly IEventPublisher _publisher;
-
-        public EventPublisherHook(IEventPublisher publisher)
-        {
-            _publisher = publisher;
-        }
-
-        public override void PostCommit(ICommit committed)
-        {
-            foreach (var evt in committed.Events)
-            {
-                _publisher.Publish(evt.Body);
-            }
-        }
     }
 }

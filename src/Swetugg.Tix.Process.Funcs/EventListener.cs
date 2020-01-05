@@ -1,30 +1,32 @@
-﻿using System;
+using System;
+using System.Diagnostics.Tracing;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
-using Microsoft.Azure.ServiceBus.InteropExtensions;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace Swetugg.Tix.Process.Jobs
+namespace Swetugg.Tix.Process.Funcs
 {
-    public class EventListener
+    public  class EventListenerFunc
     {
         public static Assembly ActivityEventAssembly = typeof(Swetugg.Tix.Activity.Events.ActivityCreated).Assembly;
 
         private readonly ProcessHost _processHost;
         private readonly ILogger _logger;
 
-        public EventListener(ProcessHost processHost, ILogger<EventListener> logger)
+        public EventListenerFunc(ProcessHost processHost, ILogger<EventListenerFunc> logger)
         {
             _processHost = processHost;
             _logger = logger;
         }
 
-        public async Task HandleActivityEvent([ServiceBusTrigger("activityevents", "tixprocess", Connection = "ServiceBus")] Message eventMessage)
+        [FunctionName("HandleActivityEvent")]
+        public async Task Run([ServiceBusTrigger("activityevents", "tixprocess", Connection = "TixServiceBus")] Message eventMessage)
         {
+            _logger.LogInformation($"C# ServiceBus topic trigger function processed message: {eventMessage.Label}");
             var messageType = ActivityEventAssembly.GetType(eventMessage.Label, false);
             if (messageType == null)
             {
@@ -36,5 +38,6 @@ namespace Swetugg.Tix.Process.Jobs
 
             _processHost.Dispatcher.Dispatch(evt, false);
         }
+
     }
 }

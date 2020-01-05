@@ -11,18 +11,18 @@ using Swetugg.Tix.Activity.Domain;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
-    public class CommandListenerFunc
+    public class ActivityCommandListenerFunc
     {
         public static Assembly CommandAssembly = typeof(CreateActivity).Assembly;
 
         private readonly DomainHost _domainHost;
 
-        public CommandListenerFunc(DomainHost domainHost)
+        public ActivityCommandListenerFunc(DomainHost domainHost)
         {
             _domainHost = domainHost;
         }
 
-        [FunctionName("CommandListenerFunc")]
+        [FunctionName("ActivityCommandListenerFunc")]
         public void Run([ServiceBusTrigger("activitycommands", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");

@@ -16,7 +16,7 @@ namespace Swetugg.Tix.Ticket.Domain.Tests
 
         protected override IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, IEnumerable<IPipelineHook> extraHooks)
         {
-            var host = DomainHost.Build(eventStoreWireup, new NullLoggerFactory(), extraHooks);
+            var host = DomainHost.Build(eventStoreWireup, new NullEventPublisher(), new NullLoggerFactory(), extraHooks);
             return host.Dispatcher;
         }
     }

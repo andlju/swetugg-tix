@@ -3,13 +3,13 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NEventStore;
-using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Activity.Domain;
-using Swetugg.Tix.Activity.Funcs.Options;
+using Swetugg.Tix.Ticket.Commands;
+using Swetugg.Tix.Ticket.Domain;
+using Swetugg.Tix.Ticket.Funcs.Options;
 using Swetugg.Tix.Infrastructure;
 
-[assembly: FunctionsStartup(typeof(Swetugg.Tix.Activity.Funcs.Startup))]
-namespace Swetugg.Tix.Activity.Funcs
+[assembly: FunctionsStartup(typeof(Swetugg.Tix.Ticket.Funcs.Startup))]
+namespace Swetugg.Tix.Ticket.Funcs
 {
     public class Startup : FunctionsStartup
     {
@@ -24,7 +24,7 @@ namespace Swetugg.Tix.Activity.Funcs
             builder.Services.AddSingleton<IEventPublisher, ServiceBusPublisher>();
             builder.Services.AddSingleton(sp => DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(), sp.GetService<ILoggerFactory>(), null));
 
-            builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();
+            builder.Services.AddScoped<TicketCommandListenerFunc, TicketCommandListenerFunc>();
         }
     }
 }
