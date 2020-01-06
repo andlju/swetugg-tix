@@ -25,7 +25,6 @@ namespace Swetugg.Tix.Activity.Funcs
         [FunctionName("ActivityCommandListenerFunc")]
         public void Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
         {
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)
             {
@@ -35,9 +34,8 @@ namespace Swetugg.Tix.Activity.Funcs
             var cmdString = Encoding.UTF8.GetString(commandMsg.Body);
             var command = JsonConvert.DeserializeObject(cmdString, messageType);
 
-            Console.Out.WriteLine($"Dispatching {messageType.Name} command");
             _domainHost.Dispatcher.Dispatch(command);
-            Console.Out.WriteLine("Command handled successfully");
+            Console.Out.WriteLine($"{messageType.Name} Command handled successfully");
         }
     }
 }
