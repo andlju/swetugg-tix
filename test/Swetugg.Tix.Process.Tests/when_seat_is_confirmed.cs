@@ -11,8 +11,6 @@ namespace Swetugg.Tix.Process.Tests
         protected Guid TicketTypeId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
 
-        protected string Reference = Guid.NewGuid().ToString();
-
         public when_seat_is_confirmed(ITestOutputHelper output) : base(output)
         {
         }
@@ -33,7 +31,7 @@ namespace Swetugg.Tix.Process.Tests
             {
                 AggregateId = ActivityId,
                 TicketTypeId = TicketTypeId,
-                Reference = Reference
+                Reference = TicketId.ToString()
             };
         }
 
@@ -41,6 +39,13 @@ namespace Swetugg.Tix.Process.Tests
         public void then_ticket_seat_is_confirmed()
         {
             Assert.IsType<Ticket.Commands.ConfirmSeatReservation>(DispatchedMessages.FirstOrDefault());
+        }
+
+        [Fact]
+        public void then_correct_ticket_is_confirmed()
+        {
+            var cmd = (Ticket.Commands.ConfirmSeatReservation)DispatchedMessages.First();
+            Assert.Equal(TicketId, cmd.TicketId);
         }
     }
 }

@@ -32,7 +32,8 @@ namespace Swetugg.Tix.Process
                 CommandId = Guid.NewGuid(),
                 ActivityId = _activityId.Value,
                 TicketTypeId = _ticketTypeId.Value,
-                CouponId = _couponId
+                CouponId = _couponId,
+                Reference = evt.AggregateId.ToString()
             });
         }
 

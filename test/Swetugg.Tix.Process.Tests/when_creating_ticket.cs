@@ -40,6 +40,14 @@ namespace Swetugg.Tix.Process.Tests
             Assert.IsType<ActivityCommands.ReserveSeat>(DispatchedMessages.FirstOrDefault());
         }
 
+
+        [Fact]
+        public void then_ticketid_is_used_as_reference()
+        {
+            var cmd = (ActivityCommands.ReserveSeat)DispatchedMessages.First();
+            Assert.Equal(TicketId, Guid.Parse(cmd.Reference));
+        }
+
         [Fact]
         public void then_correct_activity_is_used()
         {
