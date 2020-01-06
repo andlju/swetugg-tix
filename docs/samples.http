@@ -1,5 +1,5 @@
-@host = https://tix-dev-api99a2624a.azurewebsites.net
-#@host = https://localhost:4711
+#@host = https://tix-dev-apia04b6e10.azurewebsites.net
+@host = http://localhost:4711
 
 ###
 GET {{host}}/api/CreateActivity
