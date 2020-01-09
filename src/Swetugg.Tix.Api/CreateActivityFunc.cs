@@ -21,19 +21,22 @@ namespace Swetugg.Tix.Api
 
         [FunctionName("CreateActivity")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = null)] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activity")] HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
+            var activityId = Guid.NewGuid();
+            var commandId = Guid.NewGuid();
+
             var createActivityCommand = new CreateActivity()
             {
-                ActivityId = Guid.NewGuid(),
-                CommandId = Guid.NewGuid()
+                ActivityId = activityId,
+                CommandId = commandId
             };
 
             await _sender.Send(createActivityCommand);
 
-            return new OkObjectResult($"Creating Activity: {createActivityCommand.ActivityId}");
+            return new OkObjectResult(new { activityId, commandId });
         }
     }
 }
