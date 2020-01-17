@@ -11,7 +11,9 @@ using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Domain;
+using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Activity.Funcs.Options;
+using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Activity.Funcs.Startup))]
@@ -25,9 +27,10 @@ namespace Swetugg.Tix.Activity.Funcs
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
             builder.Services.AddSingleton<IEventPublisher, ServiceBusPublisher>();
+
             builder.Services.AddSingleton(sp =>
             {
-                var connectionString = Environment.GetEnvironmentVariable("TixDbConnection");
+                var connectionString = Environment.GetEnvironmentVariable("ActivityEventsDbConnection");
                 var sqlClientFactoryInstance = SqlClientFactory.Instance;
 
                 var eventStore = Wireup.Init()
@@ -39,8 +42,25 @@ namespace Swetugg.Tix.Activity.Funcs
                 return DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(),
                         sp.GetService<ILoggerFactory>(), null);
             });
-
             builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();
+
+            builder.Services.AddSingleton<ViewBuilderHost>(sp =>
+            {
+                var eventStoreConnectionString = Environment.GetEnvironmentVariable("ActivityEventsDbConnection");
+                var viewsConnectionString = Environment.GetEnvironmentVariable("ViewsDbConnection");
+                var sqlClientFactoryInstance = SqlClientFactory.Instance;
+
+                var eventStore = Wireup.Init()
+                    .UsingSqlPersistence(sqlClientFactoryInstance, eventStoreConnectionString)
+                    .WithDialect(new MsSqlDialect())
+                    .InitializeStorageEngine()
+                    .UsingJsonSerialization();
+                var host = ViewBuilderHost.Build(eventStore, sp.GetService<ILoggerFactory>(), viewsConnectionString);
+                host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<SeatsAdded>(new ActivityOverviewBuilder(viewsConnectionString));
+                return host;
+            });
+            builder.Services.AddScoped<BuildViewsFunc, BuildViewsFunc>();
         }
     }
 }

@@ -32,10 +32,22 @@ const sqlServer = new azure.sql.SqlServer("tixdb", {
     resourceGroupName: resourceGroup.name,
     version: "12.0",
     administratorLogin: sqlAdminUser,
-    administratorLoginPassword: sqlAdminPassword.result
+    administratorLoginPassword: sqlAdminPassword.result,
 });
 
-const eventStoreDatabase = new azure.sql.Database("tixevent", {
+const activityEventStoreDatabase = new azure.sql.Database("activityevents", {
+    resourceGroupName: resourceGroup.name,
+    serverName: sqlServer.name,
+    requestedServiceObjectiveName: "S0",
+});
+
+const ticketEventStoreDatabase = new azure.sql.Database("ticketevents", {
+    resourceGroupName: resourceGroup.name,
+    serverName: sqlServer.name,
+    requestedServiceObjectiveName: "S0",
+});
+
+const tixViewsDatabase = new azure.sql.Database("tixviews", {
     resourceGroupName: resourceGroup.name,
     serverName: sqlServer.name,
     requestedServiceObjectiveName: "S0",
@@ -80,7 +92,11 @@ const processActivitySubscription = new azure.servicebus.Subscription('processac
 
 let hostname: pulumi.Output<string> | undefined;
 
-const eventStoreConnection = pulumi.all([sqlServer.name, eventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
+const activityEventStoreConnection = pulumi.all([sqlServer.name, activityEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
+    `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Min Pool Size=0;Max Pool Size=30;Persist Security Info=true;`);
+const ticketEventStoreConnection = pulumi.all([sqlServer.name, ticketEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
+    `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Min Pool Size=0;Max Pool Size=30;Persist Security Info=true;`);
+const tixViewsConnection = pulumi.all([sqlServer.name, tixViewsDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
     `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Min Pool Size=0;Max Pool Size=30;Persist Security Info=true;`);
 
 if (shouldDeploy) {
@@ -101,7 +117,8 @@ if (shouldDeploy) {
             ActivityCommandsQueue: activityCommandsQueue.name,
             EventPublisherTopic: activityEventsTopic.name,
             "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-            TixDbConnection: eventStoreConnection
+            ActivityEventsDbConnection: activityEventStoreConnection,
+            ViewsDbConnection: tixViewsConnection
         },
     });
 
@@ -116,7 +133,8 @@ if (shouldDeploy) {
             TicketCommandsQueue: ticketCommandsQueue.name,
             EventPublisherTopic: ticketEventsTopic.name,
             "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-            TixDbConnection: eventStoreConnection
+            TicketEventsDbConnection: ticketEventStoreConnection,
+            ViewsDbConnection: tixViewsConnection
         },
     });
 
@@ -152,7 +170,9 @@ if (shouldDeploy) {
 // Return some connection strings
 export const storageConnectionString = storageAccount.primaryConnectionString;
 export const serviceBusConnectionString = serviceBusNamespace.defaultPrimaryConnectionString;
-export const eventStoreConnectionString = eventStoreConnection;
+export const activityEventStoreConnectionString = activityEventStoreConnection;
+export const ticketEventStoreConnectionString = ticketEventStoreConnection;
+export const tixViewsConnectionString = tixViewsConnection;
 
 // Return the host name of the api (if deployed)
 export const apiHostName = hostname;

@@ -9,11 +9,6 @@ using NEventStore.Persistence;
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
 
-    public class ViewBuilderHost
-    {
-
-    }
-
     /// <summary>
     /// This is the new polling client that does not depends on RX.
     /// </summary>

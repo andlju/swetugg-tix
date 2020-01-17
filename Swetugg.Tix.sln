@@ -43,9 +43,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Ticket.Funcs", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Api", "src\Swetugg.Tix.Api\Swetugg.Tix.Api.csproj", "{A9C73E0E-D091-4565-B5A8-6A8DD62C8526}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swetugg.Tix.Activity.Views", "src\Swetugg.Tix.Activity.Views\Swetugg.Tix.Activity.Views.csproj", "{15865DC8-70C7-41BC-A73A-F8DBAA91EF89}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.Views", "src\Swetugg.Tix.Activity.Views\Swetugg.Tix.Activity.Views.csproj", "{15865DC8-70C7-41BC-A73A-F8DBAA91EF89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swetugg.Tix.Activity.ViewBuilder", "src\Swetugg.Tix.Activity.ViewBuilder\Swetugg.Tix.Activity.ViewBuilder.csproj", "{97C1E9D7-1EB1-4B13-B9A0-A8154118322B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.ViewBuilder", "src\Swetugg.Tix.Activity.ViewBuilder\Swetugg.Tix.Activity.ViewBuilder.csproj", "{97C1E9D7-1EB1-4B13-B9A0-A8154118322B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

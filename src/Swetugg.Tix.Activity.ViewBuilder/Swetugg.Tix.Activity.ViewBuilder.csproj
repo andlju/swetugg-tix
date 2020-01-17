@@ -1,13 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.30" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="2.1.0" />
     <PackageReference Include="NEventStore" Version="7.0.0" />
-    <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
     <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Swetugg.Tix.Activity.Events\Swetugg.Tix.Activity.Events.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Activity.Views\Swetugg.Tix.Activity.Views.csproj" />
   </ItemGroup>
 
 </Project>
