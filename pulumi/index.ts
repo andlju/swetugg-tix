@@ -1,5 +1,6 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as azure from "@pulumi/azure";
+import * as random from "@pulumi/random";
 
 const mainLocation = azure.Locations.NorthEurope;
 
@@ -8,6 +9,7 @@ const shouldDeploy = config.requireBoolean("deploy");
 
 const stack = pulumi.getStack();
 const baseName = `tix-${stack}`;
+const sqlAdminUser = "tixadmin";
 
 // Create an Azure Resource Group
 const resourceGroup = new azure.core.ResourceGroup(`${baseName}-group`, { location: mainLocation });
@@ -18,6 +20,25 @@ const storageAccount = new azure.storage.Account("storage", {
     resourceGroupName: resourceGroup.name,
     accountTier: "Standard",
     accountReplicationType: "LRS",
+});
+
+// Generate a random password
+const sqlAdminPassword = new random.RandomPassword("tixdbpassword", {
+    length: 16,
+    special: true
+});
+
+const sqlServer = new azure.sql.SqlServer("tixdb", {
+    resourceGroupName: resourceGroup.name,
+    version: "12.0",
+    administratorLogin: sqlAdminUser,
+    administratorLoginPassword: sqlAdminPassword.result
+});
+
+const eventStoreDatabase = new azure.sql.Database("tixevent", {
+    resourceGroupName: resourceGroup.name,
+    serverName: sqlServer.name,
+    requestedServiceObjectiveName: "S0",
 });
 
 const serviceBusNamespace = new azure.servicebus.Namespace(`${baseName}-bus`, {
@@ -59,6 +80,9 @@ const processActivitySubscription = new azure.servicebus.Subscription('processac
 
 let hostname: pulumi.Output<string> | undefined;
 
+const eventStoreConnection = pulumi.all([sqlServer.name, eventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
+    `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Min Pool Size=0;Max Pool Size=30;Persist Security Info=true;`);
+
 if (shouldDeploy) {
     const appInsights = new azure.appinsights.Insights(`${baseName}-ai`, {
         resourceGroupName: resourceGroup.name,
@@ -76,7 +100,8 @@ if (shouldDeploy) {
             TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
             ActivityCommandsQueue: activityCommandsQueue.name,
             EventPublisherTopic: activityEventsTopic.name,
-            "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey
+            "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+            TixDbConnection: eventStoreConnection
         },
     });
 
@@ -90,7 +115,8 @@ if (shouldDeploy) {
             TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
             TicketCommandsQueue: ticketCommandsQueue.name,
             EventPublisherTopic: ticketEventsTopic.name,
-            "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey
+            "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+            TixDbConnection: eventStoreConnection
         },
     });
 
@@ -126,6 +152,7 @@ if (shouldDeploy) {
 // Return some connection strings
 export const storageConnectionString = storageAccount.primaryConnectionString;
 export const serviceBusConnectionString = serviceBusNamespace.defaultPrimaryConnectionString;
+export const eventStoreConnectionString = eventStoreConnection;
 
 // Return the host name of the api (if deployed)
 export const apiHostName = hostname;
