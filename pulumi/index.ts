@@ -1,6 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 import * as azure from "@pulumi/azure";
 import * as random from "@pulumi/random";
+import { SqlContainer } from "@pulumi/azure/cosmosdb";
 
 const mainLocation = azure.Locations.NorthEurope;
 
@@ -26,6 +27,27 @@ const storageAccount = new azure.storage.Account("storage", {
 const sqlAdminPassword = new random.RandomPassword("tixdbpassword", {
     length: 16,
     special: true
+});
+
+const viewsCosmosAccount = new azure.cosmosdb.Account("tixviews", {
+    resourceGroupName: resourceGroup.name,
+    consistencyPolicy: {
+        consistencyLevel: "Eventual"
+    },
+    offerType: "Standard",
+    geoLocations: [{ location: resourceGroup.location, failoverPriority: 0 }]
+});
+
+const viewsCosmosDb = new azure.cosmosdb.SqlDatabase("tixviews", {
+    resourceGroupName: resourceGroup.name,
+    accountName: viewsCosmosAccount.name
+});
+
+const viewsContainer = new azure.cosmosdb.SqlContainer("tixviews", {
+    resourceGroupName: resourceGroup.name,
+    databaseName: viewsCosmosDb.name,
+    accountName: viewsCosmosAccount.name,
+    partitionKeyPath: "/ActivityId",
 });
 
 const sqlServer = new azure.sql.SqlServer("tixdb", {
@@ -118,7 +140,11 @@ if (shouldDeploy) {
             EventPublisherTopic: activityEventsTopic.name,
             "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
             ActivityEventsDbConnection: activityEventStoreConnection,
-            ViewsDbConnection: tixViewsConnection
+            ViewsDbConnection: tixViewsConnection,
+            ViewsEndpointUrl: viewsCosmosAccount.endpoint,
+            ViewsAuthorizationKey: viewsCosmosAccount.primaryMasterKey,
+            ViewsDatabaseName: viewsCosmosDb.name,
+            ViewsContainerName: viewsContainer.name
         },
     });
 
@@ -165,6 +191,23 @@ if (shouldDeploy) {
         },
     });
     hostname = apiApp.functionApp.defaultHostname;
+
+    const allApps = [activityApp, ticketApp, processApp, apiApp];
+
+    for (const app of allApps) {
+        app.functionApp.name.apply(appName => {
+            const firewallRules = app.functionApp.outboundIpAddresses.apply(
+                ips => ips.split(',').map(
+                    (ip,idx) => new azure.sql.FirewallRule(`FR_${appName}_${idx}`, {
+                        startIpAddress: ip,
+                        endIpAddress: ip,
+                        resourceGroupName: resourceGroup.name,
+                        serverName: sqlServer.name,
+                        name: `FR_${appName}_${idx}`
+                    })
+                ));
+            });
+    }
 }
 
 // Return some connection strings
@@ -173,6 +216,11 @@ export const serviceBusConnectionString = serviceBusNamespace.defaultPrimaryConn
 export const activityEventStoreConnectionString = activityEventStoreConnection;
 export const ticketEventStoreConnectionString = ticketEventStoreConnection;
 export const tixViewsConnectionString = tixViewsConnection;
+
+export const viewsEndpointUrl = viewsCosmosAccount.endpoint;
+export const viewsAuthorizationKey = viewsCosmosAccount.primaryMasterKey;
+export const viewsDatabaseName = viewsCosmosDb.name;
+export const viewsContainerName = viewsContainer.name;
 
 // Return the host name of the api (if deployed)
 export const apiHostName = hostname;

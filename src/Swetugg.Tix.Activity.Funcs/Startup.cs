@@ -47,7 +47,12 @@ namespace Swetugg.Tix.Activity.Funcs
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
                 var eventStoreConnectionString = Environment.GetEnvironmentVariable("ActivityEventsDbConnection");
+                var endpointUrl = Environment.GetEnvironmentVariable("ViewsEndpointUrl");
+                var authorizationKey = Environment.GetEnvironmentVariable("ViewsAuthorizationKey");
+                var databaseName = Environment.GetEnvironmentVariable("ViewsDatabaseName");
                 var viewsConnectionString = Environment.GetEnvironmentVariable("ViewsDbConnection");
+                var viewsContainerName = Environment.GetEnvironmentVariable("ViewsContainerName");
+
                 var sqlClientFactoryInstance = SqlClientFactory.Instance;
 
                 var eventStore = Wireup.Init()
@@ -55,9 +60,12 @@ namespace Swetugg.Tix.Activity.Funcs
                     .WithDialect(new MsSqlDialect())
                     .InitializeStorageEngine()
                     .UsingJsonSerialization();
+
                 var host = ViewBuilderHost.Build(eventStore, sp.GetService<ILoggerFactory>(), viewsConnectionString);
-                host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatsAdded>(new ActivityOverviewBuilder(viewsConnectionString));
+                
+                var activityOverviewBuilder = new ActivityOverviewBuilder(endpointUrl, authorizationKey, databaseName, viewsContainerName);
+                host.RegisterHandler<ActivityCreated>(activityOverviewBuilder);
+                host.RegisterHandler<SeatsAdded>(activityOverviewBuilder);
                 return host;
             });
             builder.Services.AddScoped<BuildViewsFunc, BuildViewsFunc>();

@@ -9,9 +9,28 @@ using NEventStore;
 using NEventStore.Persistence;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
+    public class ViewDbContext : DbContext
+    {
+        public DbSet<Checkpoint> Checkpoints { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Checkpoint>()
+                .Property(b => b.Name).IsRequired();
+        }
+    }
+
+    public class Checkpoint
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public long LastCheckpoint { get; set; }
+    }
+
     public class ViewBuilderHost
     {
         private IPersistStreams _store;

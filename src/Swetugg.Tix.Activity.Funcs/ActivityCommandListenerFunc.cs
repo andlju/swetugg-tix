@@ -16,26 +16,35 @@ namespace Swetugg.Tix.Activity.Funcs
         public static Assembly CommandAssembly = typeof(CreateActivity).Assembly;
 
         private readonly DomainHost _domainHost;
+        private readonly ILogger<ActivityCommandListenerFunc> _logger;
 
-        public ActivityCommandListenerFunc(DomainHost domainHost)
+        public ActivityCommandListenerFunc(DomainHost domainHost, ILogger<ActivityCommandListenerFunc> logger)
         {
             _domainHost = domainHost;
+            _logger = logger;
         }
 
         [FunctionName("ActivityCommandListenerFunc")]
         public void Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
         {
-            var messageType = CommandAssembly.GetType(commandMsg.Label, false);
-            if (messageType == null)
+            try
             {
-                throw new InvalidOperationException($"Unknown message type '{commandMsg.Label}'");
+                var messageType = CommandAssembly.GetType(commandMsg.Label, false);
+                if (messageType == null)
+                {
+                    throw new InvalidOperationException($"Unknown message type '{commandMsg.Label}'");
+                }
+
+                var cmdString = Encoding.UTF8.GetString(commandMsg.Body);
+                var command = JsonConvert.DeserializeObject(cmdString, messageType);
+
+                _domainHost.Dispatcher.Dispatch(command);
+                _logger.LogInformation("{messageType} Command handled successfully", messageType.Name);
             }
-
-            var cmdString = Encoding.UTF8.GetString(commandMsg.Body);
-            var command = JsonConvert.DeserializeObject(cmdString, messageType);
-
-            _domainHost.Dispatcher.Dispatch(command);
-            Console.Out.WriteLine($"{messageType.Name} Command handled successfully");
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed when handling Activity Command");
+            }
         }
     }
 }
