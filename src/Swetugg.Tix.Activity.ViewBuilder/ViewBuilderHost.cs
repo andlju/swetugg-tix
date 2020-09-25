@@ -9,6 +9,9 @@ using NEventStore;
 using NEventStore.Persistence;
 using Dapper;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
+using FluentMigrator.Runner;
+using FluentMigrator.Runner.Initialization;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
@@ -23,14 +26,53 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             _store = store;
             _connectionString = connectionString;
 
+            var serviceProvider = CreateServices();
+
+            // Put the database update into a scope to ensure
+            // that all resources will be disposed.
+            using (var scope = serviceProvider.CreateScope())
+            {
+                UpdateDatabase(scope.ServiceProvider);
+            }
+
             using (var conn = new SqlConnection(_connectionString))
             {
-                var hasCheckpoint = conn.ExecuteScalar<int>("SELECT COUNT(Id) FROM Checkpoints WHERE Name=@name", new {name = "ViewBuilder"});
+                var hasCheckpoint = conn.ExecuteScalar<int>("SELECT COUNT(Name) FROM [Checkpoint] WHERE Name=@name", new {name = "ViewBuilder"});
                 if (hasCheckpoint <= 0)
                 {
-                    conn.Execute("INSERT INTO Checkpoints (Name, LastCheckpoint) VALUES(@Name,0)", new { name = "ViewBuilder" });
+                    conn.Execute("INSERT INTO [Checkpoint] (Name, LastCheckpoint) VALUES(@Name,0)", new { name = "ViewBuilder" });
                 }
             }
+        }
+
+        private IServiceProvider CreateServices()
+        {
+            return new ServiceCollection()
+                // Add common FluentMigrator services
+                .AddFluentMigratorCore()
+                .ConfigureRunner(rb => rb
+                    // Add SQLite support to FluentMigrator
+                    .AddSqlServer()
+                    // Set the connection string
+                    .WithGlobalConnectionString(_connectionString)
+                    // Define the assembly containing the migrations
+                    .ScanIn(typeof(Migrations.AddCheckpointTable).Assembly).For.Migrations())
+                // Enable logging to console in the FluentMigrator way
+                .AddLogging(lb => lb.AddFluentMigratorConsole())
+                // Build the service provider
+                .BuildServiceProvider(false);
+        }
+
+        /// <summary>
+        /// Update the database
+        /// </summary>
+        private static void UpdateDatabase(IServiceProvider serviceProvider)
+        {
+            // Instantiate the runner
+            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+            // Execute the migrations
+            runner.MigrateUp();
         }
 
         public void RegisterHandler<TEvent>(IHandleEvent<TEvent> eventHandler)
@@ -56,7 +98,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             long checkpoint = 0;
             using (var conn = new SqlConnection(_connectionString))
             {
-                checkpoint = await conn.ExecuteScalarAsync<long>("SELECT LastCheckpoint FROM Checkpoints WHERE Name=@name", new {name = "ViewBuilder"});
+                checkpoint = await conn.ExecuteScalarAsync<long>("SELECT LastCheckpoint FROM [Checkpoint] WHERE Name=@name", new {name = "ViewBuilder"});
             }
 
             var commits = _store.GetFrom(checkpoint);
@@ -77,7 +119,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var result = await conn.ExecuteAsync("UPDATE Checkpoints SET LastCheckpoint = @checkpoint WHERE Name=@name", new { name = "ViewBuilder", checkpoint });
+                var result = await conn.ExecuteAsync("UPDATE [Checkpoint] SET LastCheckpoint = @checkpoint WHERE Name=@name", new { name = "ViewBuilder", checkpoint });
             }
         }
     }

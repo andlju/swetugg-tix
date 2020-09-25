@@ -38,7 +38,7 @@ const Page: NextPage<Activity> = (activity) => (
 );
 
 Page.getInitialProps = async ({ query: { activityId } }) => {
-    const res = await axios.get<Activity>(`https://tix-dev-api68072f8e.azurewebsites.net/api/activity/${activityId}`);
+    const res = await axios.get<Activity>(`https://tix-dev-api893ee6eb.azurewebsites.net/api/activity/${activityId}`);
     console.log(res.data)
     return res.data;
 }

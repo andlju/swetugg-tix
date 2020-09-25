@@ -10,7 +10,7 @@ const Page: NextPage<any> = () => {
     const { handleSubmit, register, errors } = useForm();
 
     const onSubmit = async (values) => {
-        const res = await axios.post('https://tix-dev-api68072f8e.azurewebsites.net/api/activity');
+        const res = await axios.post('https://tix-dev-api893ee6eb.azurewebsites.net/api/activity');
         if (res.status === 200) {
             const activityId = res.data.activityId;
 

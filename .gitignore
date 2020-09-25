@@ -225,5 +225,4 @@ pip-log.txt
 .mr.developer.cfg
 
 #Cake Binaries Ignore
-[Tt]ools/
-
+[Tt]ools/*
