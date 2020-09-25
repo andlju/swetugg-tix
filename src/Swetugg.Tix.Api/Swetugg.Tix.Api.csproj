@@ -4,9 +4,11 @@
     <AzureFunctionsVersion>v3</AzureFunctionsVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.0.35" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.0.0" />
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="4.1.1" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.2" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.csproj" />

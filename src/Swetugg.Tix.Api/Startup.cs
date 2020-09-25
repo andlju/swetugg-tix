@@ -16,6 +16,7 @@ namespace Swetugg.Tix.Api
             builder.Services.AddSingleton<IMessageSender, ActivityCommandMessageSender>();
 
             builder.Services.AddScoped<CreateActivityFunc, CreateActivityFunc>();
+            builder.Services.AddScoped<GetActivityFunc, GetActivityFunc>();
         }
     }
 }

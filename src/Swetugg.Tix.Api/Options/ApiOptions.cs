@@ -4,5 +4,7 @@
     {
         public string ActivityCommandsQueue { get; set; }
         public string TixServiceBus { get; set; }
+        public string ViewsDbConnection { get; set; }
+
     }
 }

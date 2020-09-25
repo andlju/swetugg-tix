@@ -180,7 +180,8 @@ export = async () => {
                 runtime: "dotnet",
                 TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
                 ActivityCommandsQueue: activityCommandsQueue.name,
-                "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey
+                "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+                ViewsDbConnection: tixViewsConnection
             },
             siteConfig: {
                 cors: { allowedOrigins : ["*"] }
