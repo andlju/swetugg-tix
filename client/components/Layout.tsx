@@ -1,4 +1,3 @@
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 
 const Layout = props => (
