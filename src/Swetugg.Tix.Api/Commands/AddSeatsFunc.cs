@@ -18,7 +18,7 @@ namespace Swetugg.Tix.Api.Commands
 
         [FunctionName("AddSeats")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activity/{activityId}/add-seats")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activities/{activityId}/add-seats")]
             HttpRequest req,
             Guid activityId,
             ILogger log)

@@ -18,6 +18,7 @@ namespace Swetugg.Tix.Api
 
             builder.Services.AddScoped<CreateActivityFunc, CreateActivityFunc>();
             builder.Services.AddScoped<GetActivityFunc, GetActivityFunc>();
+            builder.Services.AddScoped<ListActivitiesFunc, ListActivitiesFunc>();
             builder.Services.AddScoped<AddSeatsFunc, AddSeatsFunc>();
             builder.Services.AddScoped<RemoveSeatsFunc, RemoveSeatsFunc>();
             builder.Services.AddScoped<AddTicketTypeFunc, AddTicketTypeFunc>();

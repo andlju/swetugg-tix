@@ -1,4 +1,3 @@
-using System;
 using System.IO;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
@@ -14,19 +13,37 @@ using Microsoft.Extensions.Options;
 
 namespace Swetugg.Tix.Api
 {
-    public class ActivityOverview 
+    public class ListActivitiesFunc
     {
-        public Guid ActivityId { get; set; }
-        public string Name { get; set; }
-        public int FreeSeats { get; set; }
-        public int TotalSeats { get; set; }
-        public int TicketTypes { get; set; }
+        private readonly string _connectionString;
+        public ListActivitiesFunc(IMessageSender sender, IOptions<ApiOptions> options)
+        {
+            _connectionString = options.Value.ViewsDbConnection;
+        }
+
+        [FunctionName("ListActivities")]
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "activities")]
+            HttpRequest req,
+            ILogger log)
+        {
+            log.LogInformation("C# HTTP trigger function processed a request.");
+
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var activities = await conn.QueryAsync<ActivityOverview>("SELECT ActivityId, Name, FreeSeats, TotalSeats, TicketTypes FROM ActivityOverview");
+                if (activities != null)
+                {
+                    return new OkObjectResult(activities);
+                }
+            }
+            return new NotFoundResult();
+        }
     }
 
     public class GetActivityFunc
     {
         private readonly string _connectionString;
-
         public GetActivityFunc(IMessageSender sender, IOptions<ApiOptions> options)
         {
             _connectionString = options.Value.ViewsDbConnection;
@@ -34,13 +51,14 @@ namespace Swetugg.Tix.Api
 
         [FunctionName("GetActivity")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "activity/{activityId}")] HttpRequest req,
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "activities/{activityId}")] HttpRequest req,
             string activityId,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            using (var conn = new SqlConnection(_connectionString)) {
+            using (var conn = new SqlConnection(_connectionString))
+            {
                 var activity = await conn.QuerySingleOrDefaultAsync<ActivityOverview>("SELECT ActivityId, Name, FreeSeats, TotalSeats, TicketTypes FROM ActivityOverview WHERE ActivityId = @ActivityId", new { activityId });
                 if (activity != null)
                 {
@@ -48,6 +66,6 @@ namespace Swetugg.Tix.Api
                 }
             }
             return new NotFoundResult();
-        } 
+        }
     }
 }

@@ -17,7 +17,7 @@ namespace Swetugg.Tix.Api.Commands
 
         [FunctionName("RemoveTicketType")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "activity/{activityId}/ticket-type/{ticketTypeId}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "activities/{activityId}/ticket-types/{ticketTypeId}")]
             HttpRequest req,
             Guid activityId,
             Guid ticketTypeId,

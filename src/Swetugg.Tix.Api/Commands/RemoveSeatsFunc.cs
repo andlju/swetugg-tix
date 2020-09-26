@@ -17,7 +17,7 @@ namespace Swetugg.Tix.Api.Commands
 
         [FunctionName("RemoveSeats")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activity/{activityId}/remove-seats")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activities/{activityId}/remove-seats")]
             HttpRequest req,
             Guid activityId,
             ILogger log)
