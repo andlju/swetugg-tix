@@ -24,7 +24,7 @@ namespace Swetugg.Tix.Process.Funcs
         }
 
         [FunctionName("HandleActivityEvent")]
-        public async Task Run([ServiceBusTrigger("%ActivityEventsTopic%", "%ProcessActivitySub%", Connection = "TixServiceBus")] Message eventMessage)
+        public async Task Run([ServiceBusTrigger("%ActivityEventPublisherTopic%", "%ProcessActivitySub%", Connection = "TixServiceBus")] Message eventMessage)
         {
             _logger.LogInformation($"C# ServiceBus topic trigger function processed message: {eventMessage.Label}");
             var messageType = ActivityEventAssembly.GetType(eventMessage.Label, false);

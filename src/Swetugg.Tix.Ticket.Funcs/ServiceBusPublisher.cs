@@ -16,7 +16,7 @@ namespace Swetugg.Tix.Ticket.Funcs
 
         public ServiceBusPublisher(IOptions<TicketOptions> ticketOptions)
         {
-            _topicName = ticketOptions.Value.EventPublisherTopic;
+            _topicName = ticketOptions.Value.TicketEventPublisherTopic;
             _serviceBusConnectionString = ticketOptions.Value.TixServiceBus;
             _client = new TopicClient(_serviceBusConnectionString, _topicName);
         }

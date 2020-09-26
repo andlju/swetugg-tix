@@ -134,7 +134,7 @@ export = async () => {
                 runtime: "dotnet",
                 TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
                 ActivityCommandsQueue: activityCommandsQueue.name,
-                EventPublisherTopic: activityEventsTopic.name,
+                ActivityEventPublisherTopic: activityEventsTopic.name,
                 "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
                 ActivityEventsDbConnection: activityEventStoreConnection,
                 ViewsDbConnection: tixViewsConnection
@@ -150,7 +150,7 @@ export = async () => {
                 runtime: "dotnet",
                 TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
                 TicketCommandsQueue: ticketCommandsQueue.name,
-                EventPublisherTopic: ticketEventsTopic.name,
+                TicketEventPublisherTopic: ticketEventsTopic.name,
                 "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
                 TicketEventsDbConnection: ticketEventStoreConnection,
                 ViewsDbConnection: tixViewsConnection
@@ -165,7 +165,7 @@ export = async () => {
             appSettings: {
                 runtime: "dotnet",
                 TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-                ActivityEventsTopic: activityEventsTopic.name,
+                ActivityEventPublisherTopic: activityEventsTopic.name,
                 ProcessActivitySub: processActivitySubscription.name,
                 "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey
             },
@@ -198,7 +198,25 @@ export = async () => {
         activityEventStoreConnectionString: activityEventStoreConnection,
         ticketEventStoreConnectionString: ticketEventStoreConnection,
         tixViewsConnectionString: tixViewsConnection,
-        apiHostName: hostname
+        apiHostName: hostname,
+        GenericLocalSettingsJson: {
+            "IsEncrypted": false,
+            "Values": {
+              "ActivityCommandsQueue": activityCommandsQueue.name,
+              "ActivityEventsDbConnection": activityEventStoreConnection,
+              "TicketCommandsQueue": ticketCommandsQueue.name,
+              "TicketEventsDbConnection": ticketEventStoreConnection,
+              "AzureWebJobsDashboard": "",
+              "AzureWebJobsStorage": storageAccount.primaryConnectionString,
+              "ActivityEventPublisherTopic": activityEventsTopic.name,
+              "TicketEventPublisherTopic": ticketEventsTopic.name,
+              "ProcessActivitySub": processActivitySubscription.name,
+              "TixServiceBus": serviceBusNamespace.defaultPrimaryConnectionString,
+              "ViewsDbConnection": tixViewsConnection,
+              "runtime": "dotnet"
+            },
+            "ConnectionStrings": {}
+          }
     };
 
     return { out: output };

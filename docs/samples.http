@@ -1,5 +1,36 @@
-@host = https://tix-dev-api68072f8e.azurewebsites.net
-#@host = http://localhost:4711
+#@host = https://tix-dev-api893ee6eb.azurewebsites.net
+#@host = http://localhost:7071
+@host = http://localhost:4711
 
-###
+@activityId = e30c4df8-16c4-480a-9315-3abc545f1bfc
+@ticketTypeId = 4345fe95-1c9e-4b5b-a97f-6b7d19923a6c
+
+### Create a new Activity
 POST {{host}}/api/activity
+
+### Get the activity
+GET {{host}}/api/activity/{{activityId}}
+
+### Add available seats to an activity
+POST {{host}}/api/activity/{{activityId}}/add-seats
+Content-Type: application/json
+
+{
+  "seats": 10
+}
+
+### Remove available seats from an activity
+POST {{host}}/api/activity/{{activityId}}/remove-seats
+Content-Type: application/json
+
+{
+  "seats": 5
+}
+
+### Add a ticket type to an activity
+POST {{host}}/api/activity/{{activityId}}/ticket-type
+
+
+
+### Remove a ticket type from an activity
+DELETE {{host}}/api/activity/{{activityId}}/ticket-type/{{ticketTypeId}}

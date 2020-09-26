@@ -16,7 +16,7 @@ namespace Swetugg.Tix.Activity.Funcs
 
         public ServiceBusPublisher(IOptions<ActivityOptions> activityOptions)
         {
-            _topicName = activityOptions.Value.EventPublisherTopic;
+            _topicName = activityOptions.Value.ActivityEventPublisherTopic;
             _serviceBusConnectionString = activityOptions.Value.TixServiceBus;
             _client = new TopicClient(_serviceBusConnectionString, _topicName);
         }

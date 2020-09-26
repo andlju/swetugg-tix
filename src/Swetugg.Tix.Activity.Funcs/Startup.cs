@@ -55,9 +55,16 @@ namespace Swetugg.Tix.Activity.Funcs
                     .WithDialect(new MsSqlDialect())
                     .InitializeStorageEngine()
                     .UsingJsonSerialization();
+
                 var host = ViewBuilderHost.Build(eventStore, sp.GetService<ILoggerFactory>(), viewsConnectionString);
                 host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatsAdded>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<SeatsRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<SeatReserved>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<SeatReturned>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeAdded>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
+
                 return host;
             });
             builder.Services.AddScoped<BuildViewsFunc, BuildViewsFunc>();

@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swetugg.Tix.Api.Options;
 
-namespace Swetugg.Tix.Api
+namespace Swetugg.Tix.Api.Commands
 {
     public class ActivityCommandMessageSender : IMessageSender
     {

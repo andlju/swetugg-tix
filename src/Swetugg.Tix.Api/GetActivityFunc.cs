@@ -20,6 +20,7 @@ namespace Swetugg.Tix.Api
         public string Name { get; set; }
         public int FreeSeats { get; set; }
         public int TotalSeats { get; set; }
+        public int TicketTypes { get; set; }
     }
 
     public class GetActivityFunc
@@ -40,7 +41,7 @@ namespace Swetugg.Tix.Api
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             using (var conn = new SqlConnection(_connectionString)) {
-                var activity = await conn.QuerySingleOrDefaultAsync<ActivityOverview>("SELECT ActivityId, Name, FreeSeats, TotalSeats FROM ActivityOverview WHERE ActivityId = @ActivityId", new { activityId });
+                var activity = await conn.QuerySingleOrDefaultAsync<ActivityOverview>("SELECT ActivityId, Name, FreeSeats, TotalSeats, TicketTypes FROM ActivityOverview WHERE ActivityId = @ActivityId", new { activityId });
                 if (activity != null)
                 {
                     return new OkObjectResult(activity);
