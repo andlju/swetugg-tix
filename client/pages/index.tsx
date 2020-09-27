@@ -35,7 +35,7 @@ export default function Index({ activities }: IndexProps) {
 
   return (
     <Layout>
-      <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
           Swetugg Tix Dashboard
         </Typography>

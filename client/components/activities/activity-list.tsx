@@ -1,13 +1,14 @@
 import Link from 'next/link';
-import { Table, TableBody, TableHead, TableRow, TableCell, makeStyles } from "@material-ui/core";
+import { 
+  Table, TableBody, TableHead, TableRow, TableCell, 
+  Typography,
+  makeStyles
+} from "@material-ui/core";
 import { ActivityListProps } from "./activity.models";
 
 const useStyles = makeStyles((theme) => ({
-  activityIdColumnHead: {
-    width: "30%"
-  },
   nameColumnHead: {
-    width: "40%",
+    width: "70%",
     fontWeight: "bold"
   },
   freeSeatsColumnHead: {
@@ -18,6 +19,10 @@ const useStyles = makeStyles((theme) => ({
   },
   ticketTypesColumnHead: {
     width: "10%"
+  },
+  identifier: {
+    color: theme.palette.text.secondary,
+    fontVariantCaps: "all-small-caps"
   }
 }));
 
@@ -26,7 +31,6 @@ export default function ActivityList({ activities }: ActivityListProps) {
   return (<Table size="small">
     <TableHead>
       <TableRow>
-        <TableCell className={classes.activityIdColumnHead}>ActivityId</TableCell>
         <TableCell className={classes.nameColumnHead}>Name</TableCell>
         <TableCell className={classes.freeSeatsColumnHead}>Free Seats</TableCell>
         <TableCell className={classes.totalSeatsColumnHead}>Total Seats</TableCell>
@@ -37,8 +41,10 @@ export default function ActivityList({ activities }: ActivityListProps) {
       {activities.map(row => (
         <Link key={row.activityId} href={`/activities/${row.activityId}`}>
           <TableRow hover={true}>
-            <TableCell>{row.activityId}</TableCell>
-            <TableCell>{row.name}</TableCell>
+          <TableCell>
+              <Typography>{row.name}</Typography>
+              <Typography className={classes.identifier}>{row.activityId}</Typography>
+            </TableCell>
             <TableCell>{row.freeSeats}</TableCell>
             <TableCell>{row.totalSeats}</TableCell>
             <TableCell>{row.ticketTypes}</TableCell>

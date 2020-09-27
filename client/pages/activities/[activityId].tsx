@@ -34,15 +34,15 @@ export default function ActivityPage({ activity, ticketTypes }: ActivityProps) {
 
   return (
     <Layout>
-      <Container maxWidth="lg" className={classes.container}>
+      <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
           { activity.name }
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={5}>
+          <Grid item xs={12} md={4}>
             <ActivityDetails activity={activity} />
           </Grid>
-          <Grid item xs={7}>
+          <Grid item  xs={12} md={8}>
             <TicketTypeList ticketTypes={ticketTypes} />
           </Grid>
         </Grid>

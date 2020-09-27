@@ -20,10 +20,6 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
       <Table size="small">
         <TableBody>
           <TableRow>
-            <TableCell>ActivityId</TableCell>
-            <TableCell>{activity.activityId}</TableCell>
-          </TableRow>
-          <TableRow>
             <TableCell>Free Seats</TableCell>
             <TableCell>{activity.freeSeats}</TableCell>
           </TableRow>
