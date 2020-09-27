@@ -6,12 +6,7 @@ using Swetugg.Tix.Activity.Views;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
-    public interface IHandleEvent<TEvent>
-    {
-        Task Handle(TEvent evt);
-    }
-
-    public class ActivityOverviewBuilder : 
+  public class ActivityOverviewBuilder : 
         IHandleEvent<ActivityCreated>,
         IHandleEvent<SeatsAdded>,
         IHandleEvent<SeatsRemoved>,

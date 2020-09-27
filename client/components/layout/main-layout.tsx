@@ -5,7 +5,6 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
-import Container from '@material-ui/core/Container';
 import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import Typography from '@material-ui/core/Typography';
@@ -85,20 +84,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     height: '100vh',
     overflow: 'auto',
-  },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
-  },
-  fixedHeight: {
-    height: 240,
-  },
+  }
 }));
 
 function Layout({ children }: PropsWithChildren<any>) {
@@ -107,7 +93,6 @@ function Layout({ children }: PropsWithChildren<any>) {
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (<div className={classes.root}>
     <AppBar
@@ -158,9 +143,7 @@ function Layout({ children }: PropsWithChildren<any>) {
     </Drawer>
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
-      <Container className={classes.container}>
-        {children}
-      </Container>
+      {children}
     </main>
   </div>)
 }

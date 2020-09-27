@@ -109,8 +109,14 @@ export = async () => {
         name: 'processactsub'
     });
 
-    let hostname: pulumi.Output<string> | undefined;
+    const appInsights = new azure.appinsights.Insights(`${baseName}-ai`, {
+        resourceGroupName: resourceGroup.name,
 
+        applicationType: "web",
+    });
+
+
+    // Collect settings
     const activityEventStoreConnection = pulumi.all([sqlServer.name, activityEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Min Pool Size=0;Max Pool Size=30;Persist Security Info=true;`);
     const ticketEventStoreConnection = pulumi.all([sqlServer.name, ticketEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
@@ -118,27 +124,53 @@ export = async () => {
     const tixViewsConnection = pulumi.all([sqlServer.name, tixViewsDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Min Pool Size=0;Max Pool Size=30;Persist Security Info=true;`);
 
-    if (shouldDeploy) {
-        const appInsights = new azure.appinsights.Insights(`${baseName}-ai`, {
-            resourceGroupName: resourceGroup.name,
+    const activityAppSettings = {
+        runtime: "dotnet",
+        TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
+        ActivityCommandsQueue: activityCommandsQueue.name,
+        ActivityEventPublisherTopic: activityEventsTopic.name,
+        "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+        ActivityEventsDbConnection: activityEventStoreConnection,
+        ViewsDbConnection: tixViewsConnection,
+        AzureWebJobsStorage: storageAccount.primaryConnectionString
+    };
+    const ticketAppSettings = {
+        runtime: "dotnet",
+        TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
+        TicketCommandsQueue: ticketCommandsQueue.name,
+        TicketEventPublisherTopic: ticketEventsTopic.name,
+        "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+        TicketEventsDbConnection: ticketEventStoreConnection,
+        ViewsDbConnection: tixViewsConnection,
+        AzureWebJobsStorage: storageAccount.primaryConnectionString
+    };
+    const processAppSettings = {
+        runtime: "dotnet",
+        TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
+        ActivityEventPublisherTopic: activityEventsTopic.name,
+        ProcessActivitySub: processActivitySubscription.name,
+        "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+        AzureWebJobsStorage: storageAccount.primaryConnectionString
+    };
+    const apiAppSettings = {
+        runtime: "dotnet",
+        TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
+        ActivityCommandsQueue: activityCommandsQueue.name,
+        "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+        ViewsDbConnection: tixViewsConnection,
+        AzureWebJobsStorage: storageAccount.primaryConnectionString
+    };
 
-            applicationType: "web",
-        });
+    let hostname: pulumi.Output<string> | undefined;
+
+    if (shouldDeploy) {
 
         const activityApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-activity`, {
             resourceGroupName: resourceGroup.name,
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Activity.Funcs.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: {
-                runtime: "dotnet",
-                TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-                ActivityCommandsQueue: activityCommandsQueue.name,
-                ActivityEventPublisherTopic: activityEventsTopic.name,
-                "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-                ActivityEventsDbConnection: activityEventStoreConnection,
-                ViewsDbConnection: tixViewsConnection
-            },
+            appSettings: activityAppSettings,
         });
 
         const ticketApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-ticket`, {
@@ -146,15 +178,7 @@ export = async () => {
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Ticket.Funcs.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: {
-                runtime: "dotnet",
-                TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-                TicketCommandsQueue: ticketCommandsQueue.name,
-                TicketEventPublisherTopic: ticketEventsTopic.name,
-                "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-                TicketEventsDbConnection: ticketEventStoreConnection,
-                ViewsDbConnection: tixViewsConnection
-            },
+            appSettings: ticketAppSettings
         });
 
         const processApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-process`, {
@@ -162,13 +186,7 @@ export = async () => {
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Process.Funcs.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: {
-                runtime: "dotnet",
-                TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-                ActivityEventPublisherTopic: activityEventsTopic.name,
-                ProcessActivitySub: processActivitySubscription.name,
-                "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey
-            },
+            appSettings: processAppSettings
         });
 
         const apiApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-api`, {
@@ -176,13 +194,7 @@ export = async () => {
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Api.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: {
-                runtime: "dotnet",
-                TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-                ActivityCommandsQueue: activityCommandsQueue.name,
-                "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-                ViewsDbConnection: tixViewsConnection
-            },
+            appSettings: apiAppSettings,
             siteConfig: {
                 cors: { allowedOrigins : ["*"] }
             }
@@ -198,27 +210,27 @@ export = async () => {
         activityEventStoreConnectionString: activityEventStoreConnection,
         ticketEventStoreConnectionString: ticketEventStoreConnection,
         tixViewsConnectionString: tixViewsConnection,
-        apiHostName: hostname,
-        GenericLocalSettingsJson: {
-            "IsEncrypted": false,
-            "Values": {
-              "ActivityCommandsQueue": activityCommandsQueue.name,
-              "ActivityEventsDbConnection": activityEventStoreConnection,
-              "TicketCommandsQueue": ticketCommandsQueue.name,
-              "TicketEventsDbConnection": ticketEventStoreConnection,
-              "AzureWebJobsDashboard": "",
-              "AzureWebJobsStorage": storageAccount.primaryConnectionString,
-              "ActivityEventPublisherTopic": activityEventsTopic.name,
-              "TicketEventPublisherTopic": ticketEventsTopic.name,
-              "ProcessActivitySub": processActivitySubscription.name,
-              "TixServiceBus": serviceBusNamespace.defaultPrimaryConnectionString,
-              "ViewsDbConnection": tixViewsConnection,
-              "runtime": "dotnet"
-            },
-            "ConnectionStrings": {}
-          }
+        apiHostName: hostname
     };
 
-    return { out: output };
+    return { 
+        out: output, 
+        activityAppSettings: {
+            IsEncrypted: false,
+            Values: activityAppSettings
+        },
+        ticketAppSettings: {
+            IsEncrypted: false,
+            Values: ticketAppSettings
+        },
+        processAppSettings: {
+            IsEncrypted: false,
+            Values: processAppSettings
+        },
+        apiAppSettings: {
+            IsEncrypted: false,
+            Values: apiAppSettings
+        }
+     };
 }
 

@@ -2,7 +2,7 @@ using System;
 
 namespace Swetugg.Tix.Api
 {
-  public class ActivityOverview 
+    public class ActivityOverview
     {
         public Guid ActivityId { get; set; }
         public string Name { get; set; }

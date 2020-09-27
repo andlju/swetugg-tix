@@ -57,6 +57,8 @@ namespace Swetugg.Tix.Activity.Funcs
                     .UsingJsonSerialization();
 
                 var host = ViewBuilderHost.Build(eventStore, sp.GetService<ILoggerFactory>(), viewsConnectionString);
+                
+                // Register ActivityOverviewBuilder
                 host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatsAdded>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatsRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
@@ -64,6 +66,15 @@ namespace Swetugg.Tix.Activity.Funcs
                 host.RegisterHandler<SeatReturned>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<TicketTypeAdded>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<TicketTypeRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
+
+                // Register TicketTypeBuilder
+                host.RegisterHandler<TicketTypeAdded>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeRemoved>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeLimitIncreased>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeLimitDecreased>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeLimitRemoved>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<SeatReserved>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<SeatReturned>(new TicketTypeBuilder(viewsConnectionString));
 
                 return host;
             });

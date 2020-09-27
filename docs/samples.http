@@ -1,9 +1,9 @@
-#@host = https://tix-dev-api893ee6eb.azurewebsites.net
+#@host = https://tix-dev-apieee8332a.azurewebsites.net
 #@host = http://localhost:7071
 @host = http://localhost:4711
 
-@activityId = e30c4df8-16c4-480a-9315-3abc545f1bfc
-@ticketTypeId = 4345fe95-1c9e-4b5b-a97f-6b7d19923a6c
+@activityId = 03b1decf-187e-49ca-943e-7f03fb149ca1
+@ticketTypeId = 41869799-3bd2-46ae-bae7-12c5783ce931
 
 ### List all activities
 GET {{host}}/api/activities

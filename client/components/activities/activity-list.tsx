@@ -1,41 +1,49 @@
-import { ComponentProps } from "react";
-import { GetServerSideProps } from "next";
-import { Table, TableBody, TableHead, TableRow, TableCell } from "@material-ui/core";
+import Link from 'next/link';
+import { Table, TableBody, TableHead, TableRow, TableCell, makeStyles } from "@material-ui/core";
+import { ActivityListProps } from "./activity.models";
 
-export type Activity = {
-  activityId: string,
-  name: string,
-  freeSeats: number,
-  totalSeats: number,
-  ticketTypes: number
-}
-
-export type ActivityListProps = {
-  activities: Activity[]
-}
-
+const useStyles = makeStyles((theme) => ({
+  activityIdColumnHead: {
+    width: "30%"
+  },
+  nameColumnHead: {
+    width: "40%",
+    fontWeight: "bold"
+  },
+  freeSeatsColumnHead: {
+    width: "10%"
+  },
+  totalSeatsColumnHead: {
+    width: "10%"
+  },
+  ticketTypesColumnHead: {
+    width: "10%"
+  }
+}));
 
 export default function ActivityList({ activities }: ActivityListProps) {
-
-  return (<Table>
+  const classes = useStyles();
+  return (<Table size="small">
     <TableHead>
       <TableRow>
-        <TableCell>ActivityId</TableCell>
-        <TableCell>Name</TableCell>
-        <TableCell>Free Seats</TableCell>
-        <TableCell>Total Seats</TableCell>
-        <TableCell>Ticket Types</TableCell>
+        <TableCell className={classes.activityIdColumnHead}>ActivityId</TableCell>
+        <TableCell className={classes.nameColumnHead}>Name</TableCell>
+        <TableCell className={classes.freeSeatsColumnHead}>Free Seats</TableCell>
+        <TableCell className={classes.totalSeatsColumnHead}>Total Seats</TableCell>
+        <TableCell className={classes.ticketTypesColumnHead}>Ticket Types</TableCell>
       </TableRow>
     </TableHead>
     <TableBody>
-      {activities.map(a => (
-        <TableRow key={a.activityId}>
-          <TableCell>{a.activityId}</TableCell>
-          <TableCell>{a.name}</TableCell>
-          <TableCell>{a.freeSeats}</TableCell>
-          <TableCell>{a.totalSeats}</TableCell>
-          <TableCell>{a.ticketTypes}</TableCell>
-        </TableRow>
+      {activities.map(row => (
+        <Link key={row.activityId} href={`/activities/${row.activityId}`}>
+          <TableRow hover={true}>
+            <TableCell>{row.activityId}</TableCell>
+            <TableCell>{row.name}</TableCell>
+            <TableCell>{row.freeSeats}</TableCell>
+            <TableCell>{row.totalSeats}</TableCell>
+            <TableCell>{row.ticketTypes}</TableCell>
+          </TableRow>
+        </Link>
       ))}
     </TableBody>
 

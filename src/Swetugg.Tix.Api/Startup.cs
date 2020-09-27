@@ -16,9 +16,13 @@ namespace Swetugg.Tix.Api
 
             builder.Services.AddSingleton<IMessageSender, ActivityCommandMessageSender>();
 
-            builder.Services.AddScoped<CreateActivityFunc, CreateActivityFunc>();
+            // Queries
             builder.Services.AddScoped<GetActivityFunc, GetActivityFunc>();
             builder.Services.AddScoped<ListActivitiesFunc, ListActivitiesFunc>();
+            builder.Services.AddScoped<ListTicketTypesFunc, ListTicketTypesFunc>();
+
+            // Commands
+            builder.Services.AddScoped<CreateActivityFunc, CreateActivityFunc>();
             builder.Services.AddScoped<AddSeatsFunc, AddSeatsFunc>();
             builder.Services.AddScoped<RemoveSeatsFunc, RemoveSeatsFunc>();
             builder.Services.AddScoped<AddTicketTypeFunc, AddTicketTypeFunc>();

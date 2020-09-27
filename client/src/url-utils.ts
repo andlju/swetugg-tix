@@ -1,3 +1,5 @@
 export function buildUrl(url: string) {
-  return `http://localhost:4711/api${url}`;
+  const baseUrl = 'http://localhost:4711/api';
+  // const baseUrl = 'https://tix-dev-apieee8332a.azurewebsites.net/api'
+  return `${baseUrl}${url}`;
 }
