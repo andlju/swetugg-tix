@@ -27,13 +27,13 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "INSERT INTO ActivityOverview (ActivityId, Name, TotalSeats, FreeSeats) VALUES (@ActivityId, @Name, @TotalSeats, @FreeSeats)",
+                    "INSERT INTO ActivityViews.ActivityOverview (ActivityId, TotalSeats, FreeSeats, TicketTypes) VALUES (@ActivityId, @TotalSeats, @FreeSeats, @TicketTypes)",
                     new ActivityOverview()
                     {
                         ActivityId = evt.AggregateId,
-                        Name = "Unnamed",
                         TotalSeats = 0,
                         FreeSeats = 0,
+                        TicketTypes = 0
                     });
             }
         }
@@ -43,7 +43,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityOverview " +
+                    "UPDATE ActivityViews.ActivityOverview " +
                     "SET TotalSeats = TotalSeats + @Seats " + 
                     ", FreeSeats = FreeSeats + @Seats " +
                     "WHERE ActivityId = @ActivityId",
@@ -60,7 +60,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityOverview " +
+                    "UPDATE ActivityViews.ActivityOverview " +
                     "SET TotalSeats = TotalSeats - @Seats " +
                     ", FreeSeats = FreeSeats - @Seats " +
                     "WHERE ActivityId = @ActivityId",
@@ -77,7 +77,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityOverview " +
+                    "UPDATE ActivityViews.ActivityOverview " +
                     "SET FreeSeats = FreeSeats - 1 " +
                     "WHERE ActivityId = @ActivityId",
                     new
@@ -92,7 +92,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityOverview " +
+                    "UPDATE ActivityViews.ActivityOverview " +
                     "SET FreeSeats = FreeSeats + 1 " +
                     "WHERE ActivityId = @ActivityId",
                     new
@@ -108,7 +108,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityOverview " +
+                    "UPDATE ActivityViews.ActivityOverview " +
                     "SET TicketTypes = TicketTypes + 1 " +
                     "WHERE ActivityId = @ActivityId",
                     new
@@ -123,7 +123,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityOverview " +
+                    "UPDATE ActivityViews.ActivityOverview " +
                     "SET TicketTypes = TicketTypes - 1 " +
                     "WHERE ActivityId = @ActivityId",
                     new

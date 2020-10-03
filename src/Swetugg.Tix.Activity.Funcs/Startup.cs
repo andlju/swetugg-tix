@@ -15,6 +15,7 @@ using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
+using Microsoft.Extensions.Options;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Activity.Funcs.Startup))]
 namespace Swetugg.Tix.Activity.Funcs
@@ -30,7 +31,9 @@ namespace Swetugg.Tix.Activity.Funcs
 
             builder.Services.AddSingleton(sp =>
             {
-                var connectionString = Environment.GetEnvironmentVariable("ActivityEventsDbConnection");
+                var options = sp.GetService<IOptions<ActivityOptions>>();
+                
+                var connectionString = options.Value.ActivityEventsDbConnection;
                 var sqlClientFactoryInstance = SqlClientFactory.Instance;
 
                 var eventStore = Wireup.Init()
@@ -46,8 +49,10 @@ namespace Swetugg.Tix.Activity.Funcs
 
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
-                var eventStoreConnectionString = Environment.GetEnvironmentVariable("ActivityEventsDbConnection");
-                var viewsConnectionString = Environment.GetEnvironmentVariable("ViewsDbConnection");
+                var options = sp.GetService<IOptions<ActivityOptions>>();
+                var eventStoreConnectionString = options.Value.ActivityEventsDbConnection;
+                var viewsConnectionString = options.Value.ViewsDbConnection;
+
                 var sqlClientFactoryInstance = SqlClientFactory.Instance;
 
                 var eventStore = Wireup.Init()

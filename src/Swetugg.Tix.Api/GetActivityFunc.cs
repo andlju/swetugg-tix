@@ -33,7 +33,7 @@ namespace Swetugg.Tix.Api
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var activity = await conn.QuerySingleOrDefaultAsync<ActivityOverview>("SELECT ActivityId, Name, FreeSeats, TotalSeats, TicketTypes FROM ActivityOverview WHERE ActivityId = @ActivityId", new { activityId });
+                var activity = await conn.QuerySingleOrDefaultAsync<ActivityOverview>("SELECT ActivityId, FreeSeats, TotalSeats, TicketTypes FROM ActivityViews.ActivityOverview WHERE ActivityId = @ActivityId", new { activityId });
                 if (activity != null)
                 {
                     return new OkObjectResult(activity);

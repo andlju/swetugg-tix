@@ -31,7 +31,7 @@ namespace Swetugg.Tix.Api
             using (var conn = new SqlConnection(_connectionString))
             {
                 var ticketTypes = await conn.QueryAsync<TicketType>(
-                    "SELECT ActivityId, TicketTypeId, Name, Limit, Reserved FROM TicketType WHERE ActivityId = @activityId",
+                    "SELECT ActivityId, TicketTypeId, Limit, Reserved FROM ActivityViews.TicketType WHERE ActivityId = @activityId",
                     new { activityId });
                 if (ticketTypes != null)
                 {

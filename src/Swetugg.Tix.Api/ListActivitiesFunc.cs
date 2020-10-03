@@ -14,7 +14,7 @@ namespace Swetugg.Tix.Api
     public class ListActivitiesFunc
     {
         private readonly string _connectionString;
-        public ListActivitiesFunc(IMessageSender sender, IOptions<ApiOptions> options)
+        public ListActivitiesFunc(IOptions<ApiOptions> options)
         {
             _connectionString = options.Value.ViewsDbConnection;
         }
@@ -29,7 +29,7 @@ namespace Swetugg.Tix.Api
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var activities = await conn.QueryAsync<ActivityOverview>("SELECT ActivityId, Name, FreeSeats, TotalSeats, TicketTypes FROM ActivityOverview");
+                var activities = await conn.QueryAsync<ActivityOverview>("SELECT ActivityId, FreeSeats, TotalSeats, TicketTypes FROM ActivityViews.ActivityOverview");
                 if (activities != null)
                 {
                     return new OkObjectResult(activities);

@@ -56,7 +56,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
                     // Set the connection string
                     .WithGlobalConnectionString(_connectionString)
                     // Define the assembly containing the migrations
-                    .ScanIn(typeof(Migrations.AddCheckpointTable).Assembly).For.Migrations())
+                    .ScanIn(typeof(Migrations.InitialDatabase).Assembly).For.Migrations())
                 // Enable logging to console in the FluentMigrator way
                 .AddLogging(lb => lb.AddFluentMigratorConsole())
                 // Build the service provider

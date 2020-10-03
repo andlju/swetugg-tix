@@ -6,7 +6,6 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Link from '../components/Link';
 import Layout from '../components/layout/main-layout';
 import { buildUrl } from '../src/url-utils';
 import ActivityList from '../components/activities/activity-list';
@@ -22,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   paper: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(1),
   },
   activityList: {
+    minHeight: theme.spacing(30),
     maxHeight: theme.spacing(60),
     overflow: 'auto',
   }
@@ -48,9 +48,6 @@ export default function Index({ activities }: IndexProps) {
           </Grid>
         </Grid>
 
-        <Link href="/about" color="secondary">
-          Go to the about page
-        </Link>
       </Container>
     </Layout>
   );

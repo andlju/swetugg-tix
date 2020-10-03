@@ -8,6 +8,7 @@ namespace Swetugg.Tix.Activity.Views
         public string Name { get; set; }
         public int TotalSeats { get; set; }
         public int FreeSeats { get; set; }
+        public int TicketTypes { get; set; }
     }
 
 }

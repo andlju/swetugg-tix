@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Api.Commands
 
         [FunctionName("CreateActivity")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activity")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activities")]
             HttpRequest req,
             ILogger log)
         {

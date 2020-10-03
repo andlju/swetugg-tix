@@ -9,7 +9,7 @@
 GET {{host}}/api/activities
 
 ### Create a new Activity
-POST {{host}}/api/activity
+POST {{host}}/api/activities
 
 ### Get the activity
 GET {{host}}/api/activities/{{activityId}}

@@ -10,21 +10,26 @@ import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import EventIcon from '@material-ui/icons/Event'
+import Link from '../Link';
 
 export const mainListItems = (
   <div>
-    <ListItem button>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
-        <EventIcon />
-      </ListItemIcon>
-      <ListItemText primary="Activities" />
-    </ListItem>
+    <Link href="/">
+      <ListItem button>
+        <ListItemIcon>
+          <DashboardIcon />
+        </ListItemIcon>
+        <ListItemText primary="Dashboard" />
+      </ListItem>
+    </Link>
+    <Link href="/activities">
+      <ListItem button>
+        <ListItemIcon>
+          <EventIcon />
+        </ListItemIcon>
+        <ListItemText primary="Activities" />
+      </ListItem>
+    </Link>
     <ListItem button>
       <ListItemIcon>
         <PeopleIcon />

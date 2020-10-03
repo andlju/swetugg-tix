@@ -154,11 +154,11 @@ export = async () => {
     };
     const apiAppSettings = {
         runtime: "dotnet",
+        "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
+        AzureWebJobsStorage: storageAccount.primaryConnectionString,
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
         ActivityCommandsQueue: activityCommandsQueue.name,
-        "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         ViewsDbConnection: tixViewsConnection,
-        AzureWebJobsStorage: storageAccount.primaryConnectionString
     };
 
     let hostname: pulumi.Output<string> | undefined;
@@ -229,7 +229,10 @@ export = async () => {
         },
         apiAppSettings: {
             IsEncrypted: false,
-            Values: apiAppSettings
+            Values: apiAppSettings,
+            Host: {
+                CORS: "*"
+            }
         }
      };
 }
