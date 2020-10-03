@@ -39,4 +39,36 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             Assert.True(Commits.First().HasEvent<TicketTypeAdded>());
         }
     }
+    public class when_adding_tickettype_with_duplicate_id : with_activity
+    {
+        public when_adding_tickettype_with_duplicate_id(ITestOutputHelper output) : base(output)
+        {
+        }
+
+        protected Guid ActivityId = Guid.NewGuid();
+        protected Guid TicketTypeId = Guid.NewGuid();
+
+        protected override void Setup()
+        {
+
+            Given
+                .Activity(ActivityId)
+                .WithTicketType(TicketTypeId);
+        }
+
+        protected override object When()
+        {
+            return new AddTicketType()
+            {
+                ActivityId = ActivityId,
+                TicketTypeId = TicketTypeId
+            };
+        }
+
+        [Fact]
+        public void then_ActivityException_is_thrown()
+        {
+            Assert.IsAssignableFrom<ActivityException>(ThrownException);
+        }
+    }
 }

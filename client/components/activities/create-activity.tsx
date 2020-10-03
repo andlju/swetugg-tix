@@ -33,7 +33,8 @@ const useStyles = makeStyles((theme) => ({
 export default function CreateActivity({ }: CreateActivityProps) {
   const classes = useStyles();
 
-  const createActivity = async () => {
+  const createActivity = async (evt : React.FormEvent) => {
+    evt.preventDefault();
     const res = await fetch(buildUrl('/activities'), {
       method: 'POST',
       body: JSON.stringify({
@@ -47,9 +48,9 @@ export default function CreateActivity({ }: CreateActivityProps) {
     const result = await res.json();
     router.push(`/activities/${result.activityId}`);
   };
-  return (<Paper className={classes.paper} component="form">
+  return (<Paper className={classes.paper} component="form" onSubmit={createActivity}>
     <Typography variant="overline">Activity</Typography>
     <TextField id="name" className={classes.input} label="Name" variant="outlined"></TextField>
-    <Button variant="outlined" className={classes.button} onClick={createActivity}>Create</Button>
+    <Button variant="outlined" className={classes.button} type="submit">Create</Button>
   </Paper>);
 }

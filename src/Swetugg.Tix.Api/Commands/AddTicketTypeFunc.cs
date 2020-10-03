@@ -17,7 +17,7 @@ namespace Swetugg.Tix.Api.Commands
 
         [FunctionName("AddTicketType")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activities/{activityId}/ticket-type")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activities/{activityId}/ticket-types")]
             HttpRequest req,
             Guid activityId,
             ILogger log)

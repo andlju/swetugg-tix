@@ -66,6 +66,9 @@ namespace Swetugg.Tix.Activity.Domain
         /// <param name="ticketTypeId"></param>
         public void AddTicketType(Guid ticketTypeId)
         {
+            if (_ticketTypes.ContainsKey(ticketTypeId))
+                throw new ActivityException("DuplicateTicketType", "A ticket type with Id {ticketTypeId} already exists");
+
             Raise(new TicketTypeAdded()
             {
                 TicketTypeId = ticketTypeId

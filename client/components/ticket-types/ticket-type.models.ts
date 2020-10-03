@@ -5,10 +5,3 @@ export type TicketType = {
   name: string
 }
 
-export type TicketTypeListProps = {
-  ticketTypes: TicketType[]
-}
-
-export type TicketTypeDetailsProps = {
-  ticketType: TicketType
-}

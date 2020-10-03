@@ -1,13 +1,12 @@
 import React from 'react';
+import Link from 'next/link';
 import {
   Table, TableBody, TableHead, TableRow, TableCell, TableContainer,
   Typography,
   Toolbar,
   makeStyles, Fab
-} from "@material-ui/core";
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
-
-import Link from '../Link';
 
 import { ActivityListProps } from "./activity.models";
 
@@ -45,7 +44,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
       <Typography className={classes.activityListTitle} variant="h6" component="div">
         Activities
       </Typography>
-      <Link href="/activities/create" color="secondary">
+      <Link href="/activities/create">
         <Fab size="small" color="primary">
           <AddIcon />
         </Fab>
