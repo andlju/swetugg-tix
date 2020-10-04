@@ -10,6 +10,7 @@ import {
 } from '@material-ui/core';
 
 import { buildUrl } from '../../src/url-utils';
+import { sendCommand } from '../../src/services/command.service';
 
 interface CreateActivityProps {
 
@@ -35,17 +36,10 @@ export default function CreateActivity({ }: CreateActivityProps) {
 
   const createActivity = async (evt : React.FormEvent) => {
     evt.preventDefault();
-    const res = await fetch(buildUrl('/activities'), {
-      method: 'POST',
-      body: JSON.stringify({
+    const result = await sendCommand('/activities',  {
         name: 'test'
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
+      });
 
-    const result = await res.json();
     router.push(`/activities/${result.activityId}`);
   };
   return (<Paper className={classes.paper} component="form" onSubmit={createActivity}>

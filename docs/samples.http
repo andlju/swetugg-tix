@@ -2,14 +2,20 @@
 #@host = http://localhost:7071
 @host = http://localhost:4711
 
-@activityId = 03b1decf-187e-49ca-943e-7f03fb149ca1
+@activityId = 97d9cab1-375b-49e2-a9d8-8f5dd2b915c4
 @ticketTypeId = 41869799-3bd2-46ae-bae7-12c5783ce931
+@commandId = 10a67052-cbae-4a23-b1b3-0c636bc7b593
+
 
 ### List all activities
 GET {{host}}/api/activities
 
 ### Create a new Activity
 POST {{host}}/api/activities
+
+### Get the status of a command
+GET {{host}}/api/activities/commands/{{commandId}}
+
 
 ### Get the activity
 GET {{host}}/api/activities/{{activityId}}

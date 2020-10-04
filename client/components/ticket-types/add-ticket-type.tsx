@@ -5,6 +5,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useState } from "react";
+import { sendCommand } from "../../src/services/command.service";
 import { buildUrl } from "../../src/url-utils";
 
 interface AddTicketTypeProps {
@@ -35,18 +36,10 @@ export default function AddTicketType({ activityId }: AddTicketTypeProps) {
 
   const addTicketType = async (evt: React.FormEvent) => {
     evt.preventDefault();
-    const res = await fetch(buildUrl(`/activities/${activityId}/ticket-types`), {
-      method: "POST",
-      body: JSON.stringify({
-        name: 'test'
-      }),
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-    const result = await res.json();
     setTicketTypeName('');
-    console.log(result);
+    const res = await sendCommand(`/activities/${activityId}/ticket-types`, {
+      name: 'test'
+    });
   }
 
   const handleChange = (event: React.ChangeEvent<any>) => {
