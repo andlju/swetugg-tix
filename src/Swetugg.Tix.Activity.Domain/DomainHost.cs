@@ -1,11 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Domain.Core;
 using NEventStore.Domain.Persistence.EventStore;
+using Swetugg.Tix.Activity.Domain.CommandLog;
 using Swetugg.Tix.Activity.Domain.Handlers;
 using Swetugg.Tix.Infrastructure;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Swetugg.Tix.Activity.Domain
 {
@@ -15,7 +16,7 @@ namespace Swetugg.Tix.Activity.Domain
 
         public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
         {
-            var hooks = new IPipelineHook[] {new EventPublisherHook(eventPublisher)};
+            var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublisher) };
             if (extraHooks != null)
                 hooks = hooks.Concat(extraHooks).ToArray();
 
@@ -23,7 +24,6 @@ namespace Swetugg.Tix.Activity.Domain
                 eventStoreWireup
                     .HookIntoPipelineUsing(hooks)
                     .Build();
-
             return new DomainHost(eventStore, loggerFactory);
         }
 
@@ -31,18 +31,19 @@ namespace Swetugg.Tix.Activity.Domain
         {
             var repository = new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
+            var commandLog = new EventStoreCommandLog(eventStore);
 
             // Register all command handlers
-            dispatcher.Register(() => new CreateActivityHandler(repository));
-            dispatcher.Register(() => new AddSeatsHandler(repository));
-            dispatcher.Register(() => new RemoveSeatsHandler(repository));
-            dispatcher.Register(() => new AddTicketTypeHandler(repository));
-            dispatcher.Register(() => new RemoveTicketTypeHandler(repository));
-            dispatcher.Register(() => new ReserveSeatHandler(repository));
-            dispatcher.Register(() => new ReturnSeatHandler(repository));
-            dispatcher.Register(() => new IncreaseTicketTypeLimitHandler(repository));
-            dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repository));
-            dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repository));
+            dispatcher.Register(() => new CreateActivityHandler(repository, commandLog));
+            dispatcher.Register(() => new AddSeatsHandler(repository, commandLog));
+            dispatcher.Register(() => new RemoveSeatsHandler(repository, commandLog));
+            dispatcher.Register(() => new AddTicketTypeHandler(repository, commandLog));
+            dispatcher.Register(() => new RemoveTicketTypeHandler(repository, commandLog));
+            dispatcher.Register(() => new ReserveSeatHandler(repository, commandLog));
+            dispatcher.Register(() => new ReturnSeatHandler(repository, commandLog));
+            dispatcher.Register(() => new IncreaseTicketTypeLimitHandler(repository, commandLog));
+            dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repository, commandLog));
+            dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repository, commandLog));
 
             _messageDispatcher = dispatcher;
         }

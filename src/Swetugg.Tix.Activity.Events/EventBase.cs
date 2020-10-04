@@ -4,6 +4,6 @@ namespace Swetugg.Tix.Activity.Events
 {
     public abstract class EventBase
     {
-        public Guid AggregateId { get; set; } 
+        public Guid AggregateId { get; set; }
     }
 }

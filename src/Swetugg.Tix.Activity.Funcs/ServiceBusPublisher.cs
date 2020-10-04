@@ -1,10 +1,10 @@
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Infrastructure;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.Funcs
 {

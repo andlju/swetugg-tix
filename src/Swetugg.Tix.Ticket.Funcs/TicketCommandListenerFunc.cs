@@ -1,13 +1,12 @@
-using System;
-using System.Reflection;
-using System.Text;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Swetugg.Tix.Ticket.Commands;
 using Swetugg.Tix.Ticket.Domain;
+using System;
+using System.Reflection;
+using System.Text;
 
 namespace Swetugg.Tix.Ticket.Funcs
 {
@@ -23,7 +22,7 @@ namespace Swetugg.Tix.Ticket.Funcs
         }
 
         [FunctionName("TicketCommandListenerFunc")]
-        public void Run([ServiceBusTrigger("%TicketCommandsQueue%", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
+        public void Run([ServiceBusTrigger("%TicketCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);

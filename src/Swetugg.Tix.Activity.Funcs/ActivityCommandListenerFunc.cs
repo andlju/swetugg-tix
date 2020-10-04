@@ -1,13 +1,12 @@
-using System;
-using System.Reflection;
-using System.Text;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Domain;
+using System;
+using System.Reflection;
+using System.Text;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
@@ -23,7 +22,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("ActivityCommandListenerFunc")]
-        public void Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")]Message commandMsg, ILogger log)
+        public void Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)

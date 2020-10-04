@@ -1,9 +1,8 @@
-﻿using System;
+﻿using NEventStore;
+using Swetugg.Tix.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using NEventStore;
-using Swetugg.Tix.Infrastructure;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Tests.Helpers
@@ -65,7 +64,7 @@ namespace Swetugg.Tix.Tests.Helpers
             var eventStoreWireup = Wireup.Init()
                 .UsingInMemoryPersistence();
 
-            var dispatcher = WithDispatcher(eventStoreWireup, new []{testHook});
+            var dispatcher = WithDispatcher(eventStoreWireup, new[] { testHook });
 
             // Let the actual test setup any preconditions
             Setup();

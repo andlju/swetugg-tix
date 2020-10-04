@@ -1,12 +1,12 @@
-using System;
 using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Activity.Domain.CommandLog;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {
     public class RemoveSeatsHandler : ActivityCommandHandler<RemoveSeats>
     {
-        public RemoveSeatsHandler(IRepository repository) : base(repository)
+        public RemoveSeatsHandler(IRepository repository, ICommandLog commandLog) : base(repository, commandLog)
         {
         }
 

@@ -1,11 +1,12 @@
 using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Activity.Domain.CommandLog;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {
     public class ReserveSeatHandler : ActivityCommandHandler<ReserveSeat>
     {
-        public ReserveSeatHandler(IRepository repository) : base(repository)
+        public ReserveSeatHandler(IRepository repository, ICommandLog commandLog) : base(repository, commandLog)
         {
         }
 

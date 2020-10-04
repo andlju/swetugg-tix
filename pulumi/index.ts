@@ -30,7 +30,7 @@ export = async () => {
     // Generate a random password
     const sqlAdminPassword = new random.RandomPassword("tixdbpassword", {
         length: 16,
-        special: true
+        special: false
     });
 
     const sqlServer = new azure.sql.SqlServer("tixdb", {

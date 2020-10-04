@@ -1,15 +1,13 @@
-using System.IO;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
+using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Dapper;
-using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Api.Options;
 using Microsoft.Extensions.Options;
+using Swetugg.Tix.Api.Options;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api
 {

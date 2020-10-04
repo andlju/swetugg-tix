@@ -1,6 +1,3 @@
-using System;
-using Swetugg.Tix.Activity.Events;
-
 namespace Swetugg.Tix.Activity.Domain
 {
     public class TicketType

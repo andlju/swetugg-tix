@@ -1,12 +1,12 @@
-﻿using System.Data.SqlClient;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Activity.Views;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
-  public class ActivityOverviewBuilder : 
+    public class ActivityOverviewBuilder :
         IHandleEvent<ActivityCreated>,
         IHandleEvent<SeatsAdded>,
         IHandleEvent<SeatsRemoved>,
@@ -44,10 +44,10 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE ActivityViews.ActivityOverview " +
-                    "SET TotalSeats = TotalSeats + @Seats " + 
+                    "SET TotalSeats = TotalSeats + @Seats " +
                     ", FreeSeats = FreeSeats + @Seats " +
                     "WHERE ActivityId = @ActivityId",
-                    new 
+                    new
                     {
                         ActivityId = evt.AggregateId,
                         Seats = evt.Seats

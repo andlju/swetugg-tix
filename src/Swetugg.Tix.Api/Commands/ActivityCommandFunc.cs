@@ -1,15 +1,14 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Swetugg.Tix.Activity.Commands;
-using System.Text.Json;
+using System;
 using System.Reflection;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Commands
 {
-    public abstract class ActivityCommandFunc<TCommand> where TCommand: ActivityCommand, new()
+    public abstract class ActivityCommandFunc<TCommand> where TCommand : ActivityCommand, new()
     {
         private readonly IMessageSender _sender;
 
@@ -34,10 +33,10 @@ namespace Swetugg.Tix.Api.Commands
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             TCommand cmd;
-            if(req.ContentLength > 0)
+            if (req.ContentLength > 0)
             {
                 cmd = await JsonSerializer.DeserializeAsync<TCommand>(req.Body, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-            } 
+            }
             else
             {
                 cmd = new TCommand();

@@ -1,6 +1,6 @@
-﻿using System;
-using NEventStore.Domain.Core;
+﻿using NEventStore.Domain.Core;
 using Swetugg.Tix.Ticket.Events;
+using System;
 
 namespace Swetugg.Tix.Ticket.Domain
 {
@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Ticket.Domain
 
         private Ticket()
         {
-            
+
         }
 
         public Ticket(Guid ticketId, Guid ticketTypeId, Guid? couponId)

@@ -1,21 +1,18 @@
-﻿using System;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
-using System.Data.Common;
-using System.Data.SqlClient;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NEventStore;
-using NEventStore.Persistence.Sql;
 using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
-using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Events;
+using Swetugg.Tix.Activity.Events.CommandLog;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
-using Microsoft.Extensions.Options;
+using System.Data.SqlClient;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Activity.Funcs.Startup))]
 namespace Swetugg.Tix.Activity.Funcs
@@ -32,7 +29,7 @@ namespace Swetugg.Tix.Activity.Funcs
             builder.Services.AddSingleton(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
-                
+
                 var connectionString = options.Value.ActivityEventsDbConnection;
                 var sqlClientFactoryInstance = SqlClientFactory.Instance;
 
@@ -62,7 +59,7 @@ namespace Swetugg.Tix.Activity.Funcs
                     .UsingJsonSerialization();
 
                 var host = ViewBuilderHost.Build(eventStore, sp.GetService<ILoggerFactory>(), viewsConnectionString);
-                
+
                 // Register ActivityOverviewBuilder
                 host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatsAdded>(new ActivityOverviewBuilder(viewsConnectionString));
@@ -80,6 +77,11 @@ namespace Swetugg.Tix.Activity.Funcs
                 host.RegisterHandler<TicketTypeLimitRemoved>(new TicketTypeBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatReserved>(new TicketTypeBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatReturned>(new TicketTypeBuilder(viewsConnectionString));
+
+                // Register CommandLogBuilder
+                host.RegisterHandler<CommandBodyStoredLogEvent>(new CommandLogBuilder(viewsConnectionString));
+                host.RegisterHandler<CommandCompletedLogEvent>(new CommandLogBuilder(viewsConnectionString));
+                host.RegisterHandler<CommandFailedLogEvent>(new CommandLogBuilder(viewsConnectionString));
 
                 return host;
             });

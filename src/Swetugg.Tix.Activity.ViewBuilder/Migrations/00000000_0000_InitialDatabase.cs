@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
 {
-    [Migration(00000000000000)]
+    [Migration(0)]
     public class InitialDatabase : Migration
     {
         public override void Up()
@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .WithColumn("TicketTypes").AsInt32()
                 .WithColumn("TotalSeats").AsInt32()
                 .WithColumn("FreeSeats").AsInt32();
-                
+
 
             Create.Table("TicketType")
                 .InSchema("ActivityViews")
@@ -37,8 +37,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
         public override void Down()
         {
             Delete.Table("Checkpoints");
-            Delete.Table("ActivityOverview");
-            Delete.Table("TicketType");
+            Delete.Table("ActivityOverview").InSchema("ActivityViews");
+            Delete.Table("TicketType").InSchema("ActivityViews");
+            Delete.Schema("ActivityViews");
         }
     }
 }

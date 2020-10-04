@@ -1,16 +1,15 @@
-﻿using System;
-using System.Data.SqlClient;
-using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
-using Swetugg.Tix.Ticket.Commands;
+using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Domain;
 using Swetugg.Tix.Ticket.Funcs.Options;
-using Swetugg.Tix.Infrastructure;
+using System;
+using System.Data.SqlClient;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Ticket.Funcs.Startup))]
 namespace Swetugg.Tix.Ticket.Funcs

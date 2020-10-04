@@ -1,10 +1,10 @@
-﻿using System;
+﻿using NEventStore;
+using NEventStore.Logging;
+using NEventStore.Persistence;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using NEventStore;
-using NEventStore.Logging;
-using NEventStore.Persistence;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {

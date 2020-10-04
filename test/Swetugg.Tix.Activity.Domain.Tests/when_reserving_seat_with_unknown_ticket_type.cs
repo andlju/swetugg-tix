@@ -1,6 +1,5 @@
-using System;
 using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Tests.Helpers;
+using System;
 using Xunit;
 using Xunit.Abstractions;
 

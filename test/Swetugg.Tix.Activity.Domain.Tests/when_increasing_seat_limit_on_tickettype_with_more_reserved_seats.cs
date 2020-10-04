@@ -1,5 +1,5 @@
-using System;
 using Swetugg.Tix.Activity.Commands;
+using System;
 using Xunit;
 using Xunit.Abstractions;
 

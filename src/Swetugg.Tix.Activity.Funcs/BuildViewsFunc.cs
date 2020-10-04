@@ -1,9 +1,8 @@
-using System;
-using System.Threading.Tasks;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
 using Swetugg.Tix.Activity.ViewBuilder;
+using System;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
@@ -17,7 +16,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("BuildViewsFunc")]
-        public async Task Run([TimerTrigger("*/10 * * * * *")]TimerInfo myTimer, ILogger log)
+        public async Task Run([TimerTrigger("*/10 * * * * *")] TimerInfo myTimer, ILogger log)
         {
             await _host.HandleCommits();
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");

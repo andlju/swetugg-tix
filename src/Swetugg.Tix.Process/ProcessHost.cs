@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Domain;
 using NEventStore.Domain.Persistence;
 using NEventStore.Domain.Persistence.EventStore;
 using Swetugg.Tix.Infrastructure;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Swetugg.Tix.Process
 {
-    public class ProcessHost : 
+    public class ProcessHost :
         IMessageHandler<Ticket.Events.TicketCreated>,
         IMessageHandler<Activity.Events.SeatReserved>
     {

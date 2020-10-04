@@ -1,16 +1,15 @@
-using System;
-using System.Diagnostics.Tracing;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Process.Funcs
 {
-    public  class EventListenerFunc
+    public class EventListenerFunc
     {
         public static Assembly ActivityEventAssembly = typeof(Swetugg.Tix.Activity.Events.ActivityCreated).Assembly;
 

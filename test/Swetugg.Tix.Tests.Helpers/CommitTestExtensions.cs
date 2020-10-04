@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using NEventStore;
+﻿using NEventStore;
+using System.Linq;
 
 namespace Swetugg.Tix.Tests.Helpers
 {

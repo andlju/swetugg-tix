@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NEventStore;
+using Swetugg.Tix.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using NEventStore;
-using Swetugg.Tix.Infrastructure;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Tests.Helpers

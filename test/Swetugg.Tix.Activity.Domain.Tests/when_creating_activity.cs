@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Xunit;
-using Swetugg.Tix.Activity.Commands;
+﻿using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Tests.Helpers;
+using System;
+using System.Linq;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
@@ -20,7 +18,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
 
         protected override void Setup()
         {
-            
+
         }
 
         protected override object When()

@@ -1,9 +1,6 @@
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Tests.Helpers;
+using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -32,7 +29,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
                 activity
                     .WithReservedSeat(TicketTypeId, i.ToString());
             }
-            
+
         }
 
         protected override object When()
@@ -52,7 +49,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         [Fact]
-        public void then_exception_is_thrown() 
+        public void then_exception_is_thrown()
         {
             Assert.IsType<ActivityException>(this.ThrownException);
         }

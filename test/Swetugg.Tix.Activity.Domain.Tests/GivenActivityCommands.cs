@@ -1,10 +1,10 @@
-﻿using System;
-using Swetugg.Tix.Activity.Commands;
+﻿using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Tests.Helpers;
+using System;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-    public class GivenActivityCommands 
+    public class GivenActivityCommands
     {
         private readonly IGivenCommands _parent;
         private readonly Guid _activityId;
@@ -22,5 +22,5 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             cmd.ActivityId = _activityId;
             _parent.AddCommand(cmd);
         }
-    }    
+    }
 }

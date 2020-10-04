@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Swetugg.Tix.Infrastructure;
+﻿using Swetugg.Tix.Infrastructure;
+using System.Collections.Generic;
 
 namespace Swetugg.Tix.Tests.Helpers
 {

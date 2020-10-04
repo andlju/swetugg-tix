@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging.Abstractions;
+﻿using Microsoft.Extensions.Logging.Abstractions;
 using NEventStore;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Tests.Helpers;
+using System.Collections.Generic;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Ticket.Domain.Tests

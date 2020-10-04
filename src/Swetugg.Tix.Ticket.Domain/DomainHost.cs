@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Domain.Core;
 using NEventStore.Domain.Persistence.EventStore;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Domain.Handlers;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Swetugg.Tix.Ticket.Domain
 {

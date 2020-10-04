@@ -1,11 +1,12 @@
 using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Activity.Domain.CommandLog;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {
     public class IncreaseTicketTypeLimitHandler : ActivityCommandHandler<IncreaseTicketTypeLimit>
     {
-        public IncreaseTicketTypeLimitHandler(IRepository repository) : base(repository)
+        public IncreaseTicketTypeLimitHandler(IRepository repository, ICommandLog commandLog) : base(repository, commandLog)
         {
         }
 

@@ -1,6 +1,6 @@
-using System;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Tests.Helpers;
+using System;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {

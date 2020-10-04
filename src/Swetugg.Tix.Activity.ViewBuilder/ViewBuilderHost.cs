@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
+﻿using Dapper;
+using FluentMigrator.Runner;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Persistence;
-using Dapper;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using FluentMigrator.Runner;
-using FluentMigrator.Runner.Initialization;
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
@@ -37,7 +33,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var hasCheckpoint = conn.ExecuteScalar<int>("SELECT COUNT(Name) FROM [Checkpoint] WHERE Name=@name", new {name = "ViewBuilder"});
+                var hasCheckpoint = conn.ExecuteScalar<int>("SELECT COUNT(Name) FROM [Checkpoint] WHERE Name=@name", new { name = "ViewBuilder" });
                 if (hasCheckpoint <= 0)
                 {
                     conn.Execute("INSERT INTO [Checkpoint] (Name, LastCheckpoint) VALUES(@Name,0)", new { name = "ViewBuilder" });
@@ -98,7 +94,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             long checkpoint = 0;
             using (var conn = new SqlConnection(_connectionString))
             {
-                checkpoint = await conn.ExecuteScalarAsync<long>("SELECT LastCheckpoint FROM [Checkpoint] WHERE Name=@name", new {name = "ViewBuilder"});
+                checkpoint = await conn.ExecuteScalarAsync<long>("SELECT LastCheckpoint FROM [Checkpoint] WHERE Name=@name", new { name = "ViewBuilder" });
             }
 
             var commits = _store.GetFrom(checkpoint);
@@ -109,7 +105,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
                 {
                     if (!_eventHandlers.TryGetValue(evt.Body.GetType(), out var handlers))
                         continue;
-                    
+
                     foreach (var handler in handlers)
                     {
                         await handler(evt.Body);

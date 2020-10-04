@@ -1,8 +1,8 @@
-using System;
-using System.Linq;
 using Swetugg.Tix.Tests.Helpers;
 using Swetugg.Tix.Ticket.Commands;
 using Swetugg.Tix.Ticket.Events;
+using System;
+using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Ticket.Domain.Tests
 
         protected override void Setup()
         {
-            
+
         }
 
         protected override object When()

@@ -1,7 +1,7 @@
-﻿using System;
-using NEventStore.Domain.Persistence;
+﻿using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Commands;
+using System;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {

@@ -1,6 +1,5 @@
-using System;
 using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Tests.Helpers;
+using System;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -50,7 +49,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
     }
 
 
-    public class when_decreasing_seat_limit_on_tickettype_with_more_reserved_seats: with_activity
+    public class when_decreasing_seat_limit_on_tickettype_with_more_reserved_seats : with_activity
     {
         public when_decreasing_seat_limit_on_tickettype_with_more_reserved_seats(ITestOutputHelper output) : base(output)
         {

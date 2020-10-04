@@ -1,6 +1,6 @@
-using System;
 using NEventStore.Domain;
 using NEventStore.Domain.Persistence;
+using System;
 
 namespace Swetugg.Tix.Ticket.Domain
 {

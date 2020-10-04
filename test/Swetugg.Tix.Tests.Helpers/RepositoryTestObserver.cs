@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using NEventStore;
+﻿using NEventStore;
+using System.Collections.Generic;
 
 namespace Swetugg.Tix.Tests.Helpers
 {

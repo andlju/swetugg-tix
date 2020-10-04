@@ -1,13 +1,13 @@
-﻿using System.Data.SqlClient;
-using System.Threading.Tasks;
-using Dapper;
+﻿using Dapper;
 using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Activity.Views;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
 
-    public class TicketTypeBuilder : 
+    public class TicketTypeBuilder :
         IHandleEvent<TicketTypeAdded>,
         IHandleEvent<TicketTypeRemoved>,
         IHandleEvent<TicketTypeLimitIncreased>,
@@ -59,9 +59,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE ActivityViews.TicketType " +
-                    "SET Limit = COALESCE(Limit, 0) + @Seats " + 
+                    "SET Limit = COALESCE(Limit, 0) + @Seats " +
                     "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new 
+                    new
                     {
                         ActivityId = evt.AggregateId,
                         TicketTypeId = evt.TicketTypeId,
@@ -76,9 +76,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE ActivityViews.TicketType " +
-                    "SET Limit = Limit - @Seats " + 
+                    "SET Limit = Limit - @Seats " +
                     "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new 
+                    new
                     {
                         ActivityId = evt.AggregateId,
                         TicketTypeId = evt.TicketTypeId,
@@ -93,9 +93,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE ActivityViews.TicketType " +
-                    "SET Limit = NULL " + 
+                    "SET Limit = NULL " +
                     "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new 
+                    new
                     {
                         ActivityId = evt.AggregateId,
                         TicketTypeId = evt.TicketTypeId,
@@ -109,9 +109,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE ActivityViews.TicketType " +
-                    "SET Reserved = Reserved + 1 " + 
+                    "SET Reserved = Reserved + 1 " +
                     "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new 
+                    new
                     {
                         ActivityId = evt.AggregateId,
                         TicketTypeId = evt.TicketTypeId
@@ -125,9 +125,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE ActivityViews.TicketType " +
-                    "SET Reserved = Reserved - 1 " + 
+                    "SET Reserved = Reserved - 1 " +
                     "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new 
+                    new
                     {
                         ActivityId = evt.AggregateId,
                         TicketTypeId = evt.TicketTypeId

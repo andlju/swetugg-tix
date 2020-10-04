@@ -1,5 +1,5 @@
-﻿using System;
-using NEventStore.Domain.Core;
+﻿using NEventStore.Domain.Core;
+using System;
 using ActivityCommands = Swetugg.Tix.Activity.Commands;
 using ActivityEvents = Swetugg.Tix.Activity.Events;
 using TicketCommands = Swetugg.Tix.Ticket.Commands;

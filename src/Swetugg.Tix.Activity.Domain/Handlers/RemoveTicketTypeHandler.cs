@@ -1,11 +1,12 @@
 using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Activity.Domain.CommandLog;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {
     public class RemoveTicketTypeHandler : ActivityCommandHandler<RemoveTicketType>
     {
-        public RemoveTicketTypeHandler(IRepository repository) : base(repository)
+        public RemoveTicketTypeHandler(IRepository repository, ICommandLog commandLog) : base(repository, commandLog)
         {
         }
 

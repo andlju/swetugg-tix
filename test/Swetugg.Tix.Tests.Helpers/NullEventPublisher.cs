@@ -1,5 +1,5 @@
-using System.Threading.Tasks;
 using Swetugg.Tix.Infrastructure;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Tests.Helpers
 {
