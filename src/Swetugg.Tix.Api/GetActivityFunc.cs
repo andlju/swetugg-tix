@@ -5,6 +5,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swetugg.Tix.Api.Models;
 using Swetugg.Tix.Api.Options;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Swetugg.Tix.Api
     public class GetActivityFunc
     {
         private readonly string _connectionString;
-        public GetActivityFunc(IMessageSender sender, IOptions<ApiOptions> options)
+        public GetActivityFunc(IOptions<ApiOptions> options)
         {
             _connectionString = options.Value.ViewsDbConnection;
         }

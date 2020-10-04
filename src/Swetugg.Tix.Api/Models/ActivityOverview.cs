@@ -1,6 +1,6 @@
 using System;
 
-namespace Swetugg.Tix.Api
+namespace Swetugg.Tix.Api.Models
 {
     public class ActivityOverview
     {

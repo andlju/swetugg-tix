@@ -17,10 +17,10 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .WithColumn("Status").AsString(100).NotNullable()
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();
 
-            Create.Table("CommandLogMessages")
+            Create.Table("CommandLogMessage")
                 .InSchema("ActivityLogs")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("CommandId").AsGuid().ForeignKey("FK_CommandLogErrors_CommandLog", "ActivityLogs", "CommandLog", "CommandId")
+                .WithColumn("CommandId").AsGuid().ForeignKey("FK_CommandLogError_CommandLog", "ActivityLogs", "CommandLog", "CommandId")
                 .WithColumn("Severity").AsInt32()
                 .WithColumn("Code").AsString(100)
                 .WithColumn("Message").AsCustom("ntext")
@@ -30,7 +30,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
         public override void Down()
         {
             Delete.Table("CommandLog").InSchema("ActivityLogs");
-            Delete.Table("CommandLogMessages").InSchema("ActivityLogs");
+            Delete.Table("CommandLogMessage").InSchema("ActivityLogs");
         }
     }
 }

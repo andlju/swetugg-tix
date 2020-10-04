@@ -19,22 +19,4 @@ namespace Swetugg.Tix.Activity.Views
         Warning = 3,
         Error = 4
     }
-
-    public class CommandLog
-    {
-        public Guid CommandId { get; set; }
-        public Guid? ActivityId { get; set; }
-        public CommandStatus Status { get; set; }
-        public string JsonBody { get; set; }
-        public DateTime LastUpdated { get; set; }
-        public CommandLogMessage[] Messages { get; set; }
-    }
-
-    public class CommandLogMessage
-    {
-        public string Code { get; set; }
-        public string Message { get; set; }
-        public CommandLogSeverity Severity { get; set; }
-        public DateTime Timestamp { get; set; }
-    }
 }

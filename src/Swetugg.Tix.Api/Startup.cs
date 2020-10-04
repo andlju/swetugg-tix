@@ -20,6 +20,7 @@ namespace Swetugg.Tix.Api
             builder.Services.AddScoped<GetActivityFunc, GetActivityFunc>();
             builder.Services.AddScoped<ListActivitiesFunc, ListActivitiesFunc>();
             builder.Services.AddScoped<ListTicketTypesFunc, ListTicketTypesFunc>();
+            builder.Services.AddScoped<GetActivityCommandStatusFunc, GetActivityCommandStatusFunc>();
 
             // Commands
             builder.Services.AddScoped<CreateActivityFunc, CreateActivityFunc>();
