@@ -9,7 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import Link from '../../components/Link';
 import Layout from '../../components/layout/main-layout';
 import { buildUrl } from '../../src/url-utils';
-import { Activity } from '../../components/activities/activity.models';
+import { Activity } from '../../src/state/activity.models';
 import ActivityDetails from '../../components/activities/activity-details';
 import TicketTypeList from '../../components/ticket-types/ticket-type-list';
 import { TicketType } from '../../components/ticket-types/ticket-type.models';

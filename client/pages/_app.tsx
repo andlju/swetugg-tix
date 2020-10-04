@@ -1,9 +1,15 @@
-import React from 'react'
+import React, {FC} from 'react'
 import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../styles/theme'
 import type { AppProps /*, AppContext */ } from 'next/app'
+
+import {wrapper} from '../src/store';
+
+const WrappedApp: FC<AppProps> = ({Component, pageProps}) => (
+    <Component {...pageProps} />
+);
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -31,5 +37,4 @@ function MyApp(props: AppProps) {
   );
 }
 
-
-export default MyApp
+export default wrapper.withRedux(MyApp);

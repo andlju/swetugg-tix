@@ -1,8 +1,12 @@
 import { makeStyles, Typography } from "@material-ui/core";
-import { ActivityDetailsProps } from "./activity.models";
+import { Activity } from "../../src/state/activity.models";
 
 import { Paper } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
+
+export type ActivityDetailsProps = {
+  activity: Activity
+}
 
 const useStyles = makeStyles((theme) => ({
   paper: {

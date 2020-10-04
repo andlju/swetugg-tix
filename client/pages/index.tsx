@@ -2,14 +2,17 @@ import React from 'react';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
+import { resolveActions } from 'next-redux-observable';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../components/layout/main-layout';
-import { buildUrl } from '../src/url-utils';
+
 import ActivityList from '../components/activities/activity-list';
-import { Activity } from '../components/activities/activity.models';
+import { Activity } from '../src/state/activity.models';
+import { loadActivities } from '../src/state/activities.actions';
+import { wrapper } from '../src/store';
 
 interface IndexProps {
   activities: Activity[]
@@ -53,13 +56,7 @@ export default function Index({ activities }: IndexProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const resp = await fetch(buildUrl('/activities'));
-  const data = await resp.json() as Activity[];
-
-  return {
-    props: {
-      activities: data
-    }
-  }
-}
+export const getServerSideProps = wrapper.getServerSideProps(({ store }) => {
+  store.dispatch(loadActivities());
+  return { props: { getServerSideProp: "bar" } };
+});

@@ -7,8 +7,11 @@ import {
   makeStyles, Fab
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import { Activity } from '../../src/state/activity.models';
 
-import { ActivityListProps } from "./activity.models";
+export type ActivityListProps = {
+  activities: Activity[]
+}
 
 const useStyles = makeStyles((theme) => ({
   nameColumnHead: {

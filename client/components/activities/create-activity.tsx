@@ -1,5 +1,5 @@
 import React from 'react';
-import { router } from 'next';
+import router from 'next/router';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import {
