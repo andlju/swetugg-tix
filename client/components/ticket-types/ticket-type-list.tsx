@@ -30,6 +30,9 @@ const useStyles = makeStyles((theme) => ({
   identifier: {
     color: theme.palette.text.secondary,
     fontVariantCaps: "all-small-caps"
+  },
+  refreshing : {
+    opacity: 0.25
   }
 }));
 
@@ -40,12 +43,10 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
 
   useEffect(() => {
     if (refreshTicketTypes) {
-      console.log("Setting ticket types");
       const fetchData = async () => {
         const resp = await getView<TicketType[]>(
           buildUrl(`/activities/${activityId}/ticket-types`),
           v => refreshTicketTypes === "all" || !!v.find(tt => tt.ticketTypeId === refreshTicketTypes));
-        console.log("Found ticket types", resp);
           setTicketTypes(resp);
         setRefreshTicketTypes('');
       };
@@ -65,7 +66,7 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
+        <TableBody className={!!refreshTicketTypes ? classes.refreshing : ''}>
           {ticketTypes.map(row => (
             <TableRow key={row.ticketTypeId} hover={true}>
               <TableCell>

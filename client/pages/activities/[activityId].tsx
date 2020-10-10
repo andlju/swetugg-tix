@@ -43,7 +43,7 @@ export default function ActivityPage({ activity, ticketTypes }: ActivityProps) {
           <Grid item xs={12} md={4}>
             <ActivityDetails activity={activity} />
           </Grid>
-          <Grid item  xs={12} md={8}>
+          <Grid item xs={12} md={8}>
             <TicketTypeList initialTicketTypes={ticketTypes} activityId={activity.activityId} />
           </Grid>
         </Grid>

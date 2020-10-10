@@ -56,7 +56,7 @@ export default function AddTicketType({ activityId, refreshTicketTypes }: AddTic
     <Container className={classes.root}>
       <Typography variant="overline">Add New</Typography>
       <form className={classes.form} onSubmit={addTicketType}>
-        <TextField id="name" className={classes.input} label="Name" value={ticketTypeName} size="small" onChange={handleChange}></TextField>
+        <TextField id="name" className={classes.input} label="Name" value={ticketTypeName} size="small" disabled={creating} onChange={handleChange}></TextField>
         <Button type="submit" className={classes.button} variant="outlined" color="primary" disabled={creating}>Add</Button>
       </form>
     </Container>

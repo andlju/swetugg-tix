@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { router } from 'next';
+import router from 'next/router';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import {
@@ -42,7 +42,6 @@ export default function CreateActivity({ }: CreateActivityProps) {
         name: 'test'
       });
     await router.push(`/activities/${result.aggregateId}`);
-    setCreating(false);
   };
 
   return (<Paper className={classes.paper} component="form" onSubmit={createActivity}>
