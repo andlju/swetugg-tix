@@ -138,7 +138,7 @@ node_modules/
 # .NET Core stuff
 project.lock.json
 .vs/
-.vscode/
+# .vscode/
 
 *.local.json
 
