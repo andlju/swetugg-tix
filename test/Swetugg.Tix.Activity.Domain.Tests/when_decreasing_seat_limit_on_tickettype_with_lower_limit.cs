@@ -34,17 +34,15 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         [Fact]
-        public void then_ActivityException_is_thrown()
+        public void then_the_command_fails()
         {
-            Assert.IsAssignableFrom<ActivityException>(ThrownException);
+            Assert.True(Command.HasFailed);
         }
 
         [Fact]
         public void then_ErrorCode_is_LimitTooHigh()
         {
-            var activityException = ThrownException as ActivityException;
-            Assert.NotNull(activityException);
-            Assert.Equal("LimitTooLow", activityException.ErrorCode);
+            Assert.Equal("LimitTooLow", Command.FailureCode);
         }
     }
 
@@ -81,17 +79,15 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         [Fact]
-        public void then_ActivityException_is_thrown()
+        public void then_the_command_fails()
         {
-            Assert.IsAssignableFrom<ActivityException>(ThrownException);
+            Assert.True(Command.HasFailed);
         }
 
         [Fact]
         public void then_ErrorCode_is_LimitTooLow()
         {
-            var activityException = ThrownException as ActivityException;
-            Assert.NotNull(activityException);
-            Assert.Equal("LimitTooLow", activityException.ErrorCode);
+            Assert.Equal("LimitTooLow", Command.FailureCode);
         }
     }
 }

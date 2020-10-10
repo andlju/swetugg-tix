@@ -12,9 +12,10 @@
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.2" />
     <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
     <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Domain\Swetugg.Tix.Activity.Domain.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.ViewBuilder\Swetugg.Tix.Activity.ViewBuilder.csproj" />

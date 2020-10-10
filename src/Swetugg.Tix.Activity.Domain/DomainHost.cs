@@ -2,7 +2,7 @@ using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Domain.Core;
 using NEventStore.Domain.Persistence.EventStore;
-using Swetugg.Tix.Activity.Domain.CommandLog;
+
 using Swetugg.Tix.Activity.Domain.Handlers;
 using Swetugg.Tix.Infrastructure;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace Swetugg.Tix.Activity.Domain
     {
         private readonly IMessageDispatcher _messageDispatcher;
 
-        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {
             var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublisher) };
             if (extraHooks != null)
@@ -24,14 +24,13 @@ namespace Swetugg.Tix.Activity.Domain
                 eventStoreWireup
                     .HookIntoPipelineUsing(hooks)
                     .Build();
-            return new DomainHost(eventStore, loggerFactory);
+            return new DomainHost(eventStore, loggerFactory, commandLog);
         }
 
-        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory)
+        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory, ICommandLog commandLog)
         {
             var repository = new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
-            var commandLog = new EventStoreCommandLog(eventStore);
 
             // Register all command handlers
             dispatcher.Register(() => new CreateActivityHandler(repository, commandLog));

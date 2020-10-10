@@ -2,7 +2,7 @@ import { buildUrl } from "../url-utils";
 
 export interface CommandStatus {
   commandId: string,
-  activityId: string,
+  aggregateId: string,
   status: string,
 }
 

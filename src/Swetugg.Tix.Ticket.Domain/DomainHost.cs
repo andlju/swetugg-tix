@@ -13,7 +13,7 @@ namespace Swetugg.Tix.Ticket.Domain
     {
         private readonly IMessageDispatcher _messageDispatcher;
 
-        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {
             var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublisher) };
             if (extraHooks != null)

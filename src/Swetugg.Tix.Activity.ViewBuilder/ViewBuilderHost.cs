@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
@@ -92,30 +93,29 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         public async Task HandleCommits()
         {
             long checkpoint = 0;
+            using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var conn = new SqlConnection(_connectionString))
             {
                 checkpoint = await conn.ExecuteScalarAsync<long>("SELECT LastCheckpoint FROM [Checkpoint] WHERE Name=@name", new { name = "ViewBuilder" });
-            }
 
-            var commits = _store.GetFrom(checkpoint);
-            foreach (var commit in commits)
-            {
-                checkpoint = commit.CheckpointToken;
-                foreach (var evt in commit.Events)
+                var commits = _store.GetFrom(checkpoint);
+                foreach (var commit in commits)
                 {
-                    if (!_eventHandlers.TryGetValue(evt.Body.GetType(), out var handlers))
-                        continue;
-
-                    foreach (var handler in handlers)
+                    checkpoint = commit.CheckpointToken;
+                    foreach (var evt in commit.Events)
                     {
-                        await handler(evt.Body);
+                        if (!_eventHandlers.TryGetValue(evt.Body.GetType(), out var handlers))
+                            continue;
+
+                        foreach (var handler in handlers)
+                        {
+                            await handler(evt.Body);
+                        }
                     }
                 }
-            }
 
-            using (var conn = new SqlConnection(_connectionString))
-            {
                 var result = await conn.ExecuteAsync("UPDATE [Checkpoint] SET LastCheckpoint = @checkpoint WHERE Name=@name", new { name = "ViewBuilder", checkpoint });
+                trans.Complete();
             }
         }
     }

@@ -1,6 +1,5 @@
 using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Activity.Domain.CommandLog;
 using Swetugg.Tix.Infrastructure;
 using System;
 
@@ -22,7 +21,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
 
         public void Handle(TCmd msg)
         {
-            _commandLog.Store(msg);
+            _commandLog.Store(msg.CommandId, msg, msg.ActivityId.ToString());
             try
             {
                 var activity = GetActivity(msg.ActivityId);
@@ -43,7 +42,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
             catch(Exception ex)
             {
                 // This is an infrastructure error or bug. Let's try again a few times.
-                _commandLog.Fail(msg.CommandId, ex);
+                _commandLog.Fail(msg.CommandId, "UnknownError", ex.ToString());
                 throw;
             }
         }

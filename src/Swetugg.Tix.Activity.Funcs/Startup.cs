@@ -8,10 +8,10 @@ using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Activity.Events.CommandLog;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
+using Swetugg.Tix.Infrastructure.CommandLog;
 using System.Data.SqlClient;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Activity.Funcs.Startup))]
@@ -25,7 +25,12 @@ namespace Swetugg.Tix.Activity.Funcs
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
             builder.Services.AddSingleton<IEventPublisher, ServiceBusPublisher>();
-
+            builder.Services.AddSingleton<ICommandLog>(sp =>
+            {
+                var options = sp.GetService<IOptions<ActivityOptions>>();
+                var connectionString = options.Value.ViewsDbConnection;
+                return new SqlDbCommandLog(connectionString);
+            });
             builder.Services.AddSingleton(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
@@ -40,7 +45,7 @@ namespace Swetugg.Tix.Activity.Funcs
                     .UsingJsonSerialization();
 
                 return DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(),
-                        sp.GetService<ILoggerFactory>(), null);
+                        sp.GetService<ILoggerFactory>(), null, sp.GetService<ICommandLog>());
             });
             builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();
 
@@ -77,11 +82,6 @@ namespace Swetugg.Tix.Activity.Funcs
                 host.RegisterHandler<TicketTypeLimitRemoved>(new TicketTypeBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatReserved>(new TicketTypeBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatReturned>(new TicketTypeBuilder(viewsConnectionString));
-
-                // Register CommandLogBuilder
-                host.RegisterHandler<CommandBodyStoredLogEvent>(new CommandLogBuilder(viewsConnectionString));
-                host.RegisterHandler<CommandCompletedLogEvent>(new CommandLogBuilder(viewsConnectionString));
-                host.RegisterHandler<CommandFailedLogEvent>(new CommandLogBuilder(viewsConnectionString));
 
                 return host;
             });

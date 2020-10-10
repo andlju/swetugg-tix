@@ -1,6 +1,6 @@
 using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
-using Swetugg.Tix.Activity.Domain.CommandLog;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {

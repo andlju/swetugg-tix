@@ -1,4 +1,4 @@
-using Swetugg.Tix.Activity.Commands;
+﻿using Swetugg.Tix.Activity.Commands;
 using System;
 using System.Linq;
 using Xunit;
@@ -6,16 +6,14 @@ using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
-
-    public class when_reserving_seat_on_limited_ticket_type_on_full_activity : with_activity
+    public class when_reserving_seat_on_unlimited_ticket_type_on_full_activity : with_activity
     {
-        public when_reserving_seat_on_limited_ticket_type_on_full_activity(ITestOutputHelper output) : base(output)
+        public when_reserving_seat_on_unlimited_ticket_type_on_full_activity(ITestOutputHelper output) : base(output)
         {
         }
 
         protected Guid ActivityId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
-        protected Guid TicketTypeId2 = Guid.NewGuid();
 
         protected override void Setup()
         {
@@ -25,20 +23,11 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             activity
                 .WithSeats(20)
                 .WithTicketType(TicketTypeId)
-                .WithIncreasedTicketTypeLimit(TicketTypeId, 15)
-                .WithTicketType(TicketTypeId2)
-                .WithIncreasedTicketTypeLimit(TicketTypeId2, 15);
-
-            for (int i = 0; i < 15; i++)
+                .WithRemovedTicketTypeLimit(TicketTypeId);
+            for (int i = 0; i < 20; i++)
             {
                 activity
                     .WithReservedSeat(TicketTypeId, i.ToString());
-            }
-
-            for (int i = 0; i < 5; i++)
-            {
-                activity
-                    .WithReservedSeat(TicketTypeId2, i.ToString());
             }
 
         }
@@ -48,7 +37,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new ReserveSeat()
             {
                 ActivityId = ActivityId,
-                TicketTypeId = TicketTypeId2,
+                TicketTypeId = TicketTypeId,
                 Reference = "MyRef"
             };
         }

@@ -34,7 +34,7 @@ namespace Swetugg.Tix.Ticket.Funcs
                     .UsingJsonSerialization();
 
                 return DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(),
-                    sp.GetService<ILoggerFactory>(), null);
+                    sp.GetService<ILoggerFactory>(), null, null); // TODO Add CommandLog functionality
             });
 
             builder.Services.AddScoped<TicketCommandListenerFunc, TicketCommandListenerFunc>();

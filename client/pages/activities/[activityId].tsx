@@ -13,6 +13,7 @@ import { Activity } from '../../components/activities/activity.models';
 import ActivityDetails from '../../components/activities/activity-details';
 import TicketTypeList from '../../components/ticket-types/ticket-type-list';
 import { TicketType } from '../../components/ticket-types/ticket-type.models';
+import { getView } from '../../src/services/view-fetcher.service';
 
 interface ActivityProps {
   activity: Activity,
@@ -55,16 +56,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const activityId = context.params?.activityId;
   
   const [activityResp, ticketTypesResp] = await Promise.all([
-    fetch(buildUrl(`/activities/${activityId}`)), 
-    fetch(buildUrl(`/activities/${activityId}/ticket-types`))
+    getView<Activity>(buildUrl(`/activities/${activityId}`)), 
+    getView<TicketType[]>(buildUrl(`/activities/${activityId}/ticket-types`))
   ]);
-  const activityData = await activityResp.json() as Activity;
-  const ticketTypesData = await ticketTypesResp.json() as Activity;
 
   return {
     props: {
-      activity: activityData,
-      ticketTypes: ticketTypesData
+      activity: activityResp,
+      ticketTypes: ticketTypesResp
     }
   }
 }

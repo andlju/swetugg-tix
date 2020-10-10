@@ -31,17 +31,15 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         [Fact]
-        public void then_ActivityException_is_thrown()
+        public void then_the_command_fails()
         {
-            Assert.IsType<ActivityException>(ThrownException);
+            Assert.True(Command.HasFailed);
         }
 
         [Fact]
         public void then_errorcode_is_UnknownTicketType()
         {
-            var activityException = ThrownException as ActivityException;
-            Assert.NotNull(activityException);
-            Assert.Equal("UnknownTicketType", activityException.ErrorCode);
+            Assert.Equal("UnknownTicketType", Command.FailureCode);
         }
     }
 }

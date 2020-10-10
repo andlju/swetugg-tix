@@ -40,7 +40,7 @@ export default function CreateActivity({ }: CreateActivityProps) {
         name: 'test'
       });
 
-    router.push(`/activities/${result.activityId}`);
+    router.push(`/activities/${result.aggregateId}`);
   };
   return (<Paper className={classes.paper} component="form" onSubmit={createActivity}>
     <Typography variant="overline">Activity</Typography>

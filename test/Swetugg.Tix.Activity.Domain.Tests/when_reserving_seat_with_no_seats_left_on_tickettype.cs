@@ -35,17 +35,15 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         [Fact]
-        public void then_ActivityException_is_thrown()
+        public void then_the_command_fails()
         {
-            Assert.IsAssignableFrom<ActivityException>(ThrownException);
+            Assert.True(Command.HasFailed);
         }
 
         [Fact]
         public void then_errorcode_is_NotEnoughSeats()
         {
-            var activityException = ThrownException as ActivityException;
-            Assert.NotNull(activityException);
-            Assert.Equal("NoSeatsLeft", activityException.ErrorCode);
+            Assert.Equal("NoSeatsLeft", Command.FailureCode);
         }
     }
 }
