@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { router } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -33,18 +33,21 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CreateActivity({ }: CreateActivityProps) {
   const classes = useStyles();
+  const [creating, setCreating] = useState(false);
 
   const createActivity = async (evt : React.FormEvent) => {
     evt.preventDefault();
+    setCreating(true);
     const result = await sendCommand('/activities',  {
         name: 'test'
       });
-
-    router.push(`/activities/${result.aggregateId}`);
+    await router.push(`/activities/${result.aggregateId}`);
+    setCreating(false);
   };
+
   return (<Paper className={classes.paper} component="form" onSubmit={createActivity}>
     <Typography variant="overline">Activity</Typography>
     <TextField id="name" className={classes.input} label="Name" variant="outlined"></TextField>
-    <Button variant="outlined" className={classes.button} type="submit">Create</Button>
+    <Button variant="outlined" className={classes.button} type="submit" disabled={creating}>Create</Button>
   </Paper>);
 }

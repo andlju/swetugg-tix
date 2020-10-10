@@ -8,10 +8,13 @@ import {
 } from "@material-ui/core";
 import { TicketType } from "./ticket-type.models";
 import AddTicketType from "./add-ticket-type";
+import { useEffect, useState } from 'react';
+import { getView } from '../../src/services/view-fetcher.service';
+import { buildUrl } from '../../src/url-utils';
 
 interface TicketTypeListProps {
   activityId: string,
-  ticketTypes: TicketType[]
+  initialTicketTypes: TicketType[]
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -30,8 +33,26 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TicketTypeList({ ticketTypes, activityId }: TicketTypeListProps) {
+export default function TicketTypeList({ initialTicketTypes, activityId }: TicketTypeListProps) {
   const classes = useStyles();
+  const [ticketTypes, setTicketTypes] = useState(initialTicketTypes);
+  const [refreshTicketTypes, setRefreshTicketTypes] = useState('');
+
+  useEffect(() => {
+    if (refreshTicketTypes) {
+      console.log("Setting ticket types");
+      const fetchData = async () => {
+        const resp = await getView<TicketType[]>(
+          buildUrl(`/activities/${activityId}/ticket-types`),
+          v => refreshTicketTypes === "all" || !!v.find(tt => tt.ticketTypeId === refreshTicketTypes));
+        console.log("Found ticket types", resp);
+          setTicketTypes(resp);
+        setRefreshTicketTypes('');
+      };
+      fetchData();
+    }
+  }, [refreshTicketTypes]);
+
   return (<Paper className={classes.paper}>
     <Typography variant="overline">
       Ticket Types
@@ -61,7 +82,8 @@ export default function TicketTypeList({ ticketTypes, activityId }: TicketTypeLi
         </TableBody>
       </Table>
     </TableContainer>
-    <AddTicketType activityId={activityId} />
+    <Button onClick={() => setRefreshTicketTypes("all")}>Refresh</Button>
+    <AddTicketType activityId={activityId} refreshTicketTypes={(tt) => setRefreshTicketTypes(tt)}/>
   </Paper>);
 }
 

@@ -4,6 +4,8 @@ export interface CommandStatus {
   commandId: string,
   aggregateId: string,
   status: string,
+  jsonBody: string,
+  body: any
 }
 
 export async function sendCommand(url: string, body: any) : Promise<CommandStatus> {
@@ -30,6 +32,9 @@ export function waitForResult(commandId: string) : Promise<CommandStatus> {
     if (res.status == 200) {
       const commandStatus = await res.json() as CommandStatus;
       if (commandStatus.status === 'Completed' || commandStatus.status === 'Failed') {
+        if (commandStatus.jsonBody) {
+          commandStatus.body = JSON.parse(commandStatus.jsonBody);
+        }
         resolve(commandStatus);
         return;
       }

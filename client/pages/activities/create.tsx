@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function ActivityPage({ }: CreateActivityProps) {
+export default function ActivityPage() {
   const classes = useStyles();
 
   return (

@@ -35,11 +35,11 @@ namespace Swetugg.Tix.Activity.Funcs
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
 
-                var connectionString = options.Value.ActivityEventsDbConnection;
+                var eventStoreConnectionString = options.Value.ActivityEventsDbConnection;
                 var sqlClientFactoryInstance = SqlClientFactory.Instance;
 
                 var eventStore = Wireup.Init()
-                    .UsingSqlPersistence(sqlClientFactoryInstance, connectionString)
+                    .UsingSqlPersistence(sqlClientFactoryInstance, eventStoreConnectionString)
                     .WithDialect(new MsSqlDialect())
                     .InitializeStorageEngine()
                     .UsingJsonSerialization();

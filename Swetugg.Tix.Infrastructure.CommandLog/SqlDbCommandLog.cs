@@ -98,7 +98,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                     new {
                         CommandId = commandId,
                         AggregateId = aggregateId,
-                        JsonBody = JsonSerializer.Serialize(command),
+                        JsonBody = JsonSerializer.Serialize(command, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     });
                 trans.Complete();
             }

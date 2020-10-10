@@ -1,5 +1,5 @@
 
-export function getView<TView>(url: string) : Promise<TView> {
+export function getView<TView>(url: string, validatorFunc?: (view: TView) => boolean) : Promise<TView> {
 
   let attempts = 0;
   const pollStatus = async (resolve: any, reject: any) => {
@@ -8,8 +8,10 @@ export function getView<TView>(url: string) : Promise<TView> {
     const res = await fetch(url);
     if (res.status == 200) {
       const view = await res.json() as TView;
-      resolve(view);
-      return;
+      if (!validatorFunc || validatorFunc(view)) {
+        resolve(view);
+        return;
+      }
     }
     if (attempts >= 20) {
       reject({

@@ -1,10 +1,12 @@
 using Microsoft.Extensions.Logging;
 using NEventStore;
 using NEventStore.Domain.Core;
+using NEventStore.Domain.Persistence;
 using NEventStore.Domain.Persistence.EventStore;
 
 using Swetugg.Tix.Activity.Domain.Handlers;
 using Swetugg.Tix.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -29,20 +31,20 @@ namespace Swetugg.Tix.Activity.Domain
 
         private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory, ICommandLog commandLog)
         {
-            var repository = new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
+            Func<IRepository> repositoryFunc = () => new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
 
             // Register all command handlers
-            dispatcher.Register(() => new CreateActivityHandler(repository, commandLog));
-            dispatcher.Register(() => new AddSeatsHandler(repository, commandLog));
-            dispatcher.Register(() => new RemoveSeatsHandler(repository, commandLog));
-            dispatcher.Register(() => new AddTicketTypeHandler(repository, commandLog));
-            dispatcher.Register(() => new RemoveTicketTypeHandler(repository, commandLog));
-            dispatcher.Register(() => new ReserveSeatHandler(repository, commandLog));
-            dispatcher.Register(() => new ReturnSeatHandler(repository, commandLog));
-            dispatcher.Register(() => new IncreaseTicketTypeLimitHandler(repository, commandLog));
-            dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repository, commandLog));
-            dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repository, commandLog));
+            dispatcher.Register(() => new CreateActivityHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new AddSeatsHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new RemoveSeatsHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new AddTicketTypeHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new RemoveTicketTypeHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new ReserveSeatHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new ReturnSeatHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new IncreaseTicketTypeLimitHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repositoryFunc(), commandLog));
 
             _messageDispatcher = dispatcher;
         }
