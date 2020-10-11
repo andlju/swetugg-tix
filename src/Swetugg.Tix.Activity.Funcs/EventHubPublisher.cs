@@ -16,12 +16,18 @@ namespace Swetugg.Tix.Activity.Funcs
         private string _eventHubConnectionString;
         private string _eventHubName;
         private EventHubProducerClient _client;
+        private JsonSerializerOptions _jsonOptions;
 
         public EventHubPublisher(IOptions<ActivityOptions> activityOptions)
         {
             _eventHubConnectionString = activityOptions.Value.EventHubConnectionString;
             _eventHubName = activityOptions.Value.ActivityEventHubName;
             _client = new EventHubProducerClient(_eventHubConnectionString, _eventHubName);
+            _jsonOptions = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            _jsonOptions.Converters.Add(new PublishedEventConverter(typeof(Activity.Events.EventBase).Assembly));
         }
 
         public async Task Publish(PublishedEvents evts)

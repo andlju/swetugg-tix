@@ -1,18 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 using Swetugg.Tix.Activity.ViewBuilder;
+using Swetugg.Tix.Infrastructure;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
+
     public class EventHubViewBuilderFunc
     {
+        private readonly JsonSerializerOptions _jsonOptions;
+
         // private ViewBuilderHost _host;
+
+        public EventHubViewBuilderFunc()
+        {
+            _jsonOptions = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            };
+            _jsonOptions.Converters.Add(new PublishedEventConverter(typeof(Activity.Events.EventBase).Assembly));
+        }
 
         [FunctionName("EventHubViewBuilderFunc")]
         public async Task Run([EventHubTrigger("%ActivityEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%ActivityViewsConsumerGroup%")] EventData[] events, ILogger log)
@@ -24,7 +41,7 @@ namespace Swetugg.Tix.Activity.Funcs
                 try
                 {
                     string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
-
+                    var evt = JsonSerializer.Deserialize<PublishedEvent>(messageBody, _jsonOptions);
                     // Replace these two lines with your processing logic.
                     log.LogInformation($"C# Event Hub trigger function processed a message: {messageBody}");
                     await Task.Yield();

@@ -1,4 +1,8 @@
+using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Infrastructure
@@ -14,6 +18,51 @@ namespace Swetugg.Tix.Infrastructure
         public string EventType { get; set; }
         public object Body { get; set; }
         public IEnumerable<KeyValuePair<string, object>> Headers { get; set; }
+    }
+
+    public class PublishedEventConverter : JsonConverter<PublishedEvent>
+    {
+        class EventData
+        {
+            public string EventType { get; set; }
+            public JsonElement Body { get; set; }
+            public IEnumerable<KeyValuePair<string, object>> Headers { get; set; }
+        }
+
+        private readonly Assembly _eventAssembly;
+
+        public PublishedEventConverter(Assembly eventAssembly)
+        {
+            _eventAssembly = eventAssembly;
+        }
+
+        public override bool CanConvert(Type typeToConvert)
+        {
+            return base.CanConvert(typeToConvert);
+        }
+
+        
+        public override PublishedEvent Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var data = JsonSerializer.Deserialize<EventData>(ref reader, options);
+            return new PublishedEvent
+            {
+                EventType = data.EventType,
+                Headers = data.Headers,
+                Body = JsonSerializer.Deserialize(data.Body.GetRawText(), _eventAssembly.GetType(data.EventType), options)
+            };
+        }
+
+        public override void Write(Utf8JsonWriter writer, PublishedEvent value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WriteString(nameof(value.EventType), value.EventType);
+            writer.WritePropertyName(nameof(value.Headers));
+            JsonSerializer.Serialize(writer, value.Headers, options);
+            writer.WritePropertyName(nameof(value.Body));
+            JsonSerializer.Serialize(writer, value.Body, options);
+            writer.WriteEndObject();
+        }
     }
 
 
