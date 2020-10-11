@@ -7,10 +7,6 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
     {
         public override void Up()
         {
-            Create.Table("Checkpoint")
-                .WithColumn("Name").AsString(200).PrimaryKey()
-                .WithColumn("LastCheckpoint").AsInt64();
-
             Create.Schema("ActivityViews");
 
             Create.Table("ActivityOverview")
@@ -36,7 +32,6 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
 
         public override void Down()
         {
-            Delete.Table("Checkpoints");
             Delete.Table("ActivityOverview").InSchema("ActivityViews");
             Delete.Table("TicketType").InSchema("ActivityViews");
             Delete.Schema("ActivityViews");
