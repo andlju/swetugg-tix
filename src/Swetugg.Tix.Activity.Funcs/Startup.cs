@@ -25,6 +25,7 @@ namespace Swetugg.Tix.Activity.Funcs
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
             builder.Services.AddSingleton<IEventPublisher, ServiceBusPublisher>();
+            builder.Services.AddSingleton<IEventPublisher, EventHubPublisher>();
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
@@ -44,7 +45,7 @@ namespace Swetugg.Tix.Activity.Funcs
                     .InitializeStorageEngine()
                     .UsingJsonSerialization();
 
-                return DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(),
+                return DomainHost.Build(eventStore, sp.GetServices<IEventPublisher>(),
                         sp.GetService<ILoggerFactory>(), null, sp.GetService<ICommandLog>());
             });
             builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();

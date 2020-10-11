@@ -1,6 +1,6 @@
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Funcs.Options;
 using System.Text;
@@ -21,9 +21,9 @@ namespace Swetugg.Tix.Ticket.Funcs
             _client = new TopicClient(_serviceBusConnectionString, _topicName);
         }
 
-        public async Task Publish(object evt)
+        public async Task Publish(object evt, string aggregateId)
         {
-            var byteBody = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(evt));
+            var byteBody = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(evt, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
             var message = new Message(byteBody)
             {
                 Label = evt.GetType().FullName

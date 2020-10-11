@@ -1,26 +1,28 @@
 using NEventStore;
 using Swetugg.Tix.Infrastructure;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Swetugg.Tix.Activity.Domain
 {
 
     public class EventPublisherHook : PipelineHookBase
     {
-        private readonly IEventPublisher _publisher;
+        private readonly IEnumerable<IEventPublisher> _publishers;
 
-        public EventPublisherHook(IEventPublisher publisher)
+        public EventPublisherHook(IEnumerable<IEventPublisher> publishers)
         {
-            _publisher = publisher;
+            _publishers = publishers.ToArray();
         }
 
         public override void PostCommit(ICommit committed)
         {
-            if (committed.Headers.TryGetValue("CommandLog", out var commandLog) && (bool)commandLog == true)
-                return;
-
-            foreach (var evt in committed.Events)
+            foreach (var publisher in _publishers)
             {
-                _publisher.Publish(evt.Body);
+                foreach (var evt in committed.Events)
+                {
+                    publisher.Publish(evt.Body, committed.StreamId);
+                }
             }
         }
     }

@@ -27,6 +27,10 @@ export = async () => {
         accountReplicationType: "LRS",
     });
 
+    //
+    // Databases
+    //
+
     // Generate a random password
     const sqlAdminPassword = new random.RandomPassword("tixdbpassword", {
         length: 16,
@@ -72,6 +76,10 @@ export = async () => {
         requestedServiceObjectiveName: "S0",
     });
 
+    //
+    // Service bus
+    //
+
     const serviceBusNamespace = new azure.servicebus.Namespace(`${baseName}-bus`, {
         resourceGroupName: resourceGroup.name,
         sku: "Standard",
@@ -109,6 +117,25 @@ export = async () => {
         name: 'processactsub'
     });
 
+    //
+    // Event Hub
+    //
+    const eventHubNamespace = new azure.eventhub.EventHubNamespace('tixhub', {
+        resourceGroupName: resourceGroup.name,
+        sku: "Standard",
+        capacity: 1,
+    });
+
+    const activitiesEventHub = new azure.eventhub.EventHub('activities', {
+        resourceGroupName: resourceGroup.name,
+        namespaceName: eventHubNamespace.name,
+        partitionCount: 32,
+        messageRetention: 1,
+    });
+
+    //
+    // App Insights
+    //
     const appInsights = new azure.appinsights.Insights(`${baseName}-ai`, {
         resourceGroupName: resourceGroup.name,
 
@@ -132,7 +159,9 @@ export = async () => {
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         ActivityEventsDbConnection: activityEventStoreConnection,
         ViewsDbConnection: tixViewsConnection,
-        AzureWebJobsStorage: storageAccount.primaryConnectionString
+        AzureWebJobsStorage: storageAccount.primaryConnectionString,
+        EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
+        ActivityEventHubName: activitiesEventHub.name
     };
     const ticketAppSettings = {
         runtime: "dotnet",

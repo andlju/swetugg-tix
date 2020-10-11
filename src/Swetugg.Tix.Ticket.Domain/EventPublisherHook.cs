@@ -16,7 +16,7 @@ namespace Swetugg.Tix.Ticket.Domain
         {
             foreach (var evt in committed.Events)
             {
-                _publisher.Publish(evt.Body);
+                _publisher.Publish(evt.Body, committed.StreamId);
             }
         }
     }
