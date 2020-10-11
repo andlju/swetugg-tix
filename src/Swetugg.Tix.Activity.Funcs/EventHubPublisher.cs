@@ -6,8 +6,7 @@ using Azure.Messaging.EventHubs.Producer;
 using System.Text.Json;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Microsoft.Extensions.Options;
-using System.Collections;
-using System.Collections.Generic;
+using Swetugg.Tix.Activity.Events;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
@@ -27,7 +26,7 @@ namespace Swetugg.Tix.Activity.Funcs
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
-            _jsonOptions.Converters.Add(new PublishedEventConverter(typeof(Activity.Events.EventBase).Assembly));
+            _jsonOptions.Converters.Add(new PublishedEventConverter(typeof(EventBase).Assembly));
         }
 
         public async Task Publish(PublishedEvents evts)

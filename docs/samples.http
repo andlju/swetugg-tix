@@ -28,6 +28,7 @@ Content-Type: application/json
   "seats": 10
 }
 
+
 ### Remove available seats from an activity
 POST {{host}}/api/activities/{{activityId}}/remove-seats
 Content-Type: application/json
@@ -43,3 +44,8 @@ POST {{host}}/api/activities/{{activityId}}/ticket-type
 
 ### Remove a ticket type from an activity
 DELETE {{host}}/api/activities/{{activityId}}/ticket-types/{{ticketTypeId}}
+
+
+### Rebuild all views for an activity
+POST {{host}}/api/activities-admin/{{activityId}}/rebuild
+

@@ -5,6 +5,7 @@ using NEventStore.Domain.Persistence;
 using NEventStore.Domain.Persistence.EventStore;
 
 using Swetugg.Tix.Activity.Domain.Handlers;
+using Swetugg.Tix.Activity.Domain.Handlers.Admin;
 using Swetugg.Tix.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,9 @@ namespace Swetugg.Tix.Activity.Domain
 {
     public class DomainHost
     {
-        private readonly IMessageDispatcher _messageDispatcher;
-
-        public static DomainHost Build(Wireup eventStoreWireup, IEnumerable<IEventPublisher> eventPublishers, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher domainEventPublisher, IEventPublisher viewsEventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {
-            var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublishers) };
+            var hooks = new IPipelineHook[] { new EventPublisherHook(new[] { domainEventPublisher , viewsEventPublisher }) };
             if (extraHooks != null)
                 hooks = hooks.Concat(extraHooks).ToArray();
 
@@ -26,10 +25,10 @@ namespace Swetugg.Tix.Activity.Domain
                 eventStoreWireup
                     .HookIntoPipelineUsing(hooks)
                     .Build();
-            return new DomainHost(eventStore, loggerFactory, commandLog);
+            return new DomainHost(eventStore, loggerFactory, commandLog, viewsEventPublisher);
         }
 
-        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory, ICommandLog commandLog)
+        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory, ICommandLog commandLog, IEventPublisher viewsEventPublisher)
         {
             Func<IRepository> repositoryFunc = () => new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
@@ -46,9 +45,12 @@ namespace Swetugg.Tix.Activity.Domain
             dispatcher.Register(() => new DecreaseTicketTypeLimitHandler(repositoryFunc(), commandLog));
             dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repositoryFunc(), commandLog));
 
-            _messageDispatcher = dispatcher;
+            // Admin command handlers
+            dispatcher.Register(() => new RebuildViewsHandler(eventStore, viewsEventPublisher));
+
+            Dispatcher = dispatcher;
         }
 
-        public IMessageDispatcher Dispatcher => _messageDispatcher;
+        public IMessageDispatcher Dispatcher { get; }
     }
 }

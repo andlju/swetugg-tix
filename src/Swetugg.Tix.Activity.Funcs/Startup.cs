@@ -8,6 +8,7 @@ using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Events;
+using Swetugg.Tix.Activity.Events.Admin;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
@@ -24,8 +25,8 @@ namespace Swetugg.Tix.Activity.Funcs
             builder.Services.AddOptions<ActivityOptions>()
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
-            builder.Services.AddSingleton<IEventPublisher, ServiceBusPublisher>();
-            builder.Services.AddSingleton<IEventPublisher, EventHubPublisher>();
+            builder.Services.AddSingleton<ServiceBusPublisher>();
+            builder.Services.AddSingleton<EventHubPublisher>();
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
@@ -45,18 +46,24 @@ namespace Swetugg.Tix.Activity.Funcs
                     .InitializeStorageEngine()
                     .UsingJsonSerialization();
 
-                return DomainHost.Build(eventStore, sp.GetServices<IEventPublisher>(),
-                        sp.GetService<ILoggerFactory>(), null, sp.GetService<ICommandLog>());
+                return DomainHost.Build(
+                    eventStore,
+                    sp.GetService<ServiceBusPublisher>(),
+                    sp.GetService<EventHubPublisher>(),
+                    sp.GetService<ILoggerFactory>(),
+                    null,
+                    sp.GetService<ICommandLog>());
             });
             builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();
             builder.Services.AddScoped<EventHubViewBuilderFunc, EventHubViewBuilderFunc>();
+            builder.Services.AddScoped<DatabaseManagementFunc, DatabaseManagementFunc>();
 
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
                 var viewsConnectionString = options.Value.ViewsDbConnection;
 
-                var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), viewsConnectionString);
+                var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>());
 
                 // Register ActivityOverviewBuilder
                 host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
@@ -66,6 +73,7 @@ namespace Swetugg.Tix.Activity.Funcs
                 host.RegisterHandler<SeatReturned>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<TicketTypeAdded>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<TicketTypeRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<RebuildViewsRequested>(new ActivityOverviewBuilder(viewsConnectionString));
 
                 // Register TicketTypeBuilder
                 host.RegisterHandler<TicketTypeAdded>(new TicketTypeBuilder(viewsConnectionString));
@@ -75,9 +83,22 @@ namespace Swetugg.Tix.Activity.Funcs
                 host.RegisterHandler<TicketTypeLimitRemoved>(new TicketTypeBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatReserved>(new TicketTypeBuilder(viewsConnectionString));
                 host.RegisterHandler<SeatReturned>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterHandler<RebuildViewsRequested>(new TicketTypeBuilder(viewsConnectionString));
 
                 return host;
             });
+            builder.Services.AddSingleton<ViewDatabaseMigrator>(sp =>
+            {
+                var options = sp.GetService<IOptions<ActivityOptions>>();
+                var viewsConnectionString = options.Value.ViewsDbConnection;
+                var builder = new ViewDatabaseMigrator(viewsConnectionString);
+                
+                // Ensure that the database is properly initialized
+                builder.InitializeDatabase();
+                return builder;
+            });
+            
         }
+        
     }
 }

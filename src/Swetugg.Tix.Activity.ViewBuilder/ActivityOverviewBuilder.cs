@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Swetugg.Tix.Activity.Events;
+using Swetugg.Tix.Activity.Events.Admin;
 using Swetugg.Tix.Activity.Views;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
@@ -13,7 +14,8 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         IHandleEvent<SeatReserved>,
         IHandleEvent<SeatReturned>,
         IHandleEvent<TicketTypeAdded>,
-        IHandleEvent<TicketTypeRemoved>
+        IHandleEvent<TicketTypeRemoved>,
+        IHandleEvent<RebuildViewsRequested>
     {
         private readonly string _connectionString;
 
@@ -22,6 +24,19 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             _connectionString = connectionString;
         }
         
+        public async Task Handle(RebuildViewsRequested evt)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                await conn.ExecuteAsync(
+                    "DELETE FROM ActivityViews.ActivityOverview WHERE ActivityId = @ActivityId",
+                    new
+                    {
+                        ActivityId = evt.AggregateId
+                    });
+            }
+        }
+
         public async Task Handle(ActivityCreated evt)
         {
             using (var conn = new SqlConnection(_connectionString))
