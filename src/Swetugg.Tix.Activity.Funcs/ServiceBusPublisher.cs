@@ -22,15 +22,18 @@ namespace Swetugg.Tix.Activity.Funcs
             _client = new TopicClient(_serviceBusConnectionString, _topicName);
         }
 
-        public async Task Publish(object evt, string aggregateId)
+        public async Task Publish(PublishedEvents evts)
         {
-            var byteBody = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(evt, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
-            var message = new Message(byteBody)
+            foreach(var evt in evts.Events)
             {
-                Label = evt.GetType().FullName
-            };
+                var byteBody = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(evt.Body, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                var message = new Message(byteBody)
+                {
+                    Label = evt.EventType
+                };
 
-            await _client.SendAsync(message);
+                await _client.SendAsync(message);
+            }
         }
 
         public Task Close()

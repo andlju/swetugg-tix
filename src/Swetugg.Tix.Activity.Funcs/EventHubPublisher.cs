@@ -6,6 +6,8 @@ using Azure.Messaging.EventHubs.Producer;
 using System.Text.Json;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Microsoft.Extensions.Options;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
@@ -22,11 +24,14 @@ namespace Swetugg.Tix.Activity.Funcs
             _client = new EventHubProducerClient(_eventHubConnectionString, _eventHubName);
         }
 
-        public async Task Publish(object evt, string aggregateId)
+        public async Task Publish(PublishedEvents evts)
         {
-            var batch = await _client.CreateBatchAsync(new CreateBatchOptions { PartitionKey = aggregateId });
-            var jsonBody = JsonSerializer.Serialize(evt, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
-            batch.TryAdd(new EventData(Encoding.UTF8.GetBytes(jsonBody)));
+            var batch = await _client.CreateBatchAsync(new CreateBatchOptions { PartitionKey = evts.AggregateId });
+            foreach(var evt in evts.Events)
+            {
+                var jsonBody = JsonSerializer.Serialize(evt, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+                batch.TryAdd(new EventData(Encoding.UTF8.GetBytes(jsonBody)));
+            }
             await _client.SendAsync(batch);
         }
     }

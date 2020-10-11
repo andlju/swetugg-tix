@@ -47,7 +47,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.Views"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.ViewBuilder", "src\Swetugg.Tix.Activity.ViewBuilder\Swetugg.Tix.Activity.ViewBuilder.csproj", "{97C1E9D7-1EB1-4B13-B9A0-A8154118322B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Swetugg.Tix.Infrastructure.CommandLog", "Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj", "{7D3CD9AA-15D4-45CA-B077-46F08EABC4C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Infrastructure.CommandLog", "Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj", "{7D3CD9AA-15D4-45CA-B077-46F08EABC4C7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

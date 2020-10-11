@@ -15,9 +15,9 @@ namespace Swetugg.Tix.Ticket.Domain
     {
         private readonly IMessageDispatcher _messageDispatcher;
 
-        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher eventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
+        public static DomainHost Build(Wireup eventStoreWireup, IEnumerable<IEventPublisher> eventPublishers, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {
-            var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublisher) };
+            var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublishers) };
             if (extraHooks != null)
                 hooks = hooks.Concat(extraHooks).ToArray();
 

@@ -133,6 +133,11 @@ export = async () => {
         messageRetention: 1,
     });
 
+    const activityViewsConsumerGroup = new azure.eventhub.ConsumerGroup('activityviews', {
+        resourceGroupName: resourceGroup.name,
+        namespaceName: eventHubNamespace.name,
+        eventhubName: activitiesEventHub.name,
+    });
     //
     // App Insights
     //
@@ -161,7 +166,8 @@ export = async () => {
         ViewsDbConnection: tixViewsConnection,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
-        ActivityEventHubName: activitiesEventHub.name
+        ActivityEventHubName: activitiesEventHub.name,
+        ActivityViewsConsumerGroup: activityViewsConsumerGroup.name
     };
     const ticketAppSettings = {
         runtime: "dotnet",

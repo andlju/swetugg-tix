@@ -5,7 +5,7 @@ namespace Swetugg.Tix.Tests.Helpers
 {
     public class NullEventPublisher : IEventPublisher
     {
-        public Task Publish(object evt, string aggregateId)
+        public Task Publish(PublishedEvents evts)
         {
             return Task.FromResult(0);
         }

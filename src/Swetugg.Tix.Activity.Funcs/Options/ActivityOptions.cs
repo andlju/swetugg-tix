@@ -9,5 +9,6 @@
         public string ViewsDbConnection { get; set; }
         public string EventHubConnectionString { get; set; }
         public string ActivityEventHubName { get; set; }
+        public string ActivityViewsConsumerGroup { get; set; }
     }
 }

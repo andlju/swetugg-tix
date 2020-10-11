@@ -33,7 +33,7 @@ namespace Swetugg.Tix.Ticket.Funcs
                     .InitializeStorageEngine()
                     .UsingJsonSerialization();
 
-                return DomainHost.Build(eventStore, sp.GetService<IEventPublisher>(),
+                return DomainHost.Build(eventStore, sp.GetServices<IEventPublisher>(),
                     sp.GetService<ILoggerFactory>(), null, null); // TODO Add CommandLog functionality
             });
 

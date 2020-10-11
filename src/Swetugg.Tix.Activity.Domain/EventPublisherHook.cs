@@ -19,10 +19,19 @@ namespace Swetugg.Tix.Activity.Domain
         {
             foreach (var publisher in _publishers)
             {
-                foreach (var evt in committed.Events)
+                var evts = committed.Events.Select(e => new PublishedEvent
                 {
-                    publisher.Publish(evt.Body, committed.StreamId);
-                }
+                    Body = e.Body,
+                    Headers = e.Headers.Union(committed.Headers),
+                    EventType = e.Body.GetType().FullName
+                });
+
+                publisher.Publish(
+                    new PublishedEvents
+                    {
+                        AggregateId = committed.StreamId,
+                        Events = evts.ToArray()
+                    });
             }
         }
     }
