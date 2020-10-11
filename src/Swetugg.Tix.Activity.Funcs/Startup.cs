@@ -49,22 +49,14 @@ namespace Swetugg.Tix.Activity.Funcs
                         sp.GetService<ILoggerFactory>(), null, sp.GetService<ICommandLog>());
             });
             builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();
+            builder.Services.AddScoped<EventHubViewBuilderFunc, EventHubViewBuilderFunc>();
 
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
-                var eventStoreConnectionString = options.Value.ActivityEventsDbConnection;
                 var viewsConnectionString = options.Value.ViewsDbConnection;
 
-                var sqlClientFactoryInstance = SqlClientFactory.Instance;
-
-                var eventStore = Wireup.Init()
-                    .UsingSqlPersistence(sqlClientFactoryInstance, eventStoreConnectionString)
-                    .WithDialect(new MsSqlDialect())
-                    .InitializeStorageEngine()
-                    .UsingJsonSerialization();
-
-                var host = ViewBuilderHost.Build(eventStore, sp.GetService<ILoggerFactory>(), viewsConnectionString);
+                var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), viewsConnectionString);
 
                 // Register ActivityOverviewBuilder
                 host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
@@ -86,7 +78,6 @@ namespace Swetugg.Tix.Activity.Funcs
 
                 return host;
             });
-            builder.Services.AddScoped<BuildViewsFunc, BuildViewsFunc>();
         }
     }
 }

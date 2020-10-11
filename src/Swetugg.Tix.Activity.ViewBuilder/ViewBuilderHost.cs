@@ -1,9 +1,7 @@
-﻿using Dapper;
-using FluentMigrator.Runner;
+﻿using FluentMigrator.Runner;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using NEventStore;
-using NEventStore.Persistence;
+using Swetugg.Tix.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -14,13 +12,11 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 {
     public class ViewBuilderHost
     {
-        private IPersistStreams _store;
         private readonly string _connectionString;
         private IDictionary<Type, IList<Func<object, Task>>> _eventHandlers = new Dictionary<Type, IList<Func<object, Task>>>();
 
-        public ViewBuilderHost(IPersistStreams store, string connectionString)
+        public ViewBuilderHost(string connectionString)
         {
-            _store = store;
             _connectionString = connectionString;
 
             var serviceProvider = CreateServices();
@@ -30,15 +26,6 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             using (var scope = serviceProvider.CreateScope())
             {
                 UpdateDatabase(scope.ServiceProvider);
-            }
-
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                var hasCheckpoint = conn.ExecuteScalar<int>("SELECT COUNT(Name) FROM [Checkpoint] WHERE Name=@name", new { name = "ViewBuilder" });
-                if (hasCheckpoint <= 0)
-                {
-                    conn.Execute("INSERT INTO [Checkpoint] (Name, LastCheckpoint) VALUES(@Name,0)", new { name = "ViewBuilder" });
-                }
             }
         }
 
@@ -81,40 +68,23 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             handlerList.Add(evt => eventHandler.Handle((TEvent)evt));
         }
 
-        public static ViewBuilderHost Build(Wireup eventStoreWireup, ILoggerFactory loggerFactory, string viewsConnectionString)
+        public static ViewBuilderHost Build(ILoggerFactory loggerFactory, string viewsConnectionString)
         {
-            var eventStore =
-                eventStoreWireup
-                    .Build();
-
-            return new ViewBuilderHost(eventStore.Advanced, viewsConnectionString);
+            return new ViewBuilderHost(viewsConnectionString);
         }
 
-        public async Task HandleCommits()
+        public async Task HandlePublishedEvent(PublishedEvent evt)
         {
-            long checkpoint = 0;
+            if (!_eventHandlers.TryGetValue(evt.Body.GetType(), out var handlers))
+                return;
+
             using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var conn = new SqlConnection(_connectionString))
             {
-                checkpoint = await conn.ExecuteScalarAsync<long>("SELECT LastCheckpoint FROM [Checkpoint] WHERE Name=@name", new { name = "ViewBuilder" });
-
-                var commits = _store.GetFrom(checkpoint);
-                foreach (var commit in commits)
+                foreach (var handler in handlers)
                 {
-                    checkpoint = commit.CheckpointToken;
-                    foreach (var evt in commit.Events)
-                    {
-                        if (!_eventHandlers.TryGetValue(evt.Body.GetType(), out var handlers))
-                            continue;
-
-                        foreach (var handler in handlers)
-                        {
-                            await handler(evt.Body);
-                        }
-                    }
+                    await handler(evt.Body);
                 }
-
-                var result = await conn.ExecuteAsync("UPDATE [Checkpoint] SET LastCheckpoint = @checkpoint WHERE Name=@name", new { name = "ViewBuilder", checkpoint });
                 trans.Complete();
             }
         }

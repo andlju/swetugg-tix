@@ -138,6 +138,7 @@ export = async () => {
         namespaceName: eventHubNamespace.name,
         eventhubName: activitiesEventHub.name,
     });
+    
     //
     // App Insights
     //

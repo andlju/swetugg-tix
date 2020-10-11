@@ -10,14 +10,13 @@
     <PackageReference Include="FluentMigrator.Runner" Version="3.2.9" />
     <PackageReference Include="FluentMigrator.Runner.SqlServer" Version="3.2.9" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.1.1" />
-    <PackageReference Include="NEventStore" Version="7.0.0" />
-    <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Swetugg.Tix.Activity.Events\Swetugg.Tix.Activity.Events.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Views\Swetugg.Tix.Activity.Views.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

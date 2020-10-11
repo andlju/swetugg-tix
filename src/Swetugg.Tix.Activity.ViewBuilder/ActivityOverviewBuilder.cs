@@ -21,7 +21,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         {
             _connectionString = connectionString;
         }
-
+        
         public async Task Handle(ActivityCreated evt)
         {
             using (var conn = new SqlConnection(_connectionString))
