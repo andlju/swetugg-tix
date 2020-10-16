@@ -1,19 +1,19 @@
 import { makeStyles, Typography } from "@material-ui/core";
 import { ActivityDetailsProps } from "./activity.models";
 
-import { Paper } from "@material-ui/core";
+import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(2),
+  root: {
+    padding: theme.spacing(0),
   },
 }))
 
 export default function ActivityDetails({ activity }: ActivityDetailsProps) {
   const classes = useStyles();
   return (
-    <Paper className={classes.paper}>
+    <Container className={classes.root}>
       <Typography variant="overline">
         Activity Information
       </Typography>
@@ -29,6 +29,6 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
           </TableRow>
         </TableBody>
       </Table>
-    </Paper>
+    </Container>
   )
 }

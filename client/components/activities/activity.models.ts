@@ -12,5 +12,6 @@ export type ActivityListProps = {
 }
 
 export type ActivityDetailsProps = {
-  activity: Activity
+  activity: Activity,
+  refreshActivity: () => void
 }

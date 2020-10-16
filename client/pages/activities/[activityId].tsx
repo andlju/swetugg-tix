@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -14,9 +14,10 @@ import ActivityDetails from '../../components/activities/activity-details';
 import TicketTypeList from '../../components/ticket-types/ticket-type-list';
 import { TicketType } from '../../components/ticket-types/ticket-type.models';
 import { getView } from '../../src/services/view-fetcher.service';
+import ModifySeats from '../../components/activities/modify-seats';
 
 interface ActivityProps {
-  activity: Activity,
+  initialActivity: Activity,
   ticketTypes: TicketType[]
 }
 
@@ -30,8 +31,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function ActivityPage({ activity, ticketTypes }: ActivityProps) {
+export default function ActivityPage({ initialActivity, ticketTypes }: ActivityProps) {
   const classes = useStyles();
+  const [activity, setActivity] = useState(initialActivity);
+  const [refreshActivity, setRefreshActivity] = useState(false);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (refreshActivity) {
+        const resp = await getView<Activity>(
+          buildUrl(`/activities/${activity.activityId}`));
+          setActivity(resp);
+        setRefreshActivity(false);
+      }
+    };
+    fetchData();
+  }, [refreshActivity]);
 
   return (
     <Layout>
@@ -41,7 +56,18 @@ export default function ActivityPage({ activity, ticketTypes }: ActivityProps) {
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <ActivityDetails activity={activity} />
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <ActivityDetails activity={activity} refreshActivity={() => setRefreshActivity(true) } />
+                </Paper>
+              </Grid>
+              <Grid item xs={12}>
+                <Paper className={classes.paper}>
+                  <ModifySeats activity={activity} refreshActivity={() => setRefreshActivity(true) }/>
+                </Paper>
+              </Grid>
+            </Grid>
           </Grid>
           <Grid item xs={12} md={8}>
             <TicketTypeList initialTicketTypes={ticketTypes} activityId={activity.activityId} />
@@ -62,7 +88,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      activity: activityResp,
+      initialActivity: activityResp,
       ticketTypes: ticketTypesResp
     }
   }
