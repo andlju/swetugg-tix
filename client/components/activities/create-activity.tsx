@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import router from 'next/router';
-import { Container, makeStyles } from '@material-ui/core';
+import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 import {
   Typography,
   TextField,
@@ -28,7 +28,19 @@ const useStyles = makeStyles((theme) => ({
     flex: '1',
   },
   button: {
-    marginLeft: theme.spacing(2)
+
+  },
+  progressWrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    color: theme.palette.action.active,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
   }
 }));
 
@@ -44,14 +56,14 @@ export default function CreateActivity({ }: CreateActivityProps) {
     defaultValues: {
     }
   });
-  const [ createActivity, sending ] = useCommand('Create activity');
+  const [createActivity, sending] = useCommand('Create activity');
   const onSubmit = async (data: FormData) => {
     try {
       const result = await createActivity(`/activities`, {
         name: data.activityName
       });
       await router.push(`/activities/${result.aggregateId}`);
-    } catch(err) {
+    } catch (err) {
 
     }
   }
@@ -63,11 +75,15 @@ export default function CreateActivity({ }: CreateActivityProps) {
         inputRef={register}
         variant="outlined" className={classes.input}
         disabled={formState.isSubmitting} />
-      <Button type="submit"
-        variant="outlined" className={classes.button}
-        disabled={formState.isSubmitting}>
-        Create
-      </Button>
+
+      <div className={classes.progressWrapper}>
+        <Button type="submit"
+          variant="outlined" className={classes.button}
+          disabled={formState.isSubmitting}>
+          Create
+        </Button>
+        {formState.isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
+      </div>
     </form>
   </Container>);
 }

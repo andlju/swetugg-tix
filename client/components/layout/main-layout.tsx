@@ -12,7 +12,7 @@ import Badge from '@material-ui/core/Badge';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import { mainListItems, secondaryListItems } from './list-items';
+import { mainListItems, adminListItems } from './list-items';
 
 
 const drawerWidth = 240;
@@ -139,8 +139,8 @@ function Layout({ children }: PropsWithChildren<any>) {
       <Divider />
       <List>{mainListItems}</List>
       <Divider />
-      <List>{secondaryListItems}</List>
-    </Drawer>
+      <List>{adminListItems}</List>
+    </Drawer>s
     <main className={classes.content}>
       <div className={classes.appBarSpacer} />
       {children}

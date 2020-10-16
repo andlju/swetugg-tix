@@ -35,12 +35,12 @@ export default function CreatePage() {
           Create Activity
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={6}>
             <Paper className={classes.paper}>
               <CreateActivity />
             </Paper>
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={6}>
 
           </Grid>
         </Grid>

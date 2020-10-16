@@ -6,13 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Layout from '../components/layout/main-layout';
-import { buildUrl } from '../src/url-utils';
-import ActivityList from '../components/activities/activity-list';
-import { Activity } from '../components/activities/activity.models';
+import Layout from '../../components/layout/main-layout';
+import { buildUrl } from '../../src/url-utils';
+import ActivityList from '../../components/activities/activity-list';
+import { Activity } from '../../components/activities/activity.models';
 
-interface IndexProps {
-
+interface ActivitiesProps {
+  activities: Activity[]
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -30,20 +30,20 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Index({  }: IndexProps) {
+export default function Index({ activities }: ActivitiesProps) {
   const classes = useStyles();
 
   return (
     <Layout>
       <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
-          Swetugg Tix Dashboard
+          Activities
         </Typography>
         <Grid container spacing={3}>
           {/* List of activities */}
           <Grid item xs={12}>
             <Paper className={clsx(classes.paper, classes.activityList)}>
-
+              <ActivityList activities={activities} ></ActivityList>
             </Paper>
           </Grid>
         </Grid>
@@ -54,9 +54,12 @@ export default function Index({  }: IndexProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async () => {
+  const resp = await fetch(buildUrl('/activities'));
+  const data = await resp.json() as Activity[];
+
   return {
     props: {
-
+      activities: data
     }
   }
 }
