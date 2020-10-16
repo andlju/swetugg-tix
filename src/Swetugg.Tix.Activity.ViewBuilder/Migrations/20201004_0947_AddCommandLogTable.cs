@@ -13,6 +13,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .InSchema("ActivityLogs")
                 .WithColumn("CommandId").AsGuid().PrimaryKey()
                 .WithColumn("AggregateId").AsString(200).Nullable()
+                .WithColumn("CommandType").AsString(300).Nullable()
                 .WithColumn("JsonBody").AsCustom("ntext").Nullable()
                 .WithColumn("Status").AsString(100).NotNullable()
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();

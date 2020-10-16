@@ -46,7 +46,7 @@ namespace Swetugg.Tix.Activity.Domain
             dispatcher.Register(() => new RemoveTicketTypeLimitHandler(repositoryFunc(), commandLog));
 
             // Admin command handlers
-            dispatcher.Register(() => new RebuildViewsHandler(eventStore, viewsEventPublisher));
+            dispatcher.Register(() => new RebuildViewsHandler(eventStore, viewsEventPublisher, commandLog));
 
             Dispatcher = dispatcher;
         }

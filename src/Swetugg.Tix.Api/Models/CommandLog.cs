@@ -24,6 +24,7 @@ namespace Swetugg.Tix.Api.Models
     {
         public Guid CommandId { get; set; }
         public string AggregateId { get; set; }
+        public string CommandType { get; set; }
         public string Status { get; set; }
         public string JsonBody { get; set; }
         public DateTime LastUpdated { get; set; }

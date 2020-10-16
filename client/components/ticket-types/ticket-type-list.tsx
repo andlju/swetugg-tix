@@ -83,7 +83,7 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
         </TableBody>
       </Table>
     </TableContainer>
-    <Button onClick={() => setRefreshTicketTypes("all")}>Refresh</Button>
+
     <AddTicketType activityId={activityId} refreshTicketTypes={(tt) => setRefreshTicketTypes(tt)}/>
   </Paper>);
 }

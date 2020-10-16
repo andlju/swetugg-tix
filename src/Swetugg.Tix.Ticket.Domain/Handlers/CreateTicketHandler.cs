@@ -2,6 +2,7 @@
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {
@@ -14,22 +15,11 @@ namespace Swetugg.Tix.Ticket.Domain.Handlers
             _repository = repository;
         }
 
-        public void Handle(CreateTicket msg)
+        public Task Handle(CreateTicket msg)
         {
             var ticket = new Ticket(msg.TicketId, msg.TicketTypeId, msg.CouponId);
             _repository.Save(ticket, Guid.NewGuid());
-        }
-    }
-
-    public class ConfirmSeatReservationHandler : TicketMessageHandler<ConfirmSeatReservation>
-    {
-        public ConfirmSeatReservationHandler(IRepository repository) : base(repository)
-        {
-        }
-
-        protected override void HandleCommand(Ticket ticket, ConfirmSeatReservation cmd)
-        {
-            ticket.ConfirmSeatReservation();
+            return Task.FromResult(0);
         }
     }
 }

@@ -104,7 +104,7 @@ namespace Swetugg.Tix.Tests.Helpers
             // Dispatch all commands that should be preconditions
             foreach (var givenCommand in _givenInternal.Commands)
             {
-                dispatcher.Dispatch(givenCommand);
+                dispatcher.Dispatch(givenCommand).Wait();
             }
 
             // Make sure the test hook starts recording commits
@@ -115,7 +115,7 @@ namespace Swetugg.Tix.Tests.Helpers
             try
             {
                 // Dispatch the command
-                dispatcher.Dispatch(whenCommand);
+                dispatcher.Dispatch(whenCommand).Wait();
             }
             catch (Exception ex)
             {

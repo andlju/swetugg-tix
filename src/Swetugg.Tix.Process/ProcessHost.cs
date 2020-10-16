@@ -7,6 +7,7 @@ using Swetugg.Tix.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Process
 {
@@ -42,22 +43,24 @@ namespace Swetugg.Tix.Process
 
         public IMessageDispatcher Dispatcher { get; }
 
-        public void Handle(Ticket.Events.TicketCreated evt)
+        public Task Handle(Ticket.Events.TicketCreated evt)
         {
             var processId = evt.AggregateId;
             var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
             saga.Transition(evt);
 
             _sagaRepository.Save(saga, Guid.NewGuid(), null);
+            return Task.FromResult(0);
         }
 
-        public void Handle(Activity.Events.SeatReserved evt)
+        public Task Handle(Activity.Events.SeatReserved evt)
         {
             var processId = Guid.Parse(evt.Reference);
             var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
             saga.Transition(evt);
 
             _sagaRepository.Save(saga, Guid.NewGuid(), null);
+            return Task.FromResult(0);
         }
 
         class MessageDispatcherHook : PipelineHookBase

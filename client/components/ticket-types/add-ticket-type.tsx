@@ -4,9 +4,8 @@ import {
   Button, Typography, Container
 } from "@material-ui/core";
 import React from "react";
-import { useState } from "react";
-import { sendCommand } from "../../src/services/command.service";
-import { buildUrl } from "../../src/url-utils";
+import { useForm } from "react-hook-form";
+import { useCommand } from "../../src/use-command.hook";
 
 interface AddTicketTypeProps {
   activityId: string,
@@ -30,34 +29,38 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+type FormData = {
+  ticketTypeName: string
+};
 
 export default function AddTicketType({ activityId, refreshTicketTypes }: AddTicketTypeProps) {
   const classes = useStyles();
-  const [creating, setCreating] = useState(false);
-  const [ticketTypeName, setTicketTypeName] = useState<string>('');
 
-  const addTicketType = async (evt: React.FormEvent) => {
-    evt.preventDefault();
-    setTicketTypeName('');
-    setCreating(true);
-    const res = await sendCommand(`/activities/${activityId}/ticket-types`, {
-      name: 'test'
+  const [addTicketType, sending] = useCommand("Add Ticket Type");
+
+  const { register, handleSubmit, setValue, errors, formState } = useForm<FormData>({
+    defaultValues: {
+    }
+  });
+
+  const onSubmit = async (data: FormData) => {
+    const res = await addTicketType(`/activities/${activityId}/ticket-types`, {
+      name: data.ticketTypeName
     });
-    setCreating(false);
-    console.log("Command status", res.body);
+    setValue("ticketTypeName", "");
     refreshTicketTypes(res.body.ticketTypeId);
-  }
-
-  const handleChange = (event: React.ChangeEvent<any>) => {
-    setTicketTypeName(event.target.value);
   }
 
   return (
     <Container className={classes.root}>
       <Typography variant="overline">Add New</Typography>
-      <form className={classes.form} onSubmit={addTicketType}>
-        <TextField id="name" className={classes.input} label="Name" value={ticketTypeName} size="small" disabled={creating} onChange={handleChange}></TextField>
-        <Button type="submit" className={classes.button} variant="outlined" color="primary" disabled={creating}>Add</Button>
+      <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+        <TextField name="ticketTypeName" label="Name"
+          size="small" className={classes.input}
+          inputRef={register}
+          disabled={formState.isSubmitting} />
+        <Button type="submit" className={classes.button} variant="outlined" color="primary"
+          disabled={formState.isSubmitting}>Add</Button>
       </form>
     </Container>
   );

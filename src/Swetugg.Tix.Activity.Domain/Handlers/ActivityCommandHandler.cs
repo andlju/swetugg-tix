@@ -2,6 +2,7 @@ using NEventStore.Domain.Persistence;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Infrastructure;
 using System;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.Domain.Handlers
 {
@@ -19,9 +20,9 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
             _commandLog = commandLog;
         }
 
-        public void Handle(TCmd msg)
+        public async Task Handle(TCmd msg)
         {
-            _commandLog.Store(msg.CommandId, msg, msg.ActivityId.ToString());
+            await _commandLog.Store(msg.CommandId, msg, msg.ActivityId.ToString());
             try
             {
                 var activity = GetActivity(msg.ActivityId);
@@ -32,17 +33,17 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
                 {
                     headers.Add("CommandId", msg.CommandId.ToString());
                 });
-                _commandLog.Complete(msg.CommandId);
+                await _commandLog.Complete(msg.CommandId);
             }
             catch (ActivityException ex)
             {
                 // This is a domain error and shouldn't be retried
-                _commandLog.Fail(msg.CommandId, ex.ErrorCode, ex.Message);
+                await _commandLog.Fail(msg.CommandId, ex.ErrorCode, ex.Message);
             }
             catch(Exception ex)
             {
                 // This is an infrastructure error or bug. Let's try again a few times.
-                _commandLog.Fail(msg.CommandId, "UnknownError", ex.ToString());
+                await _commandLog.Fail(msg.CommandId, "UnknownError", ex.ToString());
                 throw;
             }
         }

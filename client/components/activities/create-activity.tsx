@@ -1,52 +1,73 @@
 import React, { useState } from 'react';
 import router from 'next/router';
-import { makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
+import { Container, makeStyles } from '@material-ui/core';
 import {
   Typography,
-  Paper,
   TextField,
   Button
 } from '@material-ui/core';
 
-import { buildUrl } from '../../src/url-utils';
 import { sendCommand } from '../../src/services/command.service';
+import { useForm } from 'react-hook-form';
+import { useSnackbar } from 'notistack';
+import { useCommand } from '../../src/use-command.hook';
 
 interface CreateActivityProps {
 
 }
 
 const useStyles = makeStyles((theme) => ({
-  paper: {
-    padding: theme.spacing(2),
+  root: {
+    padding: theme.spacing(0)
+  },
+  form: {
     display: 'flex',
-    flexDirection: 'column'
+    flexDirection: 'row',
   },
   input: {
     flex: '1',
-    marginTop: theme.spacing(2)
   },
   button: {
-    marginTop: theme.spacing(2)
+    marginLeft: theme.spacing(2)
   }
 }));
 
+type FormData = {
+  activityName: String
+};
+
+
 export default function CreateActivity({ }: CreateActivityProps) {
   const classes = useStyles();
-  const [creating, setCreating] = useState(false);
 
-  const createActivity = async (evt : React.FormEvent) => {
-    evt.preventDefault();
-    setCreating(true);
-    const result = await sendCommand('/activities',  {
-        name: 'test'
+  const { register, handleSubmit, setValue, errors, formState } = useForm<FormData>({
+    defaultValues: {
+    }
+  });
+  const [ createActivity, sending ] = useCommand('Create activity');
+  const onSubmit = async (data: FormData) => {
+    try {
+      const result = await createActivity(`/activities`, {
+        name: data.activityName
       });
-    await router.push(`/activities/${result.aggregateId}`);
-  };
+      await router.push(`/activities/${result.aggregateId}`);
+    } catch(err) {
 
-  return (<Paper className={classes.paper} component="form" onSubmit={createActivity}>
+    }
+  }
+
+  return (<Container className={classes.root}>
     <Typography variant="overline">Activity</Typography>
-    <TextField id="name" className={classes.input} label="Name" variant="outlined"></TextField>
-    <Button variant="outlined" className={classes.button} type="submit" disabled={creating}>Create</Button>
-  </Paper>);
+    <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+      <TextField name="activityName" label="Name"
+        inputRef={register}
+        variant="outlined" className={classes.input}
+        disabled={formState.isSubmitting} />
+      <Button type="submit"
+        variant="outlined" className={classes.button}
+        disabled={formState.isSubmitting}>
+        Create
+      </Button>
+    </form>
+  </Container>);
 }

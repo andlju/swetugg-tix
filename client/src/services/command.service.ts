@@ -1,14 +1,29 @@
 import { buildUrl } from "../url-utils";
 
+enum CommandLogSeverity {
+  Verbose = 0,
+  Debug = 1,
+  Information = 2,
+  Warning = 3,
+  Error = 4
+}
+
+interface CommandStatusMessage {
+  code: string,
+  message: string,
+  severity: CommandLogSeverity
+}
+
 export interface CommandStatus {
   commandId: string,
   aggregateId: string,
   status: string,
   jsonBody: string,
-  body: any
+  body: any,
+  messages?: CommandStatusMessage[]
 }
 
-export async function sendCommand(url: string, body: any) : Promise<CommandStatus> {
+export async function sendCommand(url: string, body: any): Promise<CommandStatus> {
   const res = await fetch(buildUrl(url), {
     method: "POST",
     headers: {
@@ -16,13 +31,15 @@ export async function sendCommand(url: string, body: any) : Promise<CommandStatu
     },
     body: JSON.stringify(body)
   });
-  const commandStatus = await res.json() as CommandStatus;
-  console.log(`Command sent`, commandStatus);
-  
-  return await waitForResult(commandStatus.commandId);
+  if (res.status === 200) {
+    const commandStatus = await res.json() as CommandStatus;
+    console.log(`Command sent`, commandStatus);
+    return await waitForResult(commandStatus.commandId);
+  }
+  throw { code: "CommandSendFailed", message: "Failed when sending command" }
 }
 
-export function waitForResult(commandId: string) : Promise<CommandStatus> {
+export function waitForResult(commandId: string): Promise<CommandStatus> {
 
   let attempts = 0;
   const pollStatus = async (resolve: any, reject: any) => {
@@ -31,11 +48,16 @@ export function waitForResult(commandId: string) : Promise<CommandStatus> {
     const res = await fetch(buildUrl(`/activities/commands/${commandId}`));
     if (res.status == 200) {
       const commandStatus = await res.json() as CommandStatus;
-      if (commandStatus.status === 'Completed' || commandStatus.status === 'Failed') {
-        if (commandStatus.jsonBody) {
-          commandStatus.body = JSON.parse(commandStatus.jsonBody);
-        }
+      if (commandStatus.jsonBody) {
+        commandStatus.body = JSON.parse(commandStatus.jsonBody);
+      }
+      if (commandStatus.status === 'Completed') {
         resolve(commandStatus);
+        return;
+      }
+      if (commandStatus.status === 'Failed') {
+        const message = commandStatus.messages?.find(_ => true) ?? { code: "UnknownError", message: "Unknown command failure" };
+        reject(message);
         return;
       }
     }
@@ -52,5 +74,5 @@ export function waitForResult(commandId: string) : Promise<CommandStatus> {
   const promise = new Promise<CommandStatus>((resolve, reject) => {
     pollStatus(resolve, reject);
   });
-  return promise;  
+  return promise;
 }

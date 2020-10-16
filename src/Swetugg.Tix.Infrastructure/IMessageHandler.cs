@@ -1,7 +1,9 @@
-﻿namespace Swetugg.Tix.Infrastructure
+﻿using System.Threading.Tasks;
+
+namespace Swetugg.Tix.Infrastructure
 {
     public interface IMessageHandler<T>
     {
-        void Handle(T msg);
+        Task Handle(T msg);
     }
 }

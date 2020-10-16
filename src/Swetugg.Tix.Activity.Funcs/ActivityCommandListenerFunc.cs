@@ -7,6 +7,7 @@ using Swetugg.Tix.Activity.Domain;
 using System;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
@@ -22,7 +23,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("ActivityCommandListenerFunc")]
-        public void Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
+        public async Task Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)
@@ -33,7 +34,7 @@ namespace Swetugg.Tix.Activity.Funcs
             var cmdString = Encoding.UTF8.GetString(commandMsg.Body);
             var command = JsonConvert.DeserializeObject(cmdString, messageType);
 
-            _domainHost.Dispatcher.Dispatch(command);
+            await _domainHost.Dispatcher.Dispatch(command);
             Console.Out.WriteLine($"{messageType.Name} Command handled successfully");
         }
     }

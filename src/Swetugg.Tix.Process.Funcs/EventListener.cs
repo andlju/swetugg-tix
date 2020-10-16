@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Process.Funcs
             var evtString = Encoding.UTF8.GetString(eventMessage.Body);
             var evt = JsonConvert.DeserializeObject(evtString, messageType);
 
-            _processHost.Dispatcher.Dispatch(evt, false);
+            await _processHost.Dispatcher.Dispatch(evt, false);
         }
 
     }

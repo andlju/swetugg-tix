@@ -1,6 +1,6 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
-import { makeStyles } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import clsx from 'clsx';
 import {
   Container,
@@ -11,6 +11,7 @@ import {
 import Link from '../../components/Link';
 import Layout from '../../components/layout/main-layout';
 import CreateActivity from '../../components/activities/create-activity';
+import { useForm } from 'react-hook-form';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -19,20 +20,12 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   paper: {
-    padding: theme.spacing(2),
-    display: 'flex',
-    flexDirection: 'column'
-  },
-  input: {
-    flex: '1',
-    marginTop: theme.spacing(2)
-  },
-  button: {
-    marginTop: theme.spacing(2)
+    padding: theme.spacing(2)
   }
 }));
 
-export default function ActivityPage() {
+
+export default function CreatePage() {
   const classes = useStyles();
 
   return (
@@ -43,7 +36,9 @@ export default function ActivityPage() {
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} md={4}>
-            <CreateActivity />
+            <Paper className={classes.paper}>
+              <CreateActivity />
+            </Paper>
           </Grid>
           <Grid item xs={12} md={8}>
 

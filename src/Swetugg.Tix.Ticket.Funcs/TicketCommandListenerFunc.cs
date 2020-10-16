@@ -7,6 +7,7 @@ using Swetugg.Tix.Ticket.Domain;
 using System;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Ticket.Funcs
 {
@@ -22,7 +23,7 @@ namespace Swetugg.Tix.Ticket.Funcs
         }
 
         [FunctionName("TicketCommandListenerFunc")]
-        public void Run([ServiceBusTrigger("%TicketCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
+        public async Task Run([ServiceBusTrigger("%TicketCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
             log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
@@ -35,7 +36,7 @@ namespace Swetugg.Tix.Ticket.Funcs
             var command = JsonConvert.DeserializeObject(cmdString, messageType);
 
             Console.Out.WriteLine($"Dispatching {messageType.Name} command");
-            _domainHost.Dispatcher.Dispatch(command);
+            await _domainHost.Dispatcher.Dispatch(command);
             Console.Out.WriteLine("Command handled successfully");
         }
     }

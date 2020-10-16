@@ -2,6 +2,7 @@
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Ticket.Commands;
 using System;
+using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {
@@ -16,7 +17,7 @@ namespace Swetugg.Tix.Ticket.Domain.Handlers
             _repository = repository;
         }
 
-        public void Handle(TCmd msg)
+        public Task Handle(TCmd msg)
         {
             var ticket = GetTicket(msg.TicketId);
 
@@ -26,6 +27,7 @@ namespace Swetugg.Tix.Ticket.Domain.Handlers
             {
                 headers.Add("CommandId", msg.CommandId.ToString());
             });
+            return Task.FromResult(0);
         }
 
         protected virtual Ticket GetTicket(Guid ticketId)

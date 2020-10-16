@@ -69,7 +69,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                         Status = CommandStatus.Failed.ToString()
                     });
                 await conn.ExecuteAsync(
-                    "INSERT INTO ActivityLogs.CommandLogMessages " +
+                    "INSERT INTO ActivityLogs.CommandLogMessage " +
                     "(CommandId, Severity, Code, Message, Timestamp) " +
                     "VALUES (@CommandId, @Severity, @Code, @Message, SYSUTCDATETIME())",
                     new
@@ -92,12 +92,14 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                 await conn.ExecuteAsync(
                     "UPDATE ActivityLogs.CommandLog " +
                     "SET AggregateId = @AggregateId, " +
+                    "CommandType = @CommandType, " +
                     "JsonBody = @JsonBody, " +
                     "LastUpdated = SYSUTCDATETIME() " +
                     "WHERE CommandId = @CommandId",
                     new {
                         CommandId = commandId,
                         AggregateId = aggregateId,
+                        CommandType = command.GetType().Name,
                         JsonBody = JsonSerializer.Serialize(command, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }),
                     });
                 trans.Complete();

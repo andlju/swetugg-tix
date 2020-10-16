@@ -59,7 +59,7 @@ namespace Swetugg.Tix.Tests.Helpers
             var givenEvents = _givenInternal.Events;
             foreach (var givenEvt in givenEvents)
             {
-                dispatcher.Dispatch(givenEvt);
+                dispatcher.Dispatch(givenEvt).Wait();
             }
 
             testHook.CollectCommits = true;
@@ -68,7 +68,7 @@ namespace Swetugg.Tix.Tests.Helpers
             var evt = When();
             try
             {
-                dispatcher.Dispatch(evt);
+                dispatcher.Dispatch(evt).Wait();
             }
             catch (Exception ex)
             {

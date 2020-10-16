@@ -1,7 +1,9 @@
-﻿namespace Swetugg.Tix.Infrastructure
+﻿using System.Threading.Tasks;
+
+namespace Swetugg.Tix.Infrastructure
 {
     public interface IMessageDispatcher
     {
-        void Dispatch(object msg, bool throwOnMissing = true);
+        Task Dispatch(object msg, bool throwOnMissing = true);
     }
 }

@@ -12,16 +12,21 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
         private IStoreEvents _eventStore;
         private readonly IEventPublisher _eventPublisher;
 
-        public RebuildViewsHandler(IStoreEvents eventStore, IEventPublisher eventPublisher)
+        public RebuildViewsHandler(IStoreEvents eventStore, IEventPublisher eventPublisher, ICommandLog commandLog) : base(commandLog)
         {
             _eventStore = eventStore;
             _eventPublisher = eventPublisher;
         }
 
-        public override void Handle(RebuildViews command)
+        protected override void HandleCommand(RebuildViews command)
         {
             using (var stream = _eventStore.OpenStream(command.ActivityId))
             {
+                if (stream.StreamRevision == 0)
+                {
+                    throw new ActivityException("UnknownActivity", $"No Activity found with id {command.ActivityId}");
+                }
+
                 var streamEvents = stream.CommittedEvents.Select(e => new PublishedEvent
                 {
                     EventType = e.Body.GetType().FullName,
