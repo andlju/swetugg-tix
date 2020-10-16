@@ -20,19 +20,24 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
 
         private async Task EnsureCommandLog(SqlConnection conn, Guid commandId, string aggregateId)
         {
-            var hasLog = await conn.ExecuteScalarAsync<bool>("SELECT 1 FROM ActivityLogs.CommandLog WHERE CommandId = @CommandId", new { CommandId = commandId });
+            var hasLog = await conn.ExecuteScalarAsync<bool>(
+                "SELECT 1 FROM ActivityLogs.CommandLog " +
+                "WHERE CommandId = @CommandId", new { CommandId = commandId });
             if (hasLog)
                 return;
 
-            await conn.ExecuteAsync("INSERT INTO ActivityLogs.CommandLog (CommandId, AggregateId, Status, LastUpdated) VALUES (@CommandId, @AggregateId, @Status, SYSUTCDATETIME())", new
-            {
-                CommandId = commandId,
-                AggregateId = aggregateId,
-                Status = CommandStatus.Created.ToString()
-            });
+            await conn.ExecuteAsync(
+                "INSERT INTO ActivityLogs.CommandLog (CommandId, AggregateId, Status, LastUpdated) " +
+                "VALUES (@CommandId, @AggregateId, @Status, SYSUTCDATETIME())",
+                new
+                {
+                    CommandId = commandId,
+                    AggregateId = aggregateId,
+                    Status = CommandStatus.Created.ToString()
+                });
         }
 
-        public async Task Complete(Guid commandId)
+        public async Task Complete(Guid commandId, int? revision)
         {
             using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var conn = new SqlConnection(_connectionString))
@@ -41,11 +46,13 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                 await conn.ExecuteAsync(
                     "UPDATE ActivityLogs.CommandLog " +
                     "SET Status = @Status, " +
+                    "Revision = @Revision, " +
                     "LastUpdated = SYSUTCDATETIME() " +
                     "WHERE CommandId = @CommandId",
                     new
                     {
                         CommandId = commandId,
+                        Revision = revision,
                         Status = CommandStatus.Completed.ToString()
                     });
                 trans.Complete();
@@ -83,7 +90,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
             }
         }
 
-        public async Task Store(Guid commandId, object command, string aggregateId = null) 
+        public async Task Store(Guid commandId, object command, string aggregateId = null)
         {
             using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var conn = new SqlConnection(_connectionString))
@@ -96,7 +103,8 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                     "JsonBody = @JsonBody, " +
                     "LastUpdated = SYSUTCDATETIME() " +
                     "WHERE CommandId = @CommandId",
-                    new {
+                    new
+                    {
                         CommandId = commandId,
                         AggregateId = aggregateId,
                         CommandType = command.GetType().Name,

@@ -64,7 +64,7 @@ namespace Swetugg.Tix.Tests.Helpers
             public string FailureCode { get; private set; }
             public string FailureMessage { get; private set; }
 
-            public Task Complete(Guid commandId)
+            public Task Complete(Guid commandId, int? revision = null)
             {
                 HasCompleted = true;
                 return Task.FromResult(0);

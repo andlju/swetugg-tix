@@ -5,3 +5,7 @@ export type TicketType = {
   name: string
 }
 
+export interface TicketTypesView {
+  revision: number,
+  ticketTypes: TicketType[]
+}

@@ -5,8 +5,10 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swetugg.Tix.Api.Models;
 using Swetugg.Tix.Api.Options;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api
@@ -30,12 +32,19 @@ namespace Swetugg.Tix.Api
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var ticketTypes = await conn.QueryAsync<TicketType>(
-                    "SELECT ActivityId, TicketTypeId, Limit, Reserved FROM ActivityViews.TicketType WHERE ActivityId = @activityId",
-                    new { activityId });
+                var ticketTypes = (await conn.QueryAsync<TicketType>(
+                    "SELECT a.ActivityId, a.Revision, tt.TicketTypeId, tt.Limit, tt.Reserved" +
+                    " FROM ActivityViews.ActivityOverview a JOIN ActivityViews.TicketType tt ON a.ActivityId = tt.ActivityId " +
+                    " WHERE a.ActivityId = @activityId",
+                    new { activityId })).ToArray();
                 if (ticketTypes != null)
                 {
-                    return new OkObjectResult(ticketTypes);
+                    var ticketTypesView = new TicketTypesView()
+                    {
+                        Revision = ticketTypes.FirstOrDefault()?.Revision ?? 0,
+                        TicketTypes = ticketTypes.ToArray()
+                    };
+                    return new OkObjectResult(ticketTypesView);
                 }
             }
             return new NotFoundResult();

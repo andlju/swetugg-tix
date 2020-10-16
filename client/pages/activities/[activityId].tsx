@@ -12,7 +12,7 @@ import { buildUrl } from '../../src/url-utils';
 import { Activity } from '../../components/activities/activity.models';
 import ActivityDetails from '../../components/activities/activity-details';
 import TicketTypeList from '../../components/ticket-types/ticket-type-list';
-import { TicketType } from '../../components/ticket-types/ticket-type.models';
+import { TicketType, TicketTypesView } from '../../components/ticket-types/ticket-type.models';
 import { getView } from '../../src/services/view-fetcher.service';
 import ModifySeats from '../../components/activities/modify-seats';
 
@@ -34,19 +34,20 @@ const useStyles = makeStyles((theme) => ({
 export default function ActivityPage({ initialActivity, ticketTypes }: ActivityProps) {
   const classes = useStyles();
   const [activity, setActivity] = useState(initialActivity);
-  const [refreshActivity, setRefreshActivity] = useState(false);
+  const [refreshActivityRevision, setRefreshActivityRevision] = useState(initialActivity.revision);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (refreshActivity) {
+      if (refreshActivityRevision > activity.revision) {
         const resp = await getView<Activity>(
-          buildUrl(`/activities/${activity.activityId}`));
+          buildUrl(`/activities/${activity.activityId}`),
+          {revision : refreshActivityRevision});
           setActivity(resp);
-        setRefreshActivity(false);
+          setRefreshActivityRevision(resp.revision);
       }
     };
     fetchData();
-  }, [refreshActivity]);
+  }, [refreshActivityRevision]);
 
   return (
     <Layout>
@@ -59,12 +60,12 @@ export default function ActivityPage({ initialActivity, ticketTypes }: ActivityP
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <ActivityDetails activity={activity} refreshActivity={() => setRefreshActivity(true) } />
+                  <ActivityDetails activity={activity} refreshActivityRevision={setRefreshActivityRevision} />
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <ModifySeats activity={activity} refreshActivity={() => setRefreshActivity(true) }/>
+                  <ModifySeats activity={activity} refreshActivityRevision={setRefreshActivityRevision}/>
                 </Paper>
               </Grid>
             </Grid>
@@ -83,13 +84,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   
   const [activityResp, ticketTypesResp] = await Promise.all([
     getView<Activity>(buildUrl(`/activities/${activityId}`)), 
-    getView<TicketType[]>(buildUrl(`/activities/${activityId}/ticket-types`))
+    getView<TicketTypesView>(buildUrl(`/activities/${activityId}/ticket-types`))
   ]);
 
   return {
     props: {
       initialActivity: activityResp,
-      ticketTypes: ticketTypesResp
+      ticketTypes: ticketTypesResp.ticketTypes
     }
   }
 }

@@ -12,6 +12,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
             Create.Table("ActivityOverview")
                 .InSchema("ActivityViews")
                 .WithColumn("ActivityId").AsGuid().PrimaryKey()
+                .WithColumn("Revision").AsInt32().NotNullable()
                 .WithColumn("TicketTypes").AsInt32()
                 .WithColumn("TotalSeats").AsInt32()
                 .WithColumn("FreeSeats").AsInt32();

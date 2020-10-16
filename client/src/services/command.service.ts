@@ -16,7 +16,8 @@ interface CommandStatusMessage {
 
 export interface CommandStatus {
   commandId: string,
-  aggregateId: string,
+  aggregateId?: string,
+  revision?: number,
   status: string,
   jsonBody: string,
   body: any,

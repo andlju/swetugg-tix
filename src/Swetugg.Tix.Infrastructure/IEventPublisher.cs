@@ -16,6 +16,7 @@ namespace Swetugg.Tix.Infrastructure
     public class PublishedEvent
     {
         public string EventType { get; set; }
+        public int Revision { get; set; }
         public object Body { get; set; }
         public IEnumerable<KeyValuePair<string, object>> Headers { get; set; }
     }
@@ -25,6 +26,7 @@ namespace Swetugg.Tix.Infrastructure
         class EventData
         {
             public string EventType { get; set; }
+            public int Revision { get; set; }
             public JsonElement Body { get; set; }
             public IEnumerable<KeyValuePair<string, object>> Headers { get; set; }
         }
@@ -49,6 +51,7 @@ namespace Swetugg.Tix.Infrastructure
             {
                 EventType = data.EventType,
                 Headers = data.Headers,
+                Revision = data.Revision,
                 Body = JsonSerializer.Deserialize(data.Body.GetRawText(), _eventAssembly.GetType(data.EventType), options)
             };
         }
@@ -57,6 +60,7 @@ namespace Swetugg.Tix.Infrastructure
         {
             writer.WriteStartObject();
             writer.WriteString(nameof(value.EventType), value.EventType);
+            writer.WriteNumber(nameof(value.Revision), value.Revision);
             writer.WritePropertyName(nameof(value.Headers));
             JsonSerializer.Serialize(writer, value.Headers, options);
             writer.WritePropertyName(nameof(value.Body));

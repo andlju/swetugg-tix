@@ -34,7 +34,7 @@ namespace Swetugg.Tix.Api
             {
                 var lookup = new Dictionary<Guid, CommandLog>();
                 var commandLogs = await conn.QueryAsync<CommandLog, CommandLogMessage, CommandLog>(
-                    "SELECT cl.CommandId, cl.AggregateId, cl.Status, cl.CommandType, cl.JsonBody, cl.LastUpdated, clm.Id, clm.Code, clm.Message, clm.Severity, clm.Timestamp " +
+                    "SELECT cl.CommandId, cl.AggregateId, cl.Revision, cl.Status, cl.CommandType, cl.JsonBody, cl.LastUpdated, clm.Id, clm.Code, clm.Message, clm.Severity, clm.Timestamp " +
                     "FROM ActivityLogs.CommandLog cl " +
                     "LEFT JOIN ActivityLogs.CommandLogMessage clm ON cl.CommandId = clm.CommandId " +
                     "WHERE cl.CommandId = @CommandId",

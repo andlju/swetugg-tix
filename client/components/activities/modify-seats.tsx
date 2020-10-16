@@ -37,7 +37,7 @@ type FormData = {
   seats: Number
 };
 
-export default function ModifySeats({ activity, refreshActivity }: ActivityDetailsProps) {
+export default function ModifySeats({ activity, refreshActivityRevision }: ActivityDetailsProps) {
   const classes = useStyles();
 
   const increaseForm = useForm<FormData>({
@@ -61,7 +61,7 @@ export default function ModifySeats({ activity, refreshActivity }: ActivityDetai
         seats: +data.seats
       });
       increaseForm.setValue("seats", 0);
-      refreshActivity();
+      refreshActivityRevision(result.revision ?? 0);
     } catch (err) {
 
     }
@@ -74,7 +74,7 @@ export default function ModifySeats({ activity, refreshActivity }: ActivityDetai
         seats: seats
       });
       decreaseForm.setValue("seats", 0);
-      refreshActivity();
+      refreshActivityRevision(result.revision ?? 0);
     } catch (err) {
 
     }

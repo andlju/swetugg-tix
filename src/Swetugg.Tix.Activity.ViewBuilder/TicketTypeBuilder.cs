@@ -25,7 +25,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             _connectionString = connectionString;
         }
 
-        public async Task Handle(RebuildViewsRequested evt)
+        public async Task Handle(RebuildViewsRequested evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -38,7 +38,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
-        public async Task Handle(TicketTypeAdded evt)
+        public async Task Handle(TicketTypeAdded evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -54,7 +54,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
-        public async Task Handle(TicketTypeRemoved evt)
+        public async Task Handle(TicketTypeRemoved evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -63,12 +63,13 @@ namespace Swetugg.Tix.Activity.ViewBuilder
                     new
                     {
                         ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId
+                        TicketTypeId = evt.TicketTypeId,
+                        Version = revision,
                     });
             }
         }
 
-        public async Task Handle(TicketTypeLimitIncreased evt)
+        public async Task Handle(TicketTypeLimitIncreased evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -85,7 +86,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
-        public async Task Handle(TicketTypeLimitDecreased evt)
+        public async Task Handle(TicketTypeLimitDecreased evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -102,7 +103,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
-        public async Task Handle(TicketTypeLimitRemoved evt)
+        public async Task Handle(TicketTypeLimitRemoved evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -118,7 +119,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
-        public async Task Handle(SeatReserved evt)
+        public async Task Handle(SeatReserved evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -134,7 +135,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
-        public async Task Handle(SeatReturned evt)
+        public async Task Handle(SeatReturned evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
             {

@@ -10,15 +10,15 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 {
     public class ViewBuilderHost
     {
-        private IDictionary<Type, IList<Func<object, Task>>> _eventHandlers = new Dictionary<Type, IList<Func<object, Task>>>();
+        private IDictionary<Type, IList<Func<object, int, Task>>> _eventHandlers = new Dictionary<Type, IList<Func<object, int, Task>>>();
 
         public void RegisterHandler<TEvent>(IHandleEvent<TEvent> eventHandler)
         {
             if (!_eventHandlers.TryGetValue(typeof(TEvent), out var handlerList))
             {
-                _eventHandlers.Add(typeof(TEvent), handlerList = new List<Func<object, Task>>());
+                _eventHandlers.Add(typeof(TEvent), handlerList = new List<Func<object, int, Task>>());
             };
-            handlerList.Add(evt => eventHandler.Handle((TEvent)evt));
+            handlerList.Add((evt,ver) => eventHandler.Handle((TEvent)evt, ver));
         }
 
         public static ViewBuilderHost Build(ILoggerFactory loggerFactory)
@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             {
                 foreach (var handler in handlers)
                 {
-                    await handler(evt.Body);
+                    await handler(evt.Body, evt.Revision);
                 }
                 trans.Complete();
             }

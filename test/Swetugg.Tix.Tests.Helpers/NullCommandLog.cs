@@ -6,7 +6,7 @@ namespace Swetugg.Tix.Tests.Helpers
 {
     public class NullCommandLog : ICommandLog
     {
-        public Task Complete(Guid commandId)
+        public Task Complete(Guid commandId, int? revision)
         {
             return Task.FromResult(0);
         }

@@ -6,7 +6,7 @@ import {
   Typography,
   makeStyles
 } from "@material-ui/core";
-import { TicketType } from "./ticket-type.models";
+import { TicketType, TicketTypesView } from "./ticket-type.models";
 import AddTicketType from "./add-ticket-type";
 import { useEffect, useState } from 'react';
 import { getView } from '../../src/services/view-fetcher.service';
@@ -44,10 +44,11 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
   useEffect(() => {
     if (refreshTicketTypes) {
       const fetchData = async () => {
-        const resp = await getView<TicketType[]>(
-          buildUrl(`/activities/${activityId}/ticket-types`),
-          v => refreshTicketTypes === "all" || !!v.find(tt => tt.ticketTypeId === refreshTicketTypes));
-          setTicketTypes(resp);
+        const resp = await getView<TicketTypesView>(
+          buildUrl(`/activities/${activityId}/ticket-types`), { 
+            validatorFunc: v => refreshTicketTypes === "all" || !!v.ticketTypes.find(tt => tt.ticketTypeId === refreshTicketTypes)
+          });
+          setTicketTypes(resp.ticketTypes);
         setRefreshTicketTypes('');
       };
       fetchData();

@@ -1,14 +1,25 @@
 
-export function getView<TView>(url: string, validatorFunc?: (view: TView) => boolean) : Promise<TView> {
+interface GetViewOptions<TView> {
+  revision?: number,
+  validatorFunc?: (view: TView) => boolean
+}
+
+interface View {
+  revision: number,
+}
+
+export function getView<TView extends View>(url: string, options?: GetViewOptions<TView>) : Promise<TView> {
 
   let attempts = 0;
+  const validator = options && (options.validatorFunc ?? (options.revision && ((view: TView) => view.revision >= options.revision)));
+
   const pollStatus = async (resolve: any, reject: any) => {
     attempts++;
     console.log(`Polling view ${url}. Attempt ${attempts}`);
     const res = await fetch(url);
     if (res.status == 200) {
       const view = await res.json() as TView;
-      if (!validatorFunc || validatorFunc(view)) {
+      if (!validator || validator(view)) {
         resolve(view);
         return;
       }

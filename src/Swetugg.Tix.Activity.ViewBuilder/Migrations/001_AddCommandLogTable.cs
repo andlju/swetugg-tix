@@ -2,7 +2,7 @@ using FluentMigrator;
 
 namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
 {
-    [Migration(202010040947)]
+    [Migration(1)]
     public class AddCommandLogTable : Migration
     {
         public override void Up()
@@ -13,6 +13,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .InSchema("ActivityLogs")
                 .WithColumn("CommandId").AsGuid().PrimaryKey()
                 .WithColumn("AggregateId").AsString(200).Nullable()
+                .WithColumn("Revision").AsInt32().Nullable()
                 .WithColumn("CommandType").AsString(300).Nullable()
                 .WithColumn("JsonBody").AsCustom("ntext").Nullable()
                 .WithColumn("Status").AsString(100).NotNullable()

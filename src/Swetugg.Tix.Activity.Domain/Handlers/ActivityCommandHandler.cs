@@ -33,7 +33,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
                 {
                     headers.Add("CommandId", msg.CommandId.ToString());
                 });
-                await _commandLog.Complete(msg.CommandId);
+                await _commandLog.Complete(msg.CommandId, activity.Version);
             }
             catch (ActivityException ex)
             {

@@ -1,6 +1,7 @@
 
 export type Activity = {
   activityId: string,
+  revision: number,
   name: string,
   freeSeats: number,
   totalSeats: number,
@@ -13,5 +14,5 @@ export type ActivityListProps = {
 
 export type ActivityDetailsProps = {
   activity: Activity,
-  refreshActivity: () => void
+  refreshActivityRevision: (revision: number) => void
 }

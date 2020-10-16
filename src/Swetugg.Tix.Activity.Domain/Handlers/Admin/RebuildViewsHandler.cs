@@ -27,9 +27,10 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
                     throw new ActivityException("UnknownActivity", $"No Activity found with id {command.ActivityId}");
                 }
 
-                var streamEvents = stream.CommittedEvents.Select(e => new PublishedEvent
+                var streamEvents = stream.CommittedEvents.Select((e, revision) => new PublishedEvent
                 {
                     EventType = e.Body.GetType().FullName,
+                    Revision = revision + 1,
                     Headers = e.Headers,
                     Body = e.Body
                 });
