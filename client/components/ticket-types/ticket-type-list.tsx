@@ -14,7 +14,7 @@ import { buildUrl } from '../../src/url-utils';
 
 interface TicketTypeListProps {
   activityId: string,
-  initialTicketTypes: TicketType[]
+  initialTicketTypes: TicketType[],
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -22,10 +22,22 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
   },
   nameColumnHead: {
-    width: "70%"
+    width: "60%"
+  },
+  reservedColumnHead: {
+    width: "10%"
+  },
+  reservedColumn: {
+    textAlign: "right"
+  },
+  limitColumnHead: {
+    width: "10%"
+  },
+  limitColumn: {
+    textAlign: "right"
   },
   actionsColumnHead: {
-    width: "30%"
+    width: "20%"
   },
   identifier: {
     color: theme.palette.text.secondary,
@@ -64,6 +76,8 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
         <TableHead>
           <TableRow>
             <TableCell className={classes.nameColumnHead}>Name</TableCell>
+            <TableCell className={classes.reservedColumnHead}>Reserved</TableCell>
+            <TableCell className={classes.limitColumnHead}>Limit</TableCell>
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -73,6 +87,12 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
               <TableCell>
                 <Typography>{row.name}</Typography>
                 <Typography className={classes.identifier}>{row.ticketTypeId}</Typography>
+              </TableCell>
+              <TableCell className={classes.reservedColumn}>
+                <Typography>{row.reserved}</Typography>
+              </TableCell>
+              <TableCell className={classes.limitColumn}>
+                <Typography>{row.limit ?? "-"}</Typography>
               </TableCell>
               <TableCell>
                 <Link href={`/activities/${row.activityId}/ticket-types/${row.ticketTypeId}`}>

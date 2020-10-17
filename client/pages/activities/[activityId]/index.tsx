@@ -6,15 +6,15 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Link from '../../components/Link';
-import Layout from '../../components/layout/main-layout';
-import { buildUrl } from '../../src/url-utils';
-import { Activity } from '../../components/activities/activity.models';
-import ActivityDetails from '../../components/activities/activity-details';
-import TicketTypeList from '../../components/ticket-types/ticket-type-list';
-import { TicketType, TicketTypesView } from '../../components/ticket-types/ticket-type.models';
-import { getView } from '../../src/services/view-fetcher.service';
-import ModifySeats from '../../components/activities/modify-seats';
+import Link from '../../../components/Link';
+import Layout from '../../../components/layout/main-layout';
+import { buildUrl } from '../../../src/url-utils';
+import { Activity } from '../../../components/activities/activity.models';
+import ActivityDetails from '../../../components/activities/activity-details';
+import TicketTypeList from '../../../components/ticket-types/ticket-type-list';
+import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
+import { getView } from '../../../src/services/view-fetcher.service';
+import ModifySeats from '../../../components/activities/modify-seats';
 
 interface ActivityProps {
   initialActivity: Activity,
@@ -56,11 +56,11 @@ export default function ActivityPage({ initialActivity, ticketTypes }: ActivityP
           { activity.name }
         </Typography>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={5}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <ActivityDetails activity={activity} refreshActivityRevision={setRefreshActivityRevision} />
+                  <ActivityDetails activity={activity} />
                 </Paper>
               </Grid>
               <Grid item xs={12}>
@@ -70,7 +70,7 @@ export default function ActivityPage({ initialActivity, ticketTypes }: ActivityP
               </Grid>
             </Grid>
           </Grid>
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={7}>
             <TicketTypeList initialTicketTypes={ticketTypes} activityId={activity.activityId} />
           </Grid>
         </Grid>

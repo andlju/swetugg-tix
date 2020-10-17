@@ -15,7 +15,10 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         IHandleEvent<SeatReturned>,
         IHandleEvent<TicketTypeAdded>,
         IHandleEvent<TicketTypeRemoved>,
-        IHandleEvent<RebuildViewsRequested>
+        IHandleEvent<RebuildViewsRequested>,
+        IHandleEvent<TicketTypeLimitIncreased>,
+        IHandleEvent<TicketTypeLimitDecreased>,
+        IHandleEvent<TicketTypeLimitRemoved>
     {
         private readonly string _connectionString;
 
@@ -23,7 +26,23 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         {
             _connectionString = connectionString;
         }
-        
+
+        private async Task UpdateRevision(EventBase evt, int revision)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                await conn.ExecuteAsync(
+                    "UPDATE ActivityViews.ActivityOverview " +
+                    "SET Revision = @Revision " +
+                    "WHERE ActivityId = @ActivityId",
+                    new
+                    {
+                        ActivityId = evt.AggregateId,
+                        Revision = revision,
+                    });
+            }
+        }
+
         public async Task Handle(RebuildViewsRequested evt, int revision)
         {
             using (var conn = new SqlConnection(_connectionString))
@@ -162,5 +181,19 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
+        public Task Handle(TicketTypeLimitIncreased evt, int revision)
+        {
+            return UpdateRevision(evt, revision);
+        }
+
+        public Task Handle(TicketTypeLimitDecreased evt, int revision)
+        {
+            return UpdateRevision(evt, revision);
+        }
+
+        public Task Handle(TicketTypeLimitRemoved evt, int revision)
+        {
+            return UpdateRevision(evt, revision);
+        }
     }
 }

@@ -9,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Commands
 {
-    public class RemoveTicketTypeFunc : ActivityCommandFunc<RemoveTicketType>
+    public class DecreaseTicketTypeLimitFunc : ActivityCommandFunc<DecreaseTicketTypeLimit>
     {
-        public RemoveTicketTypeFunc(IMessageSender sender) : base(sender)
+        public DecreaseTicketTypeLimitFunc(IMessageSender sender) : base(sender)
         {
         }
 
-        [FunctionName("RemoveTicketType")]
+        [FunctionName("DecreaseTicketTypeLimit")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "activities/{activityId}/ticket-types/{ticketTypeId}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "activities/{activityId}/ticket-types/{ticketTypeId}/decrease-limit")]
             HttpRequest req,
             Guid activityId,
             Guid ticketTypeId,

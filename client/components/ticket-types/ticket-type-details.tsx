@@ -1,5 +1,5 @@
 import { makeStyles, Typography } from "@material-ui/core";
-import { Activity } from "./activity.models";
+import { ActivityDetailsProps } from "./activity.models";
 
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
@@ -10,26 +10,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export type ActivityDetailsProps = {
-  activity: Activity,
+interface TicketTypeDetailsProps {
+  ticketType: TicketType,
+
 }
 
-export default function ActivityDetails({ activity }: ActivityDetailsProps) {
+export default function TicketTypeDetails({ ticketType }: TicketTypeDetailsProps) {
   const classes = useStyles();
   return (
     <Container className={classes.root}>
       <Typography variant="overline">
-        Activity Information
+        Ticket Type
       </Typography>
       <Table size="small">
         <TableBody>
           <TableRow>
-            <TableCell>Free Seats</TableCell>
-            <TableCell>{activity.freeSeats}</TableCell>
+            <TableCell>Reserved</TableCell>
+            <TableCell>{ticketType.reserved}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Total Seats</TableCell>
-            <TableCell>{activity.totalSeats}</TableCell>
+            <TableCell>Limit</TableCell>
+            <TableCell>{ticketType.limit ?? "-"}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

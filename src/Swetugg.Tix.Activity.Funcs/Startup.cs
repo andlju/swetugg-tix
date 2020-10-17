@@ -75,6 +75,9 @@ namespace Swetugg.Tix.Activity.Funcs
                 host.RegisterHandler<TicketTypeAdded>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<TicketTypeRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterHandler<RebuildViewsRequested>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeLimitIncreased>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeLimitDecreased>(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterHandler<TicketTypeLimitRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
 
                 // Register TicketTypeBuilder
                 host.RegisterHandler<TicketTypeAdded>(new TicketTypeBuilder(viewsConnectionString));

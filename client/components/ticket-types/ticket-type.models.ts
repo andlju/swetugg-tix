@@ -2,10 +2,13 @@
 export type TicketType = {
   activityId: string,
   ticketTypeId: string,
-  name: string
+  revision: number,
+  name: string,
+  reserved: number,
+  limit?: number,
 }
 
 export interface TicketTypesView {
   revision: number,
-  ticketTypes: TicketType[]
+  ticketTypes: TicketType[],
 }

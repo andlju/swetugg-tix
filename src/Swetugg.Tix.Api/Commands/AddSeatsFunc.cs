@@ -27,4 +27,5 @@ namespace Swetugg.Tix.Api.Commands
             return new OkObjectResult(new { activityId, commandId = cmd.CommandId });
         }
     }
+
 }

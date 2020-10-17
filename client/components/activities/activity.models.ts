@@ -11,8 +11,3 @@ export type Activity = {
 export type ActivityListProps = {
   activities: Activity[]
 }
-
-export type ActivityDetailsProps = {
-  activity: Activity,
-  refreshActivityRevision: (revision: number) => void
-}

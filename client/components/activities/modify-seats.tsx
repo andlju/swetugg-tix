@@ -1,5 +1,5 @@
 import { Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
-import { ActivityDetailsProps } from "./activity.models";
+import { Activity } from "./activity.models";
 
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -33,11 +33,16 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
+export type ModifySeatsProps = {
+  activity: Activity,
+  refreshActivityRevision: (revision: number) => void
+}
+
 type FormData = {
   seats: Number
 };
 
-export default function ModifySeats({ activity, refreshActivityRevision }: ActivityDetailsProps) {
+export default function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsProps) {
   const classes = useStyles();
 
   const increaseForm = useForm<FormData>({
