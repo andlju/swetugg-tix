@@ -60,7 +60,7 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <TicketTypeDetails ticketType={ticketType} />
+                  <TicketTypeDetails activity={activity} ticketType={ticketType} />
                 </Paper>
               </Grid>
               <Grid item xs={12}>

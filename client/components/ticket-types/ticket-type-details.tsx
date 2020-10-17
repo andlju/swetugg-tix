@@ -1,8 +1,9 @@
 import { makeStyles, Typography } from "@material-ui/core";
-import { ActivityDetailsProps } from "./activity.models";
 
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
+import { Activity } from "../activities/activity.models";
+import { TicketType } from "./ticket-type.models";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -12,10 +13,10 @@ const useStyles = makeStyles((theme) => ({
 
 interface TicketTypeDetailsProps {
   ticketType: TicketType,
-
+  activity: Activity,
 }
 
-export default function TicketTypeDetails({ ticketType }: TicketTypeDetailsProps) {
+export default function TicketTypeDetails({ ticketType, activity }: TicketTypeDetailsProps) {
   const classes = useStyles();
   return (
     <Container className={classes.root}>
@@ -29,8 +30,8 @@ export default function TicketTypeDetails({ ticketType }: TicketTypeDetailsProps
             <TableCell>{ticketType.reserved}</TableCell>
           </TableRow>
           <TableRow>
-            <TableCell>Limit</TableCell>
-            <TableCell>{ticketType.limit ?? "-"}</TableCell>
+            <TableCell>Limit / Total seats</TableCell>
+            <TableCell>{ticketType.limit ?? "-"} / {activity.totalSeats}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

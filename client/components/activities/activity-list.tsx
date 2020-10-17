@@ -4,7 +4,7 @@ import {
   Table, TableBody, TableHead, TableRow, TableCell, TableContainer,
   Typography,
   Toolbar,
-  makeStyles, Fab
+  makeStyles, Fab, Button
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
@@ -12,7 +12,7 @@ import { ActivityListProps } from "./activity.models";
 
 const useStyles = makeStyles((theme) => ({
   nameColumnHead: {
-    width: "70%",
+    width: "60%",
     fontWeight: "bold"
   },
   freeSeatsColumnHead: {
@@ -23,6 +23,12 @@ const useStyles = makeStyles((theme) => ({
   },
   ticketTypesColumnHead: {
     width: "10%"
+  },
+  actionsColumnHead: {
+    width: "10%"
+  },
+  numberCell: {
+    textAlign: "right"
   },
   identifier: {
     color: theme.palette.text.secondary,
@@ -59,21 +65,28 @@ export default function ActivityList({ activities }: ActivityListProps) {
             <TableCell className={classes.freeSeatsColumnHead}>Free Seats</TableCell>
             <TableCell className={classes.totalSeatsColumnHead}>Total Seats</TableCell>
             <TableCell className={classes.ticketTypesColumnHead}>Ticket Types</TableCell>
+            <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {activities.map(row => (
-            <Link key={row.activityId} href={`/activities/${row.activityId}`}>
-              <TableRow hover={true}>
+              <TableRow hover={true} key={row.activityId} >
                 <TableCell>
                   <Typography>{row.name}</Typography>
                   <Typography className={classes.identifier}>{row.activityId}</Typography>
                 </TableCell>
-                <TableCell>{row.freeSeats}</TableCell>
-                <TableCell>{row.totalSeats}</TableCell>
-                <TableCell>{row.ticketTypes}</TableCell>
+                <TableCell className={classes.numberCell}>{row.freeSeats}</TableCell>
+                <TableCell className={classes.numberCell}>{row.totalSeats}</TableCell>
+                <TableCell className={classes.numberCell}>{row.ticketTypes}</TableCell>
+                <TableCell>
+                  <Link href={`/activities/${row.activityId}`}>
+                    <Button
+                      variant="contained" color="secondary">
+                      Edit
+                    </Button>
+                  </Link>
+                </TableCell>
               </TableRow>
-            </Link>
           ))}
         </TableBody>
       </Table>

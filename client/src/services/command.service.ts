@@ -24,9 +24,13 @@ export interface CommandStatus {
   messages?: CommandStatusMessage[]
 }
 
-export async function sendCommand(url: string, body: any): Promise<CommandStatus> {
+interface SendCommandOptions {
+  method?: string
+}
+
+export async function sendCommand(url: string, body: any, options? : SendCommandOptions): Promise<CommandStatus> {
   const res = await fetch(buildUrl(url), {
-    method: "POST",
+    method: options?.method ?? "POST",
     headers: {
       'Content-Type': 'application/json'
     },
