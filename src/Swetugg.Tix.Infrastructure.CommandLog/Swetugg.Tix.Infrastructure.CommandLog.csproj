@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

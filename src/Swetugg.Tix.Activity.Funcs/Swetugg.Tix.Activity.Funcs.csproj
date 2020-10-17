@@ -17,10 +17,10 @@
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Domain\Swetugg.Tix.Activity.Domain.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.ViewBuilder\Swetugg.Tix.Activity.ViewBuilder.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">
