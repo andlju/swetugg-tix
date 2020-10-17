@@ -4,6 +4,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Activity.Content.Contract;
 using System;
 using System.Threading.Tasks;
 
@@ -11,8 +12,11 @@ namespace Swetugg.Tix.Api.Commands
 {
     public class AddTicketTypeFunc : ActivityCommandFunc<AddTicketType>
     {
-        public AddTicketTypeFunc(IMessageSender sender) : base(sender)
+        private readonly IActivityContentCommands _contentCommands;
+
+        public AddTicketTypeFunc(IMessageSender sender, IActivityContentCommands contentCommands) : base(sender)
         {
+            _contentCommands = contentCommands;
         }
 
         [FunctionName("AddTicketType")]
@@ -24,6 +28,7 @@ namespace Swetugg.Tix.Api.Commands
         {
             var ticketTypeId = Guid.NewGuid();
             var cmd = await Process(req, new { activityId, ticketTypeId }, log);
+            await _contentCommands.StoreTicketTypeContent(new TicketTypeContent { TicketTypeId = ticketTypeId, ActivityId = activityId, Name = cmd.Name });
 
             return new OkObjectResult(new { activityId, ticketTypeId, commandId = cmd.CommandId });
         }

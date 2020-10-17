@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using NEventStore;
 using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
+using Swetugg.Tix.Activity.Content;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Events;
 using Swetugg.Tix.Activity.Events.Admin;
@@ -87,6 +88,7 @@ namespace Swetugg.Tix.Activity.Funcs
 
                 return host;
             });
+
             builder.Services.AddSingleton<ViewDatabaseMigrator>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
@@ -97,8 +99,8 @@ namespace Swetugg.Tix.Activity.Funcs
                 builder.InitializeDatabase();
                 return builder;
             });
-            
+
         }
-        
+
     }
 }

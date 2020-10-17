@@ -33,9 +33,11 @@ namespace Swetugg.Tix.Api
             using (var conn = new SqlConnection(_connectionString))
             {
                 var ticketTypes = (await conn.QueryAsync<TicketType>(
-                    "SELECT a.ActivityId, a.Revision, tt.TicketTypeId, tt.Limit, tt.Reserved" +
-                    " FROM ActivityViews.ActivityOverview a JOIN ActivityViews.TicketType tt ON a.ActivityId = tt.ActivityId " +
-                    " WHERE a.ActivityId = @activityId",
+                    "SELECT a.ActivityId, a.Revision, tt.TicketTypeId, tt.Limit, tt.Reserved, ttc.Name " +
+                    "FROM ActivityViews.ActivityOverview a " +
+                    "JOIN ActivityViews.TicketType tt ON a.ActivityId = tt.ActivityId " +
+                    "LEFT JOIN ActivityContent.TicketType ttc ON (tt.ActivityId = ttc.ActivityId AND tt.TicketTypeId = ttc.TicketTypeId) " +
+                    "WHERE a.ActivityId = @activityId",
                     new { activityId })).ToArray();
                 if (ticketTypes != null)
                 {

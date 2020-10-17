@@ -30,7 +30,9 @@ namespace Swetugg.Tix.Api
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var activities = await conn.QueryAsync<ActivityOverview>("SELECT ActivityId, FreeSeats, TotalSeats, TicketTypes FROM ActivityViews.ActivityOverview");
+                var activities = await conn.QueryAsync<ActivityOverview>(
+                    "SELECT ao.ActivityId, ao.FreeSeats, ao.TotalSeats, ao.TicketTypes, ac.Name " +
+                    "FROM ActivityViews.ActivityOverview ao JOIN ActivityContent.Activity ac ON ao.ActivityId = ac.ActivityId");
                 if (activities != null)
                 {
                     return new OkObjectResult(activities);

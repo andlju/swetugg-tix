@@ -12,6 +12,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Activity.Content.Contract\Swetugg.Tix.Activity.Content.Contract.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Activity.Content\Swetugg.Tix.Activity.Content.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

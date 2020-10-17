@@ -2,17 +2,18 @@ using System;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
+using Swetugg.Tix.Activity.Content;
 using Swetugg.Tix.Activity.ViewBuilder;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
     public class DatabaseManagementFunc
     {
-        private readonly ViewDatabaseMigrator _migrator;
+        private readonly ViewDatabaseMigrator _viewDbMigrator;
 
-        public DatabaseManagementFunc(ViewDatabaseMigrator migrator)
+        public DatabaseManagementFunc(ViewDatabaseMigrator viewDbMigrator)
         {
-            _migrator = migrator;
+            _viewDbMigrator = viewDbMigrator;
         }
 
         [FunctionName("DatabaseManagementFunc")]
