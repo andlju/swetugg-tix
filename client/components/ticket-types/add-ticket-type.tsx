@@ -36,9 +36,9 @@ type FormData = {
 export default function AddTicketType({ activityId, refreshTicketTypes }: AddTicketTypeProps) {
   const classes = useStyles();
 
-  const [addTicketType, sending] = useActivityCommand("Add Ticket Type");
+  const [addTicketType] = useActivityCommand("Add Ticket Type");
 
-  const { register, handleSubmit, setValue, errors, formState } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState } = useForm<FormData>({
     defaultValues: {
     }
   });

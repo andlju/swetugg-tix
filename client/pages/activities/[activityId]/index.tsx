@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Link from '../../../components/Link';
 import Layout from '../../../components/layout/main-layout';
 import { buildUrl } from '../../../src/url-utils';
 import { Activity } from '../../../components/activities/activity.models';

@@ -15,8 +15,8 @@
     <ProjectReference Include="..\Swetugg.Tix.Activity.Commands\Swetugg.Tix.Activity.Commands.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Events\Swetugg.Tix.Activity.Events.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
-    <ProjectReference Include="..\Swetugg.Tix.Ticket.Commands\Swetugg.Tix.Ticket.Commands.csproj" />
-    <ProjectReference Include="..\Swetugg.Tix.Ticket.Events\Swetugg.Tix.Ticket.Events.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Order.Commands\Swetugg.Tix.Order.Commands.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Order.Events\Swetugg.Tix.Order.Events.csproj" />
   </ItemGroup>
 
 </Project>

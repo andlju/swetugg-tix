@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Swetugg.Tix.Order.Funcs": {
+      "commandName": "Project",
+      "commandLineArgs": "start --port:4714"
+    }
+  }
+}

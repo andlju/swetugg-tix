@@ -1,10 +1,13 @@
-using Microsoft.Azure.ServiceBus;
+using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using Swetugg.Tix.Infrastructure;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Process.Funcs
@@ -12,31 +15,53 @@ namespace Swetugg.Tix.Process.Funcs
     public class ActivityEventListenerFunc
     {
         public static Assembly ActivityEventAssembly = typeof(Swetugg.Tix.Activity.Events.ActivityCreated).Assembly;
+        private readonly JsonSerializerOptions _jsonOptions;
 
         private readonly ProcessHost _processHost;
         private readonly ILogger _logger;
 
         public ActivityEventListenerFunc(ProcessHost processHost, ILogger<ActivityEventListenerFunc> logger)
         {
+            _jsonOptions = new JsonSerializerOptions()
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            };
+            _jsonOptions.Converters.Add(new PublishedEventConverter(typeof(Activity.Events.EventBase).Assembly));
             _processHost = processHost;
             _logger = logger;
         }
 
-        [FunctionName("HandleActivityEvent")]
-        public async Task Run([ServiceBusTrigger("%ActivityEventPublisherTopic%", "%ProcessActivitySub%", Connection = "TixServiceBus")] Message eventMessage)
+        [FunctionName("HandleActivityEvents")]
+        public async Task Run([EventHubTrigger("%ActivityEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%ActivityProcessConsumerGroup%")] EventData[] events, ILogger log)
         {
-            _logger.LogInformation($"C# ServiceBus topic trigger function processed message: {eventMessage.Label}");
-            var messageType = ActivityEventAssembly.GetType(eventMessage.Label, false);
-            if (messageType == null)
+            var exceptions = new List<Exception>();
+            foreach (EventData eventData in events)
             {
-                throw new InvalidOperationException($"Unknown message type '{eventMessage.Label}'");
+                try
+                {
+                    string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
+                    var evt = JsonSerializer.Deserialize<PublishedEvent>(messageBody, _jsonOptions);
+                    _logger.LogInformation($"Processing {evt.EventType}");
+
+                    await _processHost.Dispatcher.Dispatch(evt.Body, false);
+                    _logger.LogInformation($"Processing {evt.EventType} Completed");
+                }
+                catch (Exception e)
+                {
+                    // We need to keep processing the rest of the batch - capture this exception and continue.
+                    // Also, consider capturing details of the message that failed processing so it can be processed again later.
+                    exceptions.Add(e);
+                }
             }
 
-            var evtString = Encoding.UTF8.GetString(eventMessage.Body);
-            var evt = JsonConvert.DeserializeObject(evtString, messageType);
+            // Once processing of the batch is complete, if any messages in the batch failed processing throw an exception so that there is a record of the failure.
 
-            await _processHost.Dispatcher.Dispatch(evt, false);
+            if (exceptions.Count > 1)
+                throw new AggregateException(exceptions);
+
+            if (exceptions.Count == 1)
+                throw exceptions.Single();
         }
-
     }
 }

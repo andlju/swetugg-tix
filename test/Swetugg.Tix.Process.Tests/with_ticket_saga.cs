@@ -7,9 +7,9 @@ using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Process.Tests
 {
-    public abstract class with_ticket_saga : SagaTestBase
+    public abstract class with_order_saga : SagaTestBase
     {
-        protected with_ticket_saga(ITestOutputHelper output) : base(output)
+        protected with_order_saga(ITestOutputHelper output) : base(output)
         {
         }
 

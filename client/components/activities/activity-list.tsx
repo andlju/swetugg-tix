@@ -82,7 +82,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
                   <Link href={`/activities/${row.activityId}`}>
                     <Button
                       variant="contained" color="secondary">
-                      Edit
+                      Details
                     </Button>
                   </Link>
                 </TableCell>

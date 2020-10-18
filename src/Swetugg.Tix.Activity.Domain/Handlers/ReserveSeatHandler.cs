@@ -12,7 +12,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
 
         protected override void HandleCommand(Activity activity, ReserveSeat cmd)
         {
-            activity.ReserveSeat(cmd.TicketTypeId, cmd.CouponId, cmd.Reference);
+            activity.ReserveSeat(cmd.TicketTypeId, cmd.OrderReference);
         }
     }
 }

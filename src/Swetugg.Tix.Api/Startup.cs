@@ -7,7 +7,7 @@ using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Api.Activities;
 using Swetugg.Tix.Api.Activities.Commands;
 using Swetugg.Tix.Api.Options;
-using Swetugg.Tix.Api.Tickets.Commands;
+using Swetugg.Tix.Api.Orders.Commands;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Api.Startup))]
 namespace Swetugg.Tix.Api
@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Api
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
             builder.Services.AddSingleton<IActivityCommandMessageSender, ActivityCommandMessageSender>();
-            builder.Services.AddSingleton<ITicketCommandMessageSender, TicketCommandMessageSender>();
+            builder.Services.AddSingleton<IOrderCommandMessageSender, OrderCommandMessageSender>();
 
             builder.Services.AddSingleton<IActivityContentCommands>(sp =>
             {

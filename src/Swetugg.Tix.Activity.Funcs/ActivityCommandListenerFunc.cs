@@ -35,7 +35,6 @@ namespace Swetugg.Tix.Activity.Funcs
             var command = JsonConvert.DeserializeObject(cmdString, messageType);
 
             await _domainHost.Dispatcher.Dispatch(command);
-            Console.Out.WriteLine($"{messageType.Name} Command handled successfully");
         }
     }
 }

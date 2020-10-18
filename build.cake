@@ -77,7 +77,7 @@ Task("Package")
     .Does(() =>
     {
         CreatePackage("Swetugg.Tix.Activity.Funcs");
-        CreatePackage("Swetugg.Tix.Ticket.Funcs");
+        CreatePackage("Swetugg.Tix.Order.Funcs");
         CreatePackage("Swetugg.Tix.Process.Funcs");
         CreatePackage("Swetugg.Tix.Api");
     });

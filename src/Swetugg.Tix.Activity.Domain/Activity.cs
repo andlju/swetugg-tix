@@ -163,9 +163,8 @@ namespace Swetugg.Tix.Activity.Domain
         /// Reserve a seat for an activity
         /// </summary>
         /// <param name="ticketTypeId">The ticket type this seat is reserved using</param>
-        /// <param name="couponId">Optional coupon id</param>
-        /// <param name="reference">External reference for this seat (typically the ticket id)</param>
-        public void ReserveSeat(Guid ticketTypeId, Guid? couponId, string reference)
+        /// <param name="orderReference">External reference for this seat (typically the order id)</param>
+        public void ReserveSeat(Guid ticketTypeId, string orderReference)
         {
             if (_seatsReserved >= _seatLimit)
             {
@@ -181,8 +180,8 @@ namespace Swetugg.Tix.Activity.Domain
             Raise(new SeatReserved()
             {
                 TicketTypeId = ticketTypeId,
-                CouponId = couponId,
-                Reference = reference
+                OrderReference = orderReference,
+                TicketReference = Guid.NewGuid().ToString()
             });
         }
 
@@ -190,17 +189,16 @@ namespace Swetugg.Tix.Activity.Domain
         /// Return a seat for this activity
         /// </summary>
         /// <param name="ticketTypeId">The ticket type this seat was reserved using</param>
-        /// <param name="couponId">Optional coupon id</param>
-        /// <param name="reference">External reference for this seat (typically the ticket id)</param>
-        public void ReturnSeat(Guid ticketTypeId, Guid? couponId, string reference)
+        /// <param name="orderReference">External reference for this seat (typically the order id)</param>
+        public void ReturnSeat(Guid ticketTypeId, string orderReference, string ticketReference)
         {
             GuardTicketType(ticketTypeId);
 
             Raise(new SeatReturned()
             {
                 TicketTypeId = ticketTypeId,
-                CouponId = couponId,
-                Reference = reference
+                OrderReference = Guid.NewGuid().ToString(),
+                TicketReference = ticketReference
             });
         }
 

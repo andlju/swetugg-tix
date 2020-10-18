@@ -81,7 +81,7 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody className={!!refreshTicketTypes ? classes.refreshing : ''}>
+        <TableBody className={refreshTicketTypes ? classes.refreshing : ''}>
           {ticketTypes.map(row => (
             <TableRow key={row.ticketTypeId} hover={true}>
               <TableCell>

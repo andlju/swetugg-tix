@@ -4,7 +4,7 @@ import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import { SnackbarProvider } from 'notistack';
 import theme from '../styles/theme'
-import type { AppProps /*, AppContext */ } from 'next/app'
+import type { AppProps } from 'next/app'
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -12,8 +12,8 @@ function MyApp(props: AppProps) {
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector('#jss-server-side');
-    if (jssStyles) {
-      jssStyles.parentElement!.removeChild(jssStyles);
+    if (jssStyles?.parentElement) {
+      jssStyles.parentElement.removeChild(jssStyles);
     }
   }, []);
 

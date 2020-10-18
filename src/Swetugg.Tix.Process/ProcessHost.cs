@@ -12,8 +12,11 @@ using System.Threading.Tasks;
 namespace Swetugg.Tix.Process
 {
     public class ProcessHost :
-        IMessageHandler<Ticket.Events.TicketCreated>,
-        IMessageHandler<Activity.Events.SeatReserved>
+        IMessageHandler<Order.Events.OrderCreated>,
+        IMessageHandler<Order.Events.TicketAdded>,
+        IMessageHandler<Order.Events.TicketCancelled>,
+        IMessageHandler<Activity.Events.SeatReserved>,
+        IMessageHandler<Activity.Events.SeatReturned>
     {
         private readonly ISagaRepository _sagaRepository;
 
@@ -38,32 +41,63 @@ namespace Swetugg.Tix.Process
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
 
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
-            dispatcher.Register<Ticket.Events.TicketCreated>(() => this);
+            
+            dispatcher.Register<Order.Events.OrderCreated>(() => this);
+            dispatcher.Register<Order.Events.TicketAdded>(() => this);
+            dispatcher.Register<Order.Events.TicketCancelled>(() => this);
+
             dispatcher.Register<Activity.Events.SeatReserved>(() => this);
+            dispatcher.Register<Activity.Events.SeatReturned>(() => this);
 
             Dispatcher = dispatcher;
         }
 
         public IMessageDispatcher Dispatcher { get; }
 
-        public Task Handle(Ticket.Events.TicketCreated evt)
+        protected Task HandleOrderEvent(Order.Events.EventBase evt)
         {
             var processId = evt.AggregateId;
-            var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
+            var saga = _sagaRepository.GetById<OrderConfirmationSaga>(processId);
             saga.Transition(evt);
 
             _sagaRepository.Save(saga, Guid.NewGuid(), null);
             return Task.FromResult(0);
         }
 
-        public Task Handle(Activity.Events.SeatReserved evt)
+        public Task Handle(Order.Events.OrderCreated evt)
         {
-            var processId = Guid.Parse(evt.Reference);
-            var saga = _sagaRepository.GetById<TicketConfirmationSaga>(processId);
+            return HandleOrderEvent(evt);
+        }
+
+        public Task Handle(Order.Events.TicketAdded evt)
+        {
+            return HandleOrderEvent(evt);
+        }
+
+        public Task Handle(Order.Events.TicketCancelled evt)
+        {
+            return HandleOrderEvent(evt);
+        }
+
+        public Task HandleActivityEvent(Activity.Events.EventBase evt, string orderReference)
+        {
+            var processId = Guid.Parse(orderReference);
+            var saga = _sagaRepository.GetById<OrderConfirmationSaga>(processId);
             saga.Transition(evt);
 
             _sagaRepository.Save(saga, Guid.NewGuid(), null);
             return Task.FromResult(0);
+
+        }
+
+        public Task Handle(Activity.Events.SeatReserved evt)
+        {
+            return HandleActivityEvent(evt, evt.OrderReference);
+        }
+
+        public Task Handle(Activity.Events.SeatReturned evt)
+        {
+            return HandleActivityEvent(evt, evt.OrderReference);
         }
 
         class MessageDispatcherHook : PipelineHookBase
@@ -91,9 +125,9 @@ namespace Swetugg.Tix.Process
         {
             public ISaga Build(Type type, string id)
             {
-                if (type == typeof(TicketConfirmationSaga))
+                if (type == typeof(OrderConfirmationSaga))
                 {
-                    return new TicketConfirmationSaga(id);
+                    return new OrderConfirmationSaga(id);
                 }
                 return null;
             }

@@ -1,4 +1,4 @@
-import { useState, PropsWithChildren } from "react"
+import { useState } from "react"
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Layout({ children }: PropsWithChildren<any>) {
+const Layout: React.FC = ({ children }) => {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const toggleDrawer = () => {

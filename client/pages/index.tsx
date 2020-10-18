@@ -7,13 +7,6 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../components/layout/main-layout';
-import { buildUrl } from '../src/url-utils';
-import ActivityList from '../components/activities/activity-list';
-import { Activity } from '../components/activities/activity.models';
-
-interface IndexProps {
-
-}
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -30,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-export default function Index({  }: IndexProps) {
+export default function Index() {
   const classes = useStyles();
 
   return (

@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 export default function RefreshView({ initialActivityId }: RefreshViewProps) {
   const classes = useStyles();
 
-  const [refreshView, sending] = useActivityCommand("Refresh views");
+  const [refreshView] = useActivityCommand("Refresh views");
   const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
     defaultValues: {
       activityId: initialActivityId
@@ -54,8 +54,7 @@ export default function RefreshView({ initialActivityId }: RefreshViewProps) {
 
   const onSubmit = async (data: FormData) => {
     try {
-      const result = await refreshView(`/activities-admin/${data.activityId}/rebuild`, {
-      });
+      await refreshView(`/activities-admin/${data.activityId}/rebuild`, { });
       setValue("activityId", "");
     } catch(err) {
       setError("activityId", { message: "Invalid format" });

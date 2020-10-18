@@ -8,10 +8,6 @@ import Grid from '@material-ui/core/Grid';
 import Layout from '../../components/layout/main-layout';
 import RefreshView from '../../components/admin/refresh-view';
 
-interface IndexProps {
-
-}
-
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(4),
@@ -22,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Index({ }: IndexProps) {
+export default function Index() {
   const classes = useStyles();
 
   return (

@@ -33,15 +33,23 @@ export = async () => {
 
     // Generate a random password
     const sqlAdminPassword = new random.RandomPassword("tixdbpassword", {
-        length: 16,
-        special: false
+        length: 18,
+        special: false,
+        minNumeric:1,
+        minUpper:1,
+        minLower:1
     });
 
     const sqlServer = new azure.sql.SqlServer("tixdb", {
         resourceGroupName: resourceGroup.name,
         version: "12.0",
         administratorLogin: sqlAdminUser,
-        administratorLoginPassword: sqlAdminPassword.result
+        administratorLoginPassword: sqlAdminPassword.result,
+        extendedAuditingPolicy: {
+            storageEndpoint: storageAccount.primaryBlobEndpoint,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
+            retentionInDays: 1
+        },
     });
 
     const allAzureFirewallRule = new azure.sql.FirewallRule("tix-fw", {
@@ -62,24 +70,44 @@ export = async () => {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
+        extendedAuditingPolicy: {
+            storageEndpoint: storageAccount.primaryBlobEndpoint,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
+            retentionInDays: 1
+        },
     });
 
-    const ticketEventStoreDatabase = new azure.sql.Database("ticketevents", {
+    const orderEventStoreDatabase = new azure.sql.Database("orderevents", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
+        extendedAuditingPolicy: {
+            storageEndpoint: storageAccount.primaryBlobEndpoint,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
+            retentionInDays: 1
+        },
     });
 
     const processEventStoreDatabase = new azure.sql.Database("processevents", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
+        extendedAuditingPolicy: {
+            storageEndpoint: storageAccount.primaryBlobEndpoint,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
+            retentionInDays: 1
+        },
     });
 
     const tixViewsDatabase = new azure.sql.Database("tixviews", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
+        extendedAuditingPolicy: {
+            storageEndpoint: storageAccount.primaryBlobEndpoint,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
+            retentionInDays: 1
+        },
     });
 
     //
@@ -97,10 +125,10 @@ export = async () => {
         name: 'activitycommands'
     });
 
-    const ticketCommandsQueue = new azure.servicebus.Queue('ticketcommands', {
+    const orderCommandsQueue = new azure.servicebus.Queue('ordercommands', {
         namespaceName: serviceBusNamespace.name,
         resourceGroupName: resourceGroup.name,
-        name: 'ticketcommands'
+        name: 'ordercommands'
     });
 
     const activityEventsTopic = new azure.servicebus.Topic('activityevents', {
@@ -109,26 +137,10 @@ export = async () => {
         name: 'activityevents'
     });
 
-    const ticketEventsTopic = new azure.servicebus.Topic('ticketevents', {
+    const orderEventsTopic = new azure.servicebus.Topic('orderevents', {
         namespaceName: serviceBusNamespace.name,
         resourceGroupName: resourceGroup.name,
-        name: 'ticketevents'
-    });
-
-    const processActivitySubscription = new azure.servicebus.Subscription('processactsub', {
-        namespaceName: serviceBusNamespace.name,
-        topicName: activityEventsTopic.name,
-        resourceGroupName: resourceGroup.name,
-        maxDeliveryCount: 10,
-        name: 'processactsub'
-    });
-
-    const processTicketSubscription = new azure.servicebus.Subscription('processticsub', {
-        namespaceName: serviceBusNamespace.name,
-        topicName: ticketEventsTopic.name,
-        resourceGroupName: resourceGroup.name,
-        maxDeliveryCount: 10,
-        name: 'processticsub'
+        name: 'orderevents'
     });
 
     //
@@ -153,17 +165,29 @@ export = async () => {
         eventhubName: activityEventHub.name,
     });
 
-    const ticketsEventHub = new azure.eventhub.EventHub('tickets', {
+    const activityProcessConsumerGroup = new azure.eventhub.ConsumerGroup('activityproc', {
+        resourceGroupName: resourceGroup.name,
+        namespaceName: eventHubNamespace.name,
+        eventhubName: activityEventHub.name,
+    });
+
+    const orderEventHub = new azure.eventhub.EventHub('orders', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         partitionCount: 32,
         messageRetention: 1,
     });
 
-    const ticketViewsConsumerGroup = new azure.eventhub.ConsumerGroup('ticketviews', {
+    const orderViewsConsumerGroup = new azure.eventhub.ConsumerGroup('orderviews', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
-        eventhubName: ticketsEventHub.name,
+        eventhubName: orderEventHub.name,
+    });
+
+    const orderProcessConsumerGroup = new azure.eventhub.ConsumerGroup('orderproc', {
+        resourceGroupName: resourceGroup.name,
+        namespaceName: eventHubNamespace.name,
+        eventhubName: orderEventHub.name,
     });
 
     //
@@ -179,7 +203,7 @@ export = async () => {
     // Collect settings
     const activityEventStoreConnection = pulumi.all([sqlServer.name, activityEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
-    const ticketEventStoreConnection = pulumi.all([sqlServer.name, ticketEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
+    const orderEventStoreConnection = pulumi.all([sqlServer.name, orderEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
     const processEventStoreConnection = pulumi.all([sqlServer.name, processEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
@@ -199,31 +223,32 @@ export = async () => {
         ActivityEventHubName: activityEventHub.name,
         ActivityViewsConsumerGroup: activityViewsConsumerGroup.name
     };
-    const ticketAppSettings = {
+    const orderAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-        TicketCommandsQueue: ticketCommandsQueue.name,
-        TicketEventPublisherTopic: ticketEventsTopic.name,
+        OrderCommandsQueue: orderCommandsQueue.name,
+        OrderEventPublisherTopic: orderEventsTopic.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-        TicketEventsDbConnection: ticketEventStoreConnection,
+        OrderEventsDbConnection: orderEventStoreConnection,
         ViewsDbConnection: tixViewsConnection,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
-        TicketEventHubName: ticketsEventHub.name,
-        TicketViewsConsumerGroup: ticketViewsConsumerGroup.name
+        OrderEventHubName: orderEventHub.name,
+        OrderViewsConsumerGroup: orderViewsConsumerGroup.name
     };
     const processAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-        ActivityEventPublisherTopic: activityEventsTopic.name,
-        ProcessActivitySub: processActivitySubscription.name,
-        TicketEventPublisherTopic: ticketEventsTopic.name,
-        ProcessTicketSub: processTicketSubscription.name,
         ActivityCommandsQueue: activityCommandsQueue.name,
-        TicketCommandsQueue: ticketCommandsQueue.name,
+        OrderCommandsQueue: orderCommandsQueue.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
-        ProcessEventsDbConnection: processEventStoreConnection
+        ProcessEventsDbConnection: processEventStoreConnection,
+        EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
+        ActivityEventHubName: activityEventHub.name,
+        ActivityProcessConsumerGroup: activityProcessConsumerGroup.name,
+        OrderEventHubName: orderEventHub.name,
+        OrderProcessConsumerGroup: orderProcessConsumerGroup.name
     };
     const apiAppSettings = {
         runtime: "dotnet",
@@ -231,7 +256,7 @@ export = async () => {
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
         ActivityCommandsQueue: activityCommandsQueue.name,
-        TicketCommandsQueue: ticketCommandsQueue.name,
+        OrderCommandsQueue: orderCommandsQueue.name,
         ViewsDbConnection: tixViewsConnection,
     };
 
@@ -247,12 +272,12 @@ export = async () => {
             appSettings: activityAppSettings,
         });
 
-        const ticketApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-ticket`, {
+        const orderApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-order`, {
             resourceGroupName: resourceGroup.name,
-            archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Ticket.Funcs.zip"),
+            archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Order.Funcs.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: ticketAppSettings
+            appSettings: orderAppSettings
         });
 
         const processApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-process`, {
@@ -282,7 +307,7 @@ export = async () => {
         storageConnectionString: storageAccount.primaryConnectionString,
         serviceBusConnectionString: serviceBusNamespace.defaultPrimaryConnectionString,
         activityEventStoreConnectionString: activityEventStoreConnection,
-        ticketEventStoreConnectionString: ticketEventStoreConnection,
+        orderEventStoreConnectionString: orderEventStoreConnection,
         tixViewsConnectionString: tixViewsConnection,
         apiHostName: hostname
     };
@@ -293,9 +318,9 @@ export = async () => {
             IsEncrypted: false,
             Values: activityAppSettings
         },
-        ticketAppSettings: {
+        orderAppSettings: {
             IsEncrypted: false,
-            Values: ticketAppSettings
+            Values: orderAppSettings
         },
         processAppSettings: {
             IsEncrypted: false,

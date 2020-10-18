@@ -17,6 +17,8 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected Guid ActivityId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
 
+        protected string OrderReference = Guid.NewGuid().ToString();
+
         protected override void Setup()
         {
             Given
@@ -31,7 +33,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             {
                 ActivityId = ActivityId,
                 TicketTypeId = TicketTypeId,
-                Reference = "MyRef"
+                OrderReference = OrderReference
             };
         }
 
@@ -39,6 +41,24 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         public void then_SeatReserved_event_is_raised()
         {
             Assert.True(Commits.First().HasEvent<SeatReserved>());
+        }
+
+        [Fact]
+        public void then_TicketTypeId_is_correct()
+        {
+            Assert.Equal(TicketTypeId, Commits.First().GetEvent<SeatReserved>().TicketTypeId);
+        }
+
+        [Fact]
+        public void then_OrderReference_is_correct()
+        {
+            Assert.Equal(OrderReference, Commits.First().GetEvent<SeatReserved>().OrderReference);
+        }
+
+        [Fact]
+        public void then_a_new_ticket_reference_is_set()
+        {
+            Assert.NotNull(Commits.First().GetEvent<SeatReserved>().TicketReference);
         }
     }
 }

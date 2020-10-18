@@ -26,7 +26,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             {
                 ActivityId = ActivityId,
                 TicketTypeId = Guid.NewGuid(),
-                Reference = "MyRef"
+                OrderReference = "MyRef"
             };
         }
 

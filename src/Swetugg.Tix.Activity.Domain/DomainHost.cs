@@ -15,9 +15,9 @@ namespace Swetugg.Tix.Activity.Domain
 {
     public class DomainHost
     {
-        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher domainEventPublisher, IEventPublisher viewsEventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher viewsEventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {
-            var hooks = new IPipelineHook[] { new EventPublisherHook(new[] { domainEventPublisher , viewsEventPublisher }) };
+            var hooks = new IPipelineHook[] { new EventPublisherHook(new[] { viewsEventPublisher }) };
             if (extraHooks != null)
                 hooks = hooks.Concat(extraHooks).ToArray();
 

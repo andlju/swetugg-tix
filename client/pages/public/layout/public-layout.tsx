@@ -1,10 +1,7 @@
-import { useState, PropsWithChildren } from "react"
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Link from '../../../components/Link';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
-import CameraIcon from '@material-ui/icons/PhotoCamera';
 import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,7 +35,11 @@ function Copyright() {
   );
 }
 
-export function Layout({ children, title }: PropsWithChildren<any>) {
+interface LayoutProps {
+  title: string
+}
+
+export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
   const classes = useStyles();
 
   return (<div>

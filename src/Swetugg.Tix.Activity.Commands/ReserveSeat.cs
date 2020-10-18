@@ -5,8 +5,7 @@ namespace Swetugg.Tix.Activity.Commands
     public class ReserveSeat : ActivityCommand
     {
         public Guid TicketTypeId { get; set; }
-        public Guid? CouponId { get; set; }
 
-        public string Reference { get; set; }
+        public string OrderReference { get; set; }
     }
 }

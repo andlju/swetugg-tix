@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import router from 'next/router';
 import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 import {
@@ -9,10 +9,6 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { useActivityCommand } from '../../src/use-activity-command.hook';
-
-interface CreateActivityProps {
-
-}
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,18 +39,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type FormData = {
-  activityName: String
+  activityName: string
 };
 
 
-export default function CreateActivity({ }: CreateActivityProps) {
+export default function CreateActivity() {
   const classes = useStyles();
 
-  const { register, handleSubmit, setValue, errors, formState } = useForm<FormData>({
+  const { register, handleSubmit, formState } = useForm<FormData>({
     defaultValues: {
     }
   });
-  const [createActivity, sending] = useActivityCommand('Create activity');
+  const [createActivity] = useActivityCommand('Create activity');
   const onSubmit = async (data: FormData) => {
     try {
       const result = await createActivity(`/activities`, {
@@ -62,7 +58,7 @@ export default function CreateActivity({ }: CreateActivityProps) {
       });
       await router.push(`/activities/${result.aggregateId}`);
     } catch (err) {
-
+      // Report error?
     }
   }
 

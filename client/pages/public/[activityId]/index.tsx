@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles } from '@material-ui/core';
-import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Link from '../../../components/Link';
 import Layout from '../layout/public-layout';
 import { buildUrl } from '../../../src/url-utils';
 import { Activity } from '../../../components/activities/activity.models';
 import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
 import { getView } from '../../../src/services/view-fetcher.service';
-import { useTicketCommand } from '../../../src/use-ticket-command.hook';
+import { useOrderCommand } from '../../../src/use-order-command.hook';
 
 interface ActivityProps {
   initialActivity: Activity,
@@ -29,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
   heroButtons: {
     marginTop: theme.spacing(4),
   },
-  ticketCardAvatar: {
+  orderCardAvatar: {
 
   }
 }))
@@ -39,12 +37,12 @@ export default function PublicActivityPage({ initialActivity, ticketTypes }: Act
   const [activity, setActivity] = useState(initialActivity);
   const [refreshActivityRevision, setRefreshActivityRevision] = useState(initialActivity.revision);
 
-  const [reserveTicket, sendingReserveTicket] = useTicketCommand('Reserve ticket');
+  const [reserveOrder, sendingReserveTicket] = useOrderCommand('Reserve order');
 
-  const onClickBuyTicket = async (ticketTypeId: string) => {
-    const resp = await reserveTicket(`/tickets`, {
+  const onClickBuyOrder = async (ticketTypeId: string) => {
+    await reserveOrder(`/orders`, {
       activityId: activity.activityId,
-      ticketTypeId
+      tickets: [{quantity: 1, ticketTypeId}]
     });
   }
   
@@ -97,7 +95,7 @@ export default function PublicActivityPage({ initialActivity, ticketTypes }: Act
               <Card>
                 <CardHeader
                   avatar={
-                  <Avatar className={classes.ticketCardAvatar}>{i+1}</Avatar>
+                  <Avatar className={classes.orderCardAvatar}>{i+1}</Avatar>
                   }
                   title={tt.name} />
                 <CardContent>
@@ -107,7 +105,7 @@ export default function PublicActivityPage({ initialActivity, ticketTypes }: Act
                 </CardContent>
                 <CardActions>
                   <Button 
-                    onClick={() => onClickBuyTicket(tt.ticketTypeId)}
+                    onClick={() => onClickBuyOrder(tt.ticketTypeId)}
                     disabled={sendingReserveTicket}
                     type="submit">Reserve</Button>
                 </CardActions>

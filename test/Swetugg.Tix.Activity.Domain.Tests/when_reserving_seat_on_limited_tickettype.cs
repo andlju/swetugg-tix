@@ -17,6 +17,8 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected Guid TicketTypeId = Guid.NewGuid();
         protected Guid TicketTypeId2 = Guid.NewGuid();
 
+        protected string OrderReference = Guid.NewGuid().ToString();
+
         protected override void Setup()
         {
             var activity = Given
@@ -49,7 +51,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             {
                 ActivityId = ActivityId,
                 TicketTypeId = TicketTypeId2,
-                Reference = "MyRef"
+                OrderReference = OrderReference
             };
         }
 
@@ -63,6 +65,12 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         public void then_the_command_fails()
         {
             Assert.True(Command.HasFailed);
+        }
+
+        [Fact]
+        public void then_the_failure_code_is_correct()
+        {
+            Assert.Equal("NoSeatsLeft", Command.FailureCode);
         }
     }
 

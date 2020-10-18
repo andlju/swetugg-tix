@@ -26,7 +26,6 @@ namespace Swetugg.Tix.Activity.Funcs
             builder.Services.AddOptions<ActivityOptions>()
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
-            builder.Services.AddSingleton<ServiceBusPublisher>();
             builder.Services.AddSingleton<EventHubPublisher>();
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {
@@ -49,7 +48,6 @@ namespace Swetugg.Tix.Activity.Funcs
 
                 return DomainHost.Build(
                     eventStore,
-                    sp.GetService<ServiceBusPublisher>(),
                     sp.GetService<EventHubPublisher>(),
                     sp.GetService<ILoggerFactory>(),
                     null,

@@ -1,17 +1,13 @@
 import React from 'react';
 import { GetServerSideProps } from 'next';
 import { makeStyles, Paper } from '@material-ui/core';
-import clsx from 'clsx';
 import {
   Container,
   Grid,
   Typography,
 } from '@material-ui/core';
-
-import Link from '../../components/Link';
 import Layout from '../../components/layout/main-layout';
 import CreateActivity from '../../components/activities/create-activity';
-import { useForm } from 'react-hook-form';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,7 +45,7 @@ export default function CreatePage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async () => {
 
   return {
     props: {

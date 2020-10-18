@@ -11,11 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.Events
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.Domain", "src\Swetugg.Tix.Activity.Domain\Swetugg.Tix.Activity.Domain.csproj", "{3BE84BED-B4DD-454E-A2A9-8D2D86B8C181}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Ticket.Commands", "src\Swetugg.Tix.Ticket.Commands\Swetugg.Tix.Ticket.Commands.csproj", "{474C18D4-2DDD-4BD6-9CDD-839E068B3C67}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Order.Commands", "src\Swetugg.Tix.Order.Commands\Swetugg.Tix.Order.Commands.csproj", "{474C18D4-2DDD-4BD6-9CDD-839E068B3C67}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Ticket.Domain", "src\Swetugg.Tix.Ticket.Domain\Swetugg.Tix.Ticket.Domain.csproj", "{28A4E9E9-DD77-4116-8582-79731318AE2B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Order.Domain", "src\Swetugg.Tix.Order.Domain\Swetugg.Tix.Order.Domain.csproj", "{28A4E9E9-DD77-4116-8582-79731318AE2B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Ticket.Events", "src\Swetugg.Tix.Ticket.Events\Swetugg.Tix.Ticket.Events.csproj", "{E2477B82-6916-43BB-B90D-5207027E5016}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Order.Events", "src\Swetugg.Tix.Order.Events\Swetugg.Tix.Order.Events.csproj", "{E2477B82-6916-43BB-B90D-5207027E5016}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{079B41CA-CEE8-4804-8E1C-A096E48476C1}"
 EndProject
@@ -23,13 +23,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.Domain
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Tests.Helpers", "test\Swetugg.Tix.Tests.Helpers\Swetugg.Tix.Tests.Helpers.csproj", "{E5523032-43A0-4364-8A3D-29AEBACDDFAF}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Ticket.Domain.Tests", "test\Swetugg.Tix.Ticket.Domain.Tests\Swetugg.Tix.Ticket.Domain.Tests.csproj", "{7781C6E6-AEF6-45B4-8E57-14DE456099C3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Order.Domain.Tests", "test\Swetugg.Tix.Order.Domain.Tests\Swetugg.Tix.Order.Domain.Tests.csproj", "{7781C6E6-AEF6-45B4-8E57-14DE456099C3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Process", "src\Swetugg.Tix.Process\Swetugg.Tix.Process.csproj", "{7CBD4BF1-1EDD-4923-B9FA-ABE0E8E967C0}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Activity", "Activity", "{BFD3CBA8-FB01-4EF9-8B76-4A4816C76D07}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Ticket", "Ticket", "{EFC22060-63C7-4257-89C4-E79CD9E8739C}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Order", "Order", "{EFC22060-63C7-4257-89C4-E79CD9E8739C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Process", "Process", "{9BAE956C-1485-4DCD-900B-3C960FBE4B16}"
 EndProject
@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Activity.Funcs"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Process.Funcs", "src\Swetugg.Tix.Process.Funcs\Swetugg.Tix.Process.Funcs.csproj", "{06C5E6AF-5761-4894-87D0-B005C50519C5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Ticket.Funcs", "src\Swetugg.Tix.Ticket.Funcs\Swetugg.Tix.Ticket.Funcs.csproj", "{61840C03-43FD-43BC-82F1-CE12413D846A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Order.Funcs", "src\Swetugg.Tix.Order.Funcs\Swetugg.Tix.Order.Funcs.csproj", "{61840C03-43FD-43BC-82F1-CE12413D846A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Swetugg.Tix.Api", "src\Swetugg.Tix.Api\Swetugg.Tix.Api.csproj", "{A9C73E0E-D091-4565-B5A8-6A8DD62C8526}"
 EndProject

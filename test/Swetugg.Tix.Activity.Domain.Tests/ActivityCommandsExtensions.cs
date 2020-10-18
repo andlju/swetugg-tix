@@ -47,7 +47,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
 
         public static GivenActivityCommands WithReservedSeat(this GivenActivityCommands given, Guid ticketTypeId, string reference)
         {
-            given.AddCommand(new ReserveSeat() { TicketTypeId = ticketTypeId, Reference = reference });
+            given.AddCommand(new ReserveSeat() { TicketTypeId = ticketTypeId, OrderReference = reference });
             return given;
         }
     }

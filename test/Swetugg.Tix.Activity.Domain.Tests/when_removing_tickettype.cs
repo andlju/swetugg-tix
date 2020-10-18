@@ -42,10 +42,10 @@ namespace Swetugg.Tix.Activity.Domain.Tests
     }
 
 
-    public class when_removing_tickettype_with_reserved_tickets : with_activity
+    public class when_removing_tickettype_with_reserved_orders : with_activity
     {
 
-        public when_removing_tickettype_with_reserved_tickets(ITestOutputHelper output) : base(output)
+        public when_removing_tickettype_with_reserved_orders(ITestOutputHelper output) : base(output)
         {
         }
 

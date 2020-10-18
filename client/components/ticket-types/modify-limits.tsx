@@ -40,9 +40,9 @@ type LimitFormData = {
 export default function ModifyLimits({ ticketType, refreshTicketTypesRevision }: EditTicketTypeProps) {
   const classes = useStyles();
 
-  const [increaseLimit, sendingIncreaseLimit] = useActivityCommand("Increase Ticket Type Limit");
-  const [decreaseLimit, sendingDecreaseLimit] = useActivityCommand("Decrease Ticket Type Limit");
-  const [removeLimit, sendingRemoveLimit] = useActivityCommand("Remove Ticket Type Limit", { method: "DELETE" });
+  const [increaseLimit] = useActivityCommand("Increase Ticket Type Limit");
+  const [decreaseLimit] = useActivityCommand("Decrease Ticket Type Limit");
+  const [removeLimit] = useActivityCommand("Remove Ticket Type Limit", { method: "DELETE" });
 
   const increaseLimitForm = useForm<LimitFormData>({
     defaultValues: {

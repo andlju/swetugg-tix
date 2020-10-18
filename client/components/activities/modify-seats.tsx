@@ -31,15 +31,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: -12,
     marginLeft: -12,
   }
-}))
+}));
 
 export type ModifySeatsProps = {
   activity: Activity,
-  refreshActivityRevision: (revision: number) => void
-}
+  refreshActivityRevision: (revision: number) => void;
+};
 
 type FormData = {
-  seats: Number
+  seats: number;
 };
 
 export default function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsProps) {
@@ -56,21 +56,21 @@ export default function ModifySeats({ activity, refreshActivityRevision }: Modif
     }
   });
 
-  const [addSeats, sendingAddSeats] = useActivityCommand('Add seats');
-  const [removeSeats, sendingRemoveSeats] = useActivityCommand('Remove seats');
+  const [addSeats] = useActivityCommand('Add seats');
+  const [removeSeats] = useActivityCommand('Remove seats');
 
   const onSubmitAddSeats = async (data: FormData) => {
     try {
       const seats = +data.seats;
       const result = await addSeats(`/activities/${activity.activityId}/add-seats`, {
-        seats: +data.seats
+        seats: seats
       });
       increaseForm.setValue("seats", 0);
       refreshActivityRevision(result.revision ?? 0);
     } catch (err) {
-
+      // TODO Report error
     }
-  }
+  };
 
   const onSubmitRemoveSeats = async (data: FormData) => {
     try {
@@ -81,9 +81,9 @@ export default function ModifySeats({ activity, refreshActivityRevision }: Modif
       decreaseForm.setValue("seats", 0);
       refreshActivityRevision(result.revision ?? 0);
     } catch (err) {
-
+      // TODO Report error
     }
-  }
+  };
 
   return (
     <Container className={classes.root}>
@@ -113,5 +113,5 @@ export default function ModifySeats({ activity, refreshActivityRevision }: Modif
         </Grid>
       </Grid>
     </Container>
-  )
+  );
 }
