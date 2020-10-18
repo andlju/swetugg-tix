@@ -1,8 +1,10 @@
-import { makeStyles, Typography } from "@material-ui/core";
+import { Button, makeStyles, Typography } from "@material-ui/core";
 import { Activity } from "./activity.models";
 
 import { Container } from "@material-ui/core";
-import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
+import { Table, TableBody, TableRow, TableCell, Grid } from "@material-ui/core";
+import React from "react";
+import Link from "../Link";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,18 +23,30 @@ export default function ActivityDetails({ activity }: ActivityDetailsProps) {
       <Typography variant="overline">
         Activity Information
       </Typography>
-      <Table size="small">
-        <TableBody>
-          <TableRow>
-            <TableCell>Free Seats</TableCell>
-            <TableCell>{activity.freeSeats}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Total Seats</TableCell>
-            <TableCell>{activity.totalSeats}</TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <Table size="small">
+            <TableBody>
+              <TableRow>
+                <TableCell>Free Seats</TableCell>
+                <TableCell>{activity.freeSeats}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Total Seats</TableCell>
+                <TableCell>{activity.totalSeats}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </Grid>
+        <Grid item xs={12}>
+          <Link href={`/public/${activity.activityId}`}>
+            <Button
+              variant="contained" color="primary">
+              Public page
+            </Button>
+          </Link>
+        </Grid>
+      </Grid>
     </Container>
   )
 }

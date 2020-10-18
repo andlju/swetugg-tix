@@ -4,8 +4,10 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Swetugg.Tix.Activity.Content;
 using Swetugg.Tix.Activity.Content.Contract;
-using Swetugg.Tix.Api.Commands;
+using Swetugg.Tix.Api.Activities;
+using Swetugg.Tix.Api.Activities.Commands;
 using Swetugg.Tix.Api.Options;
+using Swetugg.Tix.Api.Tickets.Commands;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Api.Startup))]
 namespace Swetugg.Tix.Api
@@ -17,7 +19,8 @@ namespace Swetugg.Tix.Api
             builder.Services.AddOptions<ApiOptions>()
                 .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
-            builder.Services.AddSingleton<IMessageSender, ActivityCommandMessageSender>();
+            builder.Services.AddSingleton<IActivityCommandMessageSender, ActivityCommandMessageSender>();
+            builder.Services.AddSingleton<ITicketCommandMessageSender, TicketCommandMessageSender>();
 
             builder.Services.AddSingleton<IActivityContentCommands>(sp =>
             {
@@ -35,18 +38,6 @@ namespace Swetugg.Tix.Api
                 return new SqlActivityContentQuery(viewsDbConnectionString);
             });
 
-            // Queries
-            builder.Services.AddScoped<GetActivityFunc, GetActivityFunc>();
-            builder.Services.AddScoped<ListActivitiesFunc, ListActivitiesFunc>();
-            builder.Services.AddScoped<ListTicketTypesFunc, ListTicketTypesFunc>();
-            builder.Services.AddScoped<GetActivityCommandStatusFunc, GetActivityCommandStatusFunc>();
-
-            // Commands
-            builder.Services.AddScoped<CreateActivityFunc, CreateActivityFunc>();
-            builder.Services.AddScoped<AddSeatsFunc, AddSeatsFunc>();
-            builder.Services.AddScoped<RemoveSeatsFunc, RemoveSeatsFunc>();
-            builder.Services.AddScoped<AddTicketTypeFunc, AddTicketTypeFunc>();
-            builder.Services.AddScoped<RemoveTicketTypeFunc, RemoveTicketTypeFunc>();
         }
     }
 }

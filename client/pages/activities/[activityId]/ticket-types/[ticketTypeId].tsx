@@ -38,12 +38,12 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
       if (refreshTicketTypeRevision > ticketType.revision) {
         const resp = await getView<TicketTypesView>(
           buildUrl(`/activities/${activity.activityId}/ticket-types`),
-          { revision : refreshTicketTypeRevision });
-          const selectedTicketType = resp.ticketTypes.find(tt => tt.ticketTypeId === ticketType.ticketTypeId);
-          if (selectedTicketType) {
-             setTicketType(selectedTicketType);
-          }
-          setRefreshTicketTypeRevision(resp.revision);
+          { revision: refreshTicketTypeRevision });
+        const selectedTicketType = resp.ticketTypes.find(tt => tt.ticketTypeId === ticketType.ticketTypeId);
+        if (selectedTicketType) {
+          setTicketType(selectedTicketType);
+        }
+        setRefreshTicketTypeRevision(resp.revision);
       }
     };
     fetchData();
@@ -53,7 +53,7 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
     <Layout>
       <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
-          { activity.name }
+          {activity.name}
         </Typography>
         <Grid container spacing={3}>
           <Grid item xs={12} md={5}>
@@ -65,7 +65,7 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
               </Grid>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <ModifyLimits ticketType={ticketType} refreshTicketTypesRevision={setRefreshTicketTypeRevision}/>
+                  <ModifyLimits ticketType={ticketType} refreshTicketTypesRevision={setRefreshTicketTypeRevision} />
                 </Paper>
               </Grid>
             </Grid>
@@ -81,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const ticketTypeId = context.params?.ticketTypeId;
 
   const [activityResp, ticketTypesResp] = await Promise.all([
-    getView<Activity>(buildUrl(`/activities/${activityId}`)), 
+    getView<Activity>(buildUrl(`/activities/${activityId}`)),
     getView<TicketTypesView>(buildUrl(`/activities/${activityId}/ticket-types`))
   ]);
 

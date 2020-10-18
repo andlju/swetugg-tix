@@ -1,7 +1,9 @@
+using System.Threading.Tasks;
+
 namespace Swetugg.Tix.Infrastructure
 {
     public interface ISagaMessageDispatcher
     {
-        void Dispatch(object message);
+        Task Dispatch(object message);
     }
 }

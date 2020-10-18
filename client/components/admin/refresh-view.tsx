@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useCommand } from "../../src/use-command.hook";
+import { useActivityCommand } from "../../src/use-activity-command.hook";
 
 interface RefreshViewProps {
   initialActivityId?: string
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 export default function RefreshView({ initialActivityId }: RefreshViewProps) {
   const classes = useStyles();
 
-  const [refreshView, sending] = useCommand("Refresh views");
+  const [refreshView, sending] = useActivityCommand("Refresh views");
   const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
     defaultValues: {
       activityId: initialActivityId

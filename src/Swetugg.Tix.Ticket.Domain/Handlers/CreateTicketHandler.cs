@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Ticket.Domain.Handlers
 {
-    public class CreateTicketHandler : IMessageHandler<CreateTicket>
+    public class CreateTicketHandler : TicketCommandHandler<CreateTicket>
     {
-        private readonly IRepository _repository;
 
-        public CreateTicketHandler(IRepository repository)
+        public CreateTicketHandler(IRepository repository, ICommandLog commandLog) : base(repository, commandLog)
         {
-            _repository = repository;
         }
 
-        public Task Handle(CreateTicket msg)
+        protected override void HandleCommand(Ticket activity, CreateTicket cmd)
         {
-            var ticket = new Ticket(msg.TicketId, msg.TicketTypeId, msg.CouponId);
-            _repository.Save(ticket, Guid.NewGuid());
-            return Task.FromResult(0);
+
+        }
+
+        protected override Ticket GetTicket(CreateTicket cmd)
+        {
+            return new Ticket(cmd.TicketId, cmd.ActivityId, cmd.TicketTypeId, cmd.CouponId);
         }
     }
 }

@@ -25,7 +25,6 @@ namespace Swetugg.Tix.Ticket.Funcs
         [FunctionName("TicketCommandListenerFunc")]
         public async Task Run([ServiceBusTrigger("%TicketCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
-            log.LogInformation($"C# ServiceBus queue trigger function processed message: {commandMsg.Label}");
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)
             {
@@ -35,7 +34,6 @@ namespace Swetugg.Tix.Ticket.Funcs
             var cmdString = Encoding.UTF8.GetString(commandMsg.Body);
             var command = JsonConvert.DeserializeObject(cmdString, messageType);
 
-            Console.Out.WriteLine($"Dispatching {messageType.Name} command");
             await _domainHost.Dispatcher.Dispatch(command);
             Console.Out.WriteLine("Command handled successfully");
         }

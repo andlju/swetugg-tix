@@ -7,10 +7,8 @@ import {
   Button
 } from '@material-ui/core';
 
-import { sendCommand } from '../../src/services/command.service';
 import { useForm } from 'react-hook-form';
-import { useSnackbar } from 'notistack';
-import { useCommand } from '../../src/use-command.hook';
+import { useActivityCommand } from '../../src/use-activity-command.hook';
 
 interface CreateActivityProps {
 
@@ -56,7 +54,7 @@ export default function CreateActivity({ }: CreateActivityProps) {
     defaultValues: {
     }
   });
-  const [createActivity, sending] = useCommand('Create activity');
+  const [createActivity, sending] = useActivityCommand('Create activity');
   const onSubmit = async (data: FormData) => {
     try {
       const result = await createActivity(`/activities`, {

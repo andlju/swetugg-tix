@@ -6,7 +6,7 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useCommand } from "../../src/use-command.hook";
+import { useActivityCommand } from "../../src/use-activity-command.hook";
 import { TicketType } from "./ticket-type.models";
 
 interface EditTicketTypeProps {
@@ -40,9 +40,9 @@ type LimitFormData = {
 export default function ModifyLimits({ ticketType, refreshTicketTypesRevision }: EditTicketTypeProps) {
   const classes = useStyles();
 
-  const [increaseLimit, sendingIncreaseLimit] = useCommand("Increase Ticket Type Limit");
-  const [decreaseLimit, sendingDecreaseLimit] = useCommand("Decrease Ticket Type Limit");
-  const [removeLimit, sendingRemoveLimit] = useCommand("Remove Ticket Type Limit", { method: "DELETE" });
+  const [increaseLimit, sendingIncreaseLimit] = useActivityCommand("Increase Ticket Type Limit");
+  const [decreaseLimit, sendingDecreaseLimit] = useActivityCommand("Decrease Ticket Type Limit");
+  const [removeLimit, sendingRemoveLimit] = useActivityCommand("Remove Ticket Type Limit", { method: "DELETE" });
 
   const increaseLimitForm = useForm<LimitFormData>({
     defaultValues: {

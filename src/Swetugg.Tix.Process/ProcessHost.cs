@@ -17,8 +17,11 @@ namespace Swetugg.Tix.Process
     {
         private readonly ISagaRepository _sagaRepository;
 
-        public static ProcessHost Build(Wireup eventStoreWireup, ISagaMessageDispatcher sagaMessageDispatcher,
-            ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks)
+        public static ProcessHost Build(
+            Wireup eventStoreWireup,
+            ISagaMessageDispatcher sagaMessageDispatcher,
+            ILoggerFactory loggerFactory,
+            IEnumerable<IPipelineHook> extraHooks)
         {
             var hooks = new IPipelineHook[] { new MessageDispatcherHook(sagaMessageDispatcher) };
             if (extraHooks != null)
@@ -27,10 +30,10 @@ namespace Swetugg.Tix.Process
             var eventStore = eventStoreWireup
                 .HookIntoPipelineUsing(hooks)
                 .Build();
-            return new ProcessHost(eventStore, sagaMessageDispatcher, loggerFactory);
+            return new ProcessHost(eventStore, loggerFactory);
         }
 
-        private ProcessHost(IStoreEvents eventStore, ISagaMessageDispatcher sagaMessageDispatcher, ILoggerFactory loggerFactory)
+        private ProcessHost(IStoreEvents eventStore, ILoggerFactory loggerFactory)
         {
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
 
@@ -79,7 +82,7 @@ namespace Swetugg.Tix.Process
 
                 foreach (var message in messages)
                 {
-                    _dispatcher.Dispatch(message.Value);
+                    _dispatcher.Dispatch(message.Value).Wait();
                 }
             }
         }

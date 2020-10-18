@@ -13,11 +13,9 @@ namespace Swetugg.Tix.Ticket.Domain
 {
     public class DomainHost
     {
-        private readonly IMessageDispatcher _messageDispatcher;
-
-        public static DomainHost Build(Wireup eventStoreWireup, IEnumerable<IEventPublisher> eventPublishers, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
+        public static DomainHost Build(Wireup eventStoreWireup, IEventPublisher domainEventPublisher, IEventPublisher viewsEventPublisher, ILoggerFactory loggerFactory, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {
-            var hooks = new IPipelineHook[] { new EventPublisherHook(eventPublishers) };
+            var hooks = new IPipelineHook[] { new EventPublisherHook(new[] { domainEventPublisher, viewsEventPublisher }) };
             if (extraHooks != null)
                 hooks = hooks.Concat(extraHooks).ToArray();
 
@@ -25,23 +23,25 @@ namespace Swetugg.Tix.Ticket.Domain
                 eventStoreWireup
                     .HookIntoPipelineUsing(hooks)
                     .Build();
-
-            return new DomainHost(eventStore, loggerFactory);
+            return new DomainHost(eventStore, loggerFactory, commandLog, viewsEventPublisher);
         }
 
-        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory)
+        private DomainHost(IStoreEvents eventStore, ILoggerFactory loggerFactory, ICommandLog commandLog, IEventPublisher viewsEventPublisher)
         {
             Func<IRepository> repositoryFunc = () => new EventStoreRepository(eventStore, new AggregateFactory(), new ConflictDetector());
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
 
             // Register all command handlers
-            dispatcher.Register(() => new CreateTicketHandler(repositoryFunc()));
-            dispatcher.Register(() => new ConfirmSeatReservationHandler(repositoryFunc()));
+            dispatcher.Register(() => new CreateTicketHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new ConfirmSeatReservationHandler(repositoryFunc(), commandLog));
 
-            _messageDispatcher = dispatcher;
+            // Admin command handlers
+            // dispatcher.Register(() => new RebuildViewsHandler(eventStore, viewsEventPublisher, commandLog));
+
+            Dispatcher = dispatcher;
         }
 
-        public IMessageDispatcher Dispatcher => _messageDispatcher;
+        public IMessageDispatcher Dispatcher { get; }
 
     }
 }

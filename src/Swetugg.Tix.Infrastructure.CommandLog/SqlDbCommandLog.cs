@@ -11,22 +11,27 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
     public class SqlDbCommandLog : ICommandLog
     {
         private readonly string _connectionString;
+        private readonly string _schema;
 
-        public SqlDbCommandLog(string connectionString)
+        public SqlDbCommandLog(string connectionString, string schema)
         {
             _connectionString = connectionString;
+            _schema = schema;
         }
 
         private async Task EnsureCommandLog(SqlConnection conn, Guid commandId, string aggregateId)
         {
             var hasLog = await conn.ExecuteScalarAsync<bool>(
-                "SELECT 1 FROM ActivityLogs.CommandLog " +
-                "WHERE CommandId = @CommandId", new { CommandId = commandId });
+                $"SELECT 1 FROM [{_schema}].CommandLog " +
+                "WHERE CommandId = @CommandId", new { 
+                    CommandId = commandId
+                });
             if (hasLog)
                 return;
 
             await conn.ExecuteAsync(
-                "INSERT INTO ActivityLogs.CommandLog (CommandId, AggregateId, Status, LastUpdated) " +
+                $"INSERT INTO [{_schema}].CommandLog " +
+                "(CommandId, AggregateId, Status, LastUpdated) " +
                 "VALUES (@CommandId, @AggregateId, @Status, SYSUTCDATETIME())",
                 new
                 {
@@ -43,7 +48,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
             {
                 await EnsureCommandLog(conn, commandId, null);
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityLogs.CommandLog " +
+                    $"UPDATE [{_schema}].CommandLog " +
                     "SET Status = @Status, " +
                     "Revision = @Revision, " +
                     "LastUpdated = SYSUTCDATETIME() " +
@@ -65,7 +70,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
             {
                 await EnsureCommandLog(conn, commandId, null);
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityLogs.CommandLog " +
+                    $"UPDATE [{_schema}].CommandLog " +
                     "SET Status = @Status, " +
                     "LastUpdated = SYSUTCDATETIME() " +
                     "WHERE CommandId = @CommandId",
@@ -75,7 +80,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                         Status = CommandStatus.Failed.ToString()
                     });
                 await conn.ExecuteAsync(
-                    "INSERT INTO ActivityLogs.CommandLogMessage " +
+                    $"INSERT INTO [{_schema}].CommandLogMessage " +
                     "(CommandId, Severity, Code, Message, Timestamp) " +
                     "VALUES (@CommandId, @Severity, @Code, @Message, SYSUTCDATETIME())",
                     new
@@ -96,7 +101,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
             {
                 await EnsureCommandLog(conn, commandId, aggregateId);
                 await conn.ExecuteAsync(
-                    "UPDATE ActivityLogs.CommandLog " +
+                    $"UPDATE [{_schema}].CommandLog " +
                     "SET AggregateId = @AggregateId, " +
                     "CommandType = @CommandType, " +
                     "JsonBody = @JsonBody, " +

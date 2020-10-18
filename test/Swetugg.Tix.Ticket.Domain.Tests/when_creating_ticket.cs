@@ -33,5 +33,27 @@ namespace Swetugg.Tix.Ticket.Domain.Tests
         {
             Assert.True(Commits.First().HasEvent<TicketCreated>());
         }
+
+        [Fact]
+        public void then_TicketId_is_correct()
+        {
+            Assert.Equal(TicketId.ToString(), Commits.First().StreamId);
+            var evt = Commits.First().GetEvent<TicketCreated>();
+            Assert.Equal(TicketId, evt.AggregateId);
+        }
+
+        [Fact]
+        public void then_ActivityId_is_correct()
+        {
+            var evt = Commits.First().GetEvent<TicketCreated>();
+            Assert.Equal(ActivityId, evt.ActivityId);
+        }
+
+        [Fact]
+        public void then_TicketTypeId_is_correct()
+        {
+            var evt = Commits.First().GetEvent<TicketCreated>();
+            Assert.Equal(TicketTypeId, evt.TicketTypeId);
+        }
     }
 }

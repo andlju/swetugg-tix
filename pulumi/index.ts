@@ -70,6 +70,12 @@ export = async () => {
         requestedServiceObjectiveName: "S0",
     });
 
+    const processEventStoreDatabase = new azure.sql.Database("processevents", {
+        resourceGroupName: resourceGroup.name,
+        serverName: sqlServer.name,
+        requestedServiceObjectiveName: "S0",
+    });
+
     const tixViewsDatabase = new azure.sql.Database("tixviews", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
@@ -117,6 +123,14 @@ export = async () => {
         name: 'processactsub'
     });
 
+    const processTicketSubscription = new azure.servicebus.Subscription('processticsub', {
+        namespaceName: serviceBusNamespace.name,
+        topicName: ticketEventsTopic.name,
+        resourceGroupName: resourceGroup.name,
+        maxDeliveryCount: 10,
+        name: 'processticsub'
+    });
+
     //
     // Event Hub
     //
@@ -126,7 +140,7 @@ export = async () => {
         capacity: 1,
     });
 
-    const activitiesEventHub = new azure.eventhub.EventHub('activities', {
+    const activityEventHub = new azure.eventhub.EventHub('activity', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         partitionCount: 32,
@@ -136,9 +150,22 @@ export = async () => {
     const activityViewsConsumerGroup = new azure.eventhub.ConsumerGroup('activityviews', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
-        eventhubName: activitiesEventHub.name,
+        eventhubName: activityEventHub.name,
     });
-    
+
+    const ticketsEventHub = new azure.eventhub.EventHub('tickets', {
+        resourceGroupName: resourceGroup.name,
+        namespaceName: eventHubNamespace.name,
+        partitionCount: 32,
+        messageRetention: 1,
+    });
+
+    const ticketViewsConsumerGroup = new azure.eventhub.ConsumerGroup('ticketviews', {
+        resourceGroupName: resourceGroup.name,
+        namespaceName: eventHubNamespace.name,
+        eventhubName: ticketsEventHub.name,
+    });
+
     //
     // App Insights
     //
@@ -154,6 +181,8 @@ export = async () => {
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
     const ticketEventStoreConnection = pulumi.all([sqlServer.name, ticketEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
+    const processEventStoreConnection = pulumi.all([sqlServer.name, processEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
+        `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
     const tixViewsConnection = pulumi.all([sqlServer.name, tixViewsDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
         `Server=tcp:${server}.database.windows.net;initial catalog=${db};user ID=${sqlAdminUser};password=${pwd};Persist Security Info=False;Encrypt=True;MultipleActiveResultSets=False;Connection Timeout=30;`);
 
@@ -167,7 +196,7 @@ export = async () => {
         ViewsDbConnection: tixViewsConnection,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
-        ActivityEventHubName: activitiesEventHub.name,
+        ActivityEventHubName: activityEventHub.name,
         ActivityViewsConsumerGroup: activityViewsConsumerGroup.name
     };
     const ticketAppSettings = {
@@ -178,15 +207,23 @@ export = async () => {
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         TicketEventsDbConnection: ticketEventStoreConnection,
         ViewsDbConnection: tixViewsConnection,
-        AzureWebJobsStorage: storageAccount.primaryConnectionString
+        AzureWebJobsStorage: storageAccount.primaryConnectionString,
+        EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
+        TicketEventHubName: ticketsEventHub.name,
+        TicketViewsConsumerGroup: ticketViewsConsumerGroup.name
     };
     const processAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
         ActivityEventPublisherTopic: activityEventsTopic.name,
         ProcessActivitySub: processActivitySubscription.name,
+        TicketEventPublisherTopic: ticketEventsTopic.name,
+        ProcessTicketSub: processTicketSubscription.name,
+        ActivityCommandsQueue: activityCommandsQueue.name,
+        TicketCommandsQueue: ticketCommandsQueue.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
-        AzureWebJobsStorage: storageAccount.primaryConnectionString
+        AzureWebJobsStorage: storageAccount.primaryConnectionString,
+        ProcessEventsDbConnection: processEventStoreConnection
     };
     const apiAppSettings = {
         runtime: "dotnet",
@@ -194,6 +231,7 @@ export = async () => {
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
         ActivityCommandsQueue: activityCommandsQueue.name,
+        TicketCommandsQueue: ticketCommandsQueue.name,
         ViewsDbConnection: tixViewsConnection,
     };
 
@@ -232,7 +270,7 @@ export = async () => {
             version: '~3',
             appSettings: apiAppSettings,
             siteConfig: {
-                cors: { allowedOrigins : ["*"] }
+                cors: { allowedOrigins: ["*"] }
             }
         });
 
@@ -249,8 +287,8 @@ export = async () => {
         apiHostName: hostname
     };
 
-    return { 
-        out: output, 
+    return {
+        out: output,
         activityAppSettings: {
             IsEncrypted: false,
             Values: activityAppSettings
@@ -270,6 +308,6 @@ export = async () => {
                 CORS: "*"
             }
         }
-     };
+    };
 }
 

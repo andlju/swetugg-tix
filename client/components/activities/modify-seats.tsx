@@ -3,7 +3,7 @@ import { Activity } from "./activity.models";
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useCommand } from "../../src/use-command.hook";
+import { useActivityCommand } from "../../src/use-activity-command.hook";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,8 +56,8 @@ export default function ModifySeats({ activity, refreshActivityRevision }: Modif
     }
   });
 
-  const [addSeats, sendingAddSeats] = useCommand('Add seats');
-  const [removeSeats, sendingRemoveSeats] = useCommand('Remove seats');
+  const [addSeats, sendingAddSeats] = useActivityCommand('Add seats');
+  const [removeSeats, sendingRemoveSeats] = useActivityCommand('Remove seats');
 
   const onSubmitAddSeats = async (data: FormData) => {
     try {

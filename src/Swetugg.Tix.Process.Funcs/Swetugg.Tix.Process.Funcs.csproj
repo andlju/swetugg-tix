@@ -8,6 +8,9 @@
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.2.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
     <PackageReference Include="NEventStore" Version="7.0.0" />
+    <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
+    <PackageReference Include="NEventStore.Serialization.Json" Version="7.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Swetugg.Tix.Process\Swetugg.Tix.Process.csproj" />

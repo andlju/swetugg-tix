@@ -32,7 +32,7 @@ namespace Swetugg.Tix.Activity.Funcs
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
                 var connectionString = options.Value.ViewsDbConnection;
-                return new SqlDbCommandLog(connectionString);
+                return new SqlDbCommandLog(connectionString, "ActivityLogs");
             });
             builder.Services.AddSingleton(sp =>
             {

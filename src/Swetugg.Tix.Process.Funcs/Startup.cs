@@ -1,37 +1,49 @@
 ﻿using Microsoft.Azure.Functions.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NEventStore;
-using Newtonsoft.Json;
+using NEventStore.Persistence.Sql.SqlDialects;
+using NEventStore.Serialization.Json;
 using Swetugg.Tix.Infrastructure;
+using Swetugg.Tix.Process.Funcs.Options;
+using System.Data.SqlClient;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Process.Funcs.Startup))]
 namespace Swetugg.Tix.Process.Funcs
 {
-    public class LogSagaMessageDispatcher : ISagaMessageDispatcher
-    {
-        private readonly ILogger _logger;
-
-        public LogSagaMessageDispatcher(ILogger logger)
-        {
-            _logger = logger;
-        }
-
-        public void Dispatch(object message)
-        {
-            var json = JsonConvert.SerializeObject(message);
-            _logger.LogInformation(json);
-        }
-    }
 
     public class Startup : FunctionsStartup
     {
         public override void Configure(IFunctionsHostBuilder builder)
         {
-            var eventStore = Wireup.Init().UsingInMemoryPersistence();
+            builder.Services.AddOptions<ProcessOptions>()
+                .Configure<IConfiguration>((settings, configuration) => { configuration.Bind(settings); });
 
-            builder.Services.AddSingleton((sp) => ProcessHost.Build(eventStore, sp.GetService<LogSagaMessageDispatcher>(), sp.GetService<ILoggerFactory>(), null));
-            builder.Services.AddScoped<EventListenerFunc, EventListenerFunc>();
+            builder.Services.AddSingleton<ServiceBusMessageDispatcher>();
+
+            builder.Services.AddSingleton(sp =>
+            {
+                var options = sp.GetService<IOptions<ProcessOptions>>();
+
+                var eventStoreConnectionString = options.Value.ProcessEventsDbConnection;
+                var sqlClientFactoryInstance = SqlClientFactory.Instance;
+
+                var eventStore = Wireup.Init()
+                    .UsingSqlPersistence(sqlClientFactoryInstance, eventStoreConnectionString)
+                    .WithDialect(new MsSqlDialect())
+                    .InitializeStorageEngine()
+                    .UsingJsonSerialization();
+
+                return ProcessHost.Build(
+                    eventStore,
+                    sp.GetService<ServiceBusMessageDispatcher>(),
+                    sp.GetService<ILoggerFactory>(),
+                    null);
+            });
+
+            builder.Services.AddScoped<ActivityEventListenerFunc, ActivityEventListenerFunc>();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Swetugg.Tix.Infrastructure
         {
             Func<object, Task> handler = null;
             var messageType = msg.GetType();
-            if (throwOnMissing && !_handlers.TryGetValue(messageType, out handler))
+            if (!_handlers.TryGetValue(messageType, out handler) && throwOnMissing)
                 throw new MessageHandlerException($"No handler found for {messageType}");
             if (handler != null)
             {

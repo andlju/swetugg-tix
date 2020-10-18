@@ -20,37 +20,37 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
             _commandLog = commandLog;
         }
 
-        public async Task Handle(TCmd msg)
+        public async Task Handle(TCmd cmd)
         {
-            await _commandLog.Store(msg.CommandId, msg, msg.ActivityId.ToString());
+            await _commandLog.Store(cmd.CommandId, cmd, cmd.ActivityId.ToString());
             try
             {
-                var activity = GetActivity(msg.ActivityId);
+                var activity = GetActivity(cmd);
 
-                HandleCommand(activity, msg);
+                HandleCommand(activity, cmd);
 
                 _repository.Save(activity, Guid.NewGuid(), headers =>
                 {
-                    headers.Add("CommandId", msg.CommandId.ToString());
+                    headers.Add("CommandId", cmd.CommandId.ToString());
                 });
-                await _commandLog.Complete(msg.CommandId, activity.Version);
+                await _commandLog.Complete(cmd.CommandId, activity.Version);
             }
             catch (ActivityException ex)
             {
                 // This is a domain error and shouldn't be retried
-                await _commandLog.Fail(msg.CommandId, ex.ErrorCode, ex.Message);
+                await _commandLog.Fail(cmd.CommandId, ex.ErrorCode, ex.Message);
             }
             catch(Exception ex)
             {
                 // This is an infrastructure error or bug. Let's try again a few times.
-                await _commandLog.Fail(msg.CommandId, "UnknownError", ex.ToString());
+                await _commandLog.Fail(cmd.CommandId, "UnknownError", ex.ToString());
                 throw;
             }
         }
 
-        protected virtual Activity GetActivity(Guid activityId)
+        protected virtual Activity GetActivity(TCmd cmd)
         {
-            var activity = _repository.GetById<Activity>(activityId);
+            var activity = _repository.GetById<Activity>(cmd.ActivityId);
             return activity;
         }
 

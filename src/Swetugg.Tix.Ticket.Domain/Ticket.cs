@@ -6,8 +6,8 @@ namespace Swetugg.Tix.Ticket.Domain
 {
     public class Ticket : AggregateBase
     {
-        private Guid _aggregateId;
         private Guid _ticketTypeId;
+        private Guid _activityId;
         private Guid? _couponId;
 
         private bool _seatReserved;
@@ -22,11 +22,12 @@ namespace Swetugg.Tix.Ticket.Domain
 
         }
 
-        public Ticket(Guid ticketId, Guid ticketTypeId, Guid? couponId)
+        public Ticket(Guid ticketId, Guid activityId, Guid ticketTypeId, Guid? couponId)
         {
             Raise(new TicketCreated()
             {
                 AggregateId = ticketId,
+                ActivityId = activityId,
                 TicketTypeId = ticketTypeId,
                 CouponId = couponId
             });
@@ -39,14 +40,15 @@ namespace Swetugg.Tix.Ticket.Domain
 
         protected void Raise(EventBase evt)
         {
-            if (_aggregateId != Guid.Empty)
-                evt.AggregateId = _aggregateId;
+            if (evt.AggregateId == Guid.Empty)
+                evt.AggregateId = base.Id;
             RaiseEvent(evt);
         }
 
         private void Apply(TicketCreated evt)
         {
-            _aggregateId = evt.AggregateId;
+            Id = evt.AggregateId;
+            _activityId = evt.ActivityId;
             _ticketTypeId = evt.TicketTypeId;
             _couponId = evt.CouponId;
         }

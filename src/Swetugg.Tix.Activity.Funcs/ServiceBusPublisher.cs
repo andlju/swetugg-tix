@@ -8,7 +8,6 @@ using System.Text.Json;
 
 namespace Swetugg.Tix.Activity.Funcs
 {
-
     public class ServiceBusPublisher : IEventPublisher
     {
         private readonly TopicClient _client;
