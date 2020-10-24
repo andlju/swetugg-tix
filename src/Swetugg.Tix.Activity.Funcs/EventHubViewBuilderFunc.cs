@@ -38,31 +38,14 @@ namespace Swetugg.Tix.Activity.Funcs
         {
             var exceptions = new List<Exception>();
 
-            foreach (EventData eventData in events)
+            var publishedEvents = events.Select(eventData =>
             {
-                try
-                {
-                    string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
-                    var evt = JsonSerializer.Deserialize<PublishedEvent>(messageBody, _jsonOptions);
+                string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
+                var evt = JsonSerializer.Deserialize<PublishedEvent>(messageBody, _jsonOptions);
+                return evt;
+            });
 
-                    log.LogInformation($"Processing {evt.EventType} Event");
-                    await _host.HandlePublishedEvent(evt);
-                }
-                catch (Exception e)
-                {
-                    // We need to keep processing the rest of the batch - capture this exception and continue.
-                    // Also, consider capturing details of the message that failed processing so it can be processed again later.
-                    exceptions.Add(e);
-                }
-            }
-
-            // Once processing of the batch is complete, if any messages in the batch failed processing throw an exception so that there is a record of the failure.
-
-            if (exceptions.Count > 1)
-                throw new AggregateException(exceptions);
-
-            if (exceptions.Count == 1)
-                throw exceptions.Single();
+            await _host.HandlePublishedEvents(publishedEvents);
         }
     }
 }

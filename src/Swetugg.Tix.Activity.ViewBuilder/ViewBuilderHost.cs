@@ -10,15 +10,11 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 {
     public class ViewBuilderHost
     {
-        private IDictionary<Type, IList<Func<object, int, Task>>> _eventHandlers = new Dictionary<Type, IList<Func<object, int, Task>>>();
+        private IList<IViewBuilder> _viewBuilders = new List<IViewBuilder>();
 
-        public void RegisterHandler<TEvent>(IHandleEvent<TEvent> eventHandler)
+        public void RegisterViewBuilder(IViewBuilder viewBuidler)
         {
-            if (!_eventHandlers.TryGetValue(typeof(TEvent), out var handlerList))
-            {
-                _eventHandlers.Add(typeof(TEvent), handlerList = new List<Func<object, int, Task>>());
-            };
-            handlerList.Add((evt,ver) => eventHandler.Handle((TEvent)evt, ver));
+            _viewBuilders.Add(viewBuidler);
         }
 
         public static ViewBuilderHost Build(ILoggerFactory loggerFactory)
@@ -26,18 +22,11 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             return new ViewBuilderHost();
         }
 
-        public async Task HandlePublishedEvent(PublishedEvent evt)
+        public async Task HandlePublishedEvents(IEnumerable<PublishedEvent> evts)
         {
-            if (!_eventHandlers.TryGetValue(evt.Body.GetType(), out var handlers))
-                return;
-
-            using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            foreach(var builder in _viewBuilders)
             {
-                foreach (var handler in handlers)
-                {
-                    await handler(evt.Body, evt.Revision);
-                }
-                trans.Complete();
+                await builder.HandleEvents(evts);
             }
         }
 

@@ -21,12 +21,14 @@ namespace Swetugg.Tix.Activity.Domain
             var revision = initialRevision;
             foreach (var publisher in _publishers)
             {
+                revision++;
                 var evts = committed.Events.Select(e => new PublishedEvent
                 {
-                    Body = e.Body,
+                    AggregateId = committed.StreamId,
+                    EventType = e.Body.GetType().FullName,
                     Revision = revision,
+                    Body = e.Body,
                     Headers = e.Headers.Union(committed.Headers),
-                    EventType = e.Body.GetType().FullName
                 });
 
                 publisher.Publish(
@@ -35,7 +37,6 @@ namespace Swetugg.Tix.Activity.Domain
                         AggregateId = committed.StreamId,
                         Events = evts.ToArray()
                     });
-                revision++;
             }
         }
     }

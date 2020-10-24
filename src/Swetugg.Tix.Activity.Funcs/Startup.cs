@@ -64,28 +64,8 @@ namespace Swetugg.Tix.Activity.Funcs
 
                 var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>());
 
-                // Register ActivityOverviewBuilder
-                host.RegisterHandler<ActivityCreated>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatsAdded>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatsRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatReserved>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatReturned>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeAdded>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<RebuildViewsRequested>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeLimitIncreased>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeLimitDecreased>(new ActivityOverviewBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeLimitRemoved>(new ActivityOverviewBuilder(viewsConnectionString));
-
-                // Register TicketTypeBuilder
-                host.RegisterHandler<TicketTypeAdded>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeRemoved>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeLimitIncreased>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeLimitDecreased>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<TicketTypeLimitRemoved>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatReserved>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<SeatReturned>(new TicketTypeBuilder(viewsConnectionString));
-                host.RegisterHandler<RebuildViewsRequested>(new TicketTypeBuilder(viewsConnectionString));
+                host.RegisterViewBuilder(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterViewBuilder(new TicketTypeBuilder(viewsConnectionString));
 
                 return host;
             });

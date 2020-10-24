@@ -29,6 +29,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
 
                 var streamEvents = stream.CommittedEvents.Select((e, revision) => new PublishedEvent
                 {
+                    AggregateId = stream.StreamId,
                     EventType = e.Body.GetType().FullName,
                     Revision = revision + 1,
                     Headers = e.Headers,
@@ -37,7 +38,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
 
                 var rebuildViewsEvent = new RebuildViewsRequested { AggregateId = command.ActivityId };
 
-                var events = (new[] { new PublishedEvent { EventType = rebuildViewsEvent.GetType().FullName, Body = rebuildViewsEvent, Headers = null } }).Concat(streamEvents);
+                var events = (new[] { new PublishedEvent { AggregateId = command.ActivityId.ToString(), EventType = rebuildViewsEvent.GetType().FullName, Body = rebuildViewsEvent, Headers = null } }).Concat(streamEvents);
 
                 _eventPublisher.Publish(new PublishedEvents { AggregateId = command.ActivityId.ToString(), Events = events.ToArray() });
             }

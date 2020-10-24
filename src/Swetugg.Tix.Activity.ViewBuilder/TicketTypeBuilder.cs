@@ -1,153 +1,64 @@
 ﻿using Dapper;
-using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Activity.Events.Admin;
 using Swetugg.Tix.Activity.Views;
+using Swetugg.Tix.Infrastructure;
+using System;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
 
-    public class TicketTypeBuilder :
-        IHandleEvent<TicketTypeAdded>,
-        IHandleEvent<TicketTypeRemoved>,
-        IHandleEvent<TicketTypeLimitIncreased>,
-        IHandleEvent<TicketTypeLimitDecreased>,
-        IHandleEvent<TicketTypeLimitRemoved>,
-        IHandleEvent<SeatReserved>,
-        IHandleEvent<SeatReturned>,
-        IHandleEvent<RebuildViewsRequested>
+    public class TicketTypeBuilder : ViewBuilderBase<TicketTypesView>
     {
         private readonly string _connectionString;
 
-        public TicketTypeBuilder(string connectionString)
+        public TicketTypeBuilder(string connectionString) : base(new TicketTypesEventApplier())
         {
             _connectionString = connectionString;
         }
 
-        public async Task Handle(RebuildViewsRequested evt, int revision)
+        protected override async Task<TicketTypesView> GetView(string viewId)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
-                await conn.ExecuteAsync(
-                    "DELETE FROM ActivityViews.TicketType WHERE ActivityId = @ActivityId",
-                    new
+                var ticketTypes = (await conn.QueryAsync<TicketType>(
+                    "SELECT ActivityId, TicketTypeId, Revision, Limit, Reserved " +
+                    "FROM ActivityViews.TicketType " +
+                    "WHERE ActivityId = @ActivityId ", new
                     {
-                        ActivityId = evt.AggregateId
-                    });
+                        ActivityId = viewId
+                    })).ToList();
+                return new TicketTypesView
+                {
+                    ActivityId = Guid.Parse(viewId),
+                    Revision = ticketTypes.FirstOrDefault()?.Revision ?? 0,
+                    TicketTypes = ticketTypes
+                };
             }
         }
 
-        public async Task Handle(TicketTypeAdded evt, int revision)
+        protected override async Task StoreView(TicketTypesView oldView, TicketTypesView newView)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
-                await conn.ExecuteAsync(
-                    "INSERT INTO ActivityViews.TicketType (ActivityId, TicketTypeId, Limit, Reserved) VALUES (@ActivityId, @TicketTypeId, @Limit, @Reserved)",
-                    new TicketType()
-                    {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId,
-                        Limit = null,
-                        Reserved = 0,
-                    });
-            }
-        }
-
-        public async Task Handle(TicketTypeRemoved evt, int revision)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.ExecuteAsync(
-                    "DELETE FROM ActivityViews.TicketType WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId)",
+                await conn.ExecuteAsync("DELETE FROM ActivityViews.TicketType WHERE ActivityId = @ActivityId", new
+                {
+                    ActivityId = newView.ActivityId
+                });
+                foreach (var ticketType in newView.TicketTypes)
+                {
+                    await conn.ExecuteAsync(
+                    "INSERT INTO ActivityViews.TicketType (ActivityId, TicketTypeId, Revision, Limit, Reserved) VALUES (@ActivityId, @TicketTypeId, @Revision, @Limit, @Reserved)",
                     new
                     {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId,
-                        Version = revision,
+                        ActivityId = newView.ActivityId,
+                        TicketTypeId = ticketType.TicketTypeId,
+                        Revision = newView.Revision,
+                        Limit = ticketType.Limit,
+                        Reserved = ticketType.Reserved
                     });
-            }
-        }
-
-        public async Task Handle(TicketTypeLimitIncreased evt, int revision)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.ExecuteAsync(
-                    "UPDATE ActivityViews.TicketType " +
-                    "SET Limit = COALESCE(Limit, 0) + @Seats " +
-                    "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new
-                    {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId,
-                        Seats = evt.Seats
-                    });
-            }
-        }
-
-        public async Task Handle(TicketTypeLimitDecreased evt, int revision)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.ExecuteAsync(
-                    "UPDATE ActivityViews.TicketType " +
-                    "SET Limit = Limit - @Seats " +
-                    "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new
-                    {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId,
-                        Seats = evt.Seats
-                    });
-            }
-        }
-
-        public async Task Handle(TicketTypeLimitRemoved evt, int revision)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.ExecuteAsync(
-                    "UPDATE ActivityViews.TicketType " +
-                    "SET Limit = NULL " +
-                    "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new
-                    {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId,
-                    });
-            }
-        }
-
-        public async Task Handle(SeatReserved evt, int revision)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.ExecuteAsync(
-                    "UPDATE ActivityViews.TicketType " +
-                    "SET Reserved = Reserved + 1 " +
-                    "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new
-                    {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId
-                    });
-            }
-        }
-
-        public async Task Handle(SeatReturned evt, int revision)
-        {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                await conn.ExecuteAsync(
-                    "UPDATE ActivityViews.TicketType " +
-                    "SET Reserved = Reserved - 1 " +
-                    "WHERE ActivityId = @ActivityId AND TicketTypeId = @TicketTypeId",
-                    new
-                    {
-                        ActivityId = evt.AggregateId,
-                        TicketTypeId = evt.TicketTypeId
-                    });
+                }
             }
         }
     }

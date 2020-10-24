@@ -22,6 +22,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .InSchema("ActivityViews")
                 .WithColumn("ActivityId").AsGuid().NotNullable().NotNullable()
                 .WithColumn("TicketTypeId").AsGuid().NotNullable()
+                .WithColumn("Revision").AsInt32().NotNullable()
                 .WithColumn("Limit").AsInt32().Nullable()
                 .WithColumn("Reserved").AsInt32().WithDefaultValue(0).NotNullable();
 

@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Swetugg.Tix.Infrastructure;
+using System;
 
 namespace Swetugg.Tix.Activity.Views
 {
-    public class ActivityOverview
+    public class ActivityOverview : IView
     {
         public Guid ActivityId { get; set; }
         public int Revision { get; set; }
