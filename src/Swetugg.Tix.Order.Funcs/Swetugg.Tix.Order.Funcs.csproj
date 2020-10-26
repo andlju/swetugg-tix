@@ -6,6 +6,7 @@
   <ItemGroup>
     <PackageReference Include="Azure.Messaging.EventHubs" Version="5.2.0" />
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
+    <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.EventHubs" Version="4.1.1" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.ServiceBus" Version="4.2.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
     <PackageReference Include="NEventStore.Persistence.Sql" Version="7.2.0" />
@@ -15,6 +16,7 @@
     <ProjectReference Include="..\Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Order.Commands\Swetugg.Tix.Order.Commands.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Order.Domain\Swetugg.Tix.Order.Domain.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Order.ViewBuilder\Swetugg.Tix.Order.ViewBuilder.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

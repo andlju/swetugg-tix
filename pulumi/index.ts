@@ -221,7 +221,7 @@ export = async () => {
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
         ActivityEventHubName: activityEventHub.name,
-        ActivityViewsConsumerGroup: activityViewsConsumerGroup.name
+        ActivityViewsConsumerGroup: activityViewsConsumerGroup.name,
     };
     const orderAppSettings = {
         runtime: "dotnet",
@@ -316,19 +316,31 @@ export = async () => {
         out: output,
         activityAppSettings: {
             IsEncrypted: false,
-            Values: activityAppSettings
+            Values: {
+                ...activityAppSettings,
+                "AzureFunctionsJobHost__logging__logLevel__default": "Information",
+            }
         },
         orderAppSettings: {
             IsEncrypted: false,
-            Values: orderAppSettings
+            Values: {
+                ...orderAppSettings,
+                "AzureFunctionsJobHost__logging__logLevel__default": "Information",
+            }
         },
         processAppSettings: {
             IsEncrypted: false,
-            Values: processAppSettings
+            Values: {
+                ...processAppSettings,
+                "AzureFunctionsJobHost__logging__logLevel__default": "Information",
+            }
         },
         apiAppSettings: {
             IsEncrypted: false,
-            Values: apiAppSettings,
+            Values: {
+                ...apiAppSettings,
+                "AzureFunctionsJobHost__logging__logLevel__default": "Information",
+            },
             Host: {
                 CORS: "*"
             }

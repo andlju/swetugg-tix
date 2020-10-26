@@ -6,6 +6,7 @@ using Swetugg.Tix.Activity.Content;
 using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Api.Activities;
 using Swetugg.Tix.Api.Activities.Commands;
+using Swetugg.Tix.Api.Admin;
 using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.Api.Orders.Commands;
 
@@ -36,6 +37,17 @@ namespace Swetugg.Tix.Api
                 var viewsDbConnectionString = options.Value.ViewsDbConnection;
 
                 return new SqlActivityContentQuery(viewsDbConnectionString);
+            });
+
+            builder.Services.AddSingleton<ViewDatabaseMigrator>(sp =>
+            {
+                var options = sp.GetService<IOptions<ApiOptions>>();
+                var viewsConnectionString = options.Value.ViewsDbConnection;
+                var builder = new ViewDatabaseMigrator(viewsConnectionString);
+
+                // Ensure that the database is properly initialized
+                builder.InitializeDatabase();
+                return builder;
             });
 
         }

@@ -7,12 +7,6 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 
     public class ActivityOverviewEventApplier : EventApplierBase<ActivityOverview>
     {
-
-        public ActivityOverviewEventApplier()
-        {
-            RegisterHandlers();
-        }
-
         
         private ActivityOverview Handle(ActivityOverview view, ActivityCreated evt)
         {

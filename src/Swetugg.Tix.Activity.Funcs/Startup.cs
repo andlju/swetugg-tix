@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using NEventStore;
 using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
+using Polly;
+using Polly.Registry;
 using Swetugg.Tix.Activity.Content;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Events;
@@ -14,6 +16,7 @@ using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Infrastructure.CommandLog;
+using System;
 using System.Data.SqlClient;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Activity.Funcs.Startup))]
@@ -53,32 +56,36 @@ namespace Swetugg.Tix.Activity.Funcs
                     null,
                     sp.GetService<ICommandLog>());
             });
-            builder.Services.AddScoped<ActivityCommandListenerFunc, ActivityCommandListenerFunc>();
-            builder.Services.AddScoped<EventHubViewBuilderFunc, EventHubViewBuilderFunc>();
-            builder.Services.AddScoped<DatabaseManagementFunc, DatabaseManagementFunc>();
+
+            builder.Services.AddSingleton<IPolicyRegistry<string>>(sp =>
+            {
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var retryPolicy = Policy.
+                    Handle<Exception>().WaitAndRetryAsync(
+                    5,
+                    attempt => TimeSpan.FromMilliseconds(Math.Pow(2, attempt) * 100),
+                    onRetry: (ex, t) => loggerFactory.CreateLogger("RetryPolicy").LogError(ex, $"Retrying, attempt in {t.TotalMilliseconds}ms"));
+                var registry = new PolicyRegistry();
+
+                registry.Add(typeof(ActivityOverviewBuilder).Name, retryPolicy);
+                registry.Add(typeof(TicketTypeBuilder).Name, retryPolicy);
+                return registry;
+            });
 
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
                 var viewsConnectionString = options.Value.ViewsDbConnection;
-
-                var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>());
+                var viewBuilderPolicy = Polly.Policy.Handle<Exception>().RetryAsync(3, onRetry: (ex, attempts) =>
+                {
+                    Console.WriteLine($"Retrying after {ex}");
+                });
+                var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), sp.GetService<IPolicyRegistry<string>>());
 
                 host.RegisterViewBuilder(new ActivityOverviewBuilder(viewsConnectionString));
                 host.RegisterViewBuilder(new TicketTypeBuilder(viewsConnectionString));
 
                 return host;
-            });
-
-            builder.Services.AddSingleton<ViewDatabaseMigrator>(sp =>
-            {
-                var options = sp.GetService<IOptions<ActivityOptions>>();
-                var viewsConnectionString = options.Value.ViewsDbConnection;
-                var builder = new ViewDatabaseMigrator(viewsConnectionString);
-                
-                // Ensure that the database is properly initialized
-                builder.InitializeDatabase();
-                return builder;
             });
 
         }

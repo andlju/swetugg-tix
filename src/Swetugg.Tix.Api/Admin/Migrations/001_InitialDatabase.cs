@@ -1,8 +1,8 @@
 using FluentMigrator;
 
-namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
+namespace Swetugg.Tix.Api.Admin.Migrations
 {
-    [Migration(0)]
+    [Migration(1)]
     public class InitialDatabase : Migration
     {
         public override void Up()
@@ -30,6 +30,13 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .WithSchema("ActivityViews")
                 .Columns("ActivityId", "TicketTypeId");
 
+            Create.Schema("OrderViews");
+
+            Create.Table("OrderView")
+                .InSchema("OrderViews")
+                .WithColumn("OrderId").AsGuid().PrimaryKey()
+                .WithColumn("Revision").AsInt32().NotNullable();
+
         }
 
         public override void Down()
@@ -37,6 +44,8 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
             Delete.Table("ActivityOverview").InSchema("ActivityViews");
             Delete.Table("TicketType").InSchema("ActivityViews");
             Delete.Schema("ActivityViews");
+            Delete.Table("OrderView").InSchema("OrderViews");
+            Delete.Schema("OrderViews");
         }
     }
 }

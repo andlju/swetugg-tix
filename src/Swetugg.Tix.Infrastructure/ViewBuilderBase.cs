@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -8,10 +9,18 @@ namespace Swetugg.Tix.Infrastructure
         where TView : class, IView
     {
         private readonly IEventApplier<TView> _eventApplier;
+        private readonly bool _randomErrors;
+        private readonly Random _rnd = new Random();
 
-        public ViewBuilderBase(IEventApplier<TView> eventApplier)
+        public ViewBuilderBase(IEventApplier<TView> eventApplier, bool randomErrors = false)
         {
             _eventApplier = eventApplier;
+            _randomErrors = randomErrors;
+        }
+        private void ThrowRandomError()
+        {
+            if (_randomErrors && _rnd.Next(100) > 75)
+                throw new Exception("Random error");
         }
 
         public async Task HandleEvents(IEnumerable<PublishedEvent> events)
@@ -19,6 +28,7 @@ namespace Swetugg.Tix.Infrastructure
             foreach (var aggregateEvents in events.GroupBy(e => e.AggregateId))
             {
                 var oldView = await GetView(aggregateEvents.Key);
+                ThrowRandomError();
 
                 // Only apply events that are newer than the current revision.
                 // Usually this will be all of them
@@ -28,6 +38,7 @@ namespace Swetugg.Tix.Infrastructure
                     var newView = _eventApplier.ApplyEvents(oldView, unappliedEvents.Select(e => e.Body));
                     newView.Revision = unappliedEvents.Last().Revision;
                     await StoreView(oldView, newView);
+                    ThrowRandomError();
                 }
             }
         }

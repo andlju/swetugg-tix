@@ -1,8 +1,8 @@
 using FluentMigrator;
 
-namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
+namespace Swetugg.Tix.Api.Admin.Migrations
 {
-    [Migration(2)]
+    [Migration(3)]
     public class InitialContentSchema : Migration
     {
         public override void Up()

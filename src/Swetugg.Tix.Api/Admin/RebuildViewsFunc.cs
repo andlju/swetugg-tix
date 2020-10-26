@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Admin
 {
+
     public class RebuildViewsFunc : ActivityAdminCommandFunc<RebuildViews>
     {
         public RebuildViewsFunc(IActivityCommandMessageSender sender) : base(sender)

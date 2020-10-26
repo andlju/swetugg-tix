@@ -1,16 +1,16 @@
 using FluentMigrator;
 
-namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
+namespace Swetugg.Tix.Api.Admin.Migrations
 {
-    [Migration(3)]
-    public class AddOrderCommandLogTable : Migration
+    [Migration(2)]
+    public class AddCommandLogTable : Migration
     {
         public override void Up()
         {
-            Create.Schema("OrderLogs");
+            Create.Schema("ActivityLogs");
 
             Create.Table("CommandLog")
-                .InSchema("OrderLogs")
+                .InSchema("ActivityLogs")
                 .WithColumn("CommandId").AsGuid().PrimaryKey()
                 .WithColumn("AggregateId").AsString(200).Nullable()
                 .WithColumn("Revision").AsInt32().Nullable()
@@ -20,9 +20,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();
 
             Create.Table("CommandLogMessage")
-                .InSchema("OrderLogs")
+                .InSchema("ActivityLogs")
                 .WithColumn("Id").AsInt64().PrimaryKey().Identity()
-                .WithColumn("CommandId").AsGuid().ForeignKey("FK_CommandLogError_CommandLog", "OrderLogs", "CommandLog", "CommandId")
+                .WithColumn("CommandId").AsGuid().ForeignKey("FK_CommandLogError_CommandLog", "ActivityLogs", "CommandLog", "CommandId")
                 .WithColumn("Severity").AsInt32()
                 .WithColumn("Code").AsString(100)
                 .WithColumn("Message").AsCustom("ntext")
@@ -31,8 +31,9 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Migrations
 
         public override void Down()
         {
-            Delete.Table("CommandLog").InSchema("OrderLogs");
-            Delete.Table("CommandLogMessage").InSchema("OrderLogs");
+            Delete.Table("CommandLogMessage").InSchema("ActivityLogs");
+            Delete.Table("CommandLog").InSchema("ActivityLogs");
+            Delete.Schema("ActivityLogs");
         }
     }
 }

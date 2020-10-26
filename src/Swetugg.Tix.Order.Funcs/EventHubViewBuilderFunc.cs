@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Polly;
-using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Activity.ViewBuilder;
+using Swetugg.Tix.Order.ViewBuilder;
 using Swetugg.Tix.Infrastructure;
+using Swetugg.Tix.Order.Events;
 
-namespace Swetugg.Tix.Activity.Funcs
+
+namespace Swetugg.Tix.Order.Funcs
 {
 
     public class EventHubViewBuilderFunc
@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("EventHubViewBuilderFunc")]
-        public async Task Run([EventHubTrigger("%ActivityEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%ActivityViewsConsumerGroup%")] EventData[] events, ILogger log)
+        public async Task Run([EventHubTrigger("%OrderEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%OrderViewsConsumerGroup%")] EventData[] events, ILogger log)
         {
             var exceptions = new List<Exception>();
 

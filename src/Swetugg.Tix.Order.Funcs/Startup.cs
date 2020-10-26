@@ -6,10 +6,13 @@ using Microsoft.Extensions.Options;
 using NEventStore;
 using NEventStore.Persistence.Sql.SqlDialects;
 using NEventStore.Serialization.Json;
+using Polly;
+using Polly.Registry;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Infrastructure.CommandLog;
 using Swetugg.Tix.Order.Domain;
 using Swetugg.Tix.Order.Funcs.Options;
+using Swetugg.Tix.Order.ViewBuilder;
 using System;
 using System.Data.SqlClient;
 
@@ -52,7 +55,31 @@ namespace Swetugg.Tix.Order.Funcs
                     sp.GetService<ICommandLog>());
             });
 
-            builder.Services.AddScoped<OrderCommandListenerFunc, OrderCommandListenerFunc>();
+            builder.Services.AddSingleton<IPolicyRegistry<string>>(sp =>
+            {
+                var loggerFactory = sp.GetService<ILoggerFactory>();
+                var retryPolicy = Policy.
+                    Handle<Exception>().WaitAndRetryAsync(
+                    5,
+                    attempt => TimeSpan.FromMilliseconds(Math.Pow(2, attempt) * 100), 
+                    onRetry: (ex, t) => loggerFactory.CreateLogger("RetryPolicy").LogError(ex, $"Retrying, attempt in {t.TotalMilliseconds}ms"));
+                var registry = new PolicyRegistry();
+
+                registry.Add(typeof(OrderViewBuilder).Name, retryPolicy);
+                return registry;
+            });
+
+            builder.Services.AddSingleton<ViewBuilderHost>(sp =>
+            {
+                var options = sp.GetService<IOptions<OrderOptions>>();
+                var viewsConnectionString = options.Value.ViewsDbConnection;
+
+                var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), sp.GetService<IPolicyRegistry<string>>());
+
+                host.RegisterViewBuilder(new OrderViewBuilder(viewsConnectionString));
+
+                return host;
+            });
         }
     }
 }

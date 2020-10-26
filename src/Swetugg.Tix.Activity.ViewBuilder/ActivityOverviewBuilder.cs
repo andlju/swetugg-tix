@@ -13,8 +13,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
     public class ActivityOverviewBuilder : ViewBuilderBase<ActivityOverview>
     {
         private readonly string _connectionString;
-
-        public ActivityOverviewBuilder(string connectionString) : base(new ActivityOverviewEventApplier())
+        public ActivityOverviewBuilder(string connectionString) : base(new ActivityOverviewEventApplier(), true)
         {
             _connectionString = connectionString;
         }

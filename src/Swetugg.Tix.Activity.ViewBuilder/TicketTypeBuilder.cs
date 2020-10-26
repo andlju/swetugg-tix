@@ -13,7 +13,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
     {
         private readonly string _connectionString;
 
-        public TicketTypeBuilder(string connectionString) : base(new TicketTypesEventApplier())
+        public TicketTypeBuilder(string connectionString) : base(new TicketTypesEventApplier(), true)
         {
             _connectionString = connectionString;
         }

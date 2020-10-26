@@ -40,8 +40,6 @@ Content-Type: application/json
 ### Add a ticket type to an activity
 POST {{host}}/api/activities/{{activityId}}/ticket-type
 
-
-
 ### Remove a ticket type from an activity
 DELETE {{host}}/api/activities/{{activityId}}/ticket-types/{{ticketTypeId}}
 
@@ -49,3 +47,5 @@ DELETE {{host}}/api/activities/{{activityId}}/ticket-types/{{ticketTypeId}}
 ### Rebuild all views for an activity
 POST {{host}}/api/activities-admin/{{activityId}}/rebuild
 
+### Drop all tables from the View database
+DELETE {{host}}/api/db-admin/views

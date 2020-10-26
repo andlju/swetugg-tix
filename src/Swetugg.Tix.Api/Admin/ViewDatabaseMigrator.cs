@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
-namespace Swetugg.Tix.Activity.ViewBuilder
+namespace Swetugg.Tix.Api.Admin
 {
     public class ViewDatabaseMigrator
     {
@@ -43,6 +43,14 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             }
         }
 
+        public void RemoveDatabase()
+        {
+            using (var scope = _serviceProvider.CreateScope())
+            {
+                TeardownDatabase(scope.ServiceProvider);
+            }
+        }
+
         /// <summary>
         /// Update the database
         /// </summary>
@@ -54,5 +62,15 @@ namespace Swetugg.Tix.Activity.ViewBuilder
             // Execute the migrations
             runner.MigrateUp();
         }
+
+        private static void TeardownDatabase(IServiceProvider serviceProvider)
+        {
+            // Instantiate the runner
+            var runner = serviceProvider.GetRequiredService<IMigrationRunner>();
+
+            // Execute the migrations
+            runner.MigrateDown(0);
+        }
+
     }
 }

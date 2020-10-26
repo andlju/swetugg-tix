@@ -15,6 +15,12 @@ namespace Swetugg.Tix.Infrastructure
         where TView : class
     {
         private IDictionary<Type, Func<TView, object, TView>> _handlers = new Dictionary<Type, Func<TView, object, TView>>();
+
+        public EventApplierBase()
+        {
+            RegisterHandlers();
+        }
+
         protected void RegisterHandlers()
         {
             // Look for private Handle-methods

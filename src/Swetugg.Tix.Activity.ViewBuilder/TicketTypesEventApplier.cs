@@ -9,11 +9,6 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 {
     public class TicketTypesEventApplier : EventApplierBase<TicketTypesView>
     {
-        public TicketTypesEventApplier()
-        {
-            RegisterHandlers();
-        }
-
         private TicketTypesView Handle(TicketTypesView view, ActivityCreated evt)
         {
             if (view != null)
@@ -45,14 +40,14 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         private TicketTypesView Handle(TicketTypesView view, TicketTypeLimitIncreased evt)
         {
             var tt = GetTicketType(view, evt.TicketTypeId);
-            tt.Limit += evt.Seats;
+            tt.Limit = tt.Limit.GetValueOrDefault(0) + evt.Seats;
             return view;
         }
 
         private TicketTypesView Handle(TicketTypesView view, TicketTypeLimitDecreased evt)
         {
             var tt = GetTicketType(view, evt.TicketTypeId);
-            tt.Limit -= evt.Seats;
+            tt.Limit = tt.Limit.GetValueOrDefault(0) - evt.Seats;
             return view;
         }
 

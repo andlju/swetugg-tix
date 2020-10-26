@@ -1,11 +1,8 @@
 using System;
 using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Host;
 using Microsoft.Extensions.Logging;
-using Swetugg.Tix.Activity.Content;
-using Swetugg.Tix.Activity.ViewBuilder;
 
-namespace Swetugg.Tix.Activity.Funcs
+namespace Swetugg.Tix.Api.Admin.Funcs
 {
     public class DatabaseManagementFunc
     {
