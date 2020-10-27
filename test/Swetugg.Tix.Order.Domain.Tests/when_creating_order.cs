@@ -30,21 +30,21 @@ namespace Swetugg.Tix.Order.Domain.Tests
         [Fact]
         public void then_OrderCreated_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<OrderCreated>());
+            Assert.True(Commits.HasEvent<OrderCreated>());
         }
 
         [Fact]
         public void then_OrderId_is_correct()
         {
             Assert.Equal(OrderId.ToString(), Commits.First().StreamId);
-            var evt = Commits.First().GetEvent<OrderCreated>();
+            var evt = Commits.GetEvent<OrderCreated>();
             Assert.Equal(OrderId, evt.AggregateId);
         }
 
         [Fact]
         public void then_ActivityId_is_correct()
         {
-            var evt = Commits.First().GetEvent<OrderCreated>();
+            var evt = Commits.GetEvent<OrderCreated>();
             Assert.Equal(ActivityId, evt.ActivityId);
         }
 

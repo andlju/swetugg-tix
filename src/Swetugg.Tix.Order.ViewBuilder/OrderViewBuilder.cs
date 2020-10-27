@@ -21,7 +21,7 @@ namespace Swetugg.Tix.Order.ViewBuilder
             using (var conn = new SqlConnection(_connectionString))
             {
                 var view = await conn.QuerySingleOrDefaultAsync<OrderView>(
-                    "SELECT OrderId, Revision " +
+                    "SELECT OrderId, ActivityId, Revision " +
                     "FROM OrderViews.OrderView " +
                     "WHERE OrderId = @OrderId", new
                     {
@@ -31,11 +31,12 @@ namespace Swetugg.Tix.Order.ViewBuilder
                 if (view == null)
                 {
                     await conn.ExecuteAsync(
-                        "INSERT INTO OrderViews.OrderView (OrderId, Revision) " +
-                        "VALUES (@OrderId, @Revision)",
+                        "INSERT INTO OrderViews.OrderView (OrderId, ActivityId, Revision) " +
+                        "VALUES (@OrderId, @ActivityId, @Revision)",
                         new OrderView()
                         {
                             OrderId = Guid.Parse(viewId),
+                            ActivityId = null,
                             Revision = 0,
                         });
                 }
@@ -49,7 +50,8 @@ namespace Swetugg.Tix.Order.ViewBuilder
             {
                 await conn.ExecuteAsync(
                     "UPDATE OrderViews.OrderView " +
-                    "SET Revision = @Revision " +
+                    "SET ActivityId = @ActivityId, " +
+                    "Revision = @Revision " +
                     "WHERE OrderId = @OrderId",
                     newView);
             }

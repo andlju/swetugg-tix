@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
         [Fact]
         public void then_no_new_SeatReserved_event_is_raised()
         {
-            Assert.False(Commits.First().HasEvent<SeatReserved>());
+            Assert.False(Commits.HasEvent<SeatReserved>());
         }
 
         [Fact]

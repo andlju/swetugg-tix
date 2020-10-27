@@ -34,7 +34,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_SeatsRemoved_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<SeatsRemoved>());
+            Assert.True(Commits.HasEvent<SeatsRemoved>());
         }
     }
 }

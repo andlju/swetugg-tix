@@ -25,6 +25,11 @@ namespace Swetugg.Tix.Tests.Helpers
         /// </summary>
         protected IEnumerable<ICommit> Commits => _commitsInternal;
 
+        /// <summary>
+        /// Commits that happened as part of the Given phase
+        /// </summary>
+        protected IEnumerable<ICommit> PreCommits => _preCommitsInternal;
+
         protected IEnumerable<object> DispatchedMessages => _dispatchedMessagesInternal;
         /// <summary>
         /// Exception that has been thrown as a result of the
@@ -38,13 +43,14 @@ namespace Swetugg.Tix.Tests.Helpers
         protected readonly ITestOutputHelper Output;
 
         private readonly List<ICommit> _commitsInternal = new List<ICommit>();
+        private readonly List<ICommit> _preCommitsInternal = new List<ICommit>();
         private readonly List<object> _dispatchedMessagesInternal = new List<object>();
 
         [SuppressMessage("ReSharper", "VirtualMemberCallInConstructor")]
         protected SagaTestBase(ITestOutputHelper output)
         {
             Output = output;
-            var testHook = new RepositoryTestObserver(_commitsInternal);
+            var testHook = new RepositoryTestObserver(_preCommitsInternal, _commitsInternal);
             var sagaMessageDispatcher = new TestSagaMessageDispatcher(_dispatchedMessagesInternal);
             // Setup an InMemory EventStore with a hook
             // for recording commits

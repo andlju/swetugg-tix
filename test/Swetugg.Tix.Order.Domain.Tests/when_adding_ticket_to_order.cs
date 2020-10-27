@@ -33,13 +33,19 @@ namespace Swetugg.Tix.Order.Domain.Tests
         [Fact]
         public void then_TicketAdded_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<TicketAdded>());
+            Assert.True(Commits.HasEvent<TicketAdded>());
         }
-        
+
         [Fact]
         public void then_TicketTypeId_is_correct()
         {
-            Assert.Equal(TicketTypeId, Commits.First().GetEvent<TicketAdded>().TicketTypeId);
+            Assert.Equal(TicketTypeId, Commits.GetEvent<TicketAdded>().TicketTypeId);
+        }
+
+        [Fact]
+        public void then_TicketId_is_generated()
+        {
+            Assert.NotEqual(Guid.Empty, Commits.GetEvent<TicketAdded>().TicketId);
         }
     }
 }

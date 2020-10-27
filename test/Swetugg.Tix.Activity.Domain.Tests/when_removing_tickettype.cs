@@ -37,7 +37,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_TicketTypeRemoved_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<TicketTypeRemoved>());
+            Assert.True(Commits.HasEvent<TicketTypeRemoved>());
         }
     }
 

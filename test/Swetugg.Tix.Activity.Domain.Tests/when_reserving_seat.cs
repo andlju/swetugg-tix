@@ -40,25 +40,25 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_SeatReserved_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<SeatReserved>());
+            Assert.True(Commits.HasEvent<SeatReserved>());
         }
 
         [Fact]
         public void then_TicketTypeId_is_correct()
         {
-            Assert.Equal(TicketTypeId, Commits.First().GetEvent<SeatReserved>().TicketTypeId);
+            Assert.Equal(TicketTypeId, Commits.GetEvent<SeatReserved>().TicketTypeId);
         }
 
         [Fact]
         public void then_OrderReference_is_correct()
         {
-            Assert.Equal(OrderReference, Commits.First().GetEvent<SeatReserved>().OrderReference);
+            Assert.Equal(OrderReference, Commits.GetEvent<SeatReserved>().OrderReference);
         }
 
         [Fact]
         public void then_a_new_ticket_reference_is_set()
         {
-            Assert.NotNull(Commits.First().GetEvent<SeatReserved>().TicketReference);
+            Assert.NotNull(Commits.GetEvent<SeatReserved>().TicketReference);
         }
     }
 }

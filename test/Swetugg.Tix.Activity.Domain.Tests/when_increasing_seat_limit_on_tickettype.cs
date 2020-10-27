@@ -38,7 +38,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_TicketTypeLimitIncreased_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<TicketTypeLimitIncreased>());
+            Assert.True(Commits.HasEvent<TicketTypeLimitIncreased>());
         }
     }
 }

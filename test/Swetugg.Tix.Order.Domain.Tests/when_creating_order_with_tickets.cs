@@ -41,35 +41,35 @@ namespace Swetugg.Tix.Order.Domain.Tests
         [Fact]
         public void then_OrderCreated_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<OrderCreated>());
+            Assert.True(Commits.HasEvent<OrderCreated>());
         }
 
         [Fact]
         public void then_OrderId_is_correct()
         {
             Assert.Equal(OrderId.ToString(), Commits.First().StreamId);
-            var evt = Commits.First().GetEvent<OrderCreated>();
+            var evt = Commits.GetEvent<OrderCreated>();
             Assert.Equal(OrderId, evt.AggregateId);
         }
 
         [Fact]
         public void then_ActivityId_is_correct()
         {
-            var evt = Commits.First().GetEvent<OrderCreated>();
+            var evt = Commits.GetEvent<OrderCreated>();
             Assert.Equal(ActivityId, evt.ActivityId);
         }
 
         [Fact]
         public void then_TicketAddedEvents_are_raised_for_first_tickettype()
         {
-            var evts = Commits.First().GetEvents<TicketAdded>().Where(t => t.TicketTypeId == TicketTypeId_1).ToArray();
+            var evts = Commits.GetEvents<TicketAdded>().Where(t => t.TicketTypeId == TicketTypeId_1).ToArray();
             Assert.Equal(2, evts.Length);
         }
 
         [Fact]
         public void then_TicketAddedEvents_are_raised_for_second_tickettype()
         {
-            var evts = Commits.First().GetEvents<TicketAdded>().Where(t => t.TicketTypeId == TicketTypeId_2).ToArray();
+            var evts = Commits.GetEvents<TicketAdded>().Where(t => t.TicketTypeId == TicketTypeId_2).ToArray();
             Assert.Equal(3, evts.Length);
         }
     }

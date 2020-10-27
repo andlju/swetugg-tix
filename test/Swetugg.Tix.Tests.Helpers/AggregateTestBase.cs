@@ -23,6 +23,7 @@ namespace Swetugg.Tix.Tests.Helpers
         /// </summary>
         protected IGivenCommands Given => _givenInternal;
 
+        private readonly List<ICommit> _preCommitsInternal = new List<ICommit>();
         private readonly List<ICommit> _commitsInternal = new List<ICommit>();
 
         /// <summary>
@@ -30,6 +31,12 @@ namespace Swetugg.Tix.Tests.Helpers
         /// command under test
         /// </summary>
         protected IEnumerable<ICommit> Commits => _commitsInternal;
+
+        /// <summary>
+        /// Commits that happened as part of the Given phase
+        /// </summary>
+        protected IEnumerable<ICommit> PreCommits => _preCommitsInternal;
+
 
         protected TestCommandLog Command => _testCommandLog;
 
@@ -90,7 +97,7 @@ namespace Swetugg.Tix.Tests.Helpers
         protected AggregateTestBase(ITestOutputHelper output)
         {
             Output = output;
-            var testHook = new RepositoryTestObserver(_commitsInternal);
+            var testHook = new RepositoryTestObserver(_preCommitsInternal, _commitsInternal);
             // Setup an InMemory EventStore with a hook
             // for recording commits
             var eventStoreWireup = Wireup.Init()

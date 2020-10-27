@@ -36,7 +36,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_TicketTypeAdded_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<TicketTypeAdded>());
+            Assert.True(Commits.HasEvent<TicketTypeAdded>());
         }
     }
     public class when_adding_tickettype_with_duplicate_id : with_activity

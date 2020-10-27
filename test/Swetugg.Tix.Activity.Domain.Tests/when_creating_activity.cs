@@ -29,7 +29,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_ActivityCreated_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<ActivityCreated>());
+            Assert.True(Commits.HasEvent<ActivityCreated>());
         }
 
         [Fact]

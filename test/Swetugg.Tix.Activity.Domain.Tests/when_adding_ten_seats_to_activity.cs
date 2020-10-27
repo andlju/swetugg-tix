@@ -34,7 +34,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         [Fact]
         public void then_SeatsAdded_event_is_raised()
         {
-            Assert.True(Commits.First().HasEvent<SeatsAdded>());
+            Assert.True(Commits.HasEvent<SeatsAdded>());
         }
     }
 }

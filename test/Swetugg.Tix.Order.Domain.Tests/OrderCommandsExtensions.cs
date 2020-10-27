@@ -1,6 +1,8 @@
 using Swetugg.Tix.Order.Commands;
 using Swetugg.Tix.Tests.Helpers;
 using System;
+using System.Collections;
+using System.Diagnostics;
 
 namespace Swetugg.Tix.Order.Domain.Tests
 {
@@ -13,7 +15,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
                 OrderId = orderId,
                 ActivityId = activityId,
             });
-            return new GivenOrderCommands(given, activityId);
+            return new GivenOrderCommands(given, orderId);
         }
 
         public static GivenOrderCommands WithAddedTicket(this GivenOrderCommands given, Guid ticketTypeId)

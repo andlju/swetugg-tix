@@ -5,10 +5,12 @@ namespace Swetugg.Tix.Tests.Helpers
 {
     class RepositoryTestObserver : PipelineHookBase
     {
+        private readonly ICollection<ICommit> _preCommits;
         private readonly ICollection<ICommit> _commits;
 
-        public RepositoryTestObserver(ICollection<ICommit> commits)
+        public RepositoryTestObserver(ICollection<ICommit> preCommits, ICollection<ICommit> commits)
         {
+            _preCommits = preCommits;
             _commits = commits;
         }
 
@@ -17,6 +19,10 @@ namespace Swetugg.Tix.Tests.Helpers
             if (CollectCommits)
             {
                 _commits.Add(committed);
+            }
+            else
+            {
+                _preCommits.Add(committed);
             }
         }
 
