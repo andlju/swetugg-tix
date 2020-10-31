@@ -5,6 +5,7 @@ using System;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
@@ -40,6 +41,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 
         protected override async Task StoreView(TicketTypesView oldView, TicketTypesView newView)
         {
+            using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync("DELETE FROM ActivityViews.TicketType WHERE ActivityId = @ActivityId", new
@@ -59,6 +61,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
                         Reserved = ticketType.Reserved
                     });
                 }
+                trans.Complete();
             }
         }
     }

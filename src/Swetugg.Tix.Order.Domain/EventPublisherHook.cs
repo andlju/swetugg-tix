@@ -16,25 +16,23 @@ namespace Swetugg.Tix.Order.Domain
 
         public override void PostCommit(ICommit committed)
         {
-            var initialRevision = committed.StreamRevision - committed.Events.Count();
-            var revision = initialRevision;
+            var initialRevision = committed.StreamRevision - committed.Events.Count() + 1;
+            var evts = committed.Events.Select((e, i) => new PublishedEvent
+            {
+                AggregateId = committed.StreamId,
+                EventType = e.Body.GetType().FullName,
+                Revision = initialRevision + i,
+                Body = e.Body,
+                Headers = e.Headers.Union(committed.Headers),
+            }).ToArray();
+
             foreach (var publisher in _publishers)
             {
-                revision++;
-                var evts = committed.Events.Select(e => new PublishedEvent
-                {
-                    AggregateId = committed.StreamId,
-                    EventType = e.Body.GetType().FullName,
-                    Body = e.Body,
-                    Revision = revision,
-                    Headers = e.Headers.Union(committed.Headers),
-                });
-
                 publisher.Publish(
                     new PublishedEvents
                     {
                         AggregateId = committed.StreamId,
-                        Events = evts.ToArray()
+                        Events = evts
                     });
             }
         }
