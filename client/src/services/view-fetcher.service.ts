@@ -11,7 +11,7 @@ interface View {
 export function getView<TView extends View>(url: string, options?: GetViewOptions<TView>) : Promise<TView> {
 
   let attempts = 0;
-  const validator = options && (options.validatorFunc ?? (options.revision && ((view: TView) => view.revision >= options.revision)));
+  const validator = options && (options.validatorFunc ?? ((view: TView) => !(options.revision) || view.revision >= options.revision));
 
   const pollStatus = async (resolve: any, reject: any) => {
     attempts++;
@@ -24,7 +24,7 @@ export function getView<TView extends View>(url: string, options?: GetViewOption
         return;
       }
     }
-    if (attempts >= 20) {
+    if (attempts >= 10) {
       reject({
         code: 'Timeout',
         message: 'View timed out'

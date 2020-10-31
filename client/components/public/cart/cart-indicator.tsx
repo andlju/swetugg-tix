@@ -1,13 +1,13 @@
 import { IconButton } from "@material-ui/core";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import { useContext } from "react";
-import { store } from "../store";
+import { MainStore } from "../store/store";
 
 const CartIndicator: React.FC = () => {
-  const { state } = useContext(store);
+  const { state } = useContext(MainStore);
   
   return (<IconButton>
-    {state.orderId && <ShoppingCartIcon/>}    
+    {state.order.orderId && <ShoppingCartIcon/>}    
   </IconButton>)
 };
 

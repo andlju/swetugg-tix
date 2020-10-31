@@ -6,12 +6,12 @@ interface CommandOptions {
   method?: string
 }
 
-export function useOrderCommand(commandName: string, options?: CommandOptions): [(commandUrl: string, data: any) => Promise<CommandStatus>, boolean] {
+export function useOrderCommand<TBody>(commandName: string, options?: CommandOptions): [(commandUrl: string, data: TBody) => Promise<CommandStatus>, boolean] {
   const { enqueueSnackbar } = useSnackbar();
   const [sending, setSending] = useState(false);
   const method = options?.method ?? "POST";
 
-  const _sendCommand = async (commandUrl: string, data: any) => {
+  const _sendCommand = async (commandUrl: string, data: TBody) => {
     try {
       setSending(true);
       const result = await sendOrderCommand(commandUrl, data, { method });

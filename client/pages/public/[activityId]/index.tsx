@@ -10,7 +10,7 @@ import { Activity } from '../../../components/activities/activity.models';
 import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
 import { getView } from '../../../src/services/view-fetcher.service';
 import TicketTypeCard from '../../../components/public/ticket-type/ticket-type';
-import { StateProvider } from '../../../components/public/store';
+import { StateProvider } from '../../../components/public/store/store';
 
 interface ActivityProps {
   initialActivity: Activity,

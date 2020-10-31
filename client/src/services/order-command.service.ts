@@ -66,7 +66,7 @@ function waitForResult(commandId: string): Promise<CommandStatus> {
   return promise;
 }
 
-export async function sendOrderCommand(url: string, body: any, options? : SendCommandOptions): Promise<CommandStatus> {
+export async function sendOrderCommand<TBody>(url: string, body: TBody, options? : SendCommandOptions): Promise<CommandStatus> {
   const res = await fetch(buildUrl(url), {
     method: options?.method ?? "POST",
     headers: {

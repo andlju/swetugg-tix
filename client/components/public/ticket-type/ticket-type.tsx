@@ -2,7 +2,8 @@ import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles,
 import React, { useContext } from "react";
 import { useOrderCommand } from "../../../src/use-order-command.hook";
 import { TicketType } from "../../ticket-types/ticket-type.models";
-import { LOAD_ORDER, store } from "../store";
+import { LOAD_ORDER } from "../store/order.actions";
+import { MainStore } from "../store/store";
 
 interface TicketTypeProps {
   ticketType: TicketType;
@@ -28,7 +29,7 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
 
   const [reserveOrder, sendingReserveTicket] = useOrderCommand('Reserve order');
 
-  const {state, dispatch} = useContext(store);
+  const {state, dispatch} = useContext(MainStore);
   
   const onClickBuyOrder = async (ticketTypeId: string) => {
     const orderResp = await reserveOrder(`/orders`, {
