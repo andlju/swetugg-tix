@@ -85,6 +85,11 @@ namespace Swetugg.Tix.Tests.Helpers
                 return Task.FromResult(0);
             }
 
+            public Task<CommandLogItem> GetCommandLog(Guid commandId)
+            {
+                throw new NotImplementedException();
+            }
+
             public Task Store(Guid commandId, object command, string aggregateId = null)
             {
                 return Task.FromResult(0);

@@ -117,5 +117,10 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
                 trans.Complete();
             }
         }
+
+        public Task<CommandLogItem> GetCommandLog(Guid commandId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

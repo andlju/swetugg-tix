@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Swetugg.Tix.Api.Models;
-using Swetugg.Tix.Api.Options;
+using Swetugg.Tix.Infrastructure;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -17,10 +15,11 @@ namespace Swetugg.Tix.Api.Tickets
 {
     public class GetOrderCommandStatusFunc
     {
-        private readonly string _connectionString;
-        public GetOrderCommandStatusFunc(IOptions<ApiOptions> options)
+        private readonly ICommandLog _commandLog;
+
+        public GetOrderCommandStatusFunc(ICommandLog commandLog)
         {
-            _connectionString = options.Value.ViewsDbConnection;
+            _commandLog = commandLog;
         }
 
         [FunctionName("GetOrderCommandStatus")]
@@ -30,33 +29,11 @@ namespace Swetugg.Tix.Api.Tickets
             string commandId,
             ILogger log)
         {
-            using (var conn = new SqlConnection(_connectionString))
-            {
-                var lookup = new Dictionary<Guid, CommandLog>();
-                var commandLogs = await conn.QueryAsync<CommandLog, CommandLogMessage, CommandLog>(
-                    "SELECT cl.CommandId, cl.AggregateId, cl.Revision, cl.Status, cl.CommandType, cl.JsonBody, cl.LastUpdated, clm.Id, clm.Code, clm.Message, clm.Severity, clm.Timestamp " +
-                    "FROM OrderLogs.CommandLog cl " +
-                    "LEFT JOIN OrderLogs.CommandLogMessage clm ON cl.CommandId = clm.CommandId " +
-                    "WHERE cl.CommandId = @CommandId",
-                    (cl, clm) =>
-                    {
-                        if (!lookup.TryGetValue(cl.CommandId, out var commandLog))
-                            lookup.Add(cl.CommandId, commandLog = cl);
-                        if (commandLog.Messages == null)
-                            commandLog.Messages = new List<CommandLogMessage>();
-                        if (clm?.Code != null)
-                        {
-                            commandLog.Messages.Add(clm);
-                        }
-                        return commandLog;
-                    }
-                    , new { commandId });
+            var commandGuid = Guid.Parse(commandId);
+            var commandLog = await _commandLog.GetCommandLog(commandGuid);
 
-                var firstLog = commandLogs.FirstOrDefault();
-                if (firstLog != null)
-                {
-                    return new OkObjectResult(firstLog);
-                }
+            if (commandLog != null) { 
+                return new OkObjectResult(commandLog);
             }
             return new NotFoundResult();
         }

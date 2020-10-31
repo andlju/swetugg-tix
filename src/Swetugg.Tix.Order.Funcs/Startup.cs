@@ -30,8 +30,8 @@ namespace Swetugg.Tix.Order.Funcs
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {
                 var options = sp.GetService<IOptions<OrderOptions>>();
-                var connectionString = options.Value.ViewsDbConnection;
-                return new SqlDbCommandLog(connectionString, "OrderLogs");
+                var connectionString = options.Value.CommandLogCache;
+                return new RedisCommandLog(connectionString);
             });
 
             builder.Services.AddSingleton(sp =>

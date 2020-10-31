@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.Azure.ServiceBus" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="3.0.9" />
     <PackageReference Include="Polly" Version="7.2.1" />
+    <PackageReference Include="StackExchange.Redis" Version="2.1.58" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.2" />
   </ItemGroup>
   <ItemGroup>
@@ -18,6 +19,7 @@
     <ProjectReference Include="..\Swetugg.Tix.Activity.Content.Contract\Swetugg.Tix.Activity.Content.Contract.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Content\Swetugg.Tix.Activity.Content.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Activity.Views\Swetugg.Tix.Activity.Views.csproj" />
+    <ProjectReference Include="..\Swetugg.Tix.Infrastructure.CommandLog\Swetugg.Tix.Infrastructure.CommandLog.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Order.Commands\Swetugg.Tix.Order.Commands.csproj" />
     <ProjectReference Include="..\Swetugg.Tix.Order.Views\Swetugg.Tix.Order.Views.csproj" />
   </ItemGroup>

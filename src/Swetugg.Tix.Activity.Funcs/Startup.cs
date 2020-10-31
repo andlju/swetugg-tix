@@ -33,8 +33,8 @@ namespace Swetugg.Tix.Activity.Funcs
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
-                var connectionString = options.Value.ViewsDbConnection;
-                return new SqlDbCommandLog(connectionString, "ActivityLogs");
+                var connectionString = options.Value.CommandLogCache;
+                return new RedisCommandLog(connectionString);
             });
             builder.Services.AddSingleton(sp =>
             {

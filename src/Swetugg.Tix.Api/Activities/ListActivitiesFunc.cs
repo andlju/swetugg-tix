@@ -6,7 +6,6 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swetugg.Tix.Activity.Views;
-using Swetugg.Tix.Api.Models;
 using Swetugg.Tix.Api.Options;
 using System.Data.SqlClient;
 using System.Threading.Tasks;

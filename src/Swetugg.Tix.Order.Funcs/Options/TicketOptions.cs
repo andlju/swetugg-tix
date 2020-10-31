@@ -10,5 +10,6 @@
         public string EventHubConnectionString { get; set; }
         public string OrderEventHubName { get; set; }
         public string OrderViewsConsumerGroup { get; set; }
+        public string CommandLogCache { get; set; }
     }
 }

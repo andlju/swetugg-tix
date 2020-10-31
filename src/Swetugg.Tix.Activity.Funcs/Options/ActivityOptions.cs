@@ -10,5 +10,6 @@
         public string EventHubConnectionString { get; set; }
         public string ActivityEventHubName { get; set; }
         public string ActivityViewsConsumerGroup { get; set; }
+        public string CommandLogCache { get; set; }
     }
 }

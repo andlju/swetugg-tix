@@ -9,6 +9,8 @@ using Swetugg.Tix.Api.Activities.Commands;
 using Swetugg.Tix.Api.Admin;
 using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.Api.Orders.Commands;
+using Swetugg.Tix.Infrastructure;
+using Swetugg.Tix.Infrastructure.CommandLog;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Api.Startup))]
 namespace Swetugg.Tix.Api
@@ -30,7 +32,13 @@ namespace Swetugg.Tix.Api
 
                 return new SqlActivityContentCommands(viewsDbConnectionString);
             });
+            builder.Services.AddSingleton<ICommandLog>(sp =>
+            {
+                var options = sp.GetService<IOptions<ApiOptions>>();
+                var connectionString = options.Value.CommandLogCache;
 
+                return new RedisCommandLog(connectionString);
+            });
             builder.Services.AddSingleton<IActivityContentQuery>(sp =>
             {
                 var options = sp.GetService<IOptions<ApiOptions>>();

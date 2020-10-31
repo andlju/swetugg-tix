@@ -119,6 +119,31 @@ export = async () => {
     });
 
     //
+    // Redis Cache
+    //
+
+    const redisCache = new azure.redis.Cache('cmds', {
+        resourceGroupName: resourceGroup.name,
+        capacity: 0,
+        family: 'C',
+        skuName: 'Basic'
+    });
+
+    //
+    // SignalR
+    //
+/*    const signalR = new azure.signalr.Service('signalr', {
+        resourceGroupName: resourceGroup.name,
+        sku: {
+            name: 'Free_F1',
+            capacity: 1
+        },
+        cors: [{
+            allowedOrigins: ['*']
+        }],
+    });
+*/
+    //
     // Event Hub
     //
     const eventHubNamespace = new azure.eventhub.EventHubNamespace('tixhub', {
@@ -197,6 +222,7 @@ export = async () => {
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
         ActivityEventHubName: activityEventHub.name,
         ActivityViewsConsumerGroup: activityViewsConsumerGroup.name,
+        CommandLogCache: redisCache.primaryConnectionString,
     };
     const orderAppSettings = {
         runtime: "dotnet",
@@ -209,7 +235,8 @@ export = async () => {
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
         OrderEventHubName: orderEventHub.name,
-        OrderViewsConsumerGroup: orderViewsConsumerGroup.name
+        OrderViewsConsumerGroup: orderViewsConsumerGroup.name,
+        CommandLogCache: redisCache.primaryConnectionString,
     };
     const processAppSettings = {
         runtime: "dotnet",
@@ -233,6 +260,9 @@ export = async () => {
         ActivityCommandsQueue: activityCommandsQueue.name,
         OrderCommandsQueue: orderCommandsQueue.name,
         ViewsDbConnection: tixViewsConnection,
+        //SignalRConnection: signalR.primaryConnectionString,
+        //SignalRHost: signalR.hostname,
+        CommandLogCache: redisCache.primaryConnectionString,
     };
 
     let hostname: pulumi.Output<string> | undefined;
