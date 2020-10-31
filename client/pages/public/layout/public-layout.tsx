@@ -3,6 +3,8 @@ import Link from '../../../components/Link';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import React from 'react';
+import CartIndicator from '../../../components/public/cart/cart-indicator';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -50,6 +52,7 @@ export const Layout: React.FC<LayoutProps> = ({ children, title }) => {
             {title}
           </Typography>
           <div className={classes.right}>
+            <CartIndicator />
           </div>
         </Toolbar>
       </AppBar>

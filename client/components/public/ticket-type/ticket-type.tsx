@@ -1,7 +1,8 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles, Typography } from "@material-ui/core";
-import React from "react";
+import React, { useContext } from "react";
 import { useOrderCommand } from "../../../src/use-order-command.hook";
 import { TicketType } from "../../ticket-types/ticket-type.models";
+import { LOAD_ORDER, store } from "../store";
 
 interface TicketTypeProps {
   ticketType: TicketType;
@@ -27,11 +28,16 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
 
   const [reserveOrder, sendingReserveTicket] = useOrderCommand('Reserve order');
 
+  const {state, dispatch} = useContext(store);
+  
   const onClickBuyOrder = async (ticketTypeId: string) => {
-    await reserveOrder(`/orders`, {
+    const orderResp = await reserveOrder(`/orders`, {
       activityId: ticketType.activityId,
       tickets: [{quantity: 1, ticketTypeId}]
     });
+    if (orderResp.aggregateId) {
+      dispatch({ type: LOAD_ORDER, payload: { orderId: orderResp.aggregateId } });
+    }
   }
 
   return <Card>
@@ -43,7 +49,7 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
     <CardContent>
       <Typography variant="body2">
         A compelling text on why to buy this ticket type
-  </Typography>
+      </Typography>
     </CardContent>
     <CardActions>
       <Button

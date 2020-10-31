@@ -10,10 +10,11 @@ import { Activity } from '../../../components/activities/activity.models';
 import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
 import { getView } from '../../../src/services/view-fetcher.service';
 import TicketTypeCard from '../../../components/public/ticket-type/ticket-type';
+import { StateProvider } from '../../../components/public/store';
 
 interface ActivityProps {
   initialActivity: Activity,
-  ticketTypes: TicketType[]
+  ticketTypes: TicketType[];
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,13 +28,14 @@ const useStyles = makeStyles((theme) => ({
   heroButtons: {
     marginTop: theme.spacing(4),
   },
-}))
+}));
 
-export default function PublicActivityPage({ initialActivity, ticketTypes }: ActivityProps) {
+
+const PublicActivityPage: React.FC<ActivityProps> = ({ initialActivity, ticketTypes }) => {
   const classes = useStyles();
   const [activity, setActivity] = useState(initialActivity);
   const [refreshActivityRevision, setRefreshActivityRevision] = useState(initialActivity.revision);
-  
+
   useEffect(() => {
     const fetchData = async () => {
       if (refreshActivityRevision > activity.revision) {
@@ -48,46 +50,50 @@ export default function PublicActivityPage({ initialActivity, ticketTypes }: Act
   }, [refreshActivityRevision]);
 
   return (
-    <Layout title={activity.name}>
-      {/* Hero unit */}
-      <div className={classes.heroContent}>
+    <StateProvider>
+      <Layout title={activity.name}>
+        {/* Hero unit */}
+        <div className={classes.heroContent}>
+          <Container maxWidth="md">
+            <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
+              Tickets
+          </Typography>
+            <Typography variant="h5" align="center" color="textSecondary" paragraph>
+              Something short and leading about the collection below—its contents, the creator, etc.
+              Make it short and sweet, but not too short so folks don&apos;t simply skip over it
+              entirely.
+          </Typography>
+            <div className={classes.heroButtons}>
+              <Grid container spacing={2} justify="center">
+                <Grid item>
+                  <Button variant="contained" color="primary">
+                    Buy now
+                </Button>
+                </Grid>
+                <Grid item>
+                  <Button variant="outlined" color="primary">
+                    Find order
+                </Button>
+                </Grid>
+              </Grid>
+            </div>
+          </Container>
+        </div>
         <Container maxWidth="md">
-          <Typography component="h1" variant="h2" align="center" color="textPrimary" gutterBottom>
-            Tickets
-          </Typography>
-          <Typography variant="h5" align="center" color="textSecondary" paragraph>
-            Something short and leading about the collection below—its contents, the creator, etc.
-            Make it short and sweet, but not too short so folks don&apos;t simply skip over it
-            entirely.
-          </Typography>
-          <div className={classes.heroButtons}>
-            <Grid container spacing={2} justify="center">
-              <Grid item>
-                <Button variant="contained" color="primary">
-                  Buy now
-                </Button>
+          <Grid container spacing={4}>
+            {ticketTypes.map((tt) =>
+              <Grid item key={tt.ticketTypeId} xs={12} sm={6} md={4}>
+                <TicketTypeCard ticketType={tt} />
               </Grid>
-              <Grid item>
-                <Button variant="outlined" color="primary">
-                  Find order
-                </Button>
-              </Grid>
-            </Grid>
-          </div>
+            )}
+          </Grid>
         </Container>
-      </div>
-      <Container maxWidth="md">
-        <Grid container spacing={4}>
-          {ticketTypes.map((tt) =>
-            <Grid item key={tt.ticketTypeId} xs={12} sm={6} md={4}>
-              <TicketTypeCard ticketType={tt} />
-            </Grid>
-          )}
-        </Grid>
-      </Container>
-    </Layout>
+      </Layout>
+    </StateProvider>
   );
-}
+};
+
+export default PublicActivityPage;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const activityId = context.params?.activityId;
@@ -102,5 +108,5 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
       initialActivity: activityResp,
       ticketTypes: ticketTypesResp.ticketTypes
     }
-  }
-}
+  };
+};
