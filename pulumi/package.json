@@ -4,7 +4,7 @@
         "@types/node": "^10.17.35"
     },
     "dependencies": {
-        "@pulumi/azure": "^3.27.0",
+        "@pulumi/azure": "^3.29.0",
         "@pulumi/pulumi": "^2.12.1",
         "@pulumi/random": "^2.4.0",
         "public-ip": "^4.0.2"

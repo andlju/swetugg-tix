@@ -2,7 +2,9 @@
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Order.Views;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Order.ViewBuilder
@@ -20,15 +22,27 @@ namespace Swetugg.Tix.Order.ViewBuilder
         {
             using (var conn = new SqlConnection(_connectionString))
             {
-                var view = await conn.QuerySingleOrDefaultAsync<OrderView>(
-                    "SELECT OrderId, ActivityId, Revision " +
-                    "FROM OrderViews.OrderView " +
-                    "WHERE OrderId = @OrderId", new
+                var lookup = new Dictionary<Guid, OrderView>();
+                var view = await conn.QueryAsync<OrderView, OrderTicket, OrderView>(
+                    "SELECT ov.OrderId, ov.ActivityId, ov.Revision, ot.TicketId, ot.TicketTypeId, ot.TicketReference " +
+                    "FROM OrderViews.OrderView ov LEFT JOIN OrderViews.OrderTicket ot ON ov.OrderId = ot.OrderId " +
+                    "WHERE ov.OrderId = @OrderId", (ov, ot) => {
+                        if (!lookup.TryGetValue(ov.OrderId, out var orderView))
+                            lookup.Add(ov.OrderId, orderView = ov);
+                        if (orderView.Tickets == null)
+                            orderView.Tickets = new List<OrderTicket>();
+                        if (ot != null)
+                        {
+                            ot.ActivityId = orderView.ActivityId.GetValueOrDefault();
+                            orderView.Tickets.Add(ot);
+                        }
+                        return orderView;
+                    }, new
                     {
-                        OrderId = viewId
-                    });
+                        OrderId = viewId,
+                    }, splitOn: "TicketId");
 
-                if (view == null)
+                if (view == null || !view.Any())
                 {
                     await conn.ExecuteAsync(
                         "INSERT INTO OrderViews.OrderView (OrderId, ActivityId, Revision) " +
@@ -38,9 +52,11 @@ namespace Swetugg.Tix.Order.ViewBuilder
                             OrderId = Guid.Parse(viewId),
                             ActivityId = null,
                             Revision = 0,
+                            Tickets = new List<OrderTicket>()
                         });
                 }
-                return view;
+
+                return view.FirstOrDefault();
             }
         }
 
@@ -54,6 +70,19 @@ namespace Swetugg.Tix.Order.ViewBuilder
                     "Revision = @Revision " +
                     "WHERE OrderId = @OrderId",
                     newView);
+
+                await conn.ExecuteAsync(
+                    "DELETE FROM OrderViews.OrderTicket WHERE OrderId = @OrderId", new { newView.OrderId });
+
+                foreach(var ticket in newView.Tickets)
+                {
+                    await conn.ExecuteAsync(
+                        "INSERT INTO OrderViews.OrderTicket " +
+                        "(OrderId, TicketId, ActivityId, TicketTypeId, TicketReference) " +
+                        "VALUES (@OrderId, @TicketId, @ActivityId, @TicketTypeId, @TicketReference)",
+                        ticket);
+                }
+                        
             }
         }
     }

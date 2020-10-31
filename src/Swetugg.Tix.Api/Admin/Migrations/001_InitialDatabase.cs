@@ -40,10 +40,11 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
             Create.Table("OrderTicket")
                 .InSchema("OrderViews")
-                .WithColumn("OrderId").AsGuid().PrimaryKey()
+                .WithColumn("TicketId").AsGuid().PrimaryKey()
+                .WithColumn("OrderId").AsGuid()
                 .WithColumn("ActivityId").AsGuid()
                 .WithColumn("TicketTypeId").AsGuid()
-                .WithColumn("TicketReference").AsString(100);
+                .WithColumn("TicketReference").AsString(100).Nullable();
 
             Create.ForeignKey()
                 .FromTable("OrderTicket").InSchema("OrderViews")

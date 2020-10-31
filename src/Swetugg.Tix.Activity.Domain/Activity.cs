@@ -197,7 +197,7 @@ namespace Swetugg.Tix.Activity.Domain
             Raise(new SeatReturned()
             {
                 TicketTypeId = ticketTypeId,
-                OrderReference = Guid.NewGuid().ToString(),
+                OrderReference = orderReference,
                 TicketReference = ticketReference
             });
         }

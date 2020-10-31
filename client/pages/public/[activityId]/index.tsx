@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { GetServerSideProps } from 'next';
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles } from '@material-ui/core';
+import { Button, makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
@@ -9,7 +9,7 @@ import { buildUrl } from '../../../src/url-utils';
 import { Activity } from '../../../components/activities/activity.models';
 import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
 import { getView } from '../../../src/services/view-fetcher.service';
-import { useOrderCommand } from '../../../src/use-order-command.hook';
+import TicketTypeCard from '../../../components/public/ticket-type/ticket-type';
 
 interface ActivityProps {
   initialActivity: Activity,
@@ -27,24 +27,12 @@ const useStyles = makeStyles((theme) => ({
   heroButtons: {
     marginTop: theme.spacing(4),
   },
-  orderCardAvatar: {
-
-  }
 }))
 
 export default function PublicActivityPage({ initialActivity, ticketTypes }: ActivityProps) {
   const classes = useStyles();
   const [activity, setActivity] = useState(initialActivity);
   const [refreshActivityRevision, setRefreshActivityRevision] = useState(initialActivity.revision);
-
-  const [reserveOrder, sendingReserveTicket] = useOrderCommand('Reserve order');
-
-  const onClickBuyOrder = async (ticketTypeId: string) => {
-    await reserveOrder(`/orders`, {
-      activityId: activity.activityId,
-      tickets: [{quantity: 1, ticketTypeId}]
-    });
-  }
   
   useEffect(() => {
     const fetchData = async () => {
@@ -90,26 +78,9 @@ export default function PublicActivityPage({ initialActivity, ticketTypes }: Act
       </div>
       <Container maxWidth="md">
         <Grid container spacing={4}>
-          {ticketTypes.map((tt, i) =>
+          {ticketTypes.map((tt) =>
             <Grid item key={tt.ticketTypeId} xs={12} sm={6} md={4}>
-              <Card>
-                <CardHeader
-                  avatar={
-                  <Avatar className={classes.orderCardAvatar}>{i+1}</Avatar>
-                  }
-                  title={tt.name} />
-                <CardContent>
-                  <Typography variant="body2">
-                    A compelling text on why to buy this ticket type
-                </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button 
-                    onClick={() => onClickBuyOrder(tt.ticketTypeId)}
-                    disabled={sendingReserveTicket}
-                    type="submit">Reserve</Button>
-                </CardActions>
-              </Card>
+              <TicketTypeCard ticketType={tt} />
             </Grid>
           )}
         </Grid>

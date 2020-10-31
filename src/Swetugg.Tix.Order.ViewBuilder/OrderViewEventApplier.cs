@@ -28,6 +28,7 @@ namespace Swetugg.Tix.Order.ViewBuilder
             view.Tickets.Add(new OrderTicket
             {
                 ActivityId = view.ActivityId.GetValueOrDefault(),
+                TicketId = evt.TicketId,
                 OrderId = view.OrderId,
                 TicketTypeId = evt.TicketTypeId
             });
@@ -36,9 +37,29 @@ namespace Swetugg.Tix.Order.ViewBuilder
 
         private OrderView Handle(OrderView view, TicketCancelled evt)
         {
-            var ticket = view.Tickets.FirstOrDefault(t => t.TicketId == evt.TicketId);
+            var ticket = GetTicket(view, evt.TicketId);
             ticket.Cancelled = true;
             return view;
         }
+
+        private OrderView Handle(OrderView view, SeatReserved evt)
+        {
+            var ticket = GetTicket(view, evt.TicketId);
+            ticket.TicketReference = evt.TicketReference;
+            return view;
+        }
+
+        private OrderView Handle(OrderView view, SeatReturned evt)
+        {
+            var ticket = GetTicket(view, evt.TicketId);
+            ticket.TicketReference = null;
+            return view;
+        }
+
+        private static OrderTicket GetTicket(OrderView view, Guid ticketId)
+        {
+            return view.Tickets.FirstOrDefault(t => t.TicketId == ticketId);
+        }
+
     }
 }

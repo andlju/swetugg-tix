@@ -8,6 +8,7 @@ using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Activity.Domain.Tests
 {
+
     public class when_reserving_seat : with_activity
     {
         public when_reserving_seat(ITestOutputHelper output) : base(output)

@@ -45,11 +45,6 @@ export = async () => {
         version: "12.0",
         administratorLogin: sqlAdminUser,
         administratorLoginPassword: sqlAdminPassword.result,
-        extendedAuditingPolicy: {
-            storageEndpoint: storageAccount.primaryBlobEndpoint,
-            storageAccountAccessKey: storageAccount.primaryAccessKey,
-            retentionInDays: 1
-        },
     });
 
     const allAzureFirewallRule = new azure.sql.FirewallRule("tix-fw", {
@@ -70,44 +65,24 @@ export = async () => {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
-        extendedAuditingPolicy: {
-            storageEndpoint: storageAccount.primaryBlobEndpoint,
-            storageAccountAccessKey: storageAccount.primaryAccessKey,
-            retentionInDays: 1
-        },
     });
 
     const orderEventStoreDatabase = new azure.sql.Database("orderevents", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
-        extendedAuditingPolicy: {
-            storageEndpoint: storageAccount.primaryBlobEndpoint,
-            storageAccountAccessKey: storageAccount.primaryAccessKey,
-            retentionInDays: 1
-        },
     });
 
     const processEventStoreDatabase = new azure.sql.Database("processevents", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
-        extendedAuditingPolicy: {
-            storageEndpoint: storageAccount.primaryBlobEndpoint,
-            storageAccountAccessKey: storageAccount.primaryAccessKey,
-            retentionInDays: 1
-        },
     });
 
     const tixViewsDatabase = new azure.sql.Database("tixviews", {
         resourceGroupName: resourceGroup.name,
         serverName: sqlServer.name,
         requestedServiceObjectiveName: "S0",
-        extendedAuditingPolicy: {
-            storageEndpoint: storageAccount.primaryBlobEndpoint,
-            storageAccountAccessKey: storageAccount.primaryAccessKey,
-            retentionInDays: 1
-        },
     });
 
     //
