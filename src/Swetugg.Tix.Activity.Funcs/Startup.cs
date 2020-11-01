@@ -11,7 +11,6 @@ using Polly.Registry;
 using Swetugg.Tix.Activity.Content;
 using Swetugg.Tix.Activity.Domain;
 using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Activity.Events.Admin;
 using Swetugg.Tix.Activity.Funcs.Options;
 using Swetugg.Tix.Activity.ViewBuilder;
 using Swetugg.Tix.Infrastructure;

@@ -7,7 +7,6 @@ using System.Text;
 using System.Threading.Tasks;
 using NEventStore.Domain.Core;
 using Swetugg.Tix.Activity.Events;
-using Swetugg.Tix.Activity.Events.Admin;
 
 namespace Swetugg.Tix.Activity.Domain
 {
