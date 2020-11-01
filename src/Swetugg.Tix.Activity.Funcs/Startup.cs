@@ -67,7 +67,8 @@ namespace Swetugg.Tix.Activity.Funcs
                     onRetry: (ex, t) => loggerFactory.CreateLogger("RetryPolicy").LogError(ex, $"Retrying, attempt in {t.TotalMilliseconds}ms"));
                 var registry = new PolicyRegistry();
 
-                registry.Add(typeof(ActivityOverviewBuilder).Name, retryPolicy);
+                registry.Add(typeof(ActivityViewTableBuilder).Name, retryPolicy);
+                registry.Add(typeof(ActivityOverviewSqlBuilder).Name, retryPolicy);
                 registry.Add(typeof(TicketTypeBuilder).Name, retryPolicy);
                 return registry;
             });
@@ -76,13 +77,15 @@ namespace Swetugg.Tix.Activity.Funcs
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
                 var viewsConnectionString = options.Value.ViewsDbConnection;
+                var storageConnectionString = options.Value.AzureWebJobsStorage;
                 var viewBuilderPolicy = Polly.Policy.Handle<Exception>().RetryAsync(3, onRetry: (ex, attempts) =>
                 {
                     Console.WriteLine($"Retrying after {ex}");
                 });
                 var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), sp.GetService<IPolicyRegistry<string>>());
 
-                host.RegisterViewBuilder(new ActivityOverviewBuilder(viewsConnectionString));
+                host.RegisterViewBuilder(new ActivityViewTableBuilder(storageConnectionString));
+                host.RegisterViewBuilder(new ActivityOverviewSqlBuilder(viewsConnectionString));
                 host.RegisterViewBuilder(new TicketTypeBuilder(viewsConnectionString));
 
                 return host;

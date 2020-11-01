@@ -10,10 +10,10 @@ using System.Threading.Tasks;
 namespace Swetugg.Tix.Activity.ViewBuilder
 {
 
-    public class ActivityOverviewBuilder : ViewBuilderBase<ActivityOverview>
+    public class ActivityOverviewSqlBuilder : ViewBuilderBase<ActivityOverview>
     {
         private readonly string _connectionString;
-        public ActivityOverviewBuilder(string connectionString) : base(new ActivityOverviewEventApplier(), true)
+        public ActivityOverviewSqlBuilder(string connectionString) : base(new ActivityOverviewEventApplier(), true)
         {
             _connectionString = connectionString;
         }

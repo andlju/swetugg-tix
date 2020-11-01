@@ -27,6 +27,11 @@ export = async () => {
         accountReplicationType: "LRS",
     });
 
+    const activityViewTable = new azure.storage.Table("activityview", {
+        storageAccountName: storageAccount.name,
+        name: "activityview",
+    });
+
     //
     // Databases
     //
