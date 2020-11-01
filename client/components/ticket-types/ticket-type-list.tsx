@@ -6,11 +6,12 @@ import {
   Typography,
   makeStyles
 } from "@material-ui/core";
-import { TicketType, TicketTypesView } from "./ticket-type.models";
+import { TicketType } from "./ticket-type.models";
 import AddTicketType from "./add-ticket-type";
 import { useEffect, useState } from 'react';
 import { getView } from '../../src/services/view-fetcher.service';
 import { buildUrl } from '../../src/url-utils';
+import { Activity } from '../activities/activity.models';
 
 interface TicketTypeListProps {
   activityId: string,
@@ -56,8 +57,8 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
   useEffect(() => {
     if (refreshTicketTypes) {
       const fetchData = async () => {
-        const resp = await getView<TicketTypesView>(
-          buildUrl(`/activities/${activityId}/ticket-types`), { 
+        const resp = await getView<Activity>(
+          buildUrl(`/activities/${activityId}`), { 
             validatorFunc: v => refreshTicketTypes === "all" || !!v.ticketTypes.find(tt => tt.ticketTypeId === refreshTicketTypes)
           });
           setTicketTypes(resp.ticketTypes);

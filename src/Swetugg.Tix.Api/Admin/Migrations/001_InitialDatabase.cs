@@ -7,60 +7,33 @@ namespace Swetugg.Tix.Api.Admin.Migrations
     {
         public override void Up()
         {
-            Create.Schema("ActivityViews");
+            Create.Schema("ActivityContent");
 
-            Create.Table("ActivityOverview")
-                .InSchema("ActivityViews")
+            Create.Table("Activity")
+                .InSchema("ActivityContent")
                 .WithColumn("ActivityId").AsGuid().PrimaryKey()
-                .WithColumn("Revision").AsInt32().NotNullable()
-                .WithColumn("TicketTypes").AsInt32()
-                .WithColumn("TotalSeats").AsInt32()
-                .WithColumn("FreeSeats").AsInt32();
+                .WithColumn("Name").AsString(400)
+                .WithColumn("LastUpdated").AsDateTime2().NotNullable();
 
 
             Create.Table("TicketType")
-                .InSchema("ActivityViews")
-                .WithColumn("ActivityId").AsGuid().NotNullable()
+                .InSchema("ActivityContent")
+                .WithColumn("ActivityId").AsGuid().NotNullable().NotNullable()
                 .WithColumn("TicketTypeId").AsGuid().NotNullable()
-                .WithColumn("Revision").AsInt32().NotNullable()
-                .WithColumn("Limit").AsInt32().Nullable()
-                .WithColumn("Reserved").AsInt32().WithDefaultValue(0).NotNullable();
+                .WithColumn("Name").AsString(400)
+                .WithColumn("LastUpdated").AsDateTime2().NotNullable();
 
             Create.PrimaryKey().OnTable("TicketType")
-                .WithSchema("ActivityViews")
+                .WithSchema("ActivityContent")
                 .Columns("ActivityId", "TicketTypeId");
 
-            Create.Schema("OrderViews");
-
-            Create.Table("OrderView")
-                .InSchema("OrderViews")
-                .WithColumn("OrderId").AsGuid().PrimaryKey()
-                .WithColumn("Revision").AsInt32().NotNullable()
-                .WithColumn("ActivityId").AsGuid().Nullable();
-
-            Create.Table("OrderTicket")
-                .InSchema("OrderViews")
-                .WithColumn("TicketId").AsGuid().PrimaryKey()
-                .WithColumn("OrderId").AsGuid()
-                .WithColumn("ActivityId").AsGuid()
-                .WithColumn("TicketTypeId").AsGuid()
-                .WithColumn("TicketReference").AsString(100).Nullable();
-
-            Create.ForeignKey()
-                .FromTable("OrderTicket").InSchema("OrderViews")
-                .ForeignColumn("OrderId")
-                .ToTable("OrderView").InSchema("OrderViews")
-                .PrimaryColumn("OrderId");
         }
 
         public override void Down()
         {
-            Delete.Table("ActivityOverview").InSchema("ActivityViews");
-            Delete.Table("TicketType").InSchema("ActivityViews");
-            Delete.Schema("ActivityViews");
-            Delete.Table("OrderTicket").InSchema("OrderViews");
-            Delete.Table("OrderView").InSchema("OrderViews");
-            Delete.Schema("OrderViews");
+            Delete.Table("Activity").InSchema("ActivityContent");
+            Delete.Table("TicketType").InSchema("ActivityContent");
+            Delete.Schema("ActivityContent");
         }
     }
 }

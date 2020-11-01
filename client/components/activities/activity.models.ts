@@ -1,3 +1,4 @@
+import { TicketType } from "../ticket-types/ticket-type.models";
 
 export type Activity = {
   activityId: string,
@@ -5,7 +6,7 @@ export type Activity = {
   name: string,
   freeSeats: number,
   totalSeats: number,
-  ticketTypes: number
+  ticketTypes: TicketType[]
 }
 
 export type ActivityListProps = {

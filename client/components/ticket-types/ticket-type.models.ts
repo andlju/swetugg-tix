@@ -7,8 +7,3 @@ export type TicketType = {
   reserved: number,
   limit?: number,
 }
-
-export interface TicketTypesView {
-  revision: number,
-  ticketTypes: TicketType[],
-}

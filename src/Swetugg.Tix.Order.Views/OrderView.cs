@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Swetugg.Tix.Order.Views
 {
+
     public class OrderView : IView
     {
         public Guid OrderId { get; set; }

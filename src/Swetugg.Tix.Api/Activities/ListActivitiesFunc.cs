@@ -5,9 +5,12 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Activity.Views;
+using Swetugg.Tix.Activity.Views.TableStorage;
 using Swetugg.Tix.Api.Options;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities
@@ -15,9 +18,12 @@ namespace Swetugg.Tix.Api.Activities
     public class ListActivitiesFunc
     {
         private readonly string _connectionString;
+        private readonly TableStorageViewReader _viewReader;
+
         public ListActivitiesFunc(IOptions<ApiOptions> options)
         {
             _connectionString = options.Value.ViewsDbConnection;
+            _viewReader = new TableStorageViewReader(options.Value.AzureWebJobsStorage, "activityview");
         }
 
         [FunctionName("ListActivities")]
@@ -28,17 +34,22 @@ namespace Swetugg.Tix.Api.Activities
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
+            var activities = (await _viewReader.ListAllEntities<ActivityViewEntity, ActivityOverview>()).ToArray();
+
             using (var conn = new SqlConnection(_connectionString))
             {
-                var activities = await conn.QueryAsync<ActivityOverview>(
-                    "SELECT ao.ActivityId, ao.Revision, ao.FreeSeats, ao.TotalSeats, ao.TicketTypes, ac.Name " +
-                    "FROM ActivityViews.ActivityOverview ao JOIN ActivityContent.Activity ac ON ao.ActivityId = ac.ActivityId");
-                if (activities != null)
+                var activityContent = (await conn.QueryAsync<ActivityContent>(
+                    "SELECT ac.ActivityId, ac.Name " +
+                    "FROM ActivityContent.Activity ac " +
+                    "WHERE ac.ActivityId IN @ActivityIds",
+                    new { ActivityIds = activities.Select(a => a.ActivityId).ToArray() })).ToArray();
+
+                foreach (var a in activities)
                 {
-                    return new OkObjectResult(activities);
+                    a.Name = activityContent.FirstOrDefault(ac => ac.ActivityId == ac.ActivityId)?.Name;
                 }
             }
-            return new NotFoundResult();
+            return new OkObjectResult(activities);
         }
     }
 }

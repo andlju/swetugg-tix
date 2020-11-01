@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Tests
             var activityOverview = target.ApplyEvents(null, events);
 
             Assert.Equal(aggregateId, activityOverview.ActivityId);
-            Assert.Equal(1, activityOverview.TicketTypes);
+            Assert.Single(activityOverview.TicketTypes);
         }
     }
 }

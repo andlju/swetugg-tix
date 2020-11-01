@@ -8,7 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import ModifyLimits from '../../../../components/ticket-types/modify-limits';
 import { getView } from '../../../../src/services/view-fetcher.service';
 import { buildUrl } from '../../../../src/url-utils';
-import { TicketType, TicketTypesView } from '../../../../components/ticket-types/ticket-type.models';
+import { TicketType } from '../../../../components/ticket-types/ticket-type.models';
 import Layout from '../../../../components/layout/main-layout';
 import { Activity } from '../../../../components/activities/activity.models';
 import TicketTypeDetails from '../../../../components/ticket-types/ticket-type-details';
@@ -36,8 +36,8 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
   useEffect(() => {
     const fetchData = async () => {
       if (refreshTicketTypeRevision > ticketType.revision) {
-        const resp = await getView<TicketTypesView>(
-          buildUrl(`/activities/${activity.activityId}/ticket-types`),
+        const resp = await getView<Activity>(
+          buildUrl(`/activities/${activity.activityId}`),
           { revision: refreshTicketTypeRevision });
         const selectedTicketType = resp.ticketTypes.find(tt => tt.ticketTypeId === ticketType.ticketTypeId);
         if (selectedTicketType) {
@@ -80,12 +80,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const activityId = context.params?.activityId;
   const ticketTypeId = context.params?.ticketTypeId;
 
-  const [activityResp, ticketTypesResp] = await Promise.all([
+  const [activityResp] = await Promise.all([
     getView<Activity>(buildUrl(`/activities/${activityId}`)),
-    getView<TicketTypesView>(buildUrl(`/activities/${activityId}/ticket-types`))
   ]);
 
-  const selectedTicketType = ticketTypesResp.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId)
+  const selectedTicketType = activityResp.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId)
   return {
     props: {
       activity: activityResp,

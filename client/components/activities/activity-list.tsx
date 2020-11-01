@@ -77,7 +77,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
                 </TableCell>
                 <TableCell className={classes.numberCell}>{row.freeSeats}</TableCell>
                 <TableCell className={classes.numberCell}>{row.totalSeats}</TableCell>
-                <TableCell className={classes.numberCell}>{row.ticketTypes}</TableCell>
+                <TableCell className={classes.numberCell}>{row.ticketTypes?.length ?? 0}</TableCell>
                 <TableCell>
                   <Link href={`/activities/${row.activityId}`}>
                     <Button

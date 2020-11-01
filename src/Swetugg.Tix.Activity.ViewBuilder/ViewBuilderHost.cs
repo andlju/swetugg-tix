@@ -2,12 +2,9 @@
 using Polly;
 using Polly.Registry;
 using Swetugg.Tix.Infrastructure;
-using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Transactions;
 
 namespace Swetugg.Tix.Activity.ViewBuilder
 {

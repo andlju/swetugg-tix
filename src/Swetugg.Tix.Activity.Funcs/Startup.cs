@@ -68,15 +68,12 @@ namespace Swetugg.Tix.Activity.Funcs
                 var registry = new PolicyRegistry();
 
                 registry.Add(typeof(ActivityViewTableBuilder).Name, retryPolicy);
-                registry.Add(typeof(ActivityOverviewSqlBuilder).Name, retryPolicy);
-                registry.Add(typeof(TicketTypeBuilder).Name, retryPolicy);
                 return registry;
             });
 
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
                 var options = sp.GetService<IOptions<ActivityOptions>>();
-                var viewsConnectionString = options.Value.ViewsDbConnection;
                 var storageConnectionString = options.Value.AzureWebJobsStorage;
                 var viewBuilderPolicy = Polly.Policy.Handle<Exception>().RetryAsync(3, onRetry: (ex, attempts) =>
                 {
@@ -85,8 +82,6 @@ namespace Swetugg.Tix.Activity.Funcs
                 var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), sp.GetService<IPolicyRegistry<string>>());
 
                 host.RegisterViewBuilder(new ActivityViewTableBuilder(storageConnectionString));
-                host.RegisterViewBuilder(new ActivityOverviewSqlBuilder(viewsConnectionString));
-                host.RegisterViewBuilder(new TicketTypeBuilder(viewsConnectionString));
 
                 return host;
             });

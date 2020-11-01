@@ -98,15 +98,14 @@ export default PublicActivityPage;
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const activityId = context.params?.activityId;
 
-  const [activityResp, ticketTypesResp] = await Promise.all([
-    getView<Activity>(buildUrl(`/activities/${activityId}`)),
-    getView<TicketTypesView>(buildUrl(`/activities/${activityId}/ticket-types`))
+  const [activityResp] = await Promise.all([
+    getView<Activity>(buildUrl(`/activities/${activityId}`))
   ]);
 
   return {
     props: {
       initialActivity: activityResp,
-      ticketTypes: ticketTypesResp.ticketTypes
+      ticketTypes: activityResp.ticketTypes
     }
   };
 };

@@ -8,4 +8,8 @@
     <ProjectReference Include="..\Swetugg.Tix.Infrastructure\Swetugg.Tix.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Azure.Cosmos.Table" Version="1.0.8" />
+  </ItemGroup>
+
 </Project>

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.Order.Views;
+using Swetugg.Tix.Order.Views.TableStorage;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
@@ -15,10 +16,12 @@ namespace Swetugg.Tix.Api.Orders
 
     public class GetOrderFunc
     {
-        private readonly string _connectionString;
+        private readonly TableStorageViewReader _viewReader;
+
         public GetOrderFunc(IOptions<ApiOptions> options)
         {
-            _connectionString = options.Value.ViewsDbConnection;
+            // TODO Use Singleton
+            _viewReader = new TableStorageViewReader(options.Value.AzureWebJobsStorage, "orderview");
         }
 
         [FunctionName("GetOrder")]
@@ -30,17 +33,11 @@ namespace Swetugg.Tix.Api.Orders
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
-            using (var conn = new SqlConnection(_connectionString))
+            var order = await _viewReader.GetEntity<OrderViewEntity, OrderView>(orderId, orderId);
+
+            if (order != null)
             {
-                var activity = await conn.QuerySingleOrDefaultAsync<OrderView>(
-                    "SELECT o.OrderId, o.Revision " +
-                    "FROM OrderViews.OrderView o " +
-                    "WHERE o.OrderId = @OrderId",
-                    new { orderId });
-                if (activity != null)
-                {
-                    return new OkObjectResult(activity);
-                }
+                return new OkObjectResult(order);
             }
             return new NotFoundResult();
         }

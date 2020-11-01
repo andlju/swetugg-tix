@@ -65,18 +65,18 @@ namespace Swetugg.Tix.Order.Funcs
                     onRetry: (ex, t) => loggerFactory.CreateLogger("RetryPolicy").LogError(ex, $"Retrying, attempt in {t.TotalMilliseconds}ms"));
                 var registry = new PolicyRegistry();
 
-                registry.Add(typeof(OrderViewBuilder).Name, retryPolicy);
+                registry.Add(typeof(OrderViewTableBuilder).Name, retryPolicy);
                 return registry;
             });
 
             builder.Services.AddSingleton<ViewBuilderHost>(sp =>
             {
                 var options = sp.GetService<IOptions<OrderOptions>>();
-                var viewsConnectionString = options.Value.ViewsDbConnection;
+                var storageonnectionString = options.Value.AzureWebJobsStorage;
 
                 var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), sp.GetService<IPolicyRegistry<string>>());
 
-                host.RegisterViewBuilder(new OrderViewBuilder(viewsConnectionString));
+                host.RegisterViewBuilder(new OrderViewTableBuilder(storageonnectionString));
 
                 return host;
             });
