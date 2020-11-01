@@ -14,6 +14,16 @@ namespace Swetugg.Tix.Order.Domain
             _publishers = publishers.ToArray();
         }
 
+        public Dictionary<string, object> CombineHeaders(IDictionary<string, object> first, IDictionary<string, object> second)
+        {
+            var headers = new Dictionary<string, object>(first);
+            foreach (var h in second)
+            {
+                headers[h.Key] = h.Value;
+            }
+            return headers;
+        }
+
         public override void PostCommit(ICommit committed)
         {
             var initialRevision = committed.StreamRevision - committed.Events.Count() + 1;
@@ -23,7 +33,7 @@ namespace Swetugg.Tix.Order.Domain
                 EventType = e.Body.GetType().FullName,
                 Revision = initialRevision + i,
                 Body = e.Body,
-                Headers = e.Headers.Union(committed.Headers),
+                Headers = CombineHeaders(committed.Headers, e.Headers),
             }).ToArray();
 
             foreach (var publisher in _publishers)

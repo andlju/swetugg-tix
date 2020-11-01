@@ -13,11 +13,8 @@ namespace Swetugg.Tix.Order.ViewBuilder
     {
         private OrderView Handle(OrderView view, OrderCreated evt)
         {
-            if(view == null)
-            {
-                view = new OrderView();
-                view.Tickets = new List<OrderTicket>();
-            }
+            view = new OrderView();
+            view.Tickets = new List<OrderTicket>();
             view.OrderId = evt.AggregateId;
             view.ActivityId = evt.ActivityId;
             return view;

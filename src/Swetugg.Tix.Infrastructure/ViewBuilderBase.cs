@@ -33,7 +33,7 @@ namespace Swetugg.Tix.Infrastructure
 
                 // Only apply events that are newer than the current revision.
                 // Usually this will be all of them
-                var unappliedEvents = aggregateEvents.Where(e => oldView == null || e.Revision > oldView.Revision).OrderBy(e => e.Revision).ToArray();
+                var unappliedEvents = aggregateEvents.Where(e => oldView == null || e.Revision > oldView.Revision || IsRebuild(e)).OrderBy(e => e.Revision).ToArray();
                 if (unappliedEvents.Any())
                 {
                     var newView = _eventApplier.ApplyEvents(oldView, unappliedEvents.Select(e => e.Body));
@@ -42,6 +42,11 @@ namespace Swetugg.Tix.Infrastructure
                     ThrowRandomError();
                 }
             }
+        }
+
+        private bool IsRebuild(PublishedEvent e)
+        {
+            return e.Headers != null && e.Headers.ContainsKey("RebuildToRevision");
         }
 
         protected abstract Task<TView> GetView(string viewId);

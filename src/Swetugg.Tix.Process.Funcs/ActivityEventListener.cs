@@ -42,8 +42,12 @@ namespace Swetugg.Tix.Process.Funcs
                 {
                     string messageBody = Encoding.UTF8.GetString(eventData.Body.Array, eventData.Body.Offset, eventData.Body.Count);
                     var evt = JsonSerializer.Deserialize<PublishedEvent>(messageBody, _jsonOptions);
-                    _logger.LogInformation($"Processing {evt.EventType}");
 
+                    // Don't process if this is a rebuild
+                    if (evt.Headers != null && evt.Headers.ContainsKey("RebuildToRevision"))
+                        continue;
+
+                    _logger.LogInformation($"Processing {evt.EventType}");
                     await _processHost.Dispatcher.Dispatch(evt.Body, false);
                     _logger.LogInformation($"Processing {evt.EventType} Completed");
                 }

@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
             var vals = new Dictionary<RedisKey, RedisValue>
             {
                 [$"command_body_{commandId}"] = body,
-                [$"command_aggregate_{commandId}"] = aggregateId,
+                [$"command_aggregate_{commandId}"] = aggregateId ?? Guid.Empty.ToString(),
                 [$"command_status_{commandId}"] = CommandStatus.Created.ToString(),
                 [$"command_revision_{commandId}"] = 0,
             };
@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
             var db = _redis.GetDatabase();
             var vals = new Dictionary<RedisKey, RedisValue>
             {
-                [$"command_revision_{commandId}"] = revision,
+                [$"command_revision_{commandId}"] = revision ?? 0,
                 [$"command_status_{commandId}"] = CommandStatus.Completed.ToString(),
             };
             return db.StringSetAsync(vals.ToArray());

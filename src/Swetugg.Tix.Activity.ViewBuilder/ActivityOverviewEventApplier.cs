@@ -13,10 +13,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         
         private ActivityOverview Handle(ActivityOverview view, ActivityCreated evt)
         {
-            if (view == null)
-            {
-                view = new ActivityOverview();
-            }
+            view = new ActivityOverview();
             view.ActivityId = evt.AggregateId;
             view.TicketTypes = new List<TicketType>();
             return view;

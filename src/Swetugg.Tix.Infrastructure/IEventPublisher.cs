@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Infrastructure
         public string EventType { get; set; }
         public int Revision { get; set; }
         public object Body { get; set; }
-        public IEnumerable<KeyValuePair<string, object>> Headers { get; set; }
+        public Dictionary<string, object> Headers { get; set; }
     }
 
     public class PublishedEventConverter : JsonConverter<PublishedEvent>
@@ -31,7 +31,7 @@ namespace Swetugg.Tix.Infrastructure
             public string EventType { get; set; }
             public int Revision { get; set; }
             public JsonElement Body { get; set; }
-            public IEnumerable<KeyValuePair<string, object>> Headers { get; set; }
+            public Dictionary<string, object> Headers { get; set; }
         }
 
         private readonly Assembly _eventAssembly;

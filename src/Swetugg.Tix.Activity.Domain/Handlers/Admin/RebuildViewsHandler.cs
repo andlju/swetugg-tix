@@ -17,7 +17,12 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
             _eventStore = eventStore;
             _eventPublisher = eventPublisher;
         }
-
+        private static Dictionary<string, object> AddRebuildHeaders(Dictionary<string, object> headers, int revision)
+        {
+            var newHeaders = new Dictionary<string, object>(headers);
+            newHeaders.Add("RebuildToRevision", revision);
+            return newHeaders;
+        }
         protected override void HandleCommand(RebuildViews command)
         {
             using (var stream = _eventStore.OpenStream(command.ActivityId))
@@ -32,15 +37,15 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
                     AggregateId = stream.StreamId,
                     EventType = e.Body.GetType().FullName,
                     Revision = revision + 1,
-                    Headers = e.Headers,
+                    Headers = AddRebuildHeaders(e.Headers, stream.StreamRevision),
                     Body = e.Body
                 });
 
-                var rebuildViewsEvent = new RebuildViewsRequested { AggregateId = command.ActivityId };
+                /*var rebuildViewsEvent = new RebuildViewsRequested { AggregateId = command.ActivityId };
 
                 var events = (new[] { new PublishedEvent { AggregateId = command.ActivityId.ToString(), EventType = rebuildViewsEvent.GetType().FullName, Body = rebuildViewsEvent, Headers = null } }).Concat(streamEvents);
-
-                _eventPublisher.Publish(new PublishedEvents { AggregateId = command.ActivityId.ToString(), Events = events.ToArray() });
+                */
+                _eventPublisher.Publish(new PublishedEvents { AggregateId = command.ActivityId.ToString(), Events = streamEvents.ToArray() });
             }
         }
     }

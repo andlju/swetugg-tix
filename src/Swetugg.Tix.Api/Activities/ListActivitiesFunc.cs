@@ -46,7 +46,7 @@ namespace Swetugg.Tix.Api.Activities
 
                 foreach (var a in activities)
                 {
-                    a.Name = activityContent.FirstOrDefault(ac => ac.ActivityId == ac.ActivityId)?.Name;
+                    a.Name = activityContent.FirstOrDefault(ac => ac.ActivityId == a.ActivityId)?.Name;
                 }
             }
             return new OkObjectResult(activities);
