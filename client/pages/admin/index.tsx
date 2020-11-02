@@ -6,7 +6,8 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../../components/layout/main-layout';
-import RefreshView from '../../components/admin/refresh-view';
+import RefreshActivityView from '../../components/admin/refresh-activity-view';
+import RefreshOrderView from '../../components/admin/refresh-order-view';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -30,7 +31,12 @@ export default function Index() {
         <Grid container spacing={3}>
           <Grid item xs={6}>
             <Paper className={classes.paper} >
-              <RefreshView initialActivityId={""} />
+              <RefreshActivityView initialActivityId={""} />
+            </Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper className={classes.paper} >
+              <RefreshOrderView initialOrderId={""} />
             </Paper>
           </Grid>
         </Grid>

@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 import Layout from '../layout/public-layout';
 import { buildUrl } from '../../../src/url-utils';
 import { Activity } from '../../../components/activities/activity.models';
-import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
+import { TicketType } from '../../../components/ticket-types/ticket-type.models';
 import { getView } from '../../../src/services/view-fetcher.service';
 import TicketTypeCard from '../../../components/public/ticket-type/ticket-type';
 import { StateProvider } from '../../../components/public/store/store';

@@ -5,6 +5,7 @@ using NEventStore.Domain.Persistence;
 using NEventStore.Domain.Persistence.EventStore;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Order.Domain.Handlers;
+using Swetugg.Tix.Order.Domain.Handlers.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,8 @@ namespace Swetugg.Tix.Order.Domain
             dispatcher.Register(() => new ConfirmReturnedSeatHandler(repositoryFunc(), commandLog));
 
             // Admin command handlers
-            // dispatcher.Register(() => new RebuildViewsHandler(eventStore, viewsEventPublisher, commandLog));
+            dispatcher.Register(() => new RebuildViewsHandler(eventStore, viewsEventPublisher, commandLog));
+            dispatcher.Register(() => new RebuildAllViewsHandler(eventStore, viewsEventPublisher, commandLog));
 
             Dispatcher = dispatcher;
         }

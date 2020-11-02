@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace Swetugg.Tix.Api.Admin
 {
 
-    public class RebuildViewsFunc : ActivityAdminCommandFunc<RebuildViews>
+    public class RebuildActivityViewsFunc : ActivityAdminCommandFunc<RebuildViews>
     {
-        public RebuildViewsFunc(IActivityCommandMessageSender sender) : base(sender)
+        public RebuildActivityViewsFunc(IActivityCommandMessageSender sender) : base(sender)
         {
         }
 

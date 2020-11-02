@@ -50,5 +50,11 @@ GET {{host}}/api/orders/{{orderId}}
 ### Rebuild all views for an activity
 POST {{host}}/api/activities-admin/{{activityId}}/rebuild
 
+### Rebuild all views for an order
+POST {{host}}/api/orders-admin/{{orderId}}/rebuild
+
+### Rebuild all order views
+POST {{host}}/api/orders-admin/rebuild
+
 ### Drop all tables from the View database
 DELETE {{host}}/api/db-admin/views
