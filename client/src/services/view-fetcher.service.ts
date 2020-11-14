@@ -13,7 +13,7 @@ export function getView<TView extends View>(url: string, options?: GetViewOption
   let attempts = 0;
   const validator = options && (options.validatorFunc ?? ((view: TView) => !(options.revision) || view.revision >= options.revision));
 
-  const pollStatus = async (resolve: any, reject: any) => {
+  const pollStatus = async (resolve: ((view: TView) => void), reject: ((err: { code: string, message: string }) => void) ) => {
     attempts++;
     console.log(`Polling view ${url}. Attempt ${attempts}`);
     const res = await fetch(url);

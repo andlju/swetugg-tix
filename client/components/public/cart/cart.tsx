@@ -24,7 +24,7 @@ const Cart: React.FC<Cart> = ({ tickets }) => {
       </TableHead>
       <TableBody>
         {tickets.map(t => (
-          <TableRow>
+          <TableRow key={t.ticketId}>
             <TableCell>{t.ticketTypeId}</TableCell>
             <TableCell>{t.ticketReference}</TableCell>
           </TableRow>
