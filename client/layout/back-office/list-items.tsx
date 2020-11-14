@@ -6,7 +6,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SettingsIcon from '@material-ui/icons/Settings';
 import EventIcon from '@material-ui/icons/Event'
-import Link from '../Link';
+import Link from '../../components/Link';
 
 export const mainListItems = (
   <div>
@@ -18,7 +18,7 @@ export const mainListItems = (
         <ListItemText primary="Dashboard" />
       </ListItem>
     </Link>
-    <Link href="/activities">
+    <Link href="/back-office/activities">
       <ListItem button>
         <ListItemIcon>
           <EventIcon />
@@ -32,7 +32,7 @@ export const mainListItems = (
 export const adminListItems = (
   <div>
     <ListSubheader inset>Administration</ListSubheader>
-    <Link href="/admin">
+    <Link href="/back-office/admin">
     <ListItem button>
       <ListItemIcon>
         <SettingsIcon />

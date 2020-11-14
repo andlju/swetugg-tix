@@ -5,14 +5,14 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Layout from '../../../components/layout/main-layout';
-import { buildUrl } from '../../../src/url-utils';
-import { Activity } from '../../../components/activities/activity.models';
-import ActivityDetails from '../../../components/activities/activity-details';
-import TicketTypeList from '../../../components/ticket-types/ticket-type-list';
-import { TicketType, TicketTypesView } from '../../../components/ticket-types/ticket-type.models';
-import { getView } from '../../../src/services/view-fetcher.service';
-import ModifySeats from '../../../components/activities/modify-seats';
+import Layout from '../../../../layout/back-office/main-layout';
+import { buildUrl } from '../../../../src/url-utils';
+import { Activity } from '../../../../components/back-office/activities/activity.models';
+import ActivityDetails from '../../../../components/back-office/activities/activity-details';
+import TicketTypeList from '../../../../components/back-office/ticket-types/ticket-type-list';
+import { TicketType } from '../../../../components/back-office/ticket-types/ticket-type.models';
+import { getView } from '../../../../src/services/view-fetcher.service';
+import ModifySeats from '../../../../components/back-office/activities/modify-seats';
 
 interface ActivityProps {
   initialActivity: Activity,

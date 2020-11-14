@@ -1,7 +1,7 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles, Typography } from "@material-ui/core";
 import React, { useContext } from "react";
 import { useOrderCommand } from "../../../src/use-order-command.hook";
-import { TicketType } from "../../ticket-types/ticket-type.models";
+import { TicketType } from "../../back-office/ticket-types/ticket-type.models";
 import { LOAD_ORDER } from "../store/order.actions";
 import { MainStore } from "../store/store";
 

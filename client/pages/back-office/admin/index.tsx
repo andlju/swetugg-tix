@@ -5,9 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Layout from '../../components/layout/main-layout';
-import RefreshActivityView from '../../components/admin/refresh-activity-view';
-import RefreshOrderView from '../../components/admin/refresh-order-view';
+import Layout from '../../../layout/back-office/main-layout';
+import RefreshActivityView from '../../../components/back-office/admin/refresh-activity-view';
+import RefreshOrderView from '../../../components/back-office/admin/refresh-order-view';
 
 const useStyles = makeStyles((theme) => ({
   container: {

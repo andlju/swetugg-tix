@@ -3,7 +3,7 @@ import { Activity } from "./activity.models";
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
+import { useActivityCommand } from "../../../src/use-activity-command.hook";
 
 const useStyles = makeStyles((theme) => ({
   root: {

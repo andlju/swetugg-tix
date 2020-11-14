@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 
 import { useForm } from 'react-hook-form';
-import { useActivityCommand } from '../../src/use-activity-command.hook';
+import { useActivityCommand } from '../../../src/use-activity-command.hook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,7 +56,7 @@ export default function CreateActivity() {
       const result = await createActivity(`/activities`, {
         name: data.activityName
       });
-      await router.push(`/activities/${result.aggregateId}`);
+      await router.push(`/back-office/activities/${result.aggregateId}`);
     } catch (err) {
       // Report error?
     }

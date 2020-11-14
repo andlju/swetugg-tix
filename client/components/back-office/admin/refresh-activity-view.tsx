@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
+import { useActivityCommand } from "../../../src/use-activity-command.hook";
 
 interface RefreshActivityViewProps {
   initialActivityId?: string

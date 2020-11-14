@@ -4,7 +4,7 @@ import { Activity } from "./activity.models";
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell, Grid } from "@material-ui/core";
 import React from "react";
-import Link from "../Link";
+import Link from "../../Link";
 
 const useStyles = makeStyles((theme) => ({
   root: {

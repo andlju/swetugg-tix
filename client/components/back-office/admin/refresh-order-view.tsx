@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useOrderCommand } from "../../src/use-order-command.hook";
+import { useOrderCommand } from "../../../src/use-order-command.hook";
 
 interface RefreshOrderViewProps {
   initialOrderId?: string

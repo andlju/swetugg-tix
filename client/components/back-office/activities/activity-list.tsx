@@ -79,7 +79,7 @@ export default function ActivityList({ activities }: ActivityListProps) {
                 <TableCell className={classes.numberCell}>{row.totalSeats}</TableCell>
                 <TableCell className={classes.numberCell}>{row.ticketTypes?.length ?? 0}</TableCell>
                 <TableCell>
-                  <Link href={`/activities/${row.activityId}`}>
+                  <Link href={`/back-office/activities/${row.activityId}`}>
                     <Button
                       variant="contained" color="secondary">
                       Details

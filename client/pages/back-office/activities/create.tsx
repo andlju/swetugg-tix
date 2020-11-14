@@ -6,8 +6,8 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import Layout from '../../components/layout/main-layout';
-import CreateActivity from '../../components/activities/create-activity';
+import Layout from '../../../layout/back-office/main-layout';
+import CreateActivity from '../../../components/back-office/activities/create-activity';
 
 
 const useStyles = makeStyles((theme) => ({

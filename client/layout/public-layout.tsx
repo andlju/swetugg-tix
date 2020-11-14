@@ -1,10 +1,10 @@
 import { makeStyles } from '@material-ui/core/styles';
-import Link from '../../../components/Link';
+import Link from '../components/Link';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
-import CartIndicator from '../../../components/public/cart/cart-indicator';
+import CartIndicator from '../components/public/cart/cart-indicator';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {

@@ -6,7 +6,7 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
+import { useActivityCommand } from "../../../src/use-activity-command.hook";
 import { TicketType } from "./ticket-type.models";
 
 interface EditTicketTypeProps {

@@ -9,8 +9,8 @@ import {
 import { TicketType } from "./ticket-type.models";
 import AddTicketType from "./add-ticket-type";
 import { useEffect, useState } from 'react';
-import { getView } from '../../src/services/view-fetcher.service';
-import { buildUrl } from '../../src/url-utils';
+import { getView } from '../../../src/services/view-fetcher.service';
+import { buildUrl } from '../../../src/url-utils';
 import { Activity } from '../activities/activity.models';
 
 interface TicketTypeListProps {
@@ -96,7 +96,7 @@ export default function TicketTypeList({ initialTicketTypes, activityId }: Ticke
                 <Typography>{row.limit ?? "-"}</Typography>
               </TableCell>
               <TableCell>
-                <Link href={`/activities/${row.activityId}/ticket-types/${row.ticketTypeId}`}>
+                <Link href={`/back-office/activities/${row.activityId}/ticket-types/${row.ticketTypeId}`}>
                   <Button variant="outlined">Edit</Button>
                 </Link>
               </TableCell>
