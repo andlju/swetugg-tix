@@ -5,14 +5,14 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../../src/use-activity-command.hook";
+import { useOrderCommand } from "../../../use-order-command.hook";
 
-interface RefreshActivityViewProps {
-  initialActivityId?: string
+interface RefreshOrderViewProps {
+  initialOrderId?: string
 }
 
 type FormData = {
-  activityId: string
+  orderId: string
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -42,22 +42,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function RefreshActivityView({ initialActivityId }: RefreshActivityViewProps) {
+export function RefreshOrderView({ initialOrderId }: RefreshOrderViewProps) {
   const classes = useStyles();
 
-  const [refreshView] = useActivityCommand("Refresh views");
+  const [refreshView] = useOrderCommand("Refresh views");
   const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
     defaultValues: {
-      activityId: initialActivityId
+      orderId: initialOrderId
     }
   });
 
   const onSubmit = async (data: FormData) => {
     try {
-      await refreshView(`/activities-admin/${data.activityId}/rebuild`, { });
-      setValue("activityId", "");
+      await refreshView(`/orders-admin/${data.orderId}/rebuild`, { });
+      setValue("orderId", "");
     } catch(err) {
-      setError("activityId", { message: "Invalid format" });
+      setError("orderId", { message: "Invalid format" });
     }
   }
 
@@ -65,11 +65,11 @@ export default function RefreshActivityView({ initialActivityId }: RefreshActivi
     <Typography variant="overline">Refresh Views</Typography>
     <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
       <TextField
-        name="activityId" label="Activity Id" variant="outlined" className={classes.input}
-        inputRef={register({ required: "Activity Id is required" })}
+        name="orderId" label="Order Id" variant="outlined" className={classes.input}
+        inputRef={register({ required: "Order Id is required" })}
         disabled={formState.isSubmitting}
-        error={!!errors.activityId}
-        helperText={errors.activityId && errors.activityId.message} />
+        error={!!errors.orderId}
+        helperText={errors.orderId && errors.orderId.message} />
         <div className={classes.progressWrapper}>
         <Button type="submit" variant="outlined" className={classes.button}
           disabled={formState.isSubmitting}>

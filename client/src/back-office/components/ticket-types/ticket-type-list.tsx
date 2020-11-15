@@ -7,10 +7,10 @@ import {
   makeStyles
 } from "@material-ui/core";
 import { TicketType } from "./ticket-type.models";
-import AddTicketType from "./add-ticket-type";
+import { AddTicketType } from "./add-ticket-type";
 import { useEffect, useState } from 'react';
-import { getView } from '../../../src/services/view-fetcher.service';
-import { buildUrl } from '../../../src/url-utils';
+import { getView } from '../../../services/view-fetcher.service';
+import { buildUrl } from '../../../url-utils';
 import { Activity } from '../activities/activity.models';
 
 interface TicketTypeListProps {
@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function TicketTypeList({ initialTicketTypes, activityId }: TicketTypeListProps) {
+export function TicketTypeList({ initialTicketTypes, activityId }: TicketTypeListProps) {
   const classes = useStyles();
   const [ticketTypes, setTicketTypes] = useState(initialTicketTypes);
   const [refreshTicketTypes, setRefreshTicketTypes] = useState('');

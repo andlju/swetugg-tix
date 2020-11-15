@@ -1,12 +1,12 @@
 import { IconButton } from "@material-ui/core";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import Link from "next/link";
 import React from "react";
 import { useContext } from "react";
-import Link from "../../Link";
-import { MainStore } from "../store/store";
+import { PublicStore } from "../store/store";
 
 const CartIndicator: React.FC = () => {
-  const { state } = useContext(MainStore);
+  const { state } = useContext(PublicStore);
 
   return (
     <React.Fragment>
@@ -20,4 +20,4 @@ const CartIndicator: React.FC = () => {
     </React.Fragment>);
 };
 
-export default CartIndicator;
+export { CartIndicator };

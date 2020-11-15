@@ -17,6 +17,7 @@ namespace Swetugg.Tix.Order.Views.TableStorage
         {
             OrderId = view.OrderId;
             PartitionKey = view.OrderId.ToString();
+            ActivityId = view.ActivityId;
             RowKey = view.OrderId.ToString();
             Revision = view.Revision;
 

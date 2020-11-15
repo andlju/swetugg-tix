@@ -8,6 +8,7 @@ using OrderEvents = Swetugg.Tix.Order.Events;
 
 namespace Swetugg.Tix.Process.Tests
 {
+
     public class when_adding_a_ticket_to_an_order : with_order_saga
     {
         protected Guid OrderId = Guid.NewGuid();

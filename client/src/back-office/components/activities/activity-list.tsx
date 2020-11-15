@@ -43,14 +43,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function ActivityList({ activities }: ActivityListProps) {
+export function ActivityList({ activities }: ActivityListProps) {
   const classes = useStyles();
   return (<React.Fragment>
     <Toolbar className={classes.activityListToolbar}>
       <Typography className={classes.activityListTitle} variant="h6" component="div">
         Activities
       </Typography>
-      <Link href="/activities/create">
+      <Link href="/back-office/activities/create">
         <Fab size="small" color="primary">
           <AddIcon />
         </Fab>

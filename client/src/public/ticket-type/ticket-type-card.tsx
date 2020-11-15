@@ -1,9 +1,9 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles, Typography } from "@material-ui/core";
 import React, { useContext } from "react";
-import { useOrderCommand } from "../../../src/use-order-command.hook";
-import { TicketType } from "../../back-office/ticket-types/ticket-type.models";
+import { useOrderCommand } from "../../use-order-command.hook";
+import { TicketType } from "../../back-office/components/ticket-types/ticket-type.models";
 import { LOAD_ORDER } from "../store/order.actions";
-import { MainStore } from "../store/store";
+import { PublicStore } from "../store/store";
 
 interface TicketTypeProps {
   ticketType: TicketType;
@@ -24,12 +24,13 @@ const useStyles = makeStyles((theme) => ({
 
   }
 }));
+
 const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
   const classes = useStyles();
 
   const [reserveOrder, sendingReserveTicket] = useOrderCommand('Reserve order');
 
-  const {state, dispatch} = useContext(MainStore);
+  const {state, dispatch} = useContext(PublicStore);
   
   const onClickBuyOrder = async (ticketTypeId: string) => {
     const orderResp = await reserveOrder(`/orders`, {
@@ -61,4 +62,4 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
   </Card>;
 };
 
-export default TicketTypeCard;
+export { TicketTypeCard };

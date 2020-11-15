@@ -6,8 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../../../layout/back-office/main-layout';
-import RefreshActivityView from '../../../components/back-office/admin/refresh-activity-view';
-import RefreshOrderView from '../../../components/back-office/admin/refresh-order-view';
+import { RefreshActivityView, RefreshOrderView } from '../../../src/back-office';
 
 const useStyles = makeStyles((theme) => ({
   container: {

@@ -6,11 +6,10 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../../../layout/public-layout';
 import { buildUrl } from '../../../src/url-utils';
-import { Activity } from '../../../components/back-office/activities/activity.models';
-import { TicketType } from '../../../components/back-office/ticket-types/ticket-type.models';
 import { getView } from '../../../src/services/view-fetcher.service';
-import TicketTypeCard from '../../../components/public/ticket-type/ticket-type';
-import { StateProvider } from '../../../components/public/store/store';
+import { Activity, TicketType } from '../../../src/back-office';
+import { TicketTypeCard } from '../../../src/public';
+import { PublicStateProvider } from "../../../src/public/store/store";
 
 interface ActivityProps {
   initialActivity: Activity,
@@ -50,7 +49,7 @@ const PublicActivityPage: React.FC<ActivityProps> = ({ initialActivity, ticketTy
   }, [refreshActivityRevision]);
 
   return (
-    <StateProvider>
+    <PublicStateProvider>
       <Layout title={activity.name}>
         {/* Hero unit */}
         <div className={classes.heroContent}>
@@ -89,7 +88,7 @@ const PublicActivityPage: React.FC<ActivityProps> = ({ initialActivity, ticketTy
           </Grid>
         </Container>
       </Layout>
-    </StateProvider>
+    </PublicStateProvider>
   );
 };
 

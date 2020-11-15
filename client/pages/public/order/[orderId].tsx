@@ -2,8 +2,8 @@
 import { makeStyles } from "@material-ui/core";
 import { GetServerSideProps } from "next";
 import React from "react";
-import Cart from "../../../components/public/cart/cart";
 import Layout from "../../../layout/public-layout";
+import { Cart } from "../../../src/public";
 import { getView } from "../../../src/services/view-fetcher.service";
 import { buildUrl } from "../../../src/url-utils";
 

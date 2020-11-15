@@ -7,12 +7,8 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../../../../layout/back-office/main-layout';
 import { buildUrl } from '../../../../src/url-utils';
-import { Activity } from '../../../../components/back-office/activities/activity.models';
-import ActivityDetails from '../../../../components/back-office/activities/activity-details';
-import TicketTypeList from '../../../../components/back-office/ticket-types/ticket-type-list';
-import { TicketType } from '../../../../components/back-office/ticket-types/ticket-type.models';
 import { getView } from '../../../../src/services/view-fetcher.service';
-import ModifySeats from '../../../../components/back-office/activities/modify-seats';
+import { Activity, ActivityDetails, ModifySeats, TicketType, TicketTypeList } from '../../../../src/back-office';
 
 interface ActivityProps {
   initialActivity: Activity,

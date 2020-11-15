@@ -8,8 +8,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Layout from '../../../layout/back-office/main-layout';
 import { buildUrl } from '../../../src/url-utils';
-import ActivityList from '../../../components/back-office/activities/activity-list';
-import { Activity } from '../../../components/back-office/activities/activity.models';
+import { Activity, ActivityList } from '../../../src/back-office';
 
 interface ActivitiesProps {
   activities: Activity[]

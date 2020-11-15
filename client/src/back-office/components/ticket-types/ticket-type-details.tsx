@@ -16,7 +16,7 @@ interface TicketTypeDetailsProps {
   activity: Activity,
 }
 
-export default function TicketTypeDetails({ ticketType, activity }: TicketTypeDetailsProps) {
+export function TicketTypeDetails({ ticketType, activity }: TicketTypeDetailsProps) {
   const classes = useStyles();
   return (
     <Container className={classes.root}>

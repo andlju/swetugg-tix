@@ -3,7 +3,7 @@ import { Activity } from "./activity.models";
 
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../../src/use-activity-command.hook";
+import { useActivityCommand } from "../../../use-activity-command.hook";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,7 +42,7 @@ type FormData = {
   seats: number;
 };
 
-export default function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsProps) {
+export function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsProps) {
   const classes = useStyles();
 
   const increaseForm = useForm<FormData>({

@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 
 import { useForm } from 'react-hook-form';
-import { useActivityCommand } from '../../../src/use-activity-command.hook';
+import { useActivityCommand } from '../../../use-activity-command.hook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -43,7 +43,7 @@ type FormData = {
 };
 
 
-export default function CreateActivity() {
+export function CreateActivity() {
   const classes = useStyles();
 
   const { register, handleSubmit, formState } = useForm<FormData>({

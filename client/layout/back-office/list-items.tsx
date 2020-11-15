@@ -6,7 +6,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import SettingsIcon from '@material-ui/icons/Settings';
 import EventIcon from '@material-ui/icons/Event'
-import Link from '../../components/Link';
+import Link from 'next/link';
 
 export const mainListItems = (
   <div>

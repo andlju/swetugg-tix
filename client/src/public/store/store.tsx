@@ -16,7 +16,7 @@ const initialState : MainState = {
 type Action = 
   | OrderAction;
 
-const MainStore = createContext<{ state: MainState; dispatch: React.Dispatch<Action>; }>({
+const PublicStore = createContext<{ state: MainState; dispatch: React.Dispatch<Action>; }>({
   state: initialState,
   dispatch: () => null
 });
@@ -25,11 +25,11 @@ const mainReducer = ({ order } : MainState, action : Action) => ({
   order: orderReducer(order, action),
 }); 
 
-const StateProvider: React.FC = ({ children }) => {
+const PublicStateProvider: React.FC = ({ children }) => {
 
   const [state, dispatch] = useReducer(mainReducer, initialState);
 
-  return <MainStore.Provider value={{ state, dispatch: orderLoadMiddleware(dispatch) }}> {children} </MainStore.Provider>;
+  return <PublicStore.Provider value={{ state, dispatch: orderLoadMiddleware(dispatch) }}> {children} </PublicStore.Provider>;
 };
 
-export { MainStore, StateProvider };
+export { PublicStore, PublicStateProvider };

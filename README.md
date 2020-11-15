@@ -10,4 +10,4 @@ An Activity is the root of any Tix event. An Activity has a total Seat limit tha
 
 Tickets
 -------
-A Order is used to reserve a seat at an Activity. When a order is Created, an attempt will be made to reserve a seat. If the reservation succeeds, the order can be Confirmed. 
+A Order is used to reserve a seat at an Activity. When a Ticket is added to an Order, an attempt will be made to reserve a seat. If the reservation succeeds, the Ticket is confirmed. 

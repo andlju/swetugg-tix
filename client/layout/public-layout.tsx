@@ -1,10 +1,11 @@
 import { makeStyles } from '@material-ui/core/styles';
-import Link from '../components/Link';
+import Link from 'next/link';
+
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import React from 'react';
-import CartIndicator from '../components/public/cart/cart-indicator';
+import { CartIndicator } from '../src/public';
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
@@ -28,7 +29,7 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://swetugg.se/">
+      <Link href="https://swetugg.se/">
         Swetugg Tix
       </Link>{' '}
       {new Date().getFullYear()}

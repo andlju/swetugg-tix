@@ -4,7 +4,7 @@ import { Activity } from "./activity.models";
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell, Grid } from "@material-ui/core";
 import React from "react";
-import Link from "../../Link";
+import Link from "next/link";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +16,7 @@ export type ActivityDetailsProps = {
   activity: Activity,
 }
 
-export default function ActivityDetails({ activity }: ActivityDetailsProps) {
+export function ActivityDetails({ activity }: ActivityDetailsProps) {
   const classes = useStyles();
   return (
     <Container className={classes.root}>

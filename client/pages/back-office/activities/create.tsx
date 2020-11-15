@@ -7,7 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import Layout from '../../../layout/back-office/main-layout';
-import CreateActivity from '../../../components/back-office/activities/create-activity';
+import { CreateActivity } from '../../../src/back-office';
 
 
 const useStyles = makeStyles((theme) => ({

@@ -34,4 +34,4 @@ const Cart: React.FC<Cart> = ({ tickets }) => {
   </React.Fragment>);
 };
 
-export default Cart;
+export { Cart };

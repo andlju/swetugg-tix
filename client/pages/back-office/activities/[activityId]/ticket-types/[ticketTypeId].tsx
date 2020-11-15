@@ -5,13 +5,11 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import ModifyLimits from '../../../../../components/back-office/ticket-types/modify-limits';
 import { getView } from '../../../../../src/services/view-fetcher.service';
 import { buildUrl } from '../../../../../src/url-utils';
-import { TicketType } from '../../../../../components/back-office/ticket-types/ticket-type.models';
 import Layout from '../../../../../layout/back-office/main-layout';
-import { Activity } from '../../../../../components/back-office/activities/activity.models';
-import TicketTypeDetails from '../../../../../components/back-office/ticket-types/ticket-type-details';
+import { Activity, ModifyLimits, TicketTypeDetails } from '../../../../../src/back-office';
+import { TicketType } from '../../../../../src/back-office/components/ticket-types/ticket-type.models';
 
 interface TicketTypeProps {
   activity: Activity,

@@ -5,7 +5,7 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../../src/use-activity-command.hook";
+import { useActivityCommand } from "../../../use-activity-command.hook";
 
 interface AddTicketTypeProps {
   activityId: string,
@@ -33,7 +33,7 @@ type FormData = {
   ticketTypeName: string
 };
 
-export default function AddTicketType({ activityId, refreshTicketTypes }: AddTicketTypeProps) {
+export function AddTicketType({ activityId, refreshTicketTypes }: AddTicketTypeProps) {
   const classes = useStyles();
 
   const [addTicketType] = useActivityCommand("Add Ticket Type");
