@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Layout from '../../../layout/back-office/main-layout';
+import BackOfficeLayout from '../../../layout/back-office/main-layout';
 import { RefreshActivityView, RefreshOrderView } from '../../../src/back-office';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +22,7 @@ export default function Index() {
   const classes = useStyles();
 
   return (
-    <Layout>
+    <BackOfficeLayout>
       <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
           Administration
@@ -41,7 +41,7 @@ export default function Index() {
         </Grid>
 
       </Container>
-    </Layout>
+    </BackOfficeLayout>
   );
 }
 

@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export function ActivityList({ activities }: ActivityListProps) {
+
   const classes = useStyles();
   return (<React.Fragment>
     <Toolbar className={classes.activityListToolbar}>

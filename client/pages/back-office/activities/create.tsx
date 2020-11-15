@@ -6,7 +6,7 @@ import {
   Grid,
   Typography,
 } from '@material-ui/core';
-import Layout from '../../../layout/back-office/main-layout';
+import BackOfficeLayout from '../../../layout/back-office/main-layout';
 import { CreateActivity } from '../../../src/back-office';
 
 
@@ -25,7 +25,7 @@ export default function CreatePage() {
   const classes = useStyles();
 
   return (
-    <Layout>
+    <BackOfficeLayout>
       <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
           Create Activity
@@ -41,7 +41,7 @@ export default function CreatePage() {
           </Grid>
         </Grid>
       </Container>
-    </Layout>
+    </BackOfficeLayout>
   );
 }
 

@@ -7,7 +7,7 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { getView } from '../../../../../src/services/view-fetcher.service';
 import { buildUrl } from '../../../../../src/url-utils';
-import Layout from '../../../../../layout/back-office/main-layout';
+import BackOfficeLayout from '../../../../../layout/back-office/main-layout';
 import { Activity, ModifyLimits, TicketTypeDetails } from '../../../../../src/back-office';
 import { TicketType } from '../../../../../src/back-office/components/ticket-types/ticket-type.models';
 
@@ -48,7 +48,7 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
   }, [refreshTicketTypeRevision]);
 
   return (
-    <Layout>
+    <BackOfficeLayout>
       <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
           {activity.name}
@@ -70,7 +70,7 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
           </Grid>
         </Grid>
       </Container>
-    </Layout>
+    </BackOfficeLayout>
   );
 }
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -6,12 +6,14 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Layout from '../../../layout/back-office/main-layout';
+import BackOfficeLayout from '../../../layout/back-office/main-layout';
 import { buildUrl } from '../../../src/url-utils';
 import { Activity, ActivityList } from '../../../src/back-office';
+import { BackOfficeStateProvider, BackOfficeStore } from '../../../src/back-office/store/store';
+import { LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE } from '../../../src/back-office/store/activities.actions';
 
 interface ActivitiesProps {
-  activities: Activity[]
+  activities: Activity[];
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,13 +29,19 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: theme.spacing(60),
     overflow: 'auto',
   }
-}))
+}));
 
-export default function Index({ activities }: ActivitiesProps) {
+function Index({ activities }: ActivitiesProps) {
   const classes = useStyles();
 
+  const { state, dispatch } = useContext(BackOfficeStore);
+
+  useEffect(() => {
+    dispatch({ type: LOAD_ACTIVITIES_COMPLETE, payload: { activities: activities } });
+  }, []);
+
   return (
-    <Layout>
+    <BackOfficeLayout>
       <Container maxWidth={false} className={classes.container}>
         <Typography variant="h4" component="h1" gutterBottom>
           Activities
@@ -48,9 +56,13 @@ export default function Index({ activities }: ActivitiesProps) {
         </Grid>
 
       </Container>
-    </Layout>
+    </BackOfficeLayout>
   );
 }
+
+const IndexPage: React.FC = (props: any) => <BackOfficeStateProvider><Index {...props}/></BackOfficeStateProvider>
+
+export default IndexPage;
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const resp = await fetch(buildUrl('/activities'));
@@ -60,5 +72,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     props: {
       activities: data
     }
-  }
-}
+  };
+};

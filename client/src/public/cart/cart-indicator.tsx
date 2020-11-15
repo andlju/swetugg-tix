@@ -7,7 +7,7 @@ import { PublicStore } from "../store/store";
 
 const CartIndicator: React.FC = () => {
   const { state } = useContext(PublicStore);
-
+  
   return (
     <React.Fragment>
       {state.order.orderId && (
