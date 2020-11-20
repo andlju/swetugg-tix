@@ -2,7 +2,9 @@ import { Activity } from "../components/activities/activity.models";
 import { ActivitiesAction, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITIES_FAILED } from "./activities.actions";
 
 export interface ActivitiesState {
-  activities: Activity[],
+  activities: {
+    [key: string] : Activity
+  },
   loading: boolean,
 }
 
@@ -16,13 +18,13 @@ const activitiesReducer = (state: ActivitiesState, action: ActivitiesAction): Ac
     case LOAD_ACTIVITIES_COMPLETE:
       return {
         ...state,
-        activities: action.payload.activities,
+        activities: action.payload.activities.reduce((activities, activity) => ({ ...activities, [activity.activityId]: activity }), {}),
         loading: false
       };
       case LOAD_ACTIVITIES_FAILED:
         return {
           ...state,
-          activities: [],
+          activities: {},
           loading: false
         };
     default:
