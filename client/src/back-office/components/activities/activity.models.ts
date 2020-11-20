@@ -8,7 +8,3 @@ export type Activity = {
   totalSeats: number,
   ticketTypes: TicketType[]
 }
-
-export type ActivityListProps = {
-  activities: Activity[]
-}

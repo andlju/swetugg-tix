@@ -1,10 +1,12 @@
-import React from 'react'
-import Head from 'next/head'
-import { ThemeProvider } from '@material-ui/core/styles'
-import CssBaseline from '@material-ui/core/CssBaseline'
+import React from 'react';
+import Head from 'next/head';
+import { ThemeProvider } from '@material-ui/core/styles';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import { SnackbarProvider } from 'notistack';
-import theme from '../styles/theme'
-import type { AppProps } from 'next/app'
+import theme from '../styles/theme';
+import type { AppProps } from 'next/app';
+import { PublicStateProvider } from '../src/public/store/store';
+import wrapper from '../src/back-office/store/store';
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
@@ -30,12 +32,11 @@ function MyApp(props: AppProps) {
           vertical: 'bottom',
           horizontal: 'right',
         }}>
-          <Component {...pageProps} />
+            <Component {...pageProps} />
         </SnackbarProvider>
       </ThemeProvider>
     </React.Fragment>
   );
 }
 
-
-export default MyApp
+export default wrapper.withRedux(MyApp);

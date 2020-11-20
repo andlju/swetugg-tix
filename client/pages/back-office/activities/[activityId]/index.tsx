@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { GetServerSideProps } from 'next';
+import React, { useEffect, useState, useContext } from 'react';
+import { GetServerSideProps, NextPage } from 'next';
 import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
@@ -9,10 +9,15 @@ import BackOfficeLayout from '../../../../layout/back-office/main-layout';
 import { buildUrl } from '../../../../src/url-utils';
 import { getView } from '../../../../src/services/view-fetcher.service';
 import { Activity, ActivityDetails, ModifySeats, TicketType, TicketTypeList } from '../../../../src/back-office';
+import { useSelector } from 'react-redux';
+import { ActivitiesState } from '../../../../src/back-office/store/activities.reducer';
+import wrapper, { SagaStore, State } from '../../../../src/back-office/store/store';
+import { LOAD_ACTIVITY } from '../../../../src/back-office/store/activities.actions';
+import { SortRounded } from '@material-ui/icons';
+import { END } from 'redux-saga';
 
 interface ActivityProps {
-  initialActivity: Activity,
-  ticketTypes: TicketType[]
+  activityId: string
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -23,67 +28,59 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
-}))
+}));
 
-export default function ActivityPage({ initialActivity, ticketTypes }: ActivityProps) {
+const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
   const classes = useStyles();
-  const [activity, setActivity] = useState(initialActivity);
-  const [refreshActivityRevision, setRefreshActivityRevision] = useState(initialActivity.revision);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (refreshActivityRevision > activity.revision) {
-        const resp = await getView<Activity>(
-          buildUrl(`/activities/${activity.activityId}`),
-          {revision : refreshActivityRevision});
-          setActivity(resp);
-          setRefreshActivityRevision(resp.revision);
-      }
-    };
-    fetchData();
-  }, [refreshActivityRevision]);
+  const activities = useSelector<State, ActivitiesState>(state => state.activities);
 
+  const activity = activities.activities[activityId];
+  const ticketTypes = activity.ticketTypes;
+  
   return (
     <BackOfficeLayout>
-      <Container maxWidth={false} className={classes.container}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          { activity.name }
-        </Typography>
-        <Grid container spacing={3}>
-          <Grid item xs={12} md={5}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <ActivityDetails activity={activity} />
-                </Paper>
-              </Grid>
-              <Grid item xs={12}>
-                <Paper className={classes.paper}>
-                  <ModifySeats activity={activity} refreshActivityRevision={setRefreshActivityRevision}/>
-                </Paper>
+      {activity &&
+        (<Container maxWidth={false} className={classes.container}>
+          <Typography variant="h4" component="h1" gutterBottom>
+            {activity.name}
+          </Typography>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={5}>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <ActivityDetails activity={activity} />
+                  </Paper>
+                </Grid>
+                <Grid item xs={12}>
+                  <Paper className={classes.paper}>
+                    <ModifySeats activity={activity} refreshActivityRevision={(rev) => { }} />
+                  </Paper>
+                </Grid>
               </Grid>
             </Grid>
+            <Grid item xs={12} md={7}>
+              <TicketTypeList initialTicketTypes={ticketTypes} activityId={activity.activityId} />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={7}>
-            <TicketTypeList initialTicketTypes={ticketTypes} activityId={activity.activityId} />
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>)}
     </BackOfficeLayout>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const activityId = context.params?.activityId;
-  
-  const [activityResp] = await Promise.all([
-    getView<Activity>(buildUrl(`/activities/${activityId}`))
-  ]);
+export default ActivityPage;
+
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({store, params}) => {
+  const activityId = params?.activityId;
+  store.dispatch({ type: LOAD_ACTIVITY, payload: { activityId } });
+  store.dispatch(END);
+
+  await (store as SagaStore).sagaTask.toPromise();
 
   return {
     props: {
-      initialActivity: activityResp,
-      ticketTypes: activityResp.ticketTypes
+      activityId: activityId
     }
-  }
-}
+  };
+});

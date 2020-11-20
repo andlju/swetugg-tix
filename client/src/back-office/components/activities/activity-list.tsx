@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import Link from 'next/link';
 import {
   Table, TableBody, TableHead, TableRow, TableCell, TableContainer,
@@ -8,7 +8,10 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
-import { ActivityListProps } from "./activity.models";
+import { LOAD_ACTIVITIES } from '../../store/activities.actions';
+import { useSelector } from 'react-redux';
+import { State } from '../../store/store';
+import { ActivitiesState } from '../../store/activities.reducer';
 
 const useStyles = makeStyles((theme) => ({
   nameColumnHead: {
@@ -43,9 +46,12 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export function ActivityList({ activities }: ActivityListProps) {
+export function ActivityList() {
 
   const classes = useStyles();
+  
+  const activitiesState = useSelector<State, ActivitiesState>(state => state.activities);
+  
   return (<React.Fragment>
     <Toolbar className={classes.activityListToolbar}>
       <Typography className={classes.activityListTitle} variant="h6" component="div">
@@ -70,7 +76,9 @@ export function ActivityList({ activities }: ActivityListProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {activities.map(row => (
+          {activitiesState.visibleActivities.ids.map(id => {
+            const row = activitiesState.activities[id];
+            return (
               <TableRow hover={true} key={row.activityId} >
                 <TableCell>
                   <Typography>{row.name}</Typography>
@@ -87,8 +95,9 @@ export function ActivityList({ activities }: ActivityListProps) {
                     </Button>
                   </Link>
                 </TableCell>
-              </TableRow>
-          ))}
+              </TableRow>);
+          })
+          }
         </TableBody>
       </Table>
     </TableContainer>

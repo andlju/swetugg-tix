@@ -1,4 +1,5 @@
 import React, { useContext, useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -9,8 +10,10 @@ import Grid from '@material-ui/core/Grid';
 import BackOfficeLayout from '../../../layout/back-office/main-layout';
 import { buildUrl } from '../../../src/url-utils';
 import { Activity, ActivityList } from '../../../src/back-office';
-import { BackOfficeStateProvider, BackOfficeStore } from '../../../src/back-office/store/store';
 import { LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE } from '../../../src/back-office/store/activities.actions';
+import wrapper, { SagaStore, State } from '../../../src/back-office/store/store';
+import { ActivitiesState } from '../../../src/back-office/store/activities.reducer';
+import { END } from 'redux-saga';
 
 interface ActivitiesProps {
   activities: Activity[];
@@ -31,14 +34,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function Index({ activities }: ActivitiesProps) {
+function IndexPage() {
   const classes = useStyles();
 
-  const { state, dispatch } = useContext(BackOfficeStore);
-
+  const dispatch = useDispatch();
+/*
   useEffect(() => {
-    dispatch({ type: LOAD_ACTIVITIES_COMPLETE, payload: { activities: activities } });
+    dispatch({ type: LOAD_ACTIVITIES });
   }, []);
+*/
+  /*  useEffect(() => {
+      dispatch({ type: LOAD_ACTIVITIES_COMPLETE, payload: { activities: activities } });
+    }, []);*/
 
   return (
     <BackOfficeLayout>
@@ -50,27 +57,26 @@ function Index({ activities }: ActivitiesProps) {
           {/* List of activities */}
           <Grid item xs={12}>
             <Paper className={clsx(classes.paper, classes.activityList)}>
-              <ActivityList activities={activities} ></ActivityList>
+              <ActivityList />
             </Paper>
           </Grid>
         </Grid>
-
       </Container>
     </BackOfficeLayout>
   );
 }
 
-const IndexPage: React.FC = (props: any) => <BackOfficeStateProvider><Index {...props}/></BackOfficeStateProvider>
-
 export default IndexPage;
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const resp = await fetch(buildUrl('/activities'));
-  const data = await resp.json() as Activity[];
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({store}) => {
+  
+  store.dispatch({type: LOAD_ACTIVITIES});
+  store.dispatch(END);
+  await (store as SagaStore).sagaTask.toPromise();
 
   return {
     props: {
-      activities: data
+      activities: [] //data
     }
   };
-};
+});
