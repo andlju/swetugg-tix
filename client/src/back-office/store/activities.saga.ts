@@ -1,20 +1,35 @@
+import { call, put, takeEvery } from "redux-saga/effects";
 import { Activity } from "..";
+import { getView } from "../../services/view-fetcher.service";
 import { buildUrl } from "../../url-utils";
-import { ActivitiesAction, LOAD_ACTIVITY, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITIES_FAILED } from "./activities.actions";
+import { LoadActivityAction, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITY } from "./activities.actions";
 
-const activitiesLoadMiddleware = (dispatch : React.Dispatch<ActivitiesAction>) => (action: ActivitiesAction): void => {
-  switch (action.type) {
-    case LOAD_ACTIVITY:
-      setTimeout(() => dispatch({type: LOAD_ACTIVITIES_COMPLETE, payload: { activities: [] }}), 1000);
-      break;
-    case LOAD_ACTIVITIES:
-      fetch(buildUrl('/activities')).then(async resp => {
-        const data = await resp.json() as Activity[]
-        dispatch({type: LOAD_ACTIVITIES_COMPLETE, payload : { activities: data }});
-      }).catch(err => dispatch({ type: LOAD_ACTIVITIES_FAILED, payload: { errorCode: "LoadinFailed", errorMessage: "Failed to load activities"}}));
-      break;
-  }
-  return dispatch(action);
-};
+export function* loadActivitiesAction() {
+  const result = yield call(async () => {
+    const resp = await fetch(buildUrl('/activities'));
+    const data = await resp.json() as Activity[];
+    return data;
+  });
 
-export { activitiesLoadMiddleware };
+  yield put({
+    type: LOAD_ACTIVITIES_COMPLETE,
+    payload: { activities: result },
+  });
+}
+
+export function* loadActivityAction(action: LoadActivityAction) {
+  const result = yield call(async () => {
+    const data = await getView(buildUrl(`/activities/${action.payload.activityId}`), { revision: action.payload.revision });
+    return data;
+  });
+
+  yield put({
+    type: LOAD_ACTIVITIES_COMPLETE,
+    payload: { activities: [result] },
+  });
+}
+
+export function* activitiesSaga() {
+  yield takeEvery(LOAD_ACTIVITIES, loadActivitiesAction);
+  yield takeEvery(LOAD_ACTIVITY, loadActivityAction);
+}

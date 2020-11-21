@@ -6,12 +6,13 @@ import {
 import CheckIcon from "@material-ui/icons/Check";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useActivityCommand } from "../../../use-activity-command.hook";
+import { LOAD_ACTIVITY } from "../../store/activities.actions";
 import { TicketType } from "./ticket-type.models";
 
 interface EditTicketTypeProps {
-  ticketType: TicketType,
-  refreshTicketTypesRevision: (revision: number) => void
+  ticketType: TicketType
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -37,13 +38,15 @@ type LimitFormData = {
   seats: number
 };
 
-export function ModifyLimits({ ticketType, refreshTicketTypesRevision }: EditTicketTypeProps) {
+export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
   const classes = useStyles();
 
   const [increaseLimit] = useActivityCommand("Increase Ticket Type Limit");
   const [decreaseLimit] = useActivityCommand("Decrease Ticket Type Limit");
   const [removeLimit] = useActivityCommand("Remove Ticket Type Limit", { method: "DELETE" });
 
+  const dispatch = useDispatch();
+  
   const increaseLimitForm = useForm<LimitFormData>({
     defaultValues: {
       seats: 0
@@ -61,7 +64,7 @@ export function ModifyLimits({ ticketType, refreshTicketTypesRevision }: EditTic
       seats: +data.seats
     });
     increaseLimitForm.setValue("seats", 0);
-    refreshTicketTypesRevision(res.revision ?? 0);
+    dispatch({ type: LOAD_ACTIVITY, payload: { activityId: ticketType.activityId, revision: res.revision}});
   }
 
   const onSubmitDecreaseLimit = async (data: LimitFormData) => {
@@ -69,14 +72,14 @@ export function ModifyLimits({ ticketType, refreshTicketTypesRevision }: EditTic
       seats: +data.seats
     });
     decreaseLimitForm.setValue("seats", 0);
-    refreshTicketTypesRevision(res.revision ?? 0);
+    dispatch({ type: LOAD_ACTIVITY, payload: { activityId: ticketType.activityId, revision: res.revision}});
   }
 
   const onClickRemoveLimit = async () => {
     const res = await removeLimit(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, {
 
     });
-    refreshTicketTypesRevision(res.revision ?? 0);
+    dispatch({ type: LOAD_ACTIVITY, payload: { activityId: ticketType.activityId, revision: res.revision}});
   }
 
   return (

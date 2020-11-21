@@ -4,6 +4,8 @@ import { Activity } from "./activity.models";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useActivityCommand } from "../../../use-activity-command.hook";
+import { useDispatch } from "react-redux";
+import { LOAD_ACTIVITY } from "../../store/activities.actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,15 +36,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export type ModifySeatsProps = {
-  activity: Activity,
-  refreshActivityRevision: (revision: number) => void;
+  activity: Activity
 };
 
 type FormData = {
   seats: number;
 };
 
-export function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsProps) {
+export function ModifySeats({ activity }: ModifySeatsProps) {
   const classes = useStyles();
 
   const increaseForm = useForm<FormData>({
@@ -56,6 +57,8 @@ export function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsPr
     }
   });
 
+  const dispatch = useDispatch();
+
   const [addSeats] = useActivityCommand('Add seats');
   const [removeSeats] = useActivityCommand('Remove seats');
 
@@ -66,7 +69,7 @@ export function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsPr
         seats: seats
       });
       increaseForm.setValue("seats", 0);
-      refreshActivityRevision(result.revision ?? 0);
+      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision } });
     } catch (err) {
       // TODO Report error
     }
@@ -79,7 +82,7 @@ export function ModifySeats({ activity, refreshActivityRevision }: ModifySeatsPr
         seats: seats
       });
       decreaseForm.setValue("seats", 0);
-      refreshActivityRevision(result.revision ?? 0);
+      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision } });
     } catch (err) {
       // TODO Report error
     }

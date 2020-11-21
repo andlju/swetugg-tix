@@ -1,3 +1,4 @@
+import { Reducer } from "react";
 import { Activity } from "../components/activities/activity.models";
 import { ActivitiesAction, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITIES_FAILED } from "./activities.actions";
 
@@ -19,7 +20,20 @@ const initialState : ActivitiesState = {
   }
 };
 
-const activitiesReducer = (state: ActivitiesState, action: ActivitiesAction): ActivitiesState => {
+export const activitiesHydrator: Reducer<ActivitiesState, ActivitiesState> = (state, hydratedState) => ({
+  ...state,
+  activities: {
+    ...hydratedState.activities,
+    ...state.activities
+  },
+  visibleActivities: {
+    ids: Array.from(new Set([...hydratedState.visibleActivities.ids, ...state.visibleActivities.ids])),
+    loading: false
+  }
+});
+
+const activitiesReducer : Reducer<ActivitiesState, ActivitiesAction> = (state, action) => {
+  console.log("Reducing", action);
   switch (action.type) {
     case LOAD_ACTIVITIES:
       return {

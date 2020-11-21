@@ -1,21 +1,23 @@
-import {applyMiddleware, createStore, Store} from 'redux'
+import { applyMiddleware, createStore, Store} from 'redux'
 import createSagaMiddleware, { Task } from 'redux-saga'
 import {createWrapper} from 'next-redux-wrapper'
 
-import rootReducer from './root.reducer'
+import rootReducer, { RootState } from './root.reducer'
 import { ActivitiesState } from './activities.reducer';
 import rootSaga from './root.saga'
 
-export interface State {
-  activities: ActivitiesState;
-};
+export interface State extends RootState {
+  server: {
+    activities: ActivitiesState
+  }
+}
 
 export interface SagaStore extends Store {
   sagaTask: Task;
 }
 
 const makeStore = () => {
-  const sagaMiddleware = createSagaMiddleware()
+  const sagaMiddleware = createSagaMiddleware();
   const store = createStore(
     rootReducer,
     applyMiddleware(sagaMiddleware),

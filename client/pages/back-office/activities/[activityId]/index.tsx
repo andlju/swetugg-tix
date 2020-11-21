@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -6,14 +6,11 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import BackOfficeLayout from '../../../../layout/back-office/main-layout';
-import { buildUrl } from '../../../../src/url-utils';
-import { getView } from '../../../../src/services/view-fetcher.service';
-import { Activity, ActivityDetails, ModifySeats, TicketType, TicketTypeList } from '../../../../src/back-office';
+import { ActivityDetails, ModifySeats, TicketTypeList } from '../../../../src/back-office';
 import { useSelector } from 'react-redux';
 import { ActivitiesState } from '../../../../src/back-office/store/activities.reducer';
 import wrapper, { SagaStore, State } from '../../../../src/back-office/store/store';
 import { LOAD_ACTIVITY } from '../../../../src/back-office/store/activities.actions';
-import { SortRounded } from '@material-ui/icons';
 import { END } from 'redux-saga';
 
 interface ActivityProps {
@@ -36,7 +33,7 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
   const activities = useSelector<State, ActivitiesState>(state => state.activities);
 
   const activity = activities.activities[activityId];
-  const ticketTypes = activity.ticketTypes;
+  const ticketTypes = activity?.ticketTypes;
   
   return (
     <BackOfficeLayout>
@@ -55,13 +52,13 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}>
-                    <ModifySeats activity={activity} refreshActivityRevision={(rev) => { }} />
+                    <ModifySeats activity={activity} />
                   </Paper>
                 </Grid>
               </Grid>
             </Grid>
             <Grid item xs={12} md={7}>
-              <TicketTypeList initialTicketTypes={ticketTypes} activityId={activity.activityId} />
+              <TicketTypeList ticketTypes={ticketTypes} loading={activities.visibleActivities.loading} activityId={activity.activityId} />
             </Grid>
           </Grid>
         </Container>)}
@@ -77,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
   store.dispatch(END);
 
   await (store as SagaStore).sagaTask.toPromise();
-
+  console.log("ActivityPage info loaded");
   return {
     props: {
       activityId: activityId

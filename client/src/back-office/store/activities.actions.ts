@@ -8,7 +8,8 @@ export const LOAD_ACTIVITIES_FAILED = 'LOAD_ACTIVITIES_FAILED';
 export interface LoadActivityAction {
   type: typeof LOAD_ACTIVITY;
   payload: { 
-    activityId: string
+    activityId: string,
+    revision?: number
   }
 }
 

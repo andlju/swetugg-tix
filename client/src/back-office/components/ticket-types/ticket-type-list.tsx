@@ -8,14 +8,11 @@ import {
 } from "@material-ui/core";
 import { TicketType } from "./ticket-type.models";
 import { AddTicketType } from "./add-ticket-type";
-import { useEffect, useState } from 'react';
-import { getView } from '../../../services/view-fetcher.service';
-import { buildUrl } from '../../../url-utils';
-import { Activity } from '../activities/activity.models';
 
 interface TicketTypeListProps {
   activityId: string,
-  initialTicketTypes: TicketType[],
+  loading: boolean,
+  ticketTypes: TicketType[],
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -49,25 +46,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export function TicketTypeList({ initialTicketTypes, activityId }: TicketTypeListProps) {
+export function TicketTypeList({ activityId, loading, ticketTypes }: TicketTypeListProps) {
   const classes = useStyles();
-  const [ticketTypes, setTicketTypes] = useState(initialTicketTypes);
-  const [refreshTicketTypes, setRefreshTicketTypes] = useState('');
-
-  useEffect(() => {
-    if (refreshTicketTypes) {
-      const fetchData = async () => {
-        const resp = await getView<Activity>(
-          buildUrl(`/activities/${activityId}`), { 
-            validatorFunc: v => refreshTicketTypes === "all" || !!v.ticketTypes.find(tt => tt.ticketTypeId === refreshTicketTypes)
-          });
-          setTicketTypes(resp.ticketTypes);
-        setRefreshTicketTypes('');
-      };
-      fetchData();
-    }
-  }, [refreshTicketTypes]);
-
+ 
   return (<Paper className={classes.paper}>
     <Typography variant="overline">
       Ticket Types
@@ -82,7 +63,7 @@ export function TicketTypeList({ initialTicketTypes, activityId }: TicketTypeLis
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody className={refreshTicketTypes ? classes.refreshing : ''}>
+        <TableBody className={loading ? classes.refreshing : ''}>
           {ticketTypes.map(row => (
             <TableRow key={row.ticketTypeId} hover={true}>
               <TableCell>
@@ -106,7 +87,7 @@ export function TicketTypeList({ initialTicketTypes, activityId }: TicketTypeLis
       </Table>
     </TableContainer>
 
-    <AddTicketType activityId={activityId} refreshTicketTypes={(tt) => setRefreshTicketTypes(tt)}/>
+    <AddTicketType activityId={activityId} />
   </Paper>);
 }
 

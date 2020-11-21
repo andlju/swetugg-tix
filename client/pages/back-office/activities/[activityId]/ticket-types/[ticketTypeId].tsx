@@ -1,19 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { GetServerSideProps } from 'next';
+import { END } from 'redux-saga';
 import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { getView } from '../../../../../src/services/view-fetcher.service';
-import { buildUrl } from '../../../../../src/url-utils';
 import BackOfficeLayout from '../../../../../layout/back-office/main-layout';
-import { Activity, ModifyLimits, TicketTypeDetails } from '../../../../../src/back-office';
-import { TicketType } from '../../../../../src/back-office/components/ticket-types/ticket-type.models';
+import { ModifyLimits, TicketTypeDetails } from '../../../../../src/back-office';
+import { LOAD_ACTIVITY } from '../../../../../src/back-office/store/activities.actions';
+import wrapper, { SagaStore, State } from '../../../../../src/back-office/store/store';
+import { useSelector } from 'react-redux';
+import { ActivitiesState } from '../../../../../src/back-office/store/activities.reducer';
 
 interface TicketTypeProps {
-  activity: Activity,
-  initialTicketType: TicketType
+  activityId: string,
+  ticketTypeId: string,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -26,26 +28,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export default function TicketTypePage({ activity, initialTicketType }: TicketTypeProps) {
+export default function TicketTypePage({ activityId, ticketTypeId }: TicketTypeProps) {
   const classes = useStyles();
-  const [ticketType, setTicketType] = useState(initialTicketType);
-  const [refreshTicketTypeRevision, setRefreshTicketTypeRevision] = useState(initialTicketType.revision);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (refreshTicketTypeRevision > ticketType.revision) {
-        const resp = await getView<Activity>(
-          buildUrl(`/activities/${activity.activityId}`),
-          { revision: refreshTicketTypeRevision });
-        const selectedTicketType = resp.ticketTypes.find(tt => tt.ticketTypeId === ticketType.ticketTypeId);
-        if (selectedTicketType) {
-          setTicketType(selectedTicketType);
-        }
-        setRefreshTicketTypeRevision(resp.revision);
-      }
-    };
-    fetchData();
-  }, [refreshTicketTypeRevision]);
+  const activities = useSelector<State, ActivitiesState>(store => store.activities);
+  
+  const activity = activities.activities[activityId];
+  const ticketType = activity.ticketTypes.find(t => t.ticketTypeId === ticketTypeId);
+
+  if (!ticketType) {
+    return (<BackOfficeLayout>Unknown ticket type</BackOfficeLayout>);
+  }
 
   return (
     <BackOfficeLayout>
@@ -63,7 +56,7 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
               </Grid>
               <Grid item xs={12}>
                 <Paper className={classes.paper}>
-                  <ModifyLimits ticketType={ticketType} refreshTicketTypesRevision={setRefreshTicketTypeRevision} />
+                  <ModifyLimits ticketType={ticketType} />
                 </Paper>
               </Grid>
             </Grid>
@@ -74,19 +67,24 @@ export default function TicketTypePage({ activity, initialTicketType }: TicketTy
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const activityId = context.params?.activityId;
-  const ticketTypeId = context.params?.ticketTypeId;
-
-  const [activityResp] = await Promise.all([
-    getView<Activity>(buildUrl(`/activities/${activityId}`)),
-  ]);
-
-  const selectedTicketType = activityResp.ticketTypes.find(tt => tt.ticketTypeId === ticketTypeId)
-  return {
-    props: {
-      activity: activityResp,
-      initialTicketType: selectedTicketType
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({store, params}) => {
+  if (!params) {
+    return {
+      props: {
+      }
     }
   }
-}
+  const activityId = params.activityId;
+  const ticketTypeId = params.ticketTypeId;
+  store.dispatch({ type: LOAD_ACTIVITY, payload: { activityId } });
+  store.dispatch(END);
+
+  await (store as SagaStore).sagaTask.toPromise();
+
+  return {
+    props: {
+      activityId: activityId,
+      ticketTypeId: ticketTypeId
+    }
+  };
+});

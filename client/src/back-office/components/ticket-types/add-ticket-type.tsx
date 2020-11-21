@@ -5,11 +5,12 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { useActivityCommand } from "../../../use-activity-command.hook";
+import { LOAD_ACTIVITY } from "../../store/activities.actions";
 
 interface AddTicketTypeProps {
-  activityId: string,
-  refreshTicketTypes: (ticketTypeId: string) => void
+  activityId: string
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -33,8 +34,10 @@ type FormData = {
   ticketTypeName: string
 };
 
-export function AddTicketType({ activityId, refreshTicketTypes }: AddTicketTypeProps) {
+export function AddTicketType({ activityId }: AddTicketTypeProps) {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
 
   const [addTicketType] = useActivityCommand("Add Ticket Type");
 
@@ -48,7 +51,7 @@ export function AddTicketType({ activityId, refreshTicketTypes }: AddTicketTypeP
       name: data.ticketTypeName
     });
     setValue("ticketTypeName", "");
-    refreshTicketTypes(res.body.ticketTypeId);
+    dispatch({ type: LOAD_ACTIVITY, payload: { activityId, revision: res.body.revision}});
   }
 
   return (

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import {
   Table, TableBody, TableHead, TableRow, TableCell, TableContainer,
@@ -8,10 +8,13 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
-import { LOAD_ACTIVITIES } from '../../store/activities.actions';
-import { useSelector } from 'react-redux';
 import { State } from '../../store/store';
 import { ActivitiesState } from '../../store/activities.reducer';
+import { Activity } from '../..';
+
+interface ActivityListProps {
+  activities: Activity[]
+}
 
 const useStyles = makeStyles((theme) => ({
   nameColumnHead: {
@@ -46,12 +49,10 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export function ActivityList() {
+export function ActivityList({ activities }: ActivityListProps) {
 
   const classes = useStyles();
-  
-  const activitiesState = useSelector<State, ActivitiesState>(state => state.activities);
-  
+
   return (<React.Fragment>
     <Toolbar className={classes.activityListToolbar}>
       <Typography className={classes.activityListTitle} variant="h6" component="div">
@@ -76,28 +77,25 @@ export function ActivityList() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {activitiesState.visibleActivities.ids.map(id => {
-            const row = activitiesState.activities[id];
-            return (
-              <TableRow hover={true} key={row.activityId} >
-                <TableCell>
-                  <Typography>{row.name}</Typography>
-                  <Typography className={classes.identifier}>{row.activityId}</Typography>
-                </TableCell>
-                <TableCell className={classes.numberCell}>{row.freeSeats}</TableCell>
-                <TableCell className={classes.numberCell}>{row.totalSeats}</TableCell>
-                <TableCell className={classes.numberCell}>{row.ticketTypes?.length ?? 0}</TableCell>
-                <TableCell>
-                  <Link href={`/back-office/activities/${row.activityId}`}>
-                    <Button
-                      variant="contained" color="secondary">
-                      Details
+          {activities.map(row => (
+            <TableRow hover={true} key={row.activityId} >
+              <TableCell>
+                <Typography>{row.name}</Typography>
+                <Typography className={classes.identifier}>{row.activityId}</Typography>
+              </TableCell>
+              <TableCell className={classes.numberCell}>{row.freeSeats}</TableCell>
+              <TableCell className={classes.numberCell}>{row.totalSeats}</TableCell>
+              <TableCell className={classes.numberCell}>{row.ticketTypes?.length ?? 0}</TableCell>
+              <TableCell>
+                <Link href={`/back-office/activities/${row.activityId}`}>
+                  <Button
+                    variant="contained" color="secondary">
+                    Details
                     </Button>
-                  </Link>
-                </TableCell>
-              </TableRow>);
-          })
-          }
+                </Link>
+              </TableCell>
+            </TableRow>)
+          )}
         </TableBody>
       </Table>
     </TableContainer>

@@ -1,16 +1,18 @@
-import { createStore, combineReducers, AnyAction } from 'redux';
-import { MakeStore, createWrapper, Context, HYDRATE } from 'next-redux-wrapper';
-import { activitiesReducer, ActivitiesState } from './activities.reducer';
+import { combineReducers, AnyAction } from 'redux';
+import { HYDRATE } from 'next-redux-wrapper';
+import { activitiesHydrator, activitiesReducer } from './activities.reducer';
 
 const combinedReducer = combineReducers({
     activities: activitiesReducer
 });
 
-const rootReducer = (state: any, action: AnyAction) => {
+export type RootState = ReturnType<typeof combinedReducer>
+
+const rootReducer = (state: RootState, action: AnyAction): RootState => {
     if (action.type === HYDRATE) {
         const nextState = {
             ...state, // use previous state
-            ...action.payload, // apply delta from hydration
+            activities: activitiesHydrator(state.activities, action.payload.activities),
         };
         return nextState;
     } else {
