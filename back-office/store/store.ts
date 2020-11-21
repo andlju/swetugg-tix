@@ -3,8 +3,8 @@ import createSagaMiddleware, { Task } from 'redux-saga'
 import {createWrapper} from 'next-redux-wrapper'
 
 import rootReducer, { RootState } from './root.reducer'
-import { ActivitiesState } from './activities.reducer';
 import rootSaga from './root.saga'
+import { ActivitiesState } from '../components/activities/store/activities.reducer'
 
 export interface State extends RootState {
   server: {

@@ -13,7 +13,7 @@ const combinedReducer = combineReducers({
 export type RootState = ReturnType<typeof combinedReducer>
 export type RootAction = ActivityAction | OrderAction;
 
-const rootReducer : Reducer<RootState, RootAction | AnyAction> = (state, action) => {
+const rootReducer : Reducer<RootState, RootAction | any> = (state, action) => {
     if (action.type === HYDRATE) {
         const nextState : RootState = {
             ...state, // use previous state

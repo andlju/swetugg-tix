@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux';
+import { AnyAction, combineReducers, Reducer } from 'redux';
 import { HYDRATE } from 'next-redux-wrapper';
 import { activitiesHydrator, activitiesReducer } from '../components/activities/store/activities.reducer';
 import { ActivitiesAction } from '../components/activities/store/activities.actions';
@@ -11,11 +11,11 @@ const combinedReducer = combineReducers({
 export type RootState = ReturnType<typeof combinedReducer>
 export type RootAction = ActivitiesAction;
 
-const rootReducer = (state: RootState, action: RootAction | any): RootState => {
+const rootReducer: Reducer<RootState, RootAction | any> = (state, action) => {
     if (action.type === HYDRATE) {
         const nextState = {
             ...state, // use previous state
-            activities: activitiesHydrator(state.activities, action.payload.activities),
+            activities: activitiesHydrator(state?.activities, action.payload.activities),
         };
         return nextState;
     } else {
