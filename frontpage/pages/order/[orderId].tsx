@@ -2,10 +2,11 @@
 import { makeStyles } from "@material-ui/core";
 import { GetServerSideProps } from "next";
 import React from "react";
-import Layout from "../../../layout/public-layout";
-import { Cart } from "../../../src/public";
-import { getView } from "../../../src/services/view-fetcher.service";
-import { buildUrl } from "../../../src/url-utils";
+import { Cart } from "../../components/cart/cart";
+import Layout from "../../layout/public-layout";
+import { getView } from "../../src/services/view-fetcher.service";
+import { buildUrl } from "../../src/url-utils";
+
 
 interface OrderProps {
   order: any,
