@@ -270,10 +270,14 @@ export = async () => {
         CommandLogCache: redisCache.primaryConnectionString,
     };
 
-    let hostname: pulumi.Output<string> | undefined;
+    let apiHostname: pulumi.Output<string> | undefined;
+    let frontpageHostname: pulumi.Output<string> | undefined;
+    let backOfficeHostname: pulumi.Output<string> | undefined;
 
     if (shouldDeploy) {
-
+        //
+        // Azure Functions apps
+        //
         const activityApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-activity`, {
             resourceGroupName: resourceGroup.name,
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Activity.Funcs.zip"),
@@ -287,7 +291,7 @@ export = async () => {
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Order.Funcs.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: orderAppSettings
+            appSettings: orderAppSettings,
         });
 
         const processApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-process`, {
@@ -295,7 +299,7 @@ export = async () => {
             archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Process.Funcs.zip"),
             account: storageAccount,
             version: '~3',
-            appSettings: processAppSettings
+            appSettings: processAppSettings,
         });
 
         const apiApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-api`, {
@@ -306,10 +310,87 @@ export = async () => {
             appSettings: apiAppSettings,
             siteConfig: {
                 cors: { allowedOrigins: ["*"] }
-            }
+            },
         });
 
-        hostname = apiApp.functionApp.defaultHostname;
+        apiHostname = apiApp.functionApp.defaultHostname;
+
+        //
+        // Frontend Apps
+        //
+
+        // We need a separate resource group since we want to use a Linux AppService Plan
+        const frontendResourceGroup = new azure.core.ResourceGroup(`${baseName}-fe-group`, { location: mainLocation });
+
+        const frontendServicePlan = new azure.appservice.Plan("fe-plan", {
+            resourceGroupName: frontendResourceGroup.name,
+            sku: {
+                tier: 'Basic',
+                size: 'B1'
+            }/*,
+            kind: azure.appservice.Kinds.Linux,
+            reserved: true*/
+        });
+
+        /*
+        const frontendStorageAccount = new azure.storage.Account("festorage", {
+            // The location for the storage account will be derived automatically from the resource group.
+            resourceGroupName: frontendResourceGroup.name,
+            accountTier: "Standard",
+            accountReplicationType: "LRS",
+        });
+
+        const appServiceStorageContainer = new azure.storage.Container(`${baseName}-code`, {
+            storageAccountName: frontendStorageAccount.name,
+            containerAccessType: "private",
+        });
+
+        const frontpageBlob = new azure.storage.Blob(`${baseName}-fb`, {
+            storageAccountName: frontendStorageAccount.name,
+            storageContainerName: appServiceStorageContainer.name,
+            
+            type: "Block",
+        
+            source: new pulumi.asset.FileArchive("../dist/frontpage.zip"),
+        });
+
+        const backOfficeBlob = new azure.storage.Blob(`${baseName}-bb`, {
+            storageAccountName: frontendStorageAccount.name,
+            storageContainerName: appServiceStorageContainer.name,
+            type: "Block",
+            source: new pulumi.asset.FileArchive("../dist/back-office.zip"),
+        });
+
+        const frontpageCodeBlobUrl = azure.storage.signedBlobReadUrl(frontpageBlob, frontendStorageAccount);
+        const backOfficeCodeBlobUrl = azure.storage.signedBlobReadUrl(backOfficeBlob, frontendStorageAccount);
+        */
+        const frontpageApp = new azure.appservice.AppService(`${baseName}-frontpage`, {
+            resourceGroupName: frontendResourceGroup.name,
+            appServicePlanId: frontendServicePlan.id,
+            appSettings: {
+                APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
+                APPLICATIONINSIGHTS_CONNECTION_STRING: pulumi.interpolate`InstrumentationKey=${appInsights.instrumentationKey}`,
+                ApplicationInsightsAgent_EXTENSION_VERSION: "~2",
+                SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
+                WEBSITE_NODE_DEFAULT_VERSION: "12.18.0"
+            },
+        });
+
+        const backOfficeApp = new azure.appservice.AppService(`${baseName}-backoffice`, {
+            resourceGroupName: frontendResourceGroup.name,
+            appServicePlanId: frontendServicePlan.id,
+            appSettings: {
+                APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
+                APPLICATIONINSIGHTS_CONNECTION_STRING: pulumi.interpolate`InstrumentationKey=${appInsights.instrumentationKey}`,
+                ApplicationInsightsAgent_EXTENSION_VERSION: "~2",                
+                SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
+                WEBSITE_NODE_DEFAULT_VERSION: "12.18.0"
+            },
+        });
+
+        backOfficeHostname = backOfficeApp.defaultSiteHostname;
+        frontpageHostname = frontpageApp.defaultSiteHostname;
+
     }
 
     const output = {
@@ -319,7 +400,9 @@ export = async () => {
         activityEventStoreConnectionString: activityEventStoreConnection,
         orderEventStoreConnectionString: orderEventStoreConnection,
         tixViewsConnectionString: tixViewsConnection,
-        apiHostName: hostname
+        apiHostname: apiHostname,
+        backOfficeHostname: backOfficeHostname,
+        frontpageHostname: frontpageHostname
     };
 
     return {

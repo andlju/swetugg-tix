@@ -1,4 +1,5 @@
 #addin "Cake.MsDeploy"
+#addin "Cake.Yarn"
 
 // Target - The task you want to start. Runs the Default task if not specified.
 var target = Argument("Target", "Default");  
@@ -54,7 +55,70 @@ Task("Test")
         }
     });
 
-public void CreatePackage(string projectName)
+Task("BackOffice-Install")
+    .Does(() => 
+    {
+        StartProcess("yarn.cmd", new ProcessSettings() {
+           WorkingDirectory = "./back-office",
+        });
+    });
+
+Task("BackOffice-Build")
+    .IsDependentOn("BackOffice-Install")
+    .Does(() => 
+    {
+        StartProcess("yarn.cmd", new ProcessSettings() {
+           Arguments = "build",
+           WorkingDirectory = "./back-office" 
+        });
+    });
+
+Task("BackOffice-Package")
+    // .IsDependentOn("BackOffice-Build")
+    .Does(() => 
+    {
+        CreateFrontendPackage("back-office");
+    });
+
+
+Task("Frontpage-Install")
+    .Does(() => 
+    {
+        StartProcess("yarn.cmd", new ProcessSettings() {
+           WorkingDirectory = "./back-office",
+        });
+    });
+
+Task("Frontpage-Build")
+    .IsDependentOn("Frontpage-Install")
+    .Does(() => 
+    {
+        StartProcess("yarn.cmd", new ProcessSettings() {
+           Arguments = "build",
+           WorkingDirectory = "./back-office" 
+        });
+    });
+
+Task("Frontpage-Package")
+    // .IsDependentOn("Frontpage-Build")
+    .Does(() => 
+    {
+        CreateFrontendPackage("frontpage");
+    });
+
+public void CreateFrontendPackage(string folderName) 
+{
+        var backOfficeFolder = Directory($"./{folderName}");
+        var filesToZip = GetFiles(backOfficeFolder.Path.FullPath + "/**/*", new GlobberSettings() {
+            Predicate = (dir) => {
+                return !(dir.Path.FullPath.Contains("node_modules") || dir.Path.FullPath.Contains(".next"));
+            }
+        });
+
+        var zipFile = distDirectory.Path.GetFilePath($"{folderName}.zip");
+        Zip(backOfficeFolder, zipFile, filesToZip);
+}
+public void CreateDotNetPackage(string projectName)
 {
     var distFolder = distDirectory.Path.Combine(projectName);
     var zipFile = distDirectory.Path.GetFilePath($"{projectName}.zip");
@@ -76,10 +140,10 @@ public void CreatePackage(string projectName)
 Task("Package")  
     .Does(() =>
     {
-        CreatePackage("Swetugg.Tix.Activity.Funcs");
-        CreatePackage("Swetugg.Tix.Order.Funcs");
-        CreatePackage("Swetugg.Tix.Process.Funcs");
-        CreatePackage("Swetugg.Tix.Api");
+        CreateDotNetPackage("Swetugg.Tix.Activity.Funcs");
+        CreateDotNetPackage("Swetugg.Tix.Order.Funcs");
+        CreateDotNetPackage("Swetugg.Tix.Process.Funcs");
+        CreateDotNetPackage("Swetugg.Tix.Api");
     });
 
 // A meta-task that runs all the steps to Build and Test the app
@@ -93,7 +157,9 @@ Task("BuildAndTest")
 // to run everything starting from Clean, all the way up to Publish.
 Task("Default")  
     .IsDependentOn("BuildAndTest")
-    .IsDependentOn("Package");
+    .IsDependentOn("Package")
+    .IsDependentOn("Frontpage-Package")
+    .IsDependentOn("BackOffice-Package");
 
 // Executes the task specified in the target argument.
 RunTarget(target);

@@ -1,11 +1,15 @@
 {
-  "name": "swetugg-tix",
+  "name": "swetugg-tix-back-office",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "node server.js",
+    "postinstall": "next build"
+  },
+  "engines": {
+    "node": "12.*"
   },
   "dependencies": {
     "@material-ui/core": "^4.11.0",

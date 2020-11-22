@@ -1,17 +1,22 @@
-#@host = https://tix-dev-apieee8332a.azurewebsites.net
+@host = tix-dev-apia2add574.azurewebsites.net
 #@host = http://localhost:7071
-@host = http://localhost:4711
+#@host = http://localhost:4711
 
-@activityId = ce3aebf0-2ed4-4c4d-b6ee-859a8cc1ec8e
+@activityId = 7fedb79a-d174-41d3-93c6-f7f66257f648
 @ticketTypeId = 41869799-3bd2-46ae-bae7-12c5783ce931
-@commandId = 10a67052-cbae-4a23-b1b3-0c636bc7b593
+@commandId = 3fa37e91-286f-4f5c-aa00-4bafbd999145
 @orderId = 8e6bf91e-e22a-40e9-9589-906506a7b298
 
 ### List all activities
 GET {{host}}/api/activities
 
 ### Create a new Activity
-POST {{host}}/api/activities
+POST {{host}}/api/activities 
+Content-Type: application/json
+
+{
+  "name": "Test Activity 2"
+}
 
 ### Get the status of a command
 GET {{host}}/api/activities/commands/{{commandId}}
