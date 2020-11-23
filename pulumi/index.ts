@@ -2,6 +2,7 @@ import * as pulumi from "@pulumi/pulumi";
 import * as azure from "@pulumi/azure";
 import * as random from "@pulumi/random";
 import { getPublicIp } from "./local-ip";
+import { FailoverGroup } from "@pulumi/azure/sql";
 
 const mainLocation = azure.Locations.NorthEurope;
 
@@ -271,7 +272,10 @@ export = async () => {
     };
 
     let apiHostname: pulumi.Output<string> | undefined;
+    let frontendResourceGroupName: pulumi.Output<string> | undefined;
+    let frontpageAppName: pulumi.Output<string> | undefined;
     let frontpageHostname: pulumi.Output<string> | undefined;
+    let backOfficeAppName: pulumi.Output<string> | undefined;
     let backOfficeHostname: pulumi.Output<string> | undefined;
 
     if (shouldDeploy) {
@@ -319,8 +323,9 @@ export = async () => {
         // Frontend Apps
         //
 
-        // We need a separate resource group since we want to use a Linux AppService Plan
+        // We need a separate resource group if we want to use a Linux AppService Plan
         const frontendResourceGroup = new azure.core.ResourceGroup(`${baseName}-fe-group`, { location: mainLocation });
+        frontendResourceGroupName = frontendResourceGroup.name;
 
         const frontendServicePlan = new azure.appservice.Plan("fe-plan", {
             resourceGroupName: frontendResourceGroup.name,
@@ -369,10 +374,11 @@ export = async () => {
             appServicePlanId: frontendServicePlan.id,
             appSettings: {
                 APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
-                APPLICATIONINSIGHTS_CONNECTION_STRING: pulumi.interpolate`InstrumentationKey=${appInsights.instrumentationKey}`,
+                APPLICATIONINSIGHTS_CONNECTION_STRING: pulumi.interpolate `InstrumentationKey=${appInsights.instrumentationKey}`,
                 ApplicationInsightsAgent_EXTENSION_VERSION: "~2",
                 SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
-                WEBSITE_NODE_DEFAULT_VERSION: "12.18.0"
+                WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
+                NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`
             },
         });
 
@@ -381,16 +387,18 @@ export = async () => {
             appServicePlanId: frontendServicePlan.id,
             appSettings: {
                 APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
-                APPLICATIONINSIGHTS_CONNECTION_STRING: pulumi.interpolate`InstrumentationKey=${appInsights.instrumentationKey}`,
+                APPLICATIONINSIGHTS_CONNECTION_STRING: pulumi.interpolate `InstrumentationKey=${appInsights.instrumentationKey}`,
                 ApplicationInsightsAgent_EXTENSION_VERSION: "~2",                
                 SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
-                WEBSITE_NODE_DEFAULT_VERSION: "12.18.0"
+                WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
+                NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`
             },
         });
 
         backOfficeHostname = backOfficeApp.defaultSiteHostname;
         frontpageHostname = frontpageApp.defaultSiteHostname;
-
+        backOfficeAppName = backOfficeApp.name;
+        frontpageAppName = frontpageApp.name;
     }
 
     const output = {
@@ -407,6 +415,11 @@ export = async () => {
 
     return {
         out: output,
+        frontendSettings: {
+            frontendResourceGroupName: frontendResourceGroupName,
+            backOfficeAppName: backOfficeAppName,
+            frontpageAppName: frontpageAppName,
+        },
         activityAppSettings: {
             IsEncrypted: false,
             Values: {

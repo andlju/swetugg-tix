@@ -14,6 +14,9 @@ export default class MyDocument extends Document {
             rel="stylesheet"
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
           />
+          <script>
+            {`window.['_API_ROOT_URL__'] = '${process.env.API_ROOT_URL}'`}
+          </script>
         </Head>
         <body>
           <Main />
