@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
 
         public ActivityCommandMessageSender(IOptions<ApiOptions> apiOptions)
         {
-            _queueName = apiOptions.Value.ActivityCommandsQueue;
+            _queueName = "activitycommands";
             _serviceBusConnectionString = apiOptions.Value.TixServiceBus;
             _client = new QueueClient(_serviceBusConnectionString, _queueName);
         }

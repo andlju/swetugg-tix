@@ -33,7 +33,7 @@ namespace Swetugg.Tix.Process.Funcs
         }
 
         [FunctionName("HandleOrderEvents")]
-        public async Task Run([EventHubTrigger("%OrderEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%OrderProcessConsumerGroup%")] EventData[] events, ILogger log)
+        public async Task Run([EventHubTrigger("order", Connection = "EventHubConnectionString", ConsumerGroup = "orderproc")] EventData[] events, ILogger log)
         {
             var exceptions = new List<Exception>();
             foreach (EventData eventData in events)

@@ -1,10 +1,10 @@
-@host = tix-dev-apia2add574.azurewebsites.net
+@host = tix-dev-api61c699f7.azurewebsites.net
 #@host = http://localhost:7071
 #@host = http://localhost:4711
 
-@activityId = 7fedb79a-d174-41d3-93c6-f7f66257f648
+@activityId = 931ddd3c-73de-480a-b6b5-6070b58dee25
 @ticketTypeId = 41869799-3bd2-46ae-bae7-12c5783ce931
-@commandId = 3fa37e91-286f-4f5c-aa00-4bafbd999145
+@commandId = 76a798d2-bd1e-4cd3-a6f0-85efef595017
 @orderId = 8e6bf91e-e22a-40e9-9589-906506a7b298
 
 ### List all activities
@@ -43,7 +43,7 @@ Content-Type: application/json
 }
 
 ### Add a ticket type to an activity
-POST {{host}}/api/activities/{{activityId}}/ticket-type
+POST {{host}}/api/activities/{{activityId}}/ticket-types
 
 ### Remove a ticket type from an activity
 DELETE {{host}}/api/activities/{{activityId}}/ticket-types/{{ticketTypeId}}

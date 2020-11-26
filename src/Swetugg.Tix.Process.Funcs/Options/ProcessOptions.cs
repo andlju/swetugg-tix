@@ -5,7 +5,5 @@
         public string AzureWebJobsStorage { get; set; }
         public string TixServiceBus { get; set; }
         public string ProcessEventsDbConnection { get; set; }
-        public string ActivityCommandsQueue { get; set; }
-        public string OrderCommandsQueue { get; set; }
     }
 }

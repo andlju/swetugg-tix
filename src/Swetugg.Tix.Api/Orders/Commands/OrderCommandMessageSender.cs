@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Api.Orders.Commands
 
         public OrderCommandMessageSender(IOptions<ApiOptions> apiOptions)
         {
-            _queueName = apiOptions.Value.OrderCommandsQueue;
+            _queueName = "ordercommands";
             _serviceBusConnectionString = apiOptions.Value.TixServiceBus;
             _client = new QueueClient(_serviceBusConnectionString, _queueName);
         }

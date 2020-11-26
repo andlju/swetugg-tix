@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Activity.Funcs
         public EventHubPublisher(IOptions<ActivityOptions> activityOptions)
         {
             _eventHubConnectionString = activityOptions.Value.EventHubConnectionString;
-            _eventHubName = activityOptions.Value.ActivityEventHubName;
+            _eventHubName = "activity";
             _client = new EventHubProducerClient(_eventHubConnectionString, _eventHubName);
             _jsonOptions = new JsonSerializerOptions()
             {

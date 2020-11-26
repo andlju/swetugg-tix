@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("ActivityCommandListenerFunc")]
-        public async Task Run([ServiceBusTrigger("%ActivityCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
+        public async Task Run([ServiceBusTrigger("activitycommands", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)

@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Order.Funcs
         }
 
         [FunctionName("OrderCommandListenerFunc")]
-        public async Task Run([ServiceBusTrigger("%OrderCommandsQueue%", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
+        public async Task Run([ServiceBusTrigger("ordercommands", Connection = "TixServiceBus")] Message commandMsg, ILogger log)
         {
             var messageType = CommandAssembly.GetType(commandMsg.Label, false);
             if (messageType == null)

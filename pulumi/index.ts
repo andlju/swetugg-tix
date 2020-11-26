@@ -112,18 +112,6 @@ export = async () => {
         name: 'ordercommands'
     });
 
-    const activityEventsTopic = new azure.servicebus.Topic('activityevents', {
-        namespaceName: serviceBusNamespace.name,
-        resourceGroupName: resourceGroup.name,
-        name: 'activityevents'
-    });
-
-    const orderEventsTopic = new azure.servicebus.Topic('orderevents', {
-        namespaceName: serviceBusNamespace.name,
-        resourceGroupName: resourceGroup.name,
-        name: 'orderevents'
-    });
-
     //
     // Redis Cache
     //
@@ -163,37 +151,43 @@ export = async () => {
         namespaceName: eventHubNamespace.name,
         partitionCount: 32,
         messageRetention: 1,
+        name: 'activity'
     });
 
     const activityViewsConsumerGroup = new azure.eventhub.ConsumerGroup('activityviews', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         eventhubName: activityEventHub.name,
+        name: 'activityviews'
     });
 
     const activityProcessConsumerGroup = new azure.eventhub.ConsumerGroup('activityproc', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         eventhubName: activityEventHub.name,
+        name: 'activityproc'
     });
 
-    const orderEventHub = new azure.eventhub.EventHub('orders', {
+    const orderEventHub = new azure.eventhub.EventHub('order', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         partitionCount: 32,
         messageRetention: 1,
+        name: 'order'
     });
 
     const orderViewsConsumerGroup = new azure.eventhub.ConsumerGroup('orderviews', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         eventhubName: orderEventHub.name,
+        name: 'orderviews'
     });
 
     const orderProcessConsumerGroup = new azure.eventhub.ConsumerGroup('orderproc', {
         resourceGroupName: resourceGroup.name,
         namespaceName: eventHubNamespace.name,
         eventhubName: orderEventHub.name,
+        name: 'orderproc'
     });
 
     //
@@ -219,52 +213,37 @@ export = async () => {
     const activityAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-        ActivityCommandsQueue: activityCommandsQueue.name,
-        ActivityEventPublisherTopic: activityEventsTopic.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         ActivityEventsDbConnection: activityEventStoreConnection,
         ViewsDbConnection: tixViewsConnection,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
-        ActivityEventHubName: activityEventHub.name,
-        ActivityViewsConsumerGroup: activityViewsConsumerGroup.name,
         CommandLogCache: redisCache.primaryConnectionString,
     };
     const orderAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-        OrderCommandsQueue: orderCommandsQueue.name,
-        OrderEventPublisherTopic: orderEventsTopic.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         OrderEventsDbConnection: orderEventStoreConnection,
         ViewsDbConnection: tixViewsConnection,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
-        OrderEventHubName: orderEventHub.name,
-        OrderViewsConsumerGroup: orderViewsConsumerGroup.name,
         CommandLogCache: redisCache.primaryConnectionString,
     };
     const processAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
         ActivityCommandsQueue: activityCommandsQueue.name,
-        OrderCommandsQueue: orderCommandsQueue.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         ProcessEventsDbConnection: processEventStoreConnection,
         EventHubConnectionString: eventHubNamespace.defaultPrimaryConnectionString,
-        ActivityEventHubName: activityEventHub.name,
-        ActivityProcessConsumerGroup: activityProcessConsumerGroup.name,
-        OrderEventHubName: orderEventHub.name,
-        OrderProcessConsumerGroup: orderProcessConsumerGroup.name
     };
     const apiAppSettings = {
         runtime: "dotnet",
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-        ActivityCommandsQueue: activityCommandsQueue.name,
-        OrderCommandsQueue: orderCommandsQueue.name,
         ViewsDbConnection: tixViewsConnection,
         //SignalRConnection: signalR.primaryConnectionString,
         //SignalRHost: signalR.hostname,
@@ -332,43 +311,9 @@ export = async () => {
             sku: {
                 tier: 'Basic',
                 size: 'B1'
-            }/*,
-            kind: azure.appservice.Kinds.Linux,
-            reserved: true*/
+            }
         });
 
-        /*
-        const frontendStorageAccount = new azure.storage.Account("festorage", {
-            // The location for the storage account will be derived automatically from the resource group.
-            resourceGroupName: frontendResourceGroup.name,
-            accountTier: "Standard",
-            accountReplicationType: "LRS",
-        });
-
-        const appServiceStorageContainer = new azure.storage.Container(`${baseName}-code`, {
-            storageAccountName: frontendStorageAccount.name,
-            containerAccessType: "private",
-        });
-
-        const frontpageBlob = new azure.storage.Blob(`${baseName}-fb`, {
-            storageAccountName: frontendStorageAccount.name,
-            storageContainerName: appServiceStorageContainer.name,
-            
-            type: "Block",
-        
-            source: new pulumi.asset.FileArchive("../dist/frontpage.zip"),
-        });
-
-        const backOfficeBlob = new azure.storage.Blob(`${baseName}-bb`, {
-            storageAccountName: frontendStorageAccount.name,
-            storageContainerName: appServiceStorageContainer.name,
-            type: "Block",
-            source: new pulumi.asset.FileArchive("../dist/back-office.zip"),
-        });
-
-        const frontpageCodeBlobUrl = azure.storage.signedBlobReadUrl(frontpageBlob, frontendStorageAccount);
-        const backOfficeCodeBlobUrl = azure.storage.signedBlobReadUrl(backOfficeBlob, frontendStorageAccount);
-        */
         const frontpageApp = new azure.appservice.AppService(`${baseName}-frontpage`, {
             resourceGroupName: frontendResourceGroup.name,
             appServicePlanId: frontendServicePlan.id,
@@ -380,6 +325,17 @@ export = async () => {
                 WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
                 NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`
             },
+        });
+        const frontpageSlotBlue = new azure.appservice.Slot('front-blue', {
+            resourceGroupName: frontendResourceGroup.name,
+            appServiceName: frontpageApp.name,
+            appServicePlanId: frontendServicePlan.id,
+        });
+
+        const frontpageSlotGreen = new azure.appservice.Slot('front-green', {
+            resourceGroupName: frontendResourceGroup.name,
+            appServiceName: frontpageApp.name,
+            appServicePlanId: frontendServicePlan.id,
         });
 
         const backOfficeApp = new azure.appservice.AppService(`${baseName}-backoffice`, {
@@ -395,10 +351,23 @@ export = async () => {
             },
         });
 
+        const backOfficeSlotBlue = new azure.appservice.Slot('back-blue', {
+            resourceGroupName: frontendResourceGroup.name,
+            appServiceName: backOfficeApp.name,
+            appServicePlanId: frontendServicePlan.id,
+        });
+        
+        const backOfficeSlotGreen = new azure.appservice.Slot('back-green', {
+            resourceGroupName: frontendResourceGroup.name,
+            appServiceName: frontpageApp.name,
+            appServicePlanId: frontendServicePlan.id,
+        });
+
         backOfficeHostname = backOfficeApp.defaultSiteHostname;
         frontpageHostname = frontpageApp.defaultSiteHostname;
         backOfficeAppName = backOfficeApp.name;
         frontpageAppName = frontpageApp.name;
+
     }
 
     const output = {

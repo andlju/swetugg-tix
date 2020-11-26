@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Order.Funcs
         public EventHubPublisher(IOptions<OrderOptions> orderOptions)
         {
             _eventHubConnectionString = orderOptions.Value.EventHubConnectionString;
-            _eventHubName = orderOptions.Value.OrderEventHubName;
+            _eventHubName = "order";
             _client = new EventHubProducerClient(_eventHubConnectionString, _eventHubName);
             _jsonOptions = new JsonSerializerOptions()
             {

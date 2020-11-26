@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Order.Funcs
         }
 
         [FunctionName("EventHubViewBuilderFunc")]
-        public async Task Run([EventHubTrigger("%OrderEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%OrderViewsConsumerGroup%")] EventData[] events, ILogger log)
+        public async Task Run([EventHubTrigger("order", Connection = "EventHubConnectionString", ConsumerGroup = "orderviews")] EventData[] events, ILogger log)
         {
             var exceptions = new List<Exception>();
 

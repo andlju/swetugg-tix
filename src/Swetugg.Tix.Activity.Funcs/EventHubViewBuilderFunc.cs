@@ -35,7 +35,7 @@ namespace Swetugg.Tix.Activity.Funcs
         }
 
         [FunctionName("EventHubViewBuilderFunc")]
-        public async Task Run([EventHubTrigger("%ActivityEventHubName%", Connection = "EventHubConnectionString", ConsumerGroup = "%ActivityViewsConsumerGroup%")] EventData[] events, ILogger log)
+        public async Task Run([EventHubTrigger("activity", Connection = "EventHubConnectionString", ConsumerGroup = "activityviews")] EventData[] events, ILogger log)
         {
             var exceptions = new List<Exception>();
 

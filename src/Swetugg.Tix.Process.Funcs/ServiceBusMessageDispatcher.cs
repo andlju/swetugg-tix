@@ -20,8 +20,8 @@ namespace Swetugg.Tix.Process.Funcs
 
     public ServiceBusMessageDispatcher(IOptions<ProcessOptions> processOptions)
     {
-      var activityQueueName = processOptions.Value.ActivityCommandsQueue;
-      var orderQueueName = processOptions.Value.OrderCommandsQueue;
+      var activityQueueName = "activitycommands";
+      var orderQueueName = "ordercommands";
       _serviceBusConnectionString = processOptions.Value.TixServiceBus;
       RegisterAssemblyQueue(typeof(CreateOrder).Assembly, orderQueueName);
       RegisterAssemblyQueue(typeof(CreateActivity).Assembly, activityQueueName);
