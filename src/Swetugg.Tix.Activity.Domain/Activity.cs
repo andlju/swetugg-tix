@@ -118,6 +118,10 @@ namespace Swetugg.Tix.Activity.Domain
         public void IncreaseTicketTypeLimit(Guid ticketTypeId, int seats)
         {
             GuardTicketType(ticketTypeId);
+
+            if (seats <= 0)
+                throw new ActivityException("InvalidInput", "Number of seats to increase must be greater than 1");
+
             var ticketType = _ticketTypes[ticketTypeId];
             if (!ticketType.SeatLimit.HasValue && ticketType.SeatsReserved > seats)
             {
@@ -147,6 +151,10 @@ namespace Swetugg.Tix.Activity.Domain
         public void DecreaseTicketTypeLimit(Guid ticketTypeId, int seats)
         {
             GuardTicketType(ticketTypeId);
+
+            if (seats <= 0)
+                throw new ActivityException("InvalidInput", "Number of seats to decrease must be greater than 1");
+
             var ticketType = _ticketTypes[ticketTypeId];
             if (ticketType.SeatLimit.GetValueOrDefault(0) - seats < ticketType.SeatsReserved)
             {
