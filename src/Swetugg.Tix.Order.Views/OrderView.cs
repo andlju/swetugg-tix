@@ -13,6 +13,14 @@ namespace Swetugg.Tix.Order.Views
         public List<OrderTicket> Tickets { get; set; }
     }
 
+    public enum OrderTicketStatus
+    {
+        Pending,
+        Confirmed,
+        Denied,
+        Cancelled
+    }
+
     public class OrderTicket
     {
         public Guid TicketId { get; set; }
@@ -20,6 +28,7 @@ namespace Swetugg.Tix.Order.Views
         public Guid ActivityId { get; set; }
         public Guid TicketTypeId { get; set; }
         public string TicketReference { get; set; }
-        public bool Cancelled { get; set; }
+        public OrderTicketStatus Status { get; set; }
+        public string StatusCode => Status.ToString();
     }
 }

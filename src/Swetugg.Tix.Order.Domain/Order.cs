@@ -8,17 +8,25 @@ namespace Swetugg.Tix.Order.Domain
 {
     public class Order : AggregateBase
     {
+        enum TicketStatus
+        {
+            Pending,
+            Confirmed,
+            Denied,
+            Cancelled
+        }
+
         class Ticket
         {
             public Guid TicketId { get; set; }
             public Guid TicketTypeId { get; set; }
             public string TicketReference { get; set; }
-            public bool Cancelled { get; set; }
+            public TicketStatus Status { get; set; }
         }
 
-        private Guid _ticketTypeId;
         private Guid _activityId;
         private List<Ticket> _tickets = new List<Ticket>();
+
         internal static Order Build()
         {
             return new Order();
@@ -53,18 +61,26 @@ namespace Swetugg.Tix.Order.Domain
             {
                 throw new OrderException("SeatAlreadyConfirmed", "This seat has already been confirmed.");
             }
-            var firstUnconfirmed = _tickets.FirstOrDefault(t => t.TicketTypeId == ticketTypeId && t.TicketReference == null);
-            if (firstUnconfirmed == null)
-            {
-                throw new OrderException("NoSuchTicketType", $"There is no unconfirmed ticket for ticket type {ticketTypeId} on this order");
-            }
+            var firstPending = GuardFirstPending(ticketTypeId);
 
             Raise(new SeatReserved()
             {
-                TicketId = firstUnconfirmed.TicketId,
+                TicketId = firstPending.TicketId,
                 TicketReference = ticketReference
-            }); ;
+            });
         }
+
+        public void DenyReservedSeat(Guid ticketTypeId, string reasonCode)
+        {
+            var firstPending = GuardFirstPending(ticketTypeId);
+
+            Raise(new SeatDenied()
+            {
+                TicketId = firstPending.TicketId,
+                ReasonCode = reasonCode
+            });
+        }
+
 
         public void ConfirmReturnedSeat(Guid ticketTypeId, string ticketReference)
         {
@@ -82,6 +98,16 @@ namespace Swetugg.Tix.Order.Domain
                 TicketId = confirmedTicket.TicketId,
                 TicketReference = ticketReference
             });
+        }
+
+        private Ticket GuardFirstPending(Guid ticketTypeId)
+        {
+            var firstPending = _tickets.FirstOrDefault(t => t.TicketTypeId == ticketTypeId && t.Status == TicketStatus.Pending);
+            if (firstPending == null)
+            {
+                throw new OrderException("NoSuchTicketType", $"There is no pending ticket for ticket type {ticketTypeId} on this order");
+            }
+            return firstPending;
         }
 
         protected void Raise(EventBase evt)
@@ -110,12 +136,21 @@ namespace Swetugg.Tix.Order.Domain
         {
             var ticket = _tickets.Find(t => t.TicketId == evt.TicketId);
             ticket.TicketReference = evt.TicketReference;
+            ticket.Status = TicketStatus.Confirmed;
+        }
+
+        private void Apply(SeatDenied evt)
+        {
+            var ticket = _tickets.Find(t => t.TicketId == evt.TicketId);
+            ticket.TicketReference = null;
+            ticket.Status = TicketStatus.Denied;
         }
 
         private void Apply(SeatReturned evt)
         {
             var ticket = _tickets.Find(t => t.TicketId == evt.TicketId);
             ticket.TicketReference = null;
+            ticket.Status = TicketStatus.Cancelled;
         }
 
     }

@@ -37,6 +37,7 @@ namespace Swetugg.Tix.Order.Domain
             dispatcher.Register(() => new CreateOrderWithTicketsHandler(repositoryFunc(), commandLog));
             dispatcher.Register(() => new AddTicketHandler(repositoryFunc(), commandLog));
             dispatcher.Register(() => new ConfirmReservedSeatHandler(repositoryFunc(), commandLog));
+            dispatcher.Register(() => new DenyReservedSeatHandler(repositoryFunc(), commandLog));
             dispatcher.Register(() => new ConfirmReturnedSeatHandler(repositoryFunc(), commandLog));
 
             // Admin command handlers

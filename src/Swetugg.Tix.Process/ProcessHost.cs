@@ -16,6 +16,7 @@ namespace Swetugg.Tix.Process
         IMessageHandler<Order.Events.TicketAdded>,
         IMessageHandler<Order.Events.TicketCancelled>,
         IMessageHandler<Activity.Events.SeatReserved>,
+        IMessageHandler<Activity.Events.SeatReservationFailed>,
         IMessageHandler<Activity.Events.SeatReturned>
     {
         private readonly ISagaRepository _sagaRepository;
@@ -47,6 +48,7 @@ namespace Swetugg.Tix.Process
             dispatcher.Register<Order.Events.TicketCancelled>(() => this);
 
             dispatcher.Register<Activity.Events.SeatReserved>(() => this);
+            dispatcher.Register<Activity.Events.SeatReservationFailed>(() => this);
             dispatcher.Register<Activity.Events.SeatReturned>(() => this);
 
             Dispatcher = dispatcher;
@@ -91,6 +93,11 @@ namespace Swetugg.Tix.Process
         }
 
         public Task Handle(Activity.Events.SeatReserved evt)
+        {
+            return HandleActivityEvent(evt, evt.OrderReference);
+        }
+
+        public Task Handle(Activity.Events.SeatReservationFailed evt)
         {
             return HandleActivityEvent(evt, evt.OrderReference);
         }

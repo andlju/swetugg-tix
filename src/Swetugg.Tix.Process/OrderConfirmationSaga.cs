@@ -18,6 +18,7 @@ namespace Swetugg.Tix.Process
             Register<OrderEvents.TicketAdded>(Handle);
             Register<OrderEvents.TicketCancelled>(Handle);
             Register<ActivityEvents.SeatReserved>(Handle);
+            Register<ActivityEvents.SeatReservationFailed>(Handle);
             Register<ActivityEvents.SeatReturned>(Handle);
         }
 
@@ -54,6 +55,19 @@ namespace Swetugg.Tix.Process
                 OrderId = Guid.Parse(Id),
                 TicketTypeId = evt.TicketTypeId,
                 TicketReference = evt.TicketReference
+            });
+        }
+
+        void Handle(ActivityEvents.SeatReservationFailed evt)
+        {
+            // A seat has been reserved for this order. Let's confirm it.
+            Dispatch(new OrderCommands.DenyReservedSeat()
+            {
+                CommandId = Guid.NewGuid(),
+
+                OrderId = Guid.Parse(Id),
+                TicketTypeId = evt.TicketTypeId,
+                ReasonCode = evt.ReasonCode
             });
         }
 

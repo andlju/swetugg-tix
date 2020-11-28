@@ -27,7 +27,8 @@ namespace Swetugg.Tix.Order.ViewBuilder
                 ActivityId = view.ActivityId.GetValueOrDefault(),
                 TicketId = evt.TicketId,
                 OrderId = view.OrderId,
-                TicketTypeId = evt.TicketTypeId
+                TicketTypeId = evt.TicketTypeId,
+                Status = OrderTicketStatus.Pending
             });
             return view;
         }
@@ -35,7 +36,7 @@ namespace Swetugg.Tix.Order.ViewBuilder
         private OrderView Handle(OrderView view, TicketCancelled evt)
         {
             var ticket = GetTicket(view, evt.TicketId);
-            ticket.Cancelled = true;
+            ticket.Status = OrderTicketStatus.Pending;
             return view;
         }
 
@@ -43,6 +44,14 @@ namespace Swetugg.Tix.Order.ViewBuilder
         {
             var ticket = GetTicket(view, evt.TicketId);
             ticket.TicketReference = evt.TicketReference;
+            ticket.Status = OrderTicketStatus.Confirmed;
+            return view;
+        }
+
+        private OrderView Handle(OrderView view, SeatDenied evt)
+        {
+            var ticket = GetTicket(view, evt.TicketId);
+            ticket.Status = OrderTicketStatus.Denied;
             return view;
         }
 
@@ -50,6 +59,7 @@ namespace Swetugg.Tix.Order.ViewBuilder
         {
             var ticket = GetTicket(view, evt.TicketId);
             ticket.TicketReference = null;
+            ticket.Status = OrderTicketStatus.Cancelled;
             return view;
         }
 

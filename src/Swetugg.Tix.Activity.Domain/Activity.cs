@@ -179,13 +179,25 @@ namespace Swetugg.Tix.Activity.Domain
         {
             if (_seatsReserved >= _seatLimit)
             {
-                throw new ActivityException("NoSeatsLeft", "No seats left");
+                Raise(new SeatReservationFailed()
+                {
+                    TicketTypeId = ticketTypeId,
+                    OrderReference = orderReference,
+                    ReasonCode = "SoldOut"
+                });
+                return;
             }
 
             var ticketType = GuardTicketType(ticketTypeId);
             if (ticketType.SeatLimit.HasValue && ticketType.SeatLimit <= ticketType.SeatsReserved)
             {
-                throw new ActivityException("NoSeatsLeft", "No seats left for this ticket type");
+                Raise(new SeatReservationFailed()
+                {
+                    TicketTypeId = ticketTypeId,
+                    OrderReference = orderReference,
+                    ReasonCode = "TicketTypeSoldOut"
+                });
+                return;
             }
 
             Raise(new SeatReserved()
@@ -279,6 +291,10 @@ namespace Swetugg.Tix.Activity.Domain
             ticketType.SeatsReserved++;
 
             _seatsReserved++;
+        }
+
+        private void Apply(SeatReservationFailed evt)
+        {
         }
 
         private void Apply(SeatReturned evt)

@@ -1,4 +1,6 @@
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Activity.Events;
+using Swetugg.Tix.Tests.Helpers;
 using System;
 using System.Linq;
 using Xunit;
@@ -55,22 +57,23 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             };
         }
 
+
         [Fact]
-        public void then_nothing_is_committed()
+        public void then_TicketTypeId_is_correct()
         {
-            Assert.Null(Commits.FirstOrDefault());
+            Assert.Equal(TicketTypeId2, Commits.GetEvent<SeatReservationFailed>().TicketTypeId);
         }
 
         [Fact]
-        public void then_the_command_fails()
+        public void then_OrderReference_is_correct()
         {
-            Assert.True(Command.HasFailed);
+            Assert.Equal(OrderReference, Commits.GetEvent<SeatReservationFailed>().OrderReference);
         }
 
         [Fact]
-        public void then_the_failure_code_is_correct()
+        public void then_Reason_is_SoldOut()
         {
-            Assert.Equal("NoSeatsLeft", Command.FailureCode);
+            Assert.Equal("SoldOut", Commits.GetEvent<SeatReservationFailed>().ReasonCode);
         }
     }
 

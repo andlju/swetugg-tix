@@ -1,19 +1,19 @@
-using System;
+﻿using System;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Swetugg.Tix.Process.Tests
 {
-    public class when_seat_is_confirmed : with_order_saga
+    public class when_seat_is_sold_out : with_order_saga
     {
         protected Guid OrderId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
-        
+
         protected string TicketReference = Guid.NewGuid().ToString();
 
-        public when_seat_is_confirmed(ITestOutputHelper output) : base(output)
+        public when_seat_is_sold_out(ITestOutputHelper output) : base(output)
         {
         }
 
@@ -28,40 +28,42 @@ namespace Swetugg.Tix.Process.Tests
 
         protected override object When()
         {
-            return new Activity.Events.SeatReserved()
+            return new Activity.Events.SeatReservationFailed()
             {
                 AggregateId = ActivityId,
                 TicketTypeId = TicketTypeId,
                 OrderReference = OrderId.ToString(),
-                TicketReference = TicketReference
+                ReasonCode = "SoldOut"
             };
         }
 
         [Fact]
         public void then_order_seat_is_confirmed()
         {
-            Assert.IsType<Order.Commands.ConfirmReservedSeat>(DispatchedMessages.FirstOrDefault());
+            Assert.IsType<Order.Commands.DenyReservedSeat>(DispatchedMessages.FirstOrDefault());
         }
 
         [Fact]
         public void then_correct_order_is_confirmed()
         {
-            var cmd = (Order.Commands.ConfirmReservedSeat)DispatchedMessages.First();
+            var cmd = (Order.Commands.DenyReservedSeat)DispatchedMessages.First();
             Assert.Equal(OrderId, cmd.OrderId);
         }
 
         [Fact]
         public void then_correct_TicketTypeId_is_used()
         {
-            var cmd = (Order.Commands.ConfirmReservedSeat)DispatchedMessages.First();
+            var cmd = (Order.Commands.DenyReservedSeat)DispatchedMessages.First();
             Assert.Equal(TicketTypeId, cmd.TicketTypeId);
         }
+
         [Fact]
-        public void then_correct_TicketReference_is_used()
+        public void then_correct_ReasonCode_is_used()
         {
-            var cmd = (Order.Commands.ConfirmReservedSeat)DispatchedMessages.First();
-            Assert.Equal(TicketReference, cmd.TicketReference);
+            var cmd = (Order.Commands.DenyReservedSeat)DispatchedMessages.First();
+            Assert.Equal("SoldOut", cmd.ReasonCode);
         }
+
     }
 
 }
