@@ -33,6 +33,9 @@ namespace Swetugg.Tix.Activity.Domain
         /// <param name="aggregateId"></param>
         public Activity(Guid aggregateId) 
         {
+            if (aggregateId == Guid.Empty)
+                throw new ActivityException("InvalidId", "Invalid Activity Id specified");
+
             Raise(new ActivityCreated()
             {
                 AggregateId = aggregateId
@@ -45,6 +48,9 @@ namespace Swetugg.Tix.Activity.Domain
         /// <param name="seats">Number of seats to add</param>
         public void AddSeats(int seats)
         {
+            if (seats <= 0)
+                throw new ActivityException("InvalidInput", "Number of seats to add must be greater than 1");
+
             Raise(new SeatsAdded() {Seats = seats});
         }
 
@@ -55,6 +61,9 @@ namespace Swetugg.Tix.Activity.Domain
         /// <remarks>If there are not enough free seats left, an <exception cref="ActivityException"></exception> will be thrown.</remarks>
         public void RemoveSeats(int seats)
         {
+            if (seats <= 0)
+                throw new ActivityException("InvalidInput", "Number of seats to remove must be greater than 1");
+
             if (_seatLimit - _seatsReserved < seats)
                 throw new ActivityException("NotEnoughSeats", "Not enough seats left to remove");
             Raise(new SeatsRemoved() { Seats = seats });
@@ -66,6 +75,9 @@ namespace Swetugg.Tix.Activity.Domain
         /// <param name="ticketTypeId"></param>
         public void AddTicketType(Guid ticketTypeId)
         {
+            if (ticketTypeId == Guid.Empty)
+                throw new ActivityException("InvalidId", "Invalid Ticket Type Id specified");
+
             if (_ticketTypes.ContainsKey(ticketTypeId))
                 throw new ActivityException("DuplicateTicketType", "A ticket type with Id {ticketTypeId} already exists");
 
