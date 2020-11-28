@@ -12,6 +12,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
+const frontpageRoot = process.env.NEXT_PUBLIC_FRONTPAGE_ROOT ?? 'https://localhost:3001';
+
 export type ActivityDetailsProps = {
   activity: Activity,
 }
@@ -39,7 +41,7 @@ export function ActivityDetails({ activity }: ActivityDetailsProps) {
           </Table>
         </Grid>
         <Grid item xs={12}>
-          <Link href={`/public/${activity.activityId}`}>
+          <Link href={`${frontpageRoot}/${activity.activityId}`}>
             <Button
               variant="contained" color="primary">
               Public page

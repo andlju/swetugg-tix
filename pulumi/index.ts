@@ -233,7 +233,6 @@ export = async () => {
     const processAppSettings = {
         runtime: "dotnet",
         TixServiceBus: serviceBusNamespace.defaultPrimaryConnectionString,
-        ActivityCommandsQueue: activityCommandsQueue.name,
         "APPINSIGHTS_INSTRUMENTATIONKEY": appInsights.instrumentationKey,
         AzureWebJobsStorage: storageAccount.primaryConnectionString,
         ProcessEventsDbConnection: processEventStoreConnection,
@@ -250,7 +249,12 @@ export = async () => {
         CommandLogCache: redisCache.primaryConnectionString,
     };
 
+    let activityAppName: pulumi.Output<string> | undefined;
+    let orderAppName: pulumi.Output<string> | undefined;
+    let processAppName: pulumi.Output<string> | undefined;
+    let apiAppName: pulumi.Output<string> | undefined;
     let apiHostname: pulumi.Output<string> | undefined;
+    
     let frontendResourceGroupName: pulumi.Output<string> | undefined;
     let frontpageAppName: pulumi.Output<string> | undefined;
     let frontpageHostname: pulumi.Output<string> | undefined;
@@ -261,42 +265,59 @@ export = async () => {
         //
         // Azure Functions apps
         //
-        const activityApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-activity`, {
+
+        const backendServicePlan = new azure.appservice.Plan(`be-plan`, {
             resourceGroupName: resourceGroup.name,
-            archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Activity.Funcs.zip"),
-            account: storageAccount,
+            sku: {
+                tier: 'Dynamic',
+                size: 'Y1',
+            },
+            kind: 'FunctionApp'
+        });
+
+        const activityAppFunc = new azure.appservice.FunctionApp(`${baseName}-activity`, {
+            resourceGroupName: resourceGroup.name,
+            appServicePlanId: backendServicePlan.id,
+            storageAccountName: storageAccount.name,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
             version: '~3',
             appSettings: activityAppSettings,
         });
+        activityAppName = activityAppFunc.name;
 
-        const orderApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-order`, {
+        const orderAppFunc = new azure.appservice.FunctionApp(`${baseName}-order`, {
             resourceGroupName: resourceGroup.name,
-            archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Order.Funcs.zip"),
-            account: storageAccount,
+            appServicePlanId: backendServicePlan.id,
+            storageAccountName: storageAccount.name,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
             version: '~3',
             appSettings: orderAppSettings,
         });
+        orderAppName = orderAppFunc.name;
 
-        const processApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-process`, {
+        const processAppFunc = new azure.appservice.FunctionApp(`${baseName}-process`, {
             resourceGroupName: resourceGroup.name,
-            archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Process.Funcs.zip"),
-            account: storageAccount,
+            appServicePlanId: backendServicePlan.id,
+            storageAccountName: storageAccount.name,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
             version: '~3',
             appSettings: processAppSettings,
         });
+        processAppName = processAppFunc.name;
 
-        const apiApp = new azure.appservice.ArchiveFunctionApp(`${baseName}-api`, {
+        const apiAppFunc = new azure.appservice.FunctionApp(`${baseName}-api`, {
             resourceGroupName: resourceGroup.name,
-            archive: new pulumi.asset.FileArchive("../dist/Swetugg.Tix.Api.zip"),
-            account: storageAccount,
+            appServicePlanId: backendServicePlan.id,
+            storageAccountName: storageAccount.name,
+            storageAccountAccessKey: storageAccount.primaryAccessKey,
             version: '~3',
             appSettings: apiAppSettings,
             siteConfig: {
                 cors: { allowedOrigins: ["*"] }
             },
         });
-
-        apiHostname = apiApp.functionApp.defaultHostname;
+        apiAppName = apiAppFunc.name;
+        apiHostname = apiAppFunc.defaultHostname;
 
         //
         // Frontend Apps
@@ -309,9 +330,11 @@ export = async () => {
         const frontendServicePlan = new azure.appservice.Plan("fe-plan", {
             resourceGroupName: frontendResourceGroup.name,
             sku: {
-                tier: 'Basic',
-                size: 'B1'
-            }
+                tier: 'Premium',
+                size: 'P1v2'
+            },
+            kind: 'Linux',
+            reserved: true,
         });
 
         const frontpageApp = new azure.appservice.AppService(`${baseName}-frontpage`, {
@@ -325,19 +348,10 @@ export = async () => {
                 WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
                 NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`
             },
+            siteConfig: {
+                linuxFxVersion: 'NODE|12-lts'
+            },
         });
-        const frontpageSlotBlue = new azure.appservice.Slot('front-blue', {
-            resourceGroupName: frontendResourceGroup.name,
-            appServiceName: frontpageApp.name,
-            appServicePlanId: frontendServicePlan.id,
-        });
-
-        const frontpageSlotGreen = new azure.appservice.Slot('front-green', {
-            resourceGroupName: frontendResourceGroup.name,
-            appServiceName: frontpageApp.name,
-            appServicePlanId: frontendServicePlan.id,
-        });
-
         const backOfficeApp = new azure.appservice.AppService(`${baseName}-backoffice`, {
             resourceGroupName: frontendResourceGroup.name,
             appServicePlanId: frontendServicePlan.id,
@@ -347,27 +361,18 @@ export = async () => {
                 ApplicationInsightsAgent_EXTENSION_VERSION: "~2",                
                 SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
                 WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
-                NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`
+                NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`,
+                NEXT_PUBLIC_FRONTPAGE_ROOT: pulumi.interpolate `https://${frontpageApp.defaultSiteHostname}`
+            },
+            siteConfig: {
+                linuxFxVersion: 'NODE|12-lts'
             },
         });
-
-        const backOfficeSlotBlue = new azure.appservice.Slot('back-blue', {
-            resourceGroupName: frontendResourceGroup.name,
-            appServiceName: backOfficeApp.name,
-            appServicePlanId: frontendServicePlan.id,
-        });
         
-        const backOfficeSlotGreen = new azure.appservice.Slot('back-green', {
-            resourceGroupName: frontendResourceGroup.name,
-            appServiceName: frontpageApp.name,
-            appServicePlanId: frontendServicePlan.id,
-        });
-
         backOfficeHostname = backOfficeApp.defaultSiteHostname;
         frontpageHostname = frontpageApp.defaultSiteHostname;
         backOfficeAppName = backOfficeApp.name;
         frontpageAppName = frontpageApp.name;
-
     }
 
     const output = {
@@ -388,6 +393,13 @@ export = async () => {
             frontendResourceGroupName: frontendResourceGroupName,
             backOfficeAppName: backOfficeAppName,
             frontpageAppName: frontpageAppName,
+        },
+        backendSettings: {
+            backendResourceGroupName: resourceGroup.name,
+            activityAppName,
+            orderAppName,
+            processAppName,
+            apiAppName,
         },
         activityAppSettings: {
             IsEncrypted: false,

@@ -5,9 +5,9 @@ Set-Location $PSScriptRoot\pulumi
 
 pulumi stack select dev
 
-pulumi up -y
+# pulumi up -y
 
-#TODO Get names of frontpage and back-office apps + frontend resource group
+# Get names of frontpage and back-office apps + frontend resource group
 $json = pulumi stack output frontendSettings | ConvertFrom-Json
 
 $frontendResourceGroupName = $json.frontendResourceGroupName

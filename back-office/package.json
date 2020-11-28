@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "node server.js",
-    "postinstall": "next build"
+    "start": "next start -p $PORT"
   },
   "engines": {
     "node": "12.*"

@@ -1,10 +1,10 @@
-@host = tix-dev-api61c699f7.azurewebsites.net
+@host = tix-dev-api46bff474.azurewebsites.net
 #@host = http://localhost:7071
 #@host = http://localhost:4711
 
-@activityId = 931ddd3c-73de-480a-b6b5-6070b58dee25
-@ticketTypeId = 41869799-3bd2-46ae-bae7-12c5783ce931
-@commandId = 76a798d2-bd1e-4cd3-a6f0-85efef595017
+@activityId = 989a8804-c77a-43a5-b910-8ba7dc7718a7
+@ticketTypeId = 0ac4df30-0ba3-4c39-accc-4482009c808c
+@commandId = 9933c6c3-d811-4b95-928c-d86bede6e94e
 @orderId = 8e6bf91e-e22a-40e9-9589-906506a7b298
 
 ### List all activities
@@ -44,6 +44,11 @@ Content-Type: application/json
 
 ### Add a ticket type to an activity
 POST {{host}}/api/activities/{{activityId}}/ticket-types
+Content-Type: application/json
+
+{
+  "name": "Early Birb"
+}
 
 ### Remove a ticket type from an activity
 DELETE {{host}}/api/activities/{{activityId}}/ticket-types/{{ticketTypeId}}
