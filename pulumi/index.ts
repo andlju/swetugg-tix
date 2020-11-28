@@ -346,7 +346,8 @@ export = async () => {
                 ApplicationInsightsAgent_EXTENSION_VERSION: "~2",
                 SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
                 WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
-                NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`
+                NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`,
+                NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
             },
             siteConfig: {
                 linuxFxVersion: 'NODE|12-lts'
@@ -362,7 +363,8 @@ export = async () => {
                 SCM_DO_BUILD_DURING_DEPLOYMENT: "true",
                 WEBSITE_NODE_DEFAULT_VERSION: "12.18.0",
                 NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`,
-                NEXT_PUBLIC_FRONTPAGE_ROOT: pulumi.interpolate `https://${frontpageApp.defaultSiteHostname}`
+                NEXT_PUBLIC_FRONTPAGE_ROOT: pulumi.interpolate `https://${frontpageApp.defaultSiteHostname}`,
+                NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
             },
             siteConfig: {
                 linuxFxVersion: 'NODE|12-lts'

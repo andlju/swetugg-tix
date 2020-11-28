@@ -3,8 +3,9 @@ import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { SnackbarProvider } from 'notistack';
+import { withApplicationInsights } from 'next-applicationinsights';
 import theme from '../styles/theme';
-import type { AppProps } from 'next/app';
+import App, { AppProps } from 'next/app';
 import wrapper from '../store/store';
 
 function MyApp(props: AppProps) {
@@ -38,4 +39,16 @@ function MyApp(props: AppProps) {
   );
 }
 
-export default wrapper.withRedux(MyApp);
+
+class WrapperApp extends App {
+  render() {
+    return (
+      <MyApp {...this.props} />
+    )
+  }
+}
+
+export default wrapper.withRedux(withApplicationInsights({ 
+  instrumentationKey: process.env.NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY,
+  isEnabled: !!process.env.NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY
+})(WrapperApp));
