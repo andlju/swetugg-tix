@@ -4,7 +4,7 @@ import React from "react";
 interface Ticket {
   ticketId: string,
   ticketTypeId: string;
-  ticketReference?: string;
+  ticketReference: string | null;
 }
 
 interface Cart {

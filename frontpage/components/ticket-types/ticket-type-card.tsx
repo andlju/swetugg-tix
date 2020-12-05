@@ -2,7 +2,7 @@ import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles,
 import React from "react";
 import { useDispatch } from "react-redux";
 import { useOrderCommand } from "../../src/use-order-command.hook";
-import { LOAD_ORDER } from "../../store/order.actions";
+import { ADD_TICKETS, LOAD_ORDER } from "../../store/order.actions";
 import { TicketType } from "./ticket-type.models";
 
 interface TicketTypeProps {
@@ -28,17 +28,16 @@ const useStyles = makeStyles((theme) => ({
 const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
   const classes = useStyles();
 
-  const [reserveOrder, sendingReserveTicket] = useOrderCommand('Reserve order');
   const dispatch = useDispatch();
   
   const onClickBuyOrder = async (ticketTypeId: string) => {
-    const orderResp = await reserveOrder(`/orders`, {
-      activityId: ticketType.activityId,
-      tickets: [{quantity: 1, ticketTypeId}]
+    dispatch({
+      type: ADD_TICKETS,
+      payload: {
+        ticketTypeId: ticketTypeId,
+        quantity: 1
+      }
     });
-    if (orderResp.aggregateId) {
-      dispatch({ type: LOAD_ORDER, payload: { orderId: orderResp.aggregateId } });
-    }
   }
 
   return <Card>
@@ -55,7 +54,6 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
     <CardActions>
       <Button
         onClick={() => onClickBuyOrder(ticketType.ticketTypeId)}
-        disabled={sendingReserveTicket}
         type="submit">Reserve</Button>
     </CardActions>
   </Card>;

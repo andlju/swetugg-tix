@@ -1,10 +1,12 @@
 import { all, call, fork } from "redux-saga/effects";
 import { activitySaga } from "./activity.saga";
+import { orderSaga } from "./order.saga";
 
 
-export default function* rootSaga () {
+export default function* rootSaga() : Generator {
   const sagas = [
-    activitySaga
+    activitySaga,
+    orderSaga
   ];
 
   yield all(sagas.map(saga =>

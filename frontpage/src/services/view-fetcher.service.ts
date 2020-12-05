@@ -4,7 +4,7 @@ interface GetViewOptions<TView> {
   validatorFunc?: (view: TView) => boolean
 }
 
-interface View {
+export interface View {
   revision: number,
 }
 

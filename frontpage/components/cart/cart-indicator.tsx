@@ -8,12 +8,12 @@ import { RootState } from "../../store/root.reducer";
 
 const CartIndicator: React.FC = () => {
 
-  const order = useSelector<RootState, OrderState>(state => state.order);
+  const { currentOrder: order  } = useSelector<RootState, OrderState>(state => state.order);
   
   return (
     <React.Fragment>
-      {order.orderId && (
-        <Link href={`/public/order/${order.orderId}`}>
+      {order && (
+        <Link href={`/order/${order.orderId}`}>
           <IconButton>
             <ShoppingCartIcon />
           </IconButton>

@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { Activity } from "../components/activity/activity.models";
+import { Activity } from "./activity.models";
 
 import { ActivityAction, LOAD_ACTIVITY, LOAD_ACTIVITY_COMPLETE, LOAD_ACTIVITY_FAILED } from "./activity.actions";
 
@@ -19,7 +19,7 @@ export const activityHydrator = (state: ActivityState | undefined, hydratedState
   });
 
 const activityReducer : Reducer<ActivityState, ActivityAction> = (state, action) => {
-  console.log("Reducing", action);
+
   if (!state) {
     state = initialState;
   }

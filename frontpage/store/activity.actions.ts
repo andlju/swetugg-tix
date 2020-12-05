@@ -1,4 +1,4 @@
-import { Activity } from "../components/activity/activity.models";
+import { Activity } from "./activity.models";
 
 export const LOAD_ACTIVITY = 'LOAD_ACTIVITY';
 export const LOAD_ACTIVITY_COMPLETE = 'LOAD_ACTIVITY_COMPLETE';

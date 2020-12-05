@@ -1,9 +1,9 @@
 import { Reducer } from "redux";
 import { LOAD_ORDER, LOAD_ORDER_COMPLETE, LOAD_ORDER_FAILED, OrderAction } from "./order.actions";
+import { Order } from "./order.models";
 
 export interface OrderState {
-  orderId?: string,
-  tickets?: number,
+  currentOrder?: Order,
   loading: boolean,
 }
 
@@ -24,20 +24,18 @@ const orderReducer : Reducer<OrderState, OrderAction> = (state, action) => {
     case LOAD_ORDER:
       return {
         ...state,
-        orderId: action.payload.orderId,
-        tickets: undefined,
+        currentOrder: undefined,
         loading: true
       };
     case LOAD_ORDER_COMPLETE:
       return {
         ...state,
-        tickets: action.payload.tickets,
+        currentOrder: action.payload.order,
         loading: false
       };
       case LOAD_ORDER_FAILED:
         return {
           ...state,
-          tickets: undefined,
           loading: false
         };
     default:

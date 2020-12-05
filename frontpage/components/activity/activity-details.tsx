@@ -1,5 +1,5 @@
 import { Button, makeStyles, Typography } from "@material-ui/core";
-import { Activity } from "./activity.models";
+import { Activity } from "../../store/activity.models";
 
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell, Grid } from "@material-ui/core";
