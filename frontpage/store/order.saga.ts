@@ -31,6 +31,17 @@ function* sendOrderCommandAction(action: SendOrderCommandAction) {
       result: commandResult
     }
   });
+  
+  // If the order has a new revision, let's ensure that it's reloaded
+  if (commandResult.aggregateId && commandResult.revision) {
+    yield put({
+      type: LOAD_ORDER,
+      payload: {
+        orderId: commandResult.aggregateId,
+        revision: commandResult.revision
+      }
+    });
+  }
 }
 
 function* addTicketsAction(action: AddTicketsAction): Generator {
@@ -41,8 +52,11 @@ function* addTicketsAction(action: AddTicketsAction): Generator {
         url: `/orders/${action.payload.orderId}/tickets`,
         method: 'POST',
         body: {
-          ticketTypeId: action.payload.ticketTypeId,
-          quantity: action.payload.quantity
+          activityId: action.payload.activityId,
+          tickets: [{
+            ticketTypeId: action.payload.ticketTypeId,
+            quantity: action.payload.quantity
+          }]
         }
       }
     });
@@ -53,8 +67,11 @@ function* addTicketsAction(action: AddTicketsAction): Generator {
         url: `/orders`,
         method: 'POST',
         body: {
-          ticketTypeId: action.payload.ticketTypeId,
-          quantity: action.payload.quantity
+          activityId: action.payload.activityId,
+          tickets: [{
+            ticketTypeId: action.payload.ticketTypeId,
+            quantity: action.payload.quantity
+          }]
         }
       }
     });

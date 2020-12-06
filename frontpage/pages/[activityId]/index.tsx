@@ -12,6 +12,7 @@ import { TicketTypeCard } from '../../components/ticket-types/ticket-type-card';
 import wrapper, { SagaStore } from '../../store/store';
 import { LOAD_ACTIVITY } from '../../store/activity.actions';
 import { END } from 'redux-saga';
+import { OrderState } from '../../store/order.reducer';
 
 interface ActivityProps {
   activityId: string,
@@ -34,6 +35,8 @@ const PublicActivityPage: React.FC<ActivityProps> = ({ activityId }) => {
   const classes = useStyles();
 
   const { currentActivity: activity } = useSelector<RootState, ActivityState>(state => state.activity);
+  const { currentOrder: order } = useSelector<RootState, OrderState>(state => state.order);
+
   if (!activity) {
     return (<Layout title="Unknown activity">
       <Container maxWidth="md">
@@ -77,7 +80,7 @@ const PublicActivityPage: React.FC<ActivityProps> = ({ activityId }) => {
         <Grid container spacing={4}>
           {activity.ticketTypes.map((tt) =>
             <Grid item key={tt.ticketTypeId} xs={12} sm={6} md={4}>
-              <TicketTypeCard ticketType={tt} />
+              <TicketTypeCard ticketType={tt} orderId={order?.orderId} />
             </Grid>
           )}
         </Grid>

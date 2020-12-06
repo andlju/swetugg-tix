@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using Xunit;
 using Xunit.Abstractions;
+using System.Collections.Generic;
 
 namespace Swetugg.Tix.Order.Domain.Tests
 {
@@ -27,7 +28,14 @@ namespace Swetugg.Tix.Order.Domain.Tests
 
         protected override object When()
         {
-            return new AddTicket() { OrderId = OrderId, TicketTypeId = TicketTypeId };
+            return new AddTickets()
+            {
+                OrderId = OrderId,
+                Tickets = new List<AddTickets.TicketOrder>() 
+                {
+                    { new AddTickets.TicketOrder() { TicketTypeId = TicketTypeId, Quantity = 1 } }
+                }
+            };
         }
 
         [Fact]

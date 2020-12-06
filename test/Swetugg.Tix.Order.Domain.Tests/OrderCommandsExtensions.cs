@@ -2,6 +2,7 @@ using Swetugg.Tix.Order.Commands;
 using Swetugg.Tix.Tests.Helpers;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace Swetugg.Tix.Order.Domain.Tests
@@ -20,7 +21,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
 
         public static GivenOrderCommands WithAddedTicket(this GivenOrderCommands given, Guid ticketTypeId)
         {
-            given.AddCommand(new AddTicket() { TicketTypeId = ticketTypeId });
+            given.AddCommand(new AddTickets() { Tickets = new List<AddTickets.TicketOrder>() { new AddTickets.TicketOrder { TicketTypeId = ticketTypeId, Quantity = 1 } } });
             return given;
         }
 

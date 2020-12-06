@@ -9,13 +9,13 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Orders.Commands
 {
-    public class AddTicketFunc : OrderCommandFunc<AddTicket>
+    public class AddTicketFunc : OrderCommandFunc<AddTickets>
     {
         public AddTicketFunc(IOrderCommandMessageSender sender) : base(sender)
         {
         }
 
-        [FunctionName("AddTicket")]
+        [FunctionName("AddTickets")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "orders/{orderId}/tickets")]
             HttpRequest req,

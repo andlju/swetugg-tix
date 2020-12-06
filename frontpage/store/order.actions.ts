@@ -39,6 +39,7 @@ export interface AddTicketsAction {
   type: typeof ADD_TICKETS;
   payload: {
     orderId?: string;
+    activityId: string;
     ticketTypeId: string;
     quantity: number;
   }

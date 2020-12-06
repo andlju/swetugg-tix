@@ -1,12 +1,12 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
 import { useDispatch } from "react-redux";
-import { useOrderCommand } from "../../src/use-order-command.hook";
-import { ADD_TICKETS, LOAD_ORDER } from "../../store/order.actions";
-import { TicketType } from "./ticket-type.models";
+import { ADD_TICKETS } from "../../store/order.actions";
+import { TicketType } from "../../store/ticket-type.models";
 
 interface TicketTypeProps {
   ticketType: TicketType;
+  orderId?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -25,16 +25,18 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
+const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType, orderId }) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
   
-  const onClickBuyOrder = async (ticketTypeId: string) => {
+  const onClickBuyOrder = async () => {
     dispatch({
       type: ADD_TICKETS,
       payload: {
-        ticketTypeId: ticketTypeId,
+        orderId: orderId,
+        activityId: ticketType.activityId,
+        ticketTypeId: ticketType.ticketTypeId,
         quantity: 1
       }
     });
@@ -53,7 +55,7 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType }) => {
     </CardContent>
     <CardActions>
       <Button
-        onClick={() => onClickBuyOrder(ticketType.ticketTypeId)}
+        onClick={() => onClickBuyOrder()}
         type="submit">Reserve</Button>
     </CardActions>
   </Card>;
