@@ -1,6 +1,5 @@
 import { call, put, take, takeEvery } from "redux-saga/effects";
-import { CommandStatus } from "../src/services/activity-command.service";
-import { sendOrderCommand } from "../src/services/order-command.service";
+import { CommandStatus, sendOrderCommand } from "../src/services/order-command.service";
 import { getView } from "../src/services/view-fetcher.service";
 import { buildUrl } from "../src/url-utils";
 import { AddTicketsAction, ADD_TICKETS, LoadOrderAction, LOAD_ORDER, LOAD_ORDER_COMPLETE, LOAD_ORDER_FAILED, SendOrderCommandAction, SEND_ORDER_COMMAND, SEND_ORDER_COMMAND_COMPLETE } from "./order.actions";

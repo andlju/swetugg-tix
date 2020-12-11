@@ -1,4 +1,4 @@
-import { CommandStatus } from "../src/services/activity-command.service";
+import { CommandStatus } from "../src/services/order-command.service";
 import { Order } from "./order.models";
 
 export const SET_ORDER_ID = 'SET_ORDER_ID';
