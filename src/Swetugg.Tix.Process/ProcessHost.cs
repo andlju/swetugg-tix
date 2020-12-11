@@ -3,6 +3,8 @@ using NEventStore;
 using NEventStore.Domain;
 using NEventStore.Domain.Persistence;
 using NEventStore.Domain.Persistence.EventStore;
+using Polly;
+using Polly.Registry;
 using Swetugg.Tix.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -20,12 +22,17 @@ namespace Swetugg.Tix.Process
         IMessageHandler<Activity.Events.SeatReturned>
     {
         private readonly ISagaRepository _sagaRepository;
+        private readonly IPolicyRegistry<string> _policyRegistry;
+        private readonly IMessageDispatcher _dispatcher;
+
+        public IMessageDispatcher Dispatcher => _dispatcher;
 
         public static ProcessHost Build(
             Wireup eventStoreWireup,
             ISagaMessageDispatcher sagaMessageDispatcher,
             ILoggerFactory loggerFactory,
-            IEnumerable<IPipelineHook> extraHooks)
+            IEnumerable<IPipelineHook> extraHooks,
+            IPolicyRegistry<string> policyRegistry)
         {
             var hooks = new IPipelineHook[] { new MessageDispatcherHook(sagaMessageDispatcher) };
             if (extraHooks != null)
@@ -34,12 +41,13 @@ namespace Swetugg.Tix.Process
             var eventStore = eventStoreWireup
                 .HookIntoPipelineUsing(hooks)
                 .Build();
-            return new ProcessHost(eventStore, loggerFactory);
+            return new ProcessHost(eventStore, loggerFactory, policyRegistry);
         }
 
-        private ProcessHost(IStoreEvents eventStore, ILoggerFactory loggerFactory)
+        private ProcessHost(IStoreEvents eventStore, ILoggerFactory loggerFactory, IPolicyRegistry<string> policyRegistry)
         {
             _sagaRepository = new SagaEventStoreRepository(eventStore, new SagaFactory());
+            _policyRegistry = policyRegistry;
 
             var dispatcher = new MessageDispatcher(loggerFactory.CreateLogger<MessageDispatcher>());
             
@@ -51,10 +59,13 @@ namespace Swetugg.Tix.Process
             dispatcher.Register<Activity.Events.SeatReservationFailed>(() => this);
             dispatcher.Register<Activity.Events.SeatReturned>(() => this);
 
-            Dispatcher = dispatcher;
+            _dispatcher = dispatcher;
         }
 
-        public IMessageDispatcher Dispatcher { get; }
+        public Task Dispatch(object msg)
+        {
+            return _policyRegistry.Get<IAsyncPolicy>("ProcessHost").ExecuteAsync(() => Dispatcher.Dispatch(msg, false));
+        }
 
         protected Task HandleOrderEvent(Order.Events.EventBase evt)
         {

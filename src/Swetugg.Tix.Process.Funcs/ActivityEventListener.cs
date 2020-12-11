@@ -1,6 +1,8 @@
 using Microsoft.Azure.EventHubs;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Registry;
 using Swetugg.Tix.Infrastructure;
 using System;
 using System.Collections.Generic;
@@ -19,8 +21,9 @@ namespace Swetugg.Tix.Process.Funcs
 
         private readonly ProcessHost _processHost;
         private readonly ILogger _logger;
+        private readonly IPolicyRegistry<string> _policyRegistry;
 
-        public ActivityEventListenerFunc(ProcessHost processHost, ILogger<ActivityEventListenerFunc> logger)
+        public ActivityEventListenerFunc(ProcessHost processHost, ILogger<ActivityEventListenerFunc> logger, IPolicyRegistry<string> policyRegistry)
         {
             _jsonOptions = new JsonSerializerOptions()
             {
@@ -30,6 +33,7 @@ namespace Swetugg.Tix.Process.Funcs
             _jsonOptions.Converters.Add(new PublishedEventConverter(typeof(Activity.Events.EventBase).Assembly));
             _processHost = processHost;
             _logger = logger;
+            _policyRegistry = policyRegistry;
         }
 
         [FunctionName("HandleActivityEvents")]
@@ -48,7 +52,7 @@ namespace Swetugg.Tix.Process.Funcs
                         continue;
 
                     _logger.LogInformation($"Processing {evt.EventType}");
-                    await _processHost.Dispatcher.Dispatch(evt.Body, false);
+                    await _processHost.Dispatch(evt.Body);
                     _logger.LogInformation($"Processing {evt.EventType} Completed");
                 }
                 catch (Exception e)

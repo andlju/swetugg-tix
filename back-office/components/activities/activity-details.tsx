@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const frontpageRoot = process.env.NEXT_PUBLIC_FRONTPAGE_ROOT ?? 'https://localhost:3001';
+const frontpageRoot = process.env.NEXT_PUBLIC_FRONTPAGE_ROOT ?? 'http://localhost:3001';
 
 export type ActivityDetailsProps = {
   activity: Activity,
