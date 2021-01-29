@@ -4,9 +4,9 @@
         "@types/node": "^10.17.35"
     },
     "dependencies": {
-        "@pulumi/azure": "^3.41.0",
-        "@pulumi/pulumi": "^2.16.2",
+        "@pulumi/azure": "^3.44.0",
+        "@pulumi/pulumi": "^2.19.0",
         "@pulumi/random": "^2.5.0",
-        "public-ip": "^4.0.2"
+        "public-ip": "^4.0.3"
     }
 }
