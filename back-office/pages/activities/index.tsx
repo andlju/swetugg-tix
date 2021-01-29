@@ -13,6 +13,7 @@ import { ActivitiesState } from '../../components/activities/store/activities.re
 import { ActivityList } from '../../components';
 import wrapper, { SagaStore } from '../../store/store';
 import { LOAD_ACTIVITIES } from '../../components/activities/store/activities.actions';
+import { getSession } from 'next-auth/client';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -55,7 +56,8 @@ function IndexPage() {
 
 export default IndexPage;
 
-export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({ store }) => {
+export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async (ctx) => {
+  const { store} = ctx;
 
   store.dispatch({ type: LOAD_ACTIVITIES });
   store.dispatch(END);
@@ -63,6 +65,7 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
 
   return {
     props: {
+      session: await getSession(ctx),
       activities: [] //data
     }
   };

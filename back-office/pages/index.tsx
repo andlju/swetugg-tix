@@ -1,12 +1,12 @@
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import { NextPage, NextPageContext } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { useSession } from 'next-auth/client';
+import { useSession, getSession, Session } from 'next-auth/client';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -23,7 +23,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Index() {
+interface IndexProps {
+  session: Session | null;
+}
+
+const IndexPage: NextPage<IndexProps> = () => {
   const classes = useStyles();
 
   const [session, loading] = useSession();
@@ -32,7 +36,7 @@ export default function Index() {
     <Container maxWidth={false} className={classes.container}>
       <Typography variant="h4" component="h1" gutterBottom>
         Swetugg Tix Dashboard
-        </Typography>
+      </Typography>
       <Grid container spacing={3}>
         {/* List of activities */}
         <Grid item xs={12}>
@@ -50,22 +54,23 @@ export default function Index() {
                 </ul>
               </div> :
               <div>
-                You are not signed in! <a style={{ color: 'blue' }} href="/api/auth/signin">You must sign in to access documentation!</a>
+                You are not signed in! <a style={{ color: 'blue' }} href="/api/auth/signin">Please sign in here</a>
               </div>
             }
-
           </Paper>
         </Grid>
       </Grid>
 
     </Container>
   );
-}
+};
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export default IndexPage;
+
+export const getServerSideProps = async (ctx: NextPageContext) => {
   return {
     props: {
-
+      session: await getSession(ctx)
     }
   };
 };

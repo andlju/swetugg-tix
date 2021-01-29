@@ -7,13 +7,15 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import Divider from '@material-ui/core/Divider';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import ExitToAppIcon from '@material-ui/icons/ExitToAppIcon';
 import Typography from '@material-ui/core/Typography';
 import Badge from '@material-ui/core/Badge';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, adminListItems } from './list-items';
-
+import { useSession } from "next-auth/client";
 
 const drawerWidth = 240;
 
@@ -93,59 +95,74 @@ const BackOfficeLayout: React.FC = ({ children }) => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  const [session, loading] = useSession();
 
   return (<div className={classes.root}>
-      <AppBar
-        position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden,
-            )}>
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}>
-            Dashboard
+    <AppBar
+      position="absolute"
+      className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <Toolbar className={classes.toolbar}>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="open drawer"
+          onClick={toggleDrawer}
+          className={clsx(
+            classes.menuButton,
+            open && classes.menuButtonHidden,
+          )}>
+          <MenuIcon />
+        </IconButton>
+        <Typography
+          component="h1"
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.title}>
+          Dashboard
         </Typography>
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}>
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={toggleDrawer}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{adminListItems}</List>
-      </Drawer>s
+        {session ?
+          <>
+            <Typography
+              color="inherit"
+              noWrap>
+              {session.user.email}
+            </Typography>
+            <IconButton color="inherit" >
+              <AccountCircleIcon />
+            </IconButton>
+          </>
+          :
+          <IconButton />
+        }
+        <IconButton color="inherit">
+          <Badge badgeContent={4} color="secondary">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+      </Toolbar>
+    </AppBar>
+    <Drawer
+      variant="permanent"
+      classes={{
+        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+      }}
+      open={open}>
+      <div className={classes.toolbarIcon}>
+        <IconButton onClick={toggleDrawer}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </div>
+      <Divider />
+      <List>{mainListItems}</List>
+      <Divider />
+      <List>{adminListItems}</List>
+    </Drawer>s
     <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        {children}
-      </main>
-    </div>);
+      <div className={classes.appBarSpacer} />
+      {children}
+    </main>
+  </div>);
 };
 
 export default BackOfficeLayout;
