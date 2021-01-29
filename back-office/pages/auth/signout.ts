@@ -6,7 +6,7 @@ const Signout: NextPage = () => {
     console.log('Is client - signing out')
     console.log('*** *** *** *** *** *** *** *** *** *** *** *** *** *** *** ***')
 
-    signOut({ callbackUrl: process.env.NEXTAUTH_URL })
+    signOut({ callbackUrl: process.env.NEXT_PUBLIC_AUTH_URL })
   }
   else {
     console.log('Not client - not signing out')

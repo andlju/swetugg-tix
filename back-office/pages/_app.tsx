@@ -30,7 +30,7 @@ function MyApp(props: AppProps) {
         <title>My page</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <AuthProvider options={{ baseUrl: process.env.NEXTAUTH_URL }} session={session}>
+      <AuthProvider options={{ baseUrl: process.env.NEXT_PUBLIC_AUTH_URL }} session={session}>
         <ThemeProvider theme={theme}>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />

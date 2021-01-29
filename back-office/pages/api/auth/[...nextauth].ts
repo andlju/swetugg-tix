@@ -2,12 +2,9 @@ import { NextApiRequest } from 'next';
 import NextAuth, { InitOptions } from 'next-auth';
 import { Profile } from 'next-auth/adapters';
 
-const tenantName = process.env.NEXT_AUTH_TENANT_NAME
-const tenantGuid = process.env.NEXT_AUTH_TENANT_GUID
-const userFlow = process.env.NEXT_USER_FLOW
-
-console.log('ClientId', process.env.AUTH_CLIENT_ID);
-console.log('Client secret', process.env.AUTH_CLIENT_SECRET);
+const tenantName = process.env.NEXT_PUBLIC_AUTH_TENANT_NAME
+const tenantGuid = process.env.NEXT_PUBLIC_AUTH_TENANT_GUID
+const userFlow = process.env.NEXT_PUBLIC_USER_FLOW
 
 const options : InitOptions = {
   session: {

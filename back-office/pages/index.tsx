@@ -45,7 +45,7 @@ export default function Index() {
                     <a style={{ color: 'blue' }} href="/api/auth/signout/azureb2c">Sign Out (API)</a>
                   </li>
                   <li>
-                    <a style={{ color: 'blue' }} href={`https://${process.env.NEXT_AUTH_TENANT_NAME}.b2clogin.com/${process.env.NEXT_AUTH_TENANT_NAME}.onmicrosoft.com/${process.env.NEXT_USER_FLOW}/oauth2/v2.0/logout?post_logout_redirect_uri=${process.env.NEXTAUTH_URL}/auth/signout`}>Sign Out (FULL)</a>
+                    <a style={{ color: 'blue' }} href={`https://${process.env.NEXT_PUBLIC_AUTH_TENANT_NAME}.b2clogin.com/${process.env.NEXT_PUBLIC_AUTH_TENANT_NAME}.onmicrosoft.com/${process.env.NEXT_PUBLIC_USER_FLOW}/oauth2/v2.0/logout?post_logout_redirect_uri=${process.env.NEXT_PUBLIC_AUTH_URL}/auth/signout`}>Sign Out (FULL)</a>
                   </li>
                 </ul>
               </div> :
