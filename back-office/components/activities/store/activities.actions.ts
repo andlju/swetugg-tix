@@ -5,6 +5,15 @@ export const LOAD_ACTIVITIES = 'LOAD_ACTIVITIES';
 export const LOAD_ACTIVITIES_COMPLETE = 'LOAD_ACTIVITIES_COMPLETE';
 export const LOAD_ACTIVITIES_FAILED = 'LOAD_ACTIVITIES_FAILED';
 
+export function loadActivities(token?: string) : LoadAllActivitiesAction {
+  return {
+    type: LOAD_ACTIVITIES,
+    payload: {
+      token: token
+    }
+  }
+}
+
 export interface LoadActivityAction {
   type: typeof LOAD_ACTIVITY;
   payload: { 
@@ -15,6 +24,9 @@ export interface LoadActivityAction {
 
 export interface LoadAllActivitiesAction {
   type: typeof LOAD_ACTIVITIES;
+  payload: {
+    token?: string
+  }
 }
 
 export interface LoadActivitiesCompleteAction {

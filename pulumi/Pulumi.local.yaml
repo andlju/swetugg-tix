@@ -1,4 +1,4 @@
 config:
   azure:environment: public
   azure:location: NorthEurope
-  swetugg-tix:deploy: false
+  swetugg-tix:deploy: "false"

@@ -9,6 +9,13 @@ const mainLocation = azure.Locations.NorthEurope;
 const config = new pulumi.Config();
 const shouldDeploy = config.requireBoolean("deploy");
 
+const azureAdTenantName = config.require("azure-ad-b2c-tenant-name");
+const azureAdPolicyName = config.require("azure-ad-b2c-policy-name");
+const azureAdBackendApp = config.require("azure-ad-b2c-backend-app");
+const azureAdBackendAppSecret = config.requireSecret("azure-ad-b2c-backend-app-secret");
+const azureAdApiApp = config.require("azure-ad-b2c-api-app");
+const azureAdApiAppSecret = config.requireSecret("azure-ad-b2c-api-app-secret");
+
 const stack = pulumi.getStack();
 const baseName = `tix-${stack}`;
 const sqlAdminUser = "tixadmin";
@@ -247,6 +254,9 @@ export = async () => {
         //SignalRConnection: signalR.primaryConnectionString,
         //SignalRHost: signalR.hostname,
         CommandLogCache: redisCache.primaryConnectionString,
+        AzureAdTenantName: azureAdTenantName,
+        AzureAdPolicyName: azureAdPolicyName,
+        AzureAdClientId: azureAdApiApp
     };
 
     let activityAppName: pulumi.Output<string> | undefined;

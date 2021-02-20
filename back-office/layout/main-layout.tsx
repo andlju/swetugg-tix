@@ -13,6 +13,7 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, adminListItems } from './list-items';
+import { SignInSignOutButton } from './auth';
 
 
 const drawerWidth = 240;
@@ -118,6 +119,7 @@ const BackOfficeLayout: React.FC = ({ children }) => {
             className={classes.title}>
             Dashboard
         </Typography>
+        <SignInSignOutButton />
           <IconButton color="inherit">
             <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />

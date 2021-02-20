@@ -7,6 +7,7 @@ using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Api.Activities;
 using Swetugg.Tix.Api.Activities.Commands;
 using Swetugg.Tix.Api.Admin;
+using Swetugg.Tix.Api.Auth;
 using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.Api.Orders.Commands;
 using Swetugg.Tix.Infrastructure;
@@ -24,6 +25,7 @@ namespace Swetugg.Tix.Api
 
             builder.Services.AddSingleton<IActivityCommandMessageSender, ActivityCommandMessageSender>();
             builder.Services.AddSingleton<IOrderCommandMessageSender, OrderCommandMessageSender>();
+            builder.Services.AddSingleton<JwtBearerValidator>();
 
             builder.Services.AddSingleton<IActivityContentCommands>(sp =>
             {

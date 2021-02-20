@@ -11,6 +11,8 @@
     "node": "12.*"
   },
   "dependencies": {
+    "@azure/msal-browser": "^2.11.2",
+    "@azure/msal-react": "^1.0.0-alpha.6",
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "clsx": "^1.1.1",

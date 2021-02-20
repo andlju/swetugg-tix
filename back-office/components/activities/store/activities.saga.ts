@@ -2,11 +2,15 @@ import { call, put, takeEvery } from "redux-saga/effects";
 import { getView } from "../../../src/services/view-fetcher.service";
 import { buildUrl } from "../../../src/url-utils";
 import { Activity } from "../activity.models";
-import { LoadActivityAction, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITY } from "./activities.actions";
+import { LoadActivityAction, LoadAllActivitiesAction, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITY } from "./activities.actions";
 
-function* loadActivitiesAction() {
+function* loadActivitiesAction(action: LoadAllActivitiesAction) {
   const result = yield call(async () => {
-    const resp = await fetch(buildUrl('/activities'));
+    const fetchObj : RequestInit = {};
+    fetchObj.headers = {
+      'Authorization': `Bearer ${action.payload.token}`
+    };
+    const resp = await fetch(buildUrl('/activities'), fetchObj);
     const data = await resp.json() as Activity[];
     return data;
   });

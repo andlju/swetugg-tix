@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -7,12 +7,14 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { useMsal } from "@azure/msal-react";
+
 import { END } from 'redux-saga';
 import { RootState } from '../../store/root.reducer';
 import { ActivitiesState } from '../../components/activities/store/activities.reducer';
 import { ActivityList } from '../../components';
 import wrapper, { SagaStore } from '../../store/store';
-import { LOAD_ACTIVITIES } from '../../components/activities/store/activities.actions';
+import { loadActivities, LOAD_ACTIVITIES } from '../../components/activities/store/activities.actions';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,6 +33,27 @@ const useStyles = makeStyles((theme) => ({
 
 function IndexPage() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const { instance, accounts } = useMsal();
+
+  useEffect(() => {
+    const effect = async () => {
+      if (!accounts[0])
+        return;
+      const tokenReq = { scopes: ["profile", "openid", "https://swetuggtixlocal.onmicrosoft.com/tix-api/read-as-user"] };
+
+      instance.setActiveAccount(accounts[0]);
+      let token = await instance.acquireTokenSilent(tokenReq);
+      if (!token.accessToken) {
+        console.log('No access token, try popup');
+        token = await instance.acquireTokenPopup(tokenReq);
+      }
+      console.log('Token', token);
+      dispatch(loadActivities(token.accessToken));
+    };
+    effect();
+  }, [accounts]);
 
   const activitiesState = useSelector<RootState, ActivitiesState>(state => state.activities);
 
@@ -57,10 +80,10 @@ export default IndexPage;
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({ store }) => {
 
-  store.dispatch({ type: LOAD_ACTIVITIES });
-  store.dispatch(END);
-  await (store as SagaStore).sagaTask.toPromise();
-
+  /*  store.dispatch(END);
+  
+    await (store as SagaStore).sagaTask.toPromise();
+  */
   return {
     props: {
       activities: [] //data

@@ -6,6 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import { WelcomeName } from '../layout/auth';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -34,7 +35,7 @@ export default function Index() {
         {/* List of activities */}
         <Grid item xs={12}>
           <Paper className={clsx(classes.paper, classes.activityList)}>
-
+            <WelcomeName />
           </Paper>
         </Grid>
       </Grid>
