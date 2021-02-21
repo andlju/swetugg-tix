@@ -15,6 +15,7 @@ import { ActivitiesState } from '../../components/activities/store/activities.re
 import { ActivityList } from '../../components';
 import wrapper, { SagaStore } from '../../store/store';
 import { loadActivities, LOAD_ACTIVITIES } from '../../components/activities/store/activities.actions';
+import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -35,27 +36,13 @@ function IndexPage() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { instance, accounts } = useMsal();
-
+  const { token } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_user"]);
+    
   useEffect(() => {
-    const effect = async () => {
-      if (!accounts[0])
-        return;
-        
-      // TODO Don't hardcode api scope
-      const tokenReq = { scopes: ["profile", "openid", "https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_user"] };
-
-      instance.setActiveAccount(accounts[0]);
-      let token = await instance.acquireTokenSilent(tokenReq);
-      if (!token.accessToken) {
-        console.log('No access token, try popup');
-        token = await instance.acquireTokenPopup(tokenReq);
-      }
-      console.log('Token', token);
-      dispatch(loadActivities(token.accessToken));
-    };
-    effect();
-  }, [accounts]);
+    if (token) {
+      dispatch(loadActivities(token));
+    }
+  }, [token]);
 
   const activitiesState = useSelector<RootState, ActivitiesState>(state => state.activities);
 
