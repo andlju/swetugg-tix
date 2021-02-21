@@ -14,9 +14,21 @@ export function loadActivities(token?: string) : LoadAllActivitiesAction {
   }
 }
 
+export function loadActivity(activityId: string, token: string, revision?: number) : LoadActivityAction {
+  return {
+    type: LOAD_ACTIVITY,
+    payload: {
+      token: token,
+      activityId: activityId,
+      revision: revision
+    }
+  }
+}
+
 export interface LoadActivityAction {
   type: typeof LOAD_ACTIVITY;
   payload: { 
+    token: string,
     activityId: string,
     revision?: number
   }

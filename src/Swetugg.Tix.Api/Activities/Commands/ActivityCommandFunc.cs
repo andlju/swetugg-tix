@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.Activity.Commands;
 using System;
 using System.Reflection;
@@ -10,6 +12,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
 {
     public abstract class ActivityCommandFunc<TCommand> where TCommand : ActivityCommand, new()
     {
+        protected static string[] acceptedScopes = new[] { "access_as_admin" };
         private readonly IMessageSender _sender;
 
         protected ActivityCommandFunc(IActivityCommandMessageSender sender)
@@ -31,8 +34,6 @@ namespace Swetugg.Tix.Api.Activities.Commands
 
         protected async Task<TCommand> Process(HttpRequest req, object overrides, ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
             TCommand cmd;
             if (req.ContentLength > 0)
             {

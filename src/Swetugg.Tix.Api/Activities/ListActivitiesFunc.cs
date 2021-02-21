@@ -19,6 +19,8 @@ namespace Swetugg.Tix.Api.Activities
 {
     public class ListActivitiesFunc
     {
+        private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
+
         private readonly string _connectionString;
         private readonly TableStorageViewReader _viewReader;
 
@@ -36,9 +38,10 @@ namespace Swetugg.Tix.Api.Activities
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
+
             var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
             if (!authenticationStatus) return authenticationResponse;
-            req.HttpContext.VerifyUserHasAnyAcceptedScope("access_as_user");
+            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
 
             string name = req.HttpContext.User.Identity.IsAuthenticated ? req.HttpContext.User.Identity.Name : null;
 

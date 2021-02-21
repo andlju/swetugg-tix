@@ -5,6 +5,8 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
 using Newtonsoft.Json;
 using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Activity.Views;
@@ -20,6 +22,8 @@ namespace Swetugg.Tix.Api.Activities
 
     public class GetActivityFunc
     {
+        private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
+
         private readonly string _connectionString;
         private TableStorageViewReader _viewReader;
 
@@ -37,7 +41,9 @@ namespace Swetugg.Tix.Api.Activities
             string activityId,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
+            if (!authenticationStatus) return authenticationResponse;
+            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
 
             var activity = await _viewReader.GetEntity<ActivityViewEntity, ActivityOverview>(activityId, activityId);
             if (activity == null)

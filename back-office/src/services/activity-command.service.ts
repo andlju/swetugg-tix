@@ -11,7 +11,7 @@ enum CommandLogSeverity {
 interface CommandStatusMessage {
   code: string,
   message: string,
-  severity: CommandLogSeverity
+  severity: CommandLogSeverity;
 }
 
 export interface CommandStatus {
@@ -21,20 +21,25 @@ export interface CommandStatus {
   status: string,
   jsonBody: string,
   body: any,
-  messages?: CommandStatusMessage[]
+  messages?: CommandStatusMessage[];
 }
 
 interface SendCommandOptions {
-  method?: string
+  method?: string,
+  token?: string;
 }
 
-function waitForResult(commandId: string): Promise<CommandStatus> {
+function waitForResult(commandId: string, token?: string): Promise<CommandStatus> {
 
   let attempts = 0;
   const pollStatus = async (resolve: any, reject: any) => {
     attempts++;
     console.log(`Polling for command ${commandId}. Attempt ${attempts}`);
-    const res = await fetch(buildUrl(`/activities/commands/${commandId}`));
+    const res = await fetch(buildUrl(`/activities/commands/${commandId}`), {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      }
+    });
     if (res.status == 200) {
       const commandStatus = await res.json() as CommandStatus;
       if (commandStatus.jsonBody) {
@@ -66,19 +71,20 @@ function waitForResult(commandId: string): Promise<CommandStatus> {
   return promise;
 }
 
-export async function sendActivityCommand<TBody>(url: string, body: TBody, options? : SendCommandOptions): Promise<CommandStatus> {
+export async function sendActivityCommand<TBody>(url: string, body: TBody, options?: SendCommandOptions): Promise<CommandStatus> {
   const res = await fetch(buildUrl(url), {
     method: options?.method ?? "POST",
     headers: {
-      'Content-Type': 'application/json'
+      'Authorization': `Bearer ${options?.token}`,
+      'Content-Type': 'application/json',
     },
     body: JSON.stringify(body)
   });
   if (res.status === 200) {
     const commandStatus = await res.json() as CommandStatus;
     console.log(`Command sent`, commandStatus);
-    return await waitForResult(commandStatus.commandId);
+    return await waitForResult(commandStatus.commandId, options?.token);
   }
-  throw { code: "CommandSendFailed", message: "Failed when sending command" }
+  throw { code: "CommandSendFailed", message: "Failed when sending command" };
 }
 

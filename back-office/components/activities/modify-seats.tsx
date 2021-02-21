@@ -69,7 +69,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
         seats: seats
       });
       increaseForm.setValue("seats", 0);
-      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision } });
+      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision, TODO send token } });
     } catch (err) {
       // TODO Report error
     }
@@ -82,7 +82,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
         seats: seats
       });
       decreaseForm.setValue("seats", 0);
-      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision } });
+      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision, TODO send token } });
     } catch (err) {
       // TODO Report error
     }

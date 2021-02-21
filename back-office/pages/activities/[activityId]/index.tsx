@@ -1,17 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { useSelector } from 'react-redux';
-import { END } from 'redux-saga';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../store/root.reducer';
 import { ActivityDetails, ModifySeats, TicketTypeList } from '../../../components';
-import wrapper, { SagaStore } from '../../../store/store';
-import { LOAD_ACTIVITY } from '../../../components/activities/store/activities.actions';
+import wrapper from '../../../store/store';
+import { loadActivity } from '../../../components/activities/store/activities.actions';
 import { ActivitiesState } from '../../../components/activities/store/activities.reducer';
+import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
 
 interface ActivityProps {
   activityId: string
@@ -29,6 +29,15 @@ const useStyles = makeStyles((theme) => ({
 
 const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const { token } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_user"]);
+    
+  useEffect(() => {
+    if (token) {
+      dispatch(loadActivity(activityId, token));
+    }
+  }, [token]);
 
   const activities = useSelector<RootState, ActivitiesState>(state => state.activities);
 
@@ -70,10 +79,7 @@ export default ActivityPage;
 
 export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({ store, params }) => {
   const activityId = params?.activityId;
-  store.dispatch({ type: LOAD_ACTIVITY, payload: { activityId } });
-  store.dispatch(END);
 
-  await (store as SagaStore).sagaTask.toPromise();
   return {
     props: {
       activityId: activityId

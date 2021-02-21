@@ -23,7 +23,7 @@ function* loadActivitiesAction(action: LoadAllActivitiesAction) {
 
 function* loadActivityAction(action: LoadActivityAction) {
   const result = yield call(async () => {
-    const data = await getView(buildUrl(`/activities/${action.payload.activityId}`), { revision: action.payload.revision });
+    const data = await getView(buildUrl(`/activities/${action.payload.activityId}`), { revision: action.payload.revision, token: action.payload.token });
     return data;
   });
 
