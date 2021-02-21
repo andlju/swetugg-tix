@@ -254,9 +254,11 @@ export = async () => {
         //SignalRConnection: signalR.primaryConnectionString,
         //SignalRHost: signalR.hostname,
         CommandLogCache: redisCache.primaryConnectionString,
-        AzureAdTenantName: azureAdTenantName,
-        AzureAdPolicyName: azureAdPolicyName,
-        AzureAdClientId: azureAdApiApp
+        "AzureAdB2C:Instance": `https://${azureAdTenantName}.b2clogin.com/`,
+        "AzureAdB2C:Domain": `${azureAdTenantName}.onmicrosoft.com`,
+        "AzureAdB2C:SignUpSignInPolicyId": azureAdPolicyName,
+        "AzureAdB2C:ClientId": azureAdApiApp,
+        "AzureAdB2C:ClientSecret": azureAdApiAppSecret,
     };
 
     let activityAppName: pulumi.Output<string> | undefined;

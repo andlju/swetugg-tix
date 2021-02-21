@@ -5,10 +5,11 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Activity.Views;
 using Swetugg.Tix.Activity.Views.TableStorage;
-using Swetugg.Tix.Api.Auth;
 using Swetugg.Tix.Api.Options;
 using System.Data.SqlClient;
 using System.Linq;
@@ -20,25 +21,26 @@ namespace Swetugg.Tix.Api.Activities
     {
         private readonly string _connectionString;
         private readonly TableStorageViewReader _viewReader;
-        private readonly JwtBearerValidator _validator;
 
-        public ListActivitiesFunc(IOptions<ApiOptions> options, JwtBearerValidator validator)
+        public ListActivitiesFunc(IOptions<ApiOptions> options)
         {
             _connectionString = options.Value.ViewsDbConnection;
             _viewReader = new TableStorageViewReader(options.Value.AzureWebJobsStorage, "activityview");
-            _validator = validator;
         }
 
         [FunctionName("ListActivities")]
+        // [RequiredScope("access_as_user")]
         public async Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "activities")]
             HttpRequest req,
             ILogger log)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
-            var principal = await _validator.ValidateTokenAsync(req.Headers["Authorization"]);
-            if (principal == null)
-                return new UnauthorizedResult();
+            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
+            if (!authenticationStatus) return authenticationResponse;
+            req.HttpContext.VerifyUserHasAnyAcceptedScope("access_as_user");
+
+            string name = req.HttpContext.User.Identity.IsAuthenticated ? req.HttpContext.User.Identity.Name : null;
 
             var activities = (await _viewReader.ListAllEntities<ActivityViewEntity, ActivityOverview>()).ToArray();
 

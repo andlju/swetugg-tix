@@ -41,7 +41,9 @@ function IndexPage() {
     const effect = async () => {
       if (!accounts[0])
         return;
-      const tokenReq = { scopes: ["profile", "openid", "https://swetuggtixlocal.onmicrosoft.com/tix-api/read-as-user"] };
+        
+      // TODO Don't hardcode api scope
+      const tokenReq = { scopes: ["profile", "openid", "https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_user"] };
 
       instance.setActiveAccount(accounts[0]);
       let token = await instance.acquireTokenSilent(tokenReq);
