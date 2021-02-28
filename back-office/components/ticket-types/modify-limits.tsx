@@ -8,7 +8,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useActivityCommand } from "../../src/use-activity-command.hook";
-import { LOAD_ACTIVITY } from "../activities/store/activities.actions";
+import { loadActivity } from "../activities/store/activities.actions";
 import { TicketType } from "./ticket-type.models";
 
 interface EditTicketTypeProps {
@@ -64,7 +64,7 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
       seats: +data.seats
     });
     increaseLimitForm.setValue("seats", 0);
-    dispatch({ type: LOAD_ACTIVITY, payload: { activityId: ticketType.activityId, revision: res.revision}});
+    dispatch(loadActivity(ticketType.activityId, res.revision));
   }
 
   const onSubmitDecreaseLimit = async (data: LimitFormData) => {
@@ -72,14 +72,14 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
       seats: +data.seats
     });
     decreaseLimitForm.setValue("seats", 0);
-    dispatch({ type: LOAD_ACTIVITY, payload: { activityId: ticketType.activityId, revision: res.revision}});
+    dispatch(loadActivity(ticketType.activityId, res.revision));
   }
 
   const onClickRemoveLimit = async () => {
     const res = await removeLimit(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, {
 
     });
-    dispatch({ type: LOAD_ACTIVITY, payload: { activityId: ticketType.activityId, revision: res.revision}});
+    dispatch(loadActivity(ticketType.activityId, res.revision));
   }
 
   return (

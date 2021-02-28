@@ -6,15 +6,14 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../store/root.reducer';
 import { ActivityDetails, ModifySeats, TicketTypeList } from '../../../components';
-import wrapper from '../../../store/store';
+import { RootState } from '../../../store/store';
 import { loadActivity } from '../../../components/activities/store/activities.actions';
 import { ActivitiesState } from '../../../components/activities/store/activities.reducer';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
 
 interface ActivityProps {
-  activityId: string
+  activityId: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -31,13 +30,11 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { token } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_user"]);
-    
+  useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+
   useEffect(() => {
-    if (token) {
-      dispatch(loadActivity(activityId, token));
-    }
-  }, [token]);
+    dispatch(loadActivity(activityId));
+  }, []);
 
   const activities = useSelector<RootState, ActivitiesState>(state => state.activities);
 
@@ -73,11 +70,11 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
         </Container>)}
     </React.Fragment>
   );
-}
+};
 
 export default ActivityPage;
 
-export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({ store, params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const activityId = params?.activityId;
 
   return {
@@ -85,4 +82,4 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
       activityId: activityId
     }
   };
-});
+};

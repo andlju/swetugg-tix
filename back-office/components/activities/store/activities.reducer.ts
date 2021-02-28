@@ -1,6 +1,6 @@
 import { Reducer } from "redux";
 import { Activity } from "../activity.models";
-import { ActivitiesAction, LOAD_ACTIVITIES, LOAD_ACTIVITIES_COMPLETE, LOAD_ACTIVITIES_FAILED } from "./activities.actions";
+import { ActivitiesAction, ActivityActionTypes } from "./activities.actions";
 
 export interface ActivitiesState {
   activities: {
@@ -12,7 +12,7 @@ export interface ActivitiesState {
   };
 }
 
-const initialState : ActivitiesState = {
+const initialState: ActivitiesState = {
   activities: {},
   visibleActivities: {
     ids: [],
@@ -20,23 +20,12 @@ const initialState : ActivitiesState = {
   }
 };
 
-export const activitiesHydrator = (state: ActivitiesState | undefined, hydratedState: ActivitiesState): ActivitiesState => ({
-  activities: {
-    ...state?.activities,
-    ...hydratedState.activities,
-  },
-  visibleActivities: {
-    ids: Array.from(new Set([...hydratedState.visibleActivities.ids, ...state?.visibleActivities.ids ?? []])),
-    loading: false
-  }
-});
-
-const activitiesReducer : Reducer<ActivitiesState, ActivitiesAction> = (state, action) => {
+const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, action) => {
   if (!state) {
     state = initialState;
-  }  
+  }
   switch (action.type) {
-    case LOAD_ACTIVITIES:
+    case ActivityActionTypes.LOAD_ACTIVITY: 
       return {
         ...state,
         visibleActivities: {
@@ -44,7 +33,15 @@ const activitiesReducer : Reducer<ActivitiesState, ActivitiesAction> = (state, a
           loading: true
         }
       };
-    case LOAD_ACTIVITIES_COMPLETE:
+    case ActivityActionTypes.LOAD_ACTIVITIES:
+      return {
+        ...state,
+        visibleActivities: {
+          ids: state?.visibleActivities.ids ?? [],
+          loading: true
+        }
+      };
+    case ActivityActionTypes.LOAD_ACTIVITIES_COMPLETE:
       return {
         ...state,
         activities: action.payload.activities.reduce((activities, activity) => ({ ...activities, [activity.activityId]: activity }), state.activities),
@@ -53,7 +50,7 @@ const activitiesReducer : Reducer<ActivitiesState, ActivitiesAction> = (state, a
           loading: false
         }
       };
-    case LOAD_ACTIVITIES_FAILED:
+    case ActivityActionTypes.LOAD_ACTIVITIES_FAILED:
       return {
         ...state,
         visibleActivities: {

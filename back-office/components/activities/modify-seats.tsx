@@ -4,7 +4,7 @@ import { Activity } from "./activity.models";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { LOAD_ACTIVITY } from "./store/activities.actions";
+import { loadActivity } from "./store/activities.actions";
 import { useActivityCommand } from "../../src/use-activity-command.hook";
 
 const useStyles = makeStyles((theme) => ({
@@ -69,7 +69,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
         seats: seats
       });
       increaseForm.setValue("seats", 0);
-      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision, TODO send token } });
+      dispatch(loadActivity(activity.activityId, result.revision));
     } catch (err) {
       // TODO Report error
     }
@@ -82,7 +82,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
         seats: seats
       });
       decreaseForm.setValue("seats", 0);
-      dispatch({ type: LOAD_ACTIVITY, payload: { activityId: activity.activityId, revision: result.revision, TODO send token } });
+      dispatch(loadActivity(activity.activityId, result.revision));
     } catch (err) {
       // TODO Report error
     }

@@ -1,17 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
-import { END } from 'redux-saga';
 import { makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../../store/root.reducer';
+import { useDispatch, useSelector } from 'react-redux';
 import { ActivitiesState } from '../../../../components/activities/store/activities.reducer';
 import { ModifyLimits, TicketTypeDetails } from '../../../../components';
-import wrapper, { SagaStore } from '../../../../store/store';
-import { LOAD_ACTIVITY } from '../../../../components/activities/store/activities.actions';
+import { loadActivity } from '../../../../components/activities/store/activities.actions';
+import { RootState } from '../../../../store/store';
+import { useAuthenticatedUser } from '../../../../src/use-authenticated-user.hook';
 
 interface TicketTypeProps {
   activityId: string,
@@ -26,15 +25,22 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(2),
   },
-}))
+}));
 
 export default function TicketTypePage({ activityId, ticketTypeId }: TicketTypeProps) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+
+  useEffect(() => {
+    dispatch(loadActivity(activityId));
+  }, []);
 
   const activities = useSelector<RootState, ActivitiesState>(store => store.activities);
 
-  const activity = activities.activities[activityId];
-  const ticketType = activity.ticketTypes.find(t => t.ticketTypeId === ticketTypeId);
+  const activity = activities.activities && activities.activities[activityId];
+  const ticketType = activity?.ticketTypes.find(t => t.ticketTypeId === ticketTypeId);
 
   if (!ticketType) {
     return (<Container>
@@ -69,19 +75,16 @@ export default function TicketTypePage({ activityId, ticketTypeId }: TicketTypeP
   );
 }
 
-export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps(async ({ store, params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params) {
     return {
       props: {
       }
-    }
+    };
   }
+
   const activityId = params.activityId;
   const ticketTypeId = params.ticketTypeId;
-  store.dispatch({ type: LOAD_ACTIVITY, payload: { activityId } });
-  store.dispatch(END);
-
-  await (store as SagaStore).sagaTask.toPromise();
 
   return {
     props: {
@@ -89,4 +92,4 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
       ticketTypeId: ticketTypeId
     }
   };
-});
+};

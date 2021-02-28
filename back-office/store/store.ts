@@ -1,33 +1,23 @@
-import { applyMiddleware, createStore, Store} from 'redux'
-import createSagaMiddleware, { Task } from 'redux-saga'
-import {createWrapper} from 'next-redux-wrapper'
+import { createStore, applyMiddleware } from 'redux'
+import { createEpicMiddleware } from 'redux-observable';
 
-import rootReducer, { RootState } from './root.reducer'
-import rootSaga from './root.saga'
-import { ActivitiesState } from '../components/activities/store/activities.reducer'
+import { rootEpic, rootReducer } from './root.reducer'
 
-export interface State extends RootState {
-  server: {
-    activities: ActivitiesState
-  }
-}
+const epicMiddleware = createEpicMiddleware();
 
-export interface SagaStore extends Store {
-  sagaTask: Task;
-}
-
-const makeStore = () => {
-  const sagaMiddleware = createSagaMiddleware();
+function configureStore() {
   const store = createStore(
     rootReducer,
-    applyMiddleware(sagaMiddleware),
+    applyMiddleware(epicMiddleware)
   );
 
-  (store as SagaStore).sagaTask = sagaMiddleware.run(rootSaga);
+  epicMiddleware.run(rootEpic);
 
-  return store
+  return store;
 }
 
-const wrapper = createWrapper(makeStore)
+const store = configureStore();
 
-export default wrapper
+export type RootState = ReturnType<typeof rootReducer>;
+
+export default store;

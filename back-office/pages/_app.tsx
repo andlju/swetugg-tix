@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Provider } from 'react-redux';
 import Head from 'next/head';
 import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -10,7 +10,7 @@ import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig } from "../src/auth-config";
 import theme from '../styles/theme';
 import App, { AppProps } from 'next/app';
-import wrapper from '../store/store';
+import store from '../store/store';
 import BackOfficeLayout from '../layout/main-layout';
 
 function MyApp(props: AppProps) {
@@ -32,18 +32,20 @@ function MyApp(props: AppProps) {
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
       <MsalProvider instance={msalInstance}>
-        <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-          <CssBaseline />
-          <SnackbarProvider maxSnack={3} anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right',
-          }}>
-            <BackOfficeLayout>
-              <Component {...pageProps} />
-            </BackOfficeLayout>
-          </SnackbarProvider>
-        </ThemeProvider>
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+            <CssBaseline />
+            <SnackbarProvider maxSnack={3} anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right',
+            }}>
+              <BackOfficeLayout>
+                <Component {...pageProps} />
+              </BackOfficeLayout>
+            </SnackbarProvider>
+          </ThemeProvider>
+        </Provider>
       </MsalProvider>
     </React.Fragment>
   );
@@ -57,7 +59,7 @@ class WrapperApp extends App {
   }
 }
 
-export default wrapper.withRedux(withApplicationInsights({
+export default withApplicationInsights({
   instrumentationKey: process.env.NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY,
   isEnabled: !!process.env.NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY
-})(WrapperApp));
+})(WrapperApp);

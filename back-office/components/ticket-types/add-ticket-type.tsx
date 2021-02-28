@@ -3,11 +3,12 @@ import {
   TextField,
   Button, Typography, Container
 } from "@material-ui/core";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useActivityCommand } from "../../src/use-activity-command.hook";
-import { LOAD_ACTIVITY } from "../activities/store/activities.actions";
+import { useAuthenticatedUser } from "../../src/use-authenticated-user.hook";
+import { loadActivity } from "../activities/store/activities.actions";
 
 interface AddTicketTypeProps {
   activityId: string
@@ -51,7 +52,7 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
       name: data.ticketTypeName
     });
     setValue("ticketTypeName", "");
-    dispatch({ type: LOAD_ACTIVITY, payload: { activityId, revision: res.revision}});
+    dispatch(loadActivity(activityId, res.revision));
   }
 
   return (

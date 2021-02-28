@@ -1,26 +1,16 @@
-import { AnyAction, combineReducers, Reducer } from 'redux';
-import { HYDRATE } from 'next-redux-wrapper';
-import { activitiesHydrator, activitiesReducer } from '../components/activities/store/activities.reducer';
-import { ActivitiesAction } from '../components/activities/store/activities.actions';
+import { combineReducers } from 'redux';
+import { combineEpics } from 'redux-observable';
+import { activitiesReducer } from '../components/activities/store/activities.reducer';
+import { activitiesEpic } from '../components/activities/store/activities.epic';
+import { authReducer } from '../components/activities/store/auth.reducer';
+import { authEpic } from '../components/activities/store/auth.epic';
 
-
-const combinedReducer = combineReducers({
-    activities: activitiesReducer
+export const rootReducer = combineReducers({
+    activities: activitiesReducer,
+    auth: authReducer
 });
 
-export type RootState = ReturnType<typeof combinedReducer>
-export type RootAction = ActivitiesAction;
-
-const rootReducer: Reducer<RootState, RootAction | any> = (state, action) => {
-    if (action.type === HYDRATE) {
-        const nextState = {
-            ...state, // use previous state
-            activities: activitiesHydrator(state?.activities, action.payload.activities),
-        };
-        return nextState;
-    } else {
-        return combinedReducer(state, action);
-    }
-};
-
-export default rootReducer; 
+export const rootEpic = combineEpics(
+    activitiesEpic,
+    authEpic
+);
