@@ -5,16 +5,19 @@ import Menu from '@material-ui/core/Menu';
 import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Typography } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
+import { login, logout } from "../components/activities/store/auth.actions";
 
 
 const SignInButton = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    const dispatch = useDispatch();
 
     const handleLogin = (loginType: string) => {
         setAnchorEl(null);
+        dispatch(login());
 
         if (loginType === "popup") {
             console.log("Auth with popup");
@@ -57,10 +60,11 @@ const SignOutButton = () => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    const dispatch = useDispatch();
 
     const handleLogout = () => {
         setAnchorEl(null);
-        console.log("Do logout");
+        dispatch(logout());
     };
 
     return (

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
 import clsx from 'clsx';
@@ -7,6 +7,8 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { WelcomeName } from '../layout/auth';
+import { useDispatch } from 'react-redux';
+import { login } from '../components/activities/store/auth.actions';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -21,11 +23,16 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: theme.spacing(60),
     overflow: 'auto',
   }
-}))
+}));
 
 export default function Index() {
   const classes = useStyles();
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    dispatch(login());
+  }, []);
+  
   return (
     <Container maxWidth={false} className={classes.container}>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -49,5 +56,5 @@ export const getServerSideProps: GetServerSideProps = async () => {
     props: {
 
     }
-  }
-}
+  };
+};

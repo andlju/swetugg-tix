@@ -67,11 +67,6 @@
   dependencies:
     debug "^4.1.1"
 
-"@azure/msal-react@^1.0.0-alpha.6":
-  version "1.0.0-alpha.6"
-  resolved "https://registry.yarnpkg.com/@azure/msal-react/-/msal-react-1.0.0-alpha.6.tgz#014ff2ae9df9c58547445927b76ad74b40091e9f"
-  integrity sha512-hXPLl6h5YRO/crAB7kwN4fjxAuFqmwAliHOpTRnUcxPFoR1TJN66EkeaMWaJFW7ABrblJv0e9DlT3RbD0v3GMg==
-
 "@babel/code-frame@7.10.4", "@babel/code-frame@^7.0.0", "@babel/code-frame@^7.10.4", "@babel/code-frame@^7.5.5":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"

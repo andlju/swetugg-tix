@@ -9,9 +9,8 @@ import Grid from '@material-ui/core/Grid';
 import { ActivitiesState } from '../../components/activities/store/activities.reducer';
 import { ActivityList } from '../../components';
 import { loadActivities } from '../../components/activities/store/activities.actions';
-import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 import { RootState } from '../../store/store';
-import { authenticate } from '../../components/activities/store/auth.actions';
+import { getScopes } from '../../components/activities/store/auth.actions';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,11 +30,9 @@ const useStyles = makeStyles((theme) => ({
 function IndexPage() {
   const classes = useStyles();
   const dispatch = useDispatch();
-
-  // useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
-    
+   
   useEffect(() => {
-    dispatch(authenticate());
+    dispatch(getScopes(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]));
     dispatch(loadActivities());
   }, []);
 
