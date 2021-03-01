@@ -11,6 +11,7 @@ import { RootState } from '../../../store/store';
 import { loadActivity } from '../../../components/activities/store/activities.actions';
 import { ActivitiesState } from '../../../components/activities/store/activities.reducer';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
+import { authenticate } from '../../../components/activities/store/auth.actions';
 
 interface ActivityProps {
   activityId: string;
@@ -30,9 +31,10 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+  // useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
 
   useEffect(() => {
+    dispatch(authenticate());
     dispatch(loadActivity(activityId));
   }, []);
 

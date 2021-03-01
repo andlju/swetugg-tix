@@ -11,6 +11,7 @@ import { ActivityList } from '../../components';
 import { loadActivities } from '../../components/activities/store/activities.actions';
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 import { RootState } from '../../store/store';
+import { authenticate } from '../../components/activities/store/auth.actions';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -31,9 +32,10 @@ function IndexPage() {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+  // useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
     
   useEffect(() => {
+    dispatch(authenticate());
     dispatch(loadActivities());
   }, []);
 

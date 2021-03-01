@@ -5,9 +5,6 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { SnackbarProvider } from 'notistack';
 import { withApplicationInsights } from 'next-applicationinsights';
-import { MsalProvider } from "@azure/msal-react";
-import { PublicClientApplication } from "@azure/msal-browser";
-import { msalConfig } from "../src/auth-config";
 import theme from '../styles/theme';
 import App, { AppProps } from 'next/app';
 import store from '../store/store';
@@ -15,7 +12,6 @@ import BackOfficeLayout from '../layout/main-layout';
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
-  const msalInstance = new PublicClientApplication(msalConfig);
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -31,22 +27,20 @@ function MyApp(props: AppProps) {
         <title>My page</title>
         <meta name="viewport" content="initial-scale=1, width=device-width" />
       </Head>
-      <MsalProvider instance={msalInstance}>
-        <Provider store={store}>
-          <ThemeProvider theme={theme}>
-            {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-            <CssBaseline />
-            <SnackbarProvider maxSnack={3} anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'right',
-            }}>
-              <BackOfficeLayout>
-                <Component {...pageProps} />
-              </BackOfficeLayout>
-            </SnackbarProvider>
-          </ThemeProvider>
-        </Provider>
-      </MsalProvider>
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          <SnackbarProvider maxSnack={3} anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right',
+          }}>
+            <BackOfficeLayout>
+              <Component {...pageProps} />
+            </BackOfficeLayout>
+          </SnackbarProvider>
+        </ThemeProvider>
+      </Provider>
     </React.Fragment>
   );
 }

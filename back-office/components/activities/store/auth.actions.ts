@@ -4,6 +4,7 @@ export enum AuthActionTypes {
   AUTHENTICATE = 'AUTHENTICATE',
   SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN',
   SET_USER = 'SET_USER',
+  SET_IN_PROGRESS = 'SET_IN_PROGRESS',
 }
 
 export interface User {
@@ -23,7 +24,14 @@ export function setAccessToken(token: string) : SetAccessTokenAction {
   }
 }
 
-export function setUser(user: User) : SetUserAction {
+export function setInProgress(inProgress: boolean) : SetInProgressAction {
+  return {
+    type: AuthActionTypes.SET_IN_PROGRESS,
+    payload: { inProgress }
+  }
+}
+
+export function setUser(user?: User) : SetUserAction {
   return {
     type: AuthActionTypes.SET_USER,
     payload: {
@@ -43,14 +51,22 @@ export interface SetAccessTokenAction extends Action {
   }
 }
 
+export interface SetInProgressAction extends Action {
+  type: AuthActionTypes.SET_IN_PROGRESS,
+  payload: {
+    inProgress: boolean
+  }
+}
+
 export interface SetUserAction extends Action {
   type: AuthActionTypes.SET_USER,
   payload: {
-    user: User
+    user?: User
   }
 }
 
 export type AuthAction = 
   | AuthenticateAction
   | SetAccessTokenAction
+  | SetInProgressAction
   | SetUserAction

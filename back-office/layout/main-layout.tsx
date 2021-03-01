@@ -96,58 +96,58 @@ const BackOfficeLayout: React.FC = ({ children }) => {
   };
 
   return (<div className={classes.root}>
-      <AppBar
-        position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}>
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge="start"
-            color="inherit"
-            aria-label="open drawer"
-            onClick={toggleDrawer}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden,
-            )}>
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            component="h1"
-            variant="h6"
-            color="inherit"
-            noWrap
-            className={classes.title}>
-            Dashboard
+    <AppBar
+      position="absolute"
+      className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <Toolbar className={classes.toolbar}>
+        <IconButton
+          edge="start"
+          color="inherit"
+          aria-label="open drawer"
+          onClick={toggleDrawer}
+          className={clsx(
+            classes.menuButton,
+            open && classes.menuButtonHidden,
+          )}>
+          <MenuIcon />
+        </IconButton>
+        <Typography
+          component="h1"
+          variant="h6"
+          color="inherit"
+          noWrap
+          className={classes.title}>
+          Dashboard
         </Typography>
         <SignInSignOutButton />
-          <IconButton color="inherit">
-            <Badge badgeContent={4} color="secondary">
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}>
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={toggleDrawer}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-        <List>{adminListItems}</List>
-      </Drawer>s
+        <IconButton color="inherit">
+          <Badge badgeContent={4} color="secondary">
+            <NotificationsIcon />
+          </Badge>
+        </IconButton>
+      </Toolbar>
+    </AppBar>
+    <Drawer
+      variant="permanent"
+      classes={{
+        paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+      }}
+      open={open}>
+      <div className={classes.toolbarIcon}>
+        <IconButton onClick={toggleDrawer}>
+          <ChevronLeftIcon />
+        </IconButton>
+      </div>
+      <Divider />
+      <List>{mainListItems}</List>
+      <Divider />
+      <List>{adminListItems}</List>
+    </Drawer>s
     <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        {children}
-      </main>
-    </div>);
+      <div className={classes.appBarSpacer} />
+      {children}
+    </main>
+  </div>);
 };
 
 export default BackOfficeLayout;
