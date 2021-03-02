@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -64,6 +64,7 @@ const SignOutButton = () => {
 
     const handleLogout = () => {
         setAnchorEl(null);
+        console.log("Logging out");
         dispatch(logout());
     };
 
@@ -97,7 +98,7 @@ const SignOutButton = () => {
 };
 
 export const SignInSignOutButton = () => {
-    const user = useSelector<RootState>(s => s.auth.user);
+    const { user } = useSelector<RootState>(s => s.auth);
 
     if (user) {
         return <SignOutButton />;
@@ -107,7 +108,7 @@ export const SignInSignOutButton = () => {
 };
 
 export const WelcomeName = () => {
-    const user = useSelector((s: RootState) => s.auth.user);
+    const { user } = useSelector<RootState>(s => s.auth);
 
     if (user) {
         return <Typography variant="h6">Welcome, {user.displayName}</Typography>;

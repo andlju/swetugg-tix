@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -14,6 +14,8 @@ import List from '@material-ui/core/List';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, adminListItems } from './list-items';
 import { SignInSignOutButton } from './auth';
+import { useDispatch } from "react-redux";
+import { getUser } from "../components/activities/store/auth.actions";
 
 
 const drawerWidth = 240;
@@ -94,6 +96,12 @@ const BackOfficeLayout: React.FC = ({ children }) => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
+  
+  const dispatch = useDispatch();
+  useEffect(() => {
+    // Make sure to set the currently logged in user if there is one
+    dispatch(getUser());
+  }, []);
 
   return (<div className={classes.root}>
     <AppBar

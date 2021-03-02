@@ -27,11 +27,6 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(login());
-  }, []);
   
   return (
     <Container maxWidth={false} className={classes.container}>

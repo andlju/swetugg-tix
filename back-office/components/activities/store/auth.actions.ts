@@ -3,6 +3,7 @@ import { Action } from "redux";
 export enum AuthActionTypes {
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
+  GET_USER = 'GET_USER',
   GET_SCOPES = 'GET_SCOPE',
 
   SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN',
@@ -26,6 +27,11 @@ export function logout(): LogoutAction {
   };
 }
 
+export function getUser(): GetUserAction {
+  return {
+    type: AuthActionTypes.GET_USER,
+  };
+}
 
 export function getScopes(scopes: string[]): GetScopesAction {
   return {
@@ -67,6 +73,10 @@ export interface LogoutAction extends Action {
   type: AuthActionTypes.LOGOUT;
 }
 
+export interface GetUserAction extends Action {
+  type: AuthActionTypes.GET_USER
+}
+
 export interface GetScopesAction extends Action {
   type: AuthActionTypes.GET_SCOPES,
   payload: {
@@ -98,6 +108,7 @@ export interface SetUserAction extends Action {
 export type AuthAction =
   | LoginAction
   | LogoutAction
+  | GetUserAction
   | GetScopesAction
   | SetAccessTokenAction
   | SetInProgressAction
