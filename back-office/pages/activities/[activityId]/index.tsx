@@ -11,7 +11,7 @@ import { RootState } from '../../../store/store';
 import { loadActivity } from '../../../components/activities/store/activities.actions';
 import { ActivitiesState } from '../../../components/activities/store/activities.reducer';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
-import { authenticate } from '../../../components/activities/store/auth.actions';
+import { authenticate } from '../../../components/auth/store/auth.actions';
 
 interface ActivityProps {
   activityId: string;

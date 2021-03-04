@@ -3,7 +3,7 @@ import { MsalAuthenticationResult, useMsal, useMsalAuthentication } from "@azure
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { authenticate, setAccessToken } from "../components/activities/store/auth.actions";
+import { authenticate, setAccessToken } from "../components/auth/store/auth.actions";
 import { RootState } from "../store/store";
 
 interface AuthenticatedUserResult extends MsalAuthenticationResult {

@@ -6,9 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { WelcomeName } from '../layout/auth';
-import { useDispatch } from 'react-redux';
-import { login } from '../components/activities/store/auth.actions';
+import { WelcomeName } from '../components/auth/auth';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -27,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
-  
+
   return (
     <Container maxWidth={false} className={classes.container}>
       <Typography variant="h4" component="h1" gutterBottom>

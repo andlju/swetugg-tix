@@ -13,6 +13,7 @@ export enum AuthActionTypes {
 
 export interface User {
   displayName: string,
+  username: string
 }
 
 export function login(): LoginAction {

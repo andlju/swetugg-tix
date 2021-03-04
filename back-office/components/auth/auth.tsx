@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
@@ -6,12 +6,12 @@ import IconButton from '@material-ui/core/IconButton';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../store/store";
-import { login, logout } from "../components/activities/store/auth.actions";
+import { RootState } from "../../store/store";
+import { login, logout } from "./store/auth.actions";
 
 
 const SignInButton = () => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState<Element|null>(null);
     const open = Boolean(anchorEl);
     const dispatch = useDispatch();
 
@@ -58,7 +58,7 @@ const SignInButton = () => {
 
 const SignOutButton = () => {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState<Element|null>(null);
     const open = Boolean(anchorEl);
     const dispatch = useDispatch();
 

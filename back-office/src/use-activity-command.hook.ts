@@ -12,7 +12,7 @@ export function useActivityCommand<TBody>(commandName: string, options?: Command
   const { enqueueSnackbar } = useSnackbar();
   const [ sending, setSending ] = useState(false);
 
-  const token = useSelector((s: RootState) => s.auth.token);
+  const token = useSelector((s: RootState) => s.auth.accessToken);
 
   const method = options?.method ?? "POST";
 

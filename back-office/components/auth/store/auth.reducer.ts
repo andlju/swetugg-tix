@@ -2,7 +2,7 @@ import { Reducer } from "redux";
 import { AuthAction, AuthActionTypes, User } from "./auth.actions";
 
 export interface AuthState {
-  token?: string,
+  accessToken?: string,
   user?: User,
   inProgress: boolean;
 }
@@ -16,14 +16,18 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     state = initialState;
   }
   switch (action.type) {
-    case AuthActionTypes.AUTHENTICATE:
+    case AuthActionTypes.LOGIN:
       return {
         ...state,
       };
-    case AuthActionTypes.SET_ACCESS_TOKEN:
+      case AuthActionTypes.LOGOUT:
+        return {
+          ...state,
+        };
+      case AuthActionTypes.SET_ACCESS_TOKEN:
       return {
         ...state,
-        token: action.payload.token
+        accessToken: action.payload.token
       };
     case AuthActionTypes.SET_IN_PROGRESS:
       return {

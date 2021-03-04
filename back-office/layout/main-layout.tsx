@@ -13,9 +13,9 @@ import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, adminListItems } from './list-items';
-import { SignInSignOutButton } from './auth';
+import { SignInSignOutButton } from '../components/auth/auth';
 import { useDispatch } from "react-redux";
-import { getUser } from "../components/activities/store/auth.actions";
+import { getUser } from "../components/auth/store/auth.actions";
 
 
 const drawerWidth = 240;

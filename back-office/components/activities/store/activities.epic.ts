@@ -23,12 +23,13 @@ const loadActivityAction$ = (action$: ActionsObservable<ActivitiesAction>) => ac
 );
 
 const getAccessToken$ = (state$: StateObservable<RootState>) => state$.pipe(
-  map(state => state.auth.token),
+  map(state => state.auth.accessToken),
   distinctUntilChanged()
 );
 
 const loadActivitiesEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   combineLatest([loadActivitiesAction$(action$), getAccessToken$(state$)]).pipe(
+    tap(([action,token]) => console.log(`Loading activities with token ${token}`)),
     filter(([, token]) => !!token),
     mergeMap(([, token]) => fetchActivities(token || '').pipe(
       map(resp => loadActivitiesComplete(resp))
