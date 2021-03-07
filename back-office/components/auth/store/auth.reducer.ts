@@ -20,11 +20,21 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
       return {
         ...state,
       };
-      case AuthActionTypes.LOGOUT:
-        return {
-          ...state,
-        };
-      case AuthActionTypes.SET_ACCESS_TOKEN:
+    case AuthActionTypes.LOGOUT:
+      return {
+        ...state,
+      };
+    case AuthActionTypes.VALIDATE_USER:
+      return {
+        ...state,
+      };
+    case AuthActionTypes.VALIDATE_USER_FAILED:
+      return {
+        ...state,
+        user: undefined,
+        accessToken: undefined
+      };
+    case AuthActionTypes.SET_ACCESS_TOKEN:
       return {
         ...state,
         accessToken: action.payload.token

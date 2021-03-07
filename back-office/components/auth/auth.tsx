@@ -98,7 +98,7 @@ const SignOutButton = () => {
 };
 
 export const SignInSignOutButton = () => {
-    const { user } = useSelector<RootState>(s => s.auth);
+    const { user } = useSelector((s: RootState) => s.auth);
 
     if (user) {
         return <SignOutButton />;
@@ -108,7 +108,7 @@ export const SignInSignOutButton = () => {
 };
 
 export const WelcomeName = () => {
-    const { user } = useSelector<RootState>(s => s.auth);
+    const { user } = useSelector((s: RootState) => s.auth);
 
     if (user) {
         return <Typography variant="h6">Welcome, {user.displayName}</Typography>;

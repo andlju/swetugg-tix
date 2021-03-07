@@ -7,6 +7,7 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { WelcomeName } from '../components/auth/auth';
+import { useAuthenticatedUser } from '../src/use-authenticated-user.hook';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -25,6 +26,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
+
+  const { user } = useAuthenticatedUser();
 
   return (
     <Container maxWidth={false} className={classes.container}>

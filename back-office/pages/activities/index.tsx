@@ -8,9 +8,9 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { ActivitiesState } from '../../components/activities/store/activities.reducer';
 import { ActivityList } from '../../components';
-import { loadActivities, loadActivity } from '../../components/activities/store/activities.actions';
+import { loadActivities } from '../../components/activities/store/activities.actions';
 import { RootState } from '../../store/store';
-import { getScopes } from '../../components/auth/store/auth.actions';
+import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -29,17 +29,10 @@ const useStyles = makeStyles((theme) => ({
 
 function IndexPage() {
   const classes = useStyles();
+
+  const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+
   const dispatch = useDispatch();
-
-  const { user, inProgress, accessToken } = useSelector((s: RootState) => s.auth);
-
-  useEffect(() => {
-    if (user) {
-      console.log(`Found a user, let's get the scopes`, user);
-      dispatch(getScopes(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]));
-    }
-  }, [user]);
-
   useEffect(() => {
     dispatch(loadActivities());
   }, []);

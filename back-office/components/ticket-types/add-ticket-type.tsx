@@ -3,11 +3,10 @@ import {
   TextField,
   Button, Typography, Container
 } from "@material-ui/core";
-import React, { useEffect } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useActivityCommand } from "../../src/use-activity-command.hook";
-import { useAuthenticatedUser } from "../../src/use-authenticated-user.hook";
 import { loadActivity } from "../activities/store/activities.actions";
 
 interface AddTicketTypeProps {

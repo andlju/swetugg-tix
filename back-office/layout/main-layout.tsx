@@ -15,7 +15,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, adminListItems } from './list-items';
 import { SignInSignOutButton } from '../components/auth/auth';
 import { useDispatch } from "react-redux";
-import { getUser } from "../components/auth/store/auth.actions";
+import { validateUser } from "../components/auth/store/auth.actions";
 
 
 const drawerWidth = 240;
@@ -96,12 +96,6 @@ const BackOfficeLayout: React.FC = ({ children }) => {
   const toggleDrawer = () => {
     setOpen(!open);
   };
-  
-  const dispatch = useDispatch();
-  useEffect(() => {
-    // Make sure to set the currently logged in user if there is one
-    dispatch(getUser());
-  }, []);
 
   return (<div className={classes.root}>
     <AppBar

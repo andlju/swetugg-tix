@@ -1,6 +1,6 @@
 import { AccountInfo, AuthenticationResult, Configuration, EventMessage, EventMessageUtils, InteractionStatus, PopupRequest, PublicClientApplication, RedirectRequest, SilentRequest, SsoSilentRequest } from "@azure/msal-browser";
 import { from, Observable, ReplaySubject } from "rxjs";
-import { filter, map, tap } from "rxjs/operators";
+import { distinctUntilChanged, filter, map, tap } from "rxjs/operators";
 import { msalConfig } from "../auth-config";
 
 
@@ -29,7 +29,8 @@ class MsalService {
   currentAccount$(): Observable<AccountInfo | null> {
     return this.isInProgress$().pipe(
       filter(inProgress => !inProgress),
-      map(() => this.ensureAccountSelected())
+      map(() => this.ensureAccountSelected()),
+      distinctUntilChanged((acct1, acct2) => acct1?.username === acct2?.username)
     );
   }
 

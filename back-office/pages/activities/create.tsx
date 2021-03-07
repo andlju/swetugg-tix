@@ -7,6 +7,7 @@ import {
   Typography,
 } from '@material-ui/core';
 import { CreateActivity } from '../../components';
+import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -22,6 +23,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function CreatePage() {
   const classes = useStyles();
+
+  const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
 
   return (
     <Container maxWidth={false} className={classes.container}>

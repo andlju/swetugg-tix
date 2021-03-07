@@ -3,12 +3,21 @@ import { Action } from "redux";
 export enum AuthActionTypes {
   LOGIN = 'LOGIN',
   LOGOUT = 'LOGOUT',
-  GET_USER = 'GET_USER',
   GET_SCOPES = 'GET_SCOPE',
+  
+  VALIDATE_USER = 'VALIDATE_USER',
+  VALIDATE_USER_COMPLETE = 'VALIDATE_USER_COMPLETE',
+  VALIDATE_USER_FAILED = 'VALIDATE_USER_FAILED',
 
   SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN',
   SET_USER = 'SET_USER',
   SET_IN_PROGRESS = 'SET_IN_PROGRESS',
+}
+
+export enum InteractionKind {
+  SILENT = 'Silent',
+  POPUP = 'Popup',
+  REDIRECT = 'Redirect'
 }
 
 export interface User {
@@ -16,9 +25,12 @@ export interface User {
   username: string
 }
 
-export function login(): LoginAction {
+export function login(interactionKind: InteractionKind = InteractionKind.SILENT): LoginAction {
   return {
-    type: AuthActionTypes.LOGIN
+    type: AuthActionTypes.LOGIN,
+    payload: {
+      interactionKind
+    }
   };
 }
 
@@ -28,17 +40,24 @@ export function logout(): LogoutAction {
   };
 }
 
-export function getUser(): GetUserAction {
+export function validateUser(): ValidateUserAction {
   return {
-    type: AuthActionTypes.GET_USER,
+    type: AuthActionTypes.VALIDATE_USER,
   };
 }
 
-export function getScopes(scopes: string[]): GetScopesAction {
+export function validateUserFailed(): ValidateUserFailedAction {
+  return {
+    type: AuthActionTypes.VALIDATE_USER_FAILED,
+  };
+}
+
+export function getScopes(scopes: string[], interactionKind: InteractionKind = InteractionKind.SILENT): GetScopesAction {
   return {
     type: AuthActionTypes.GET_SCOPES,
     payload: {
-      scopes
+      scopes,
+      interactionKind
     }
   };
 }
@@ -68,20 +87,28 @@ export function setUser(user?: User): SetUserAction {
 
 export interface LoginAction extends Action {
   type: AuthActionTypes.LOGIN;
+  payload: {
+    interactionKind: InteractionKind;
+  }
 }
 
 export interface LogoutAction extends Action {
   type: AuthActionTypes.LOGOUT;
 }
 
-export interface GetUserAction extends Action {
-  type: AuthActionTypes.GET_USER
+export interface ValidateUserAction extends Action {
+  type: AuthActionTypes.VALIDATE_USER
+}
+
+export interface ValidateUserFailedAction extends Action {
+  type: AuthActionTypes.VALIDATE_USER_FAILED
 }
 
 export interface GetScopesAction extends Action {
   type: AuthActionTypes.GET_SCOPES,
   payload: {
     scopes: string[];
+    interactionKind: InteractionKind
   };
 }
 
@@ -109,7 +136,8 @@ export interface SetUserAction extends Action {
 export type AuthAction =
   | LoginAction
   | LogoutAction
-  | GetUserAction
+  | ValidateUserAction
+  | ValidateUserFailedAction
   | GetScopesAction
   | SetAccessTokenAction
   | SetInProgressAction

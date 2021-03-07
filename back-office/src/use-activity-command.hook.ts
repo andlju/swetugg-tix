@@ -1,5 +1,5 @@
 import { useSnackbar } from "notistack";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 import { CommandStatus, sendActivityCommand } from "./services/activity-command.service";
