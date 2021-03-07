@@ -9,6 +9,8 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { useActivityCommand } from '../../src/use-activity-command.hook';
+import { sendActivityCommand } from './store/activities.actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,13 +52,14 @@ export function CreateActivity() {
     defaultValues: {
     }
   });
-  const [createActivity] = useActivityCommand('Create activity');
+  const dispatch = useDispatch();
+
+  // const [createActivity] = useActivityCommand('Create activity');
   const onSubmit = async (data: FormData) => {
     try {
-      const result = await createActivity(`/activities`, {
+      dispatch(sendActivityCommand(`/activities`, {
         name: data.activityName
-      });
-      await router.push(`/activities/${result.aggregateId}`);
+      }));
     } catch (err) {
       // Report error?
     }

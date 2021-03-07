@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getScopes, validateUser, User } from "../components/auth/store/auth.actions";
 import { RootState } from "../store/store";

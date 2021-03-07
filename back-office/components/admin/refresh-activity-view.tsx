@@ -5,7 +5,8 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
+import { useDispatch } from "react-redux";
+import { sendActivityCommand } from "../activities/store/activities.actions";
 
 interface RefreshActivityViewProps {
   initialActivityId?: string
@@ -45,16 +46,18 @@ const useStyles = makeStyles((theme) => ({
 export function RefreshActivityView({ initialActivityId }: RefreshActivityViewProps) {
   const classes = useStyles();
 
-  const [refreshView] = useActivityCommand("Refresh views");
   const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
     defaultValues: {
       activityId: initialActivityId
     }
   });
 
+  const dispatch = useDispatch();
+
   const onSubmit = async (data: FormData) => {
     try {
-      await refreshView(`/activities-admin/${data.activityId}/rebuild`, { });
+
+      dispatch(sendActivityCommand(`/activities-admin/${data.activityId}/rebuild`, { }));
       setValue("activityId", "");
     } catch(err) {
       setError("activityId", { message: "Invalid format" });

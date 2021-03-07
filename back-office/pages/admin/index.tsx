@@ -6,6 +6,7 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { RefreshActivityView, RefreshOrderView } from '../../components';
+import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -19,6 +20,8 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
+
+  const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
 
   return (
     <Container maxWidth={false} className={classes.container}>

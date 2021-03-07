@@ -2,10 +2,17 @@ import { Reducer } from "redux";
 import { Activity } from "../activity.models";
 import { ActivitiesAction, ActivityActionTypes } from "./activities.actions";
 
+export interface ActivityCommandState {
+  commandId: string;
+  // isCompleted: boolean;
+  activityId?: string;
+}
+
 export interface ActivitiesState {
   activities: {
     [key: string]: Activity;
   },
+  activeCommands: ActivityCommandState[];
   visibleActivities: {
     ids: string[],
     loading: boolean;
@@ -14,6 +21,7 @@ export interface ActivitiesState {
 
 const initialState: ActivitiesState = {
   activities: {},
+  activeCommands: [],
   visibleActivities: {
     ids: [],
     loading: false
@@ -25,7 +33,7 @@ const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, ac
     state = initialState;
   }
   switch (action.type) {
-    case ActivityActionTypes.LOAD_ACTIVITY: 
+    case ActivityActionTypes.LOAD_ACTIVITY:
       return {
         ...state,
         visibleActivities: {
@@ -57,6 +65,21 @@ const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, ac
           ids: state?.visibleActivities.ids ?? [],
           loading: false
         }
+      };
+    case ActivityActionTypes.ACTIVITY_COMMAND_SENT:
+      return {
+        ...state,
+        activeCommands: [...state.activeCommands, { commandId: action.payload.commandId }]
+      };
+    case ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE:
+      return {
+        ...state,
+        activeCommands: state.activeCommands.filter(c => c.commandId !== action.payload.commandId)
+      };
+    case ActivityActionTypes.ACTIVITY_COMMAND_FAILED:
+      return {
+        ...state,
+        activeCommands: state.activeCommands.filter(c => c.commandId !== action.payload.commandId)
       };
     default:
       return state;

@@ -6,8 +6,7 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
-import { loadActivity } from "../activities/store/activities.actions";
+import { sendActivityCommand } from "../activities/store/activities.actions";
 
 interface AddTicketTypeProps {
   activityId: string
@@ -39,19 +38,16 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
 
   const dispatch = useDispatch();
 
-  const [addTicketType] = useActivityCommand("Add Ticket Type");
-
   const { register, handleSubmit, setValue, formState } = useForm<FormData>({
     defaultValues: {
     }
   });
 
   const onSubmit = async (data: FormData) => {
-    const res = await addTicketType(`/activities/${activityId}/ticket-types`, {
+    dispatch(sendActivityCommand(`/activities/${activityId}/ticket-types`, {
       name: data.ticketTypeName
-    });
+    }));
     setValue("ticketTypeName", "");
-    dispatch(loadActivity(activityId, res.revision));
   }
 
   return (

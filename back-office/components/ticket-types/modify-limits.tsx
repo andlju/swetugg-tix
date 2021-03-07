@@ -1,18 +1,16 @@
 import {
   makeStyles,
   TextField,
-  Button, IconButton, Typography, Container, Grid
+  Button, IconButton, Typography, Container, Grid, Box
 } from "@material-ui/core";
-import CheckIcon from "@material-ui/icons/Check";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
-import { loadActivity } from "../activities/store/activities.actions";
+import { sendActivityCommand } from "../activities/store/activities.actions";
 import { TicketType } from "./ticket-type.models";
 
 interface EditTicketTypeProps {
-  ticketType: TicketType
+  ticketType: TicketType;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -26,61 +24,57 @@ const useStyles = makeStyles((theme) => ({
   input: {
     flex: '1',
   },
+  buttonContainer: {
+    verticalAlign: 'middle',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  },
   button: {
-    // marginLeft: theme.spacing(2)
-  },
-  limitButton: {
 
-  },
+  }
 }));
 
 type LimitFormData = {
-  seats: number
+  seats?: number;
 };
 
 export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
   const classes = useStyles();
 
-  const [increaseLimit] = useActivityCommand("Increase Ticket Type Limit");
-  const [decreaseLimit] = useActivityCommand("Decrease Ticket Type Limit");
-  const [removeLimit] = useActivityCommand("Remove Ticket Type Limit", { method: "DELETE" });
-
   const dispatch = useDispatch();
-  
+
   const increaseLimitForm = useForm<LimitFormData>({
     defaultValues: {
-      seats: 0
+
     }
   });
 
   const decreaseLimitForm = useForm<LimitFormData>({
     defaultValues: {
-      seats: 0
+
     }
   });
 
   const onSubmitIncreaseLimit = async (data: LimitFormData) => {
-    const res = await increaseLimit(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/increase-limit`, {
-      seats: +data.seats
-    });
-    increaseLimitForm.setValue("seats", 0);
-    dispatch(loadActivity(ticketType.activityId, res.revision));
-  }
+    dispatch(sendActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/increase-limit`, {
+      seats: +(data.seats || 0)
+    }));
+    increaseLimitForm.setValue("seats", undefined);
+  };
 
   const onSubmitDecreaseLimit = async (data: LimitFormData) => {
-    const res = await decreaseLimit(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/decrease-limit`, {
-      seats: +data.seats
-    });
-    decreaseLimitForm.setValue("seats", 0);
-    dispatch(loadActivity(ticketType.activityId, res.revision));
-  }
+    dispatch(sendActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/decrease-limit`, {
+      seats: +(data.seats || 0)
+    }));
+    decreaseLimitForm.setValue("seats", undefined);
+  };
 
   const onClickRemoveLimit = async () => {
-    const res = await removeLimit(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, {
+    dispatch(sendActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, {
 
-    });
-    dispatch(loadActivity(ticketType.activityId, res.revision));
-  }
+    }));
+  };
 
   return (
     <Container className={classes.root}>
@@ -89,32 +83,23 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
         <Grid item xs={12} md={4}>
           <form className={classes.form} onSubmit={increaseLimitForm.handleSubmit(onSubmitIncreaseLimit)}>
             <TextField name="seats" label="Increase limit" type="number"
-              size="small" className={classes.input}
+              className={classes.input} variant="outlined"
               inputRef={increaseLimitForm.register}
               disabled={increaseLimitForm.formState.isSubmitting} />
-              <IconButton
-                type="submit"
-                className={classes.limitButton} color="primary">
-                  <CheckIcon />
-              </IconButton>
           </form>
         </Grid>
         <Grid item xs={12} md={4}>
           <form className={classes.form} onSubmit={decreaseLimitForm.handleSubmit(onSubmitDecreaseLimit)}>
             <TextField name="seats" label="Decrease limit" type="number"
-              size="small" className={classes.input}
+              className={classes.input} variant="outlined"
               inputRef={decreaseLimitForm.register}
               disabled={decreaseLimitForm.formState.isSubmitting} />
-              <IconButton
-                type="submit"
-                className={classes.limitButton} color="primary">
-                  <CheckIcon />
-              </IconButton>
           </form>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <Button 
+        <Grid item xs={12} md={4} className={classes.buttonContainer}>
+          <Button
             className={classes.button} color="secondary" variant="contained"
+            size="medium"
             disabled={!ticketType.limit}
             onClick={onClickRemoveLimit}>Remove Limit</Button>
         </Grid>

@@ -4,8 +4,7 @@ import { Activity } from "./activity.models";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { loadActivity } from "./store/activities.actions";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
+import { sendActivityCommand } from "./store/activities.actions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,7 +39,7 @@ export type ModifySeatsProps = {
 };
 
 type FormData = {
-  seats: number;
+  seats?: number;
 };
 
 export function ModifySeats({ activity }: ModifySeatsProps) {
@@ -48,28 +47,24 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
 
   const increaseForm = useForm<FormData>({
     defaultValues: {
-      seats: 0
+      
     }
   });
   const decreaseForm = useForm<FormData>({
     defaultValues: {
-      seats: 0
     }
   });
 
   const dispatch = useDispatch();
 
-  const [addSeats] = useActivityCommand('Add seats');
-  const [removeSeats] = useActivityCommand('Remove seats');
-
   const onSubmitAddSeats = async (data: FormData) => {
     try {
-      const seats = +data.seats;
-      const result = await addSeats(`/activities/${activity.activityId}/add-seats`, {
+      const seats = +(data.seats || 0);
+
+      dispatch(sendActivityCommand(`/activities/${activity.activityId}/add-seats`, {
         seats: seats
-      });
-      increaseForm.setValue("seats", 0);
-      dispatch(loadActivity(activity.activityId, result.revision));
+      }));
+      increaseForm.setValue("seats", undefined);
     } catch (err) {
       // TODO Report error
     }
@@ -77,12 +72,12 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
 
   const onSubmitRemoveSeats = async (data: FormData) => {
     try {
-      const seats = +data.seats;
-      const result = await removeSeats(`/activities/${activity.activityId}/remove-seats`, {
+      const seats = +(data.seats || 0);
+      dispatch(sendActivityCommand(`/activities/${activity.activityId}/remove-seats`, {
         seats: seats
-      });
-      decreaseForm.setValue("seats", 0);
-      dispatch(loadActivity(activity.activityId, result.revision));
+      }));
+
+      decreaseForm.setValue("seats", undefined);
     } catch (err) {
       // TODO Report error
     }

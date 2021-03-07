@@ -1,3 +1,6 @@
+import { Observable, of, throwError } from "rxjs";
+import { ajax, AjaxResponse } from "rxjs/ajax";
+import { catchError, delay, filter, map, repeatWhen, take, tap, timeoutWith } from "rxjs/operators";
 import { buildUrl } from "../url-utils";
 
 enum CommandLogSeverity {
@@ -20,7 +23,7 @@ export interface CommandStatus {
   revision?: number,
   status: string,
   jsonBody: string,
-  body: any,
+  body: unknown,
   messages?: CommandStatusMessage[];
 }
 
@@ -29,62 +32,53 @@ interface SendCommandOptions {
   token?: string;
 }
 
-function waitForResult(commandId: string, token?: string): Promise<CommandStatus> {
+export function waitForCommandResult$(commandId: string, token?: string): Observable<CommandStatus> {
+  const url = buildUrl(`/activities/commands/${commandId}`);
 
-  let attempts = 0;
-  const pollStatus = async (resolve: any, reject: any) => {
-    attempts++;
-    console.log(`Polling for command ${commandId}. Attempt ${attempts}`);
-    const res = await fetch(buildUrl(`/activities/commands/${commandId}`), {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      }
-    });
-    if (res.status == 200) {
-      const commandStatus = await res.json() as CommandStatus;
-      if (commandStatus.jsonBody) {
-        commandStatus.body = JSON.parse(commandStatus.jsonBody);
-      }
-      if (commandStatus.status === 'Completed') {
-        resolve(commandStatus);
-        return;
-      }
-      if (commandStatus.status === 'Failed') {
-        const message = commandStatus.messages?.find(_ => true) ?? { code: "UnknownError", message: "Unknown command failure" };
-        reject(message);
-        return;
-      }
-    }
-    if (attempts >= 20) {
-      reject({
-        code: 'Timeout',
-        message: 'Command timed out'
+  return ajax.getJSON<CommandStatus>(url, { 'Authorization': `Bearer ${token}` }).pipe(
+    catchError((err) => {
+      console.log('Error getting CommandStatus', err);
+      return of({
+        commandId: commandId,
+        status: 'Created',
+        body: null,
+        jsonBody: ''
       });
-      return;
+    }),
+    tap(status => console.log('Current command status', status)),
+    filter(commandStatus => commandStatus.status !== 'Created'),
+    repeatWhen((obs) => obs.pipe(delay(100))),
+    take(1),
+    timeoutWith(10000, of({
+      commandId: commandId,
+      status: 'Failed',
+      body: null,
+      jsonBody: '',
+      messages: [{
+        code: 'Timeout',
+        message: 'Command timed out',
+        severity: CommandLogSeverity.Error
+      }]
+    }))
+  );
+}
+
+export function sendActivityCommand$<TBody>(url: string, body: TBody, options: SendCommandOptions): Observable<CommandStatus> {
+
+  const headers = { 'Authorization': `Bearer ${options.token}`, 'Content-Type': 'application/json' };
+  const commandUrl = buildUrl(url);
+
+  const sendCommand = (): Observable<AjaxResponse> => {
+    switch (options.method) {
+      case "PUT": return ajax.put(commandUrl, body, headers);
+      case "POST": return ajax.post(commandUrl, body, headers);
+      case "DELETE": return ajax.delete(commandUrl, headers);
+      default:
+        return ajax.post(commandUrl, body, headers);
     }
-    setTimeout(() => pollStatus(resolve, reject), 1000);
   };
 
-  const promise = new Promise<CommandStatus>((resolve, reject) => {
-    pollStatus(resolve, reject);
-  });
-  return promise;
+  return sendCommand().pipe(
+    map(resp => resp.response as CommandStatus)
+  );
 }
-
-export async function sendActivityCommand<TBody>(url: string, body: TBody, options?: SendCommandOptions): Promise<CommandStatus> {
-  const res = await fetch(buildUrl(url), {
-    method: options?.method ?? "POST",
-    headers: {
-      'Authorization': `Bearer ${options?.token}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(body)
-  });
-  if (res.status === 200) {
-    const commandStatus = await res.json() as CommandStatus;
-    console.log(`Command sent`, commandStatus);
-    return await waitForResult(commandStatus.commandId, options?.token);
-  }
-  throw { code: "CommandSendFailed", message: "Failed when sending command" };
-}
-
