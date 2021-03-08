@@ -1,9 +1,9 @@
-import { Observable, of, throwError } from "rxjs";
+import { Observable, of } from "rxjs";
 import { ajax, AjaxResponse } from "rxjs/ajax";
 import { catchError, delay, filter, map, repeatWhen, take, tap, timeoutWith } from "rxjs/operators";
 import { buildUrl } from "../url-utils";
 
-enum CommandLogSeverity {
+export enum CommandLogSeverity {
   Verbose = 0,
   Debug = 1,
   Information = 2,
@@ -11,7 +11,7 @@ enum CommandLogSeverity {
   Error = 4
 }
 
-interface CommandStatusMessage {
+export interface CommandStatusMessage {
   code: string,
   message: string,
   severity: CommandLogSeverity;
@@ -47,7 +47,7 @@ export function waitForCommandResult$(commandId: string, token?: string): Observ
     }),
     tap(status => console.log('Current command status', status)),
     filter(commandStatus => commandStatus.status !== 'Created'),
-    repeatWhen((obs) => obs.pipe(delay(100))),
+    repeatWhen((obs) => obs.pipe(delay(1000))),
     take(1),
     timeoutWith(10000, of({
       commandId: commandId,

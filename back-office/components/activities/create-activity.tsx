@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import router from 'next/router';
 import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 import {
@@ -8,9 +8,9 @@ import {
 } from '@material-ui/core';
 
 import { useForm } from 'react-hook-form';
-import { useActivityCommand } from '../../src/use-activity-command.hook';
-import { sendActivityCommand } from './store/activities.actions';
+import { sendActivityCommand } from '../../store/activities/activities.actions';
 import { useDispatch } from 'react-redux';
+import { useActivityCommand } from '../../src/user-activity-command.hook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type FormData = {
-  activityName: string
+  activityName: string;
 };
 
 
@@ -52,18 +52,20 @@ export function CreateActivity() {
     defaultValues: {
     }
   });
-  const dispatch = useDispatch();
 
-  // const [createActivity] = useActivityCommand('Create activity');
+  const [createActivityCommand, createActivityState] = useActivityCommand(`/activities`);
+
   const onSubmit = async (data: FormData) => {
-    try {
-      dispatch(sendActivityCommand(`/activities`, {
-        name: data.activityName
-      }));
-    } catch (err) {
-      // Report error?
+    createActivityCommand({
+      name: data.activityName
+    });
+  };
+
+  useEffect(() => {
+    if (createActivityState?.activityId) {
+      router.push(`/activities/${createActivityState?.activityId}`);
     }
-  }
+  }, [createActivityState?.activityId]);
 
   return (<Container className={classes.root}>
     <Typography variant="overline">Activity</Typography>

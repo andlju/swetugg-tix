@@ -3,9 +3,9 @@ import { ActionsObservable, combineEpics, Epic, StateObservable } from "redux-ob
 import { EMPTY, throwError, combineLatest, Observable } from "rxjs";
 import { filter, map, mergeMap, tap, withLatestFrom, catchError, distinctUntilChanged } from "rxjs/operators";
 import { isOfType } from "typesafe-actions";
-import { loginRequest } from "../../../src/auth-config";
-import { msalService } from "../../../src/services/msal-auth.service";
-import { RootState } from "../../../store/store";
+import { loginRequest } from "../../src/auth-config";
+import { msalService } from "../../src/services/msal-auth.service";
+import { RootState } from "../store";
 import { getScopesPopupEpic, getScopesRedirectEpic, getScopesSilentEpic } from "./auth-scopes.epic";
 import { AuthAction, AuthActionTypes, setInProgress, setUser, User, validateUserFailed } from "./auth.actions";
 

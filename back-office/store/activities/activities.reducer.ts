@@ -1,18 +1,21 @@
+import { useImperativeHandle } from "react";
 import { Reducer } from "redux";
-import { Activity } from "../activity.models";
+import { Activity } from "../../components/activities/activity.models";
 import { ActivitiesAction, ActivityActionTypes } from "./activities.actions";
 
 export interface ActivityCommandState {
+  uiId?: string;
   commandId: string;
-  // isCompleted: boolean;
+  isProcessing: boolean;
   activityId?: string;
+  revision?: number;
 }
 
 export interface ActivitiesState {
   activities: {
     [key: string]: Activity;
   },
-  activeCommands: ActivityCommandState[];
+  commands: ActivityCommandState[];
   visibleActivities: {
     ids: string[],
     loading: boolean;
@@ -21,12 +24,14 @@ export interface ActivitiesState {
 
 const initialState: ActivitiesState = {
   activities: {},
-  activeCommands: [],
+  commands: [],
   visibleActivities: {
     ids: [],
     loading: false
   }
 };
+
+const maxNumberOfOldCommands = 10;
 
 const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, action) => {
   if (!state) {
@@ -66,21 +71,34 @@ const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, ac
           loading: false
         }
       };
-    case ActivityActionTypes.ACTIVITY_COMMAND_SENT:
+    case ActivityActionTypes.SEND_ACTIVITY_COMMAND:
       return {
         ...state,
-        activeCommands: [...state.activeCommands, { commandId: action.payload.commandId }]
+        commands: [{ commandId: action.payload.uiId, uiId: action.payload.uiId, isProcessing: true }, ...state.commands.filter((c, i) => c.isProcessing || i > maxNumberOfOldCommands)]
       };
+    case ActivityActionTypes.ACTIVITY_COMMAND_SENT: {
+      const currentCommand = state.commands.find((c) => action.payload.uiId && c.uiId === action.payload.uiId);
+      const commands = currentCommand ? state.commands.map(c => c === currentCommand ? { ...c, ...action.payload } : c) : [{...action.payload, isProcessing: true }, ...state.commands];
+      return {
+        ...state,
+        commands: commands
+      };
+    }
     case ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE:
       return {
         ...state,
-        activeCommands: state.activeCommands.filter(c => c.commandId !== action.payload.commandId)
+        commands: state.commands.map(c =>
+          c.commandId === action.payload.commandId ? { ...c, isProcessing: false, activityId: action.payload.activityId, revision: action.payload.revision } : c
+        )
       };
-    case ActivityActionTypes.ACTIVITY_COMMAND_FAILED:
+    case ActivityActionTypes.ACTIVITY_COMMAND_FAILED: {
+      const currentCommand = state.commands.find((c) => c.commandId === action.payload.commandId || action.payload.uiId && c.uiId === action.payload.uiId);
+      const commands = currentCommand ? state.commands.map(c => c === currentCommand ? { ...c, ...action.payload, isProcessing: false } : c) : [{...action.payload, isProcessing: false }, ...state.commands];
       return {
         ...state,
-        activeCommands: state.activeCommands.filter(c => c.commandId !== action.payload.commandId)
+        commands: commands
       };
+    }
     default:
       return state;
   }

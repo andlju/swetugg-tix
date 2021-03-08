@@ -6,9 +6,9 @@ import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { ActivitiesState } from '../../../../components/activities/store/activities.reducer';
+import { ActivitiesState } from '../../../../store/activities/activities.reducer';
 import { ModifyLimits, TicketTypeDetails } from '../../../../components';
-import { loadActivity } from '../../../../components/activities/store/activities.actions';
+import { loadActivity } from '../../../../store/activities/activities.actions';
 import { RootState } from '../../../../store/store';
 import { useAuthenticatedUser } from '../../../../src/use-authenticated-user.hook';
 

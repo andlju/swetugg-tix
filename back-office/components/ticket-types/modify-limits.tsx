@@ -6,7 +6,7 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { sendActivityCommand } from "../activities/store/activities.actions";
+import { sendActivityCommand } from "../../store/activities/activities.actions";
 import { TicketType } from "./ticket-type.models";
 
 interface EditTicketTypeProps {

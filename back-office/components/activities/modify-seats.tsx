@@ -4,7 +4,8 @@ import { Activity } from "./activity.models";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { sendActivityCommand } from "./store/activities.actions";
+import { sendActivityCommand } from "../../store/activities/activities.actions";
+import { useActivityCommand } from "../../src/user-activity-command.hook";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,32 +56,24 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
     }
   });
 
-  const dispatch = useDispatch();
+  const [ addSeatsCommand, addSeatsState ] = useActivityCommand(`/activities/${activity.activityId}/add-seats`);
+  const [ removeSeatsCommand, removeSeatsState ] = useActivityCommand(`/activities/${activity.activityId}/remove-seats`);
 
   const onSubmitAddSeats = async (data: FormData) => {
-    try {
-      const seats = +(data.seats || 0);
-
-      dispatch(sendActivityCommand(`/activities/${activity.activityId}/add-seats`, {
-        seats: seats
-      }));
-      increaseForm.setValue("seats", undefined);
-    } catch (err) {
-      // TODO Report error
-    }
+    const seats = +(data.seats || 0);
+    addSeatsCommand({
+      seats: seats
+    });
+    increaseForm.setValue("seats", undefined);
   };
 
   const onSubmitRemoveSeats = async (data: FormData) => {
-    try {
       const seats = +(data.seats || 0);
-      dispatch(sendActivityCommand(`/activities/${activity.activityId}/remove-seats`, {
+      removeSeatsCommand({
         seats: seats
-      }));
-
+      });
+  
       decreaseForm.setValue("seats", undefined);
-    } catch (err) {
-      // TODO Report error
-    }
   };
 
   return (
@@ -96,7 +89,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
               type="number"
               inputRef={increaseForm.register}
               variant="outlined" className={classes.input}
-              disabled={increaseForm.formState.isSubmitting} />
+              disabled={increaseForm.formState.isSubmitting || addSeatsState?.isProcessing || false} />
           </form>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -106,7 +99,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
               type="number"
               inputRef={decreaseForm.register}
               variant="outlined" className={classes.input}
-              disabled={decreaseForm.formState.isSubmitting} />
+              disabled={decreaseForm.formState.isSubmitting || removeSeatsState?.isProcessing || false} />
           </form>
         </Grid>
       </Grid>

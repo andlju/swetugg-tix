@@ -2,8 +2,8 @@ import { Epic } from "redux-observable";
 import { EMPTY, of, throwError } from "rxjs";
 import { catchError, filter, map, mergeMap, take, tap } from "rxjs/operators";
 import { isOfType } from "typesafe-actions";
-import { msalService } from "../../../src/services/msal-auth.service";
-import { RootState } from "../../../store/store";
+import { msalService } from "../../src/services/msal-auth.service";
+import { RootState } from "../store";
 import { AuthAction, AuthActionTypes, getScopes, InteractionKind, setAccessToken } from "./auth.actions";
 import { withLoggedInUser$ } from "./auth.epic";
 

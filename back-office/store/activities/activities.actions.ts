@@ -1,5 +1,6 @@
 import { Action } from "redux";
-import { Activity } from "../activity.models";
+import { Activity } from "../../components/activities/activity.models";
+import { CommandStatusMessage } from "../../src/services/activity-command.service";
 
 export enum ActivityActionTypes {
   LOAD_ACTIVITY = 'LOAD_ACTIVITY',
@@ -40,25 +41,28 @@ export function loadActivitiesComplete(activities: Activity[]) : LoadActivitiesC
   };
 }
 
-interface CommandOptions {
+export interface CommandOptions {
   method?: string;
 }
+let nextTempCommandId = 0;
 
-export function sendActivityCommand<TBody>(commandName: string, body?: TBody, options?: CommandOptions) : SendActivityCommandAction {
+export function sendActivityCommand<TBody>(url: string, body?: TBody, options?: CommandOptions) : SendActivityCommandAction {
   return {
     type: ActivityActionTypes.SEND_ACTIVITY_COMMAND,
     payload: {
-      commandName,
+      uiId: `TMP_CMD_${(nextTempCommandId++)}`,
+      url,
       body,
       options: options || { method: "POST" }
     }
   }
 }
 
-export function activityCommandSent(commandId: string) : ActivityCommandSentAction {
+export function activityCommandSent(commandId: string, uiId?: string) : ActivityCommandSentAction {
   return {
     type: ActivityActionTypes.ACTIVITY_COMMAND_SENT,
     payload: {
+      uiId: uiId,
       commandId
     }
   }
@@ -75,13 +79,13 @@ export function activityCommandComplete(commandId: string, activityId?: string, 
   }
 }
 
-export function activityCommandFailed(commandId: string, errorCode: string, errorMessage: string) : ActivityCommandFailedAction {
+export function activityCommandFailed(commandId: string, messages: CommandStatusMessage[], uiId?: string) : ActivityCommandFailedAction {
   return {
     type: ActivityActionTypes.ACTIVITY_COMMAND_FAILED,
     payload: {
+      uiId,
       commandId,
-      errorCode,
-      errorMessage
+      messages
     }
   }
 }
@@ -116,7 +120,8 @@ export interface LoadActivitiesFailedAction extends Action {
 export interface SendActivityCommandAction extends Action {
   type: ActivityActionTypes.SEND_ACTIVITY_COMMAND;
   payload: {
-    commandName: string;
+    uiId: string;
+    url: string;
     body?: unknown;
     options: CommandOptions;
   }
@@ -126,6 +131,7 @@ export interface ActivityCommandSentAction extends Action {
   type: ActivityActionTypes.ACTIVITY_COMMAND_SENT;
   payload: {
     commandId: string;
+    uiId?: string;
   }
 }
 
@@ -133,6 +139,7 @@ export interface ActivityCommandCompleteAction extends Action {
   type: ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE;
   payload: {
     commandId: string;
+    uiId?: string;
     activityId?: string;
     revision?: number
   }
@@ -142,8 +149,8 @@ export interface ActivityCommandFailedAction extends Action {
   type: ActivityActionTypes.ACTIVITY_COMMAND_FAILED;
   payload: {
     commandId: string;
-    errorCode: string;
-    errorMessage: string;
+    uiId?: string;
+    messages: CommandStatusMessage[];
   }
 }
 

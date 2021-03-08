@@ -6,7 +6,7 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { sendActivityCommand } from "../activities/store/activities.actions";
+import { sendActivityCommand } from "../../store/activities/activities.actions";
 
 interface RefreshActivityViewProps {
   initialActivityId?: string
@@ -55,13 +55,8 @@ export function RefreshActivityView({ initialActivityId }: RefreshActivityViewPr
   const dispatch = useDispatch();
 
   const onSubmit = async (data: FormData) => {
-    try {
-
-      dispatch(sendActivityCommand(`/activities-admin/${data.activityId}/rebuild`, { }));
-      setValue("activityId", "");
-    } catch(err) {
-      setError("activityId", { message: "Invalid format" });
-    }
+    dispatch(sendActivityCommand(`/activities-admin/${data.activityId}/rebuild`, { }));
+    setValue("activityId", "");
   }
 
   return (<Container className={classes.root}>

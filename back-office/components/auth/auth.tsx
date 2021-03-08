@@ -7,7 +7,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { login, logout } from "./store/auth.actions";
+import { login, logout } from "../../store/auth/auth.actions";
 
 
 const SignInButton = () => {

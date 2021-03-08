@@ -6,9 +6,9 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { ActivitiesState } from '../../components/activities/store/activities.reducer';
+import { ActivitiesState } from '../../store/activities/activities.reducer';
 import { ActivityList } from '../../components';
-import { loadActivities } from '../../components/activities/store/activities.actions';
+import { loadActivities } from '../../store/activities/activities.actions';
 import { RootState } from '../../store/store';
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 

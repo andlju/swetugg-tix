@@ -15,7 +15,7 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import { mainListItems, adminListItems } from './list-items';
 import { SignInSignOutButton } from '../components/auth/auth';
 import { useDispatch } from "react-redux";
-import { validateUser } from "../components/auth/store/auth.actions";
+import { validateUser } from "../store/auth/auth.actions";
 
 
 const drawerWidth = 240;

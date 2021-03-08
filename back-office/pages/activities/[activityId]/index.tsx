@@ -8,8 +8,8 @@ import Grid from '@material-ui/core/Grid';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActivityDetails, ModifySeats, TicketTypeList } from '../../../components';
 import { RootState } from '../../../store/store';
-import { loadActivity } from '../../../components/activities/store/activities.actions';
-import { ActivitiesState } from '../../../components/activities/store/activities.reducer';
+import { loadActivity } from '../../../store/activities/activities.actions';
+import { ActivitiesState } from '../../../store/activities/activities.reducer';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
 
 interface ActivityProps {
@@ -35,6 +35,12 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
   useEffect(() => {
     dispatch(loadActivity(activityId));
   }, []);
+
+  const currentCommands = useSelector((s: RootState) => s.activities.commands);
+
+  useEffect(() => {
+    console.log('Current commands', currentCommands);
+  }, [currentCommands]);
 
   const activities = useSelector<RootState, ActivitiesState>(state => state.activities);
 

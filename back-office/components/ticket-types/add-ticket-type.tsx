@@ -6,7 +6,8 @@ import {
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { sendActivityCommand } from "../activities/store/activities.actions";
+import { useActivityCommand } from "../../src/user-activity-command.hook";
+import { sendActivityCommand } from "../../store/activities/activities.actions";
 
 interface AddTicketTypeProps {
   activityId: string
@@ -36,17 +37,17 @@ type FormData = {
 export function AddTicketType({ activityId }: AddTicketTypeProps) {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
-
   const { register, handleSubmit, setValue, formState } = useForm<FormData>({
     defaultValues: {
     }
   });
 
+  const [addTicketTypeCommand, addTicketTypeState] = useActivityCommand(`/activities/${activityId}/ticket-types`);
+
   const onSubmit = async (data: FormData) => {
-    dispatch(sendActivityCommand(`/activities/${activityId}/ticket-types`, {
+    addTicketTypeCommand({
       name: data.ticketTypeName
-    }));
+    });
     setValue("ticketTypeName", "");
   }
 
@@ -57,9 +58,9 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
         <TextField name="ticketTypeName" label="Name"
           size="small" className={classes.input}
           inputRef={register}
-          disabled={formState.isSubmitting} />
+          disabled={formState.isSubmitting || addTicketTypeState?.isProcessing || false} />
         <Button type="submit" className={classes.button} variant="outlined" color="primary"
-          disabled={formState.isSubmitting}>Add</Button>
+          disabled={formState.isSubmitting || addTicketTypeState?.isProcessing || false}>Add</Button>
       </form>
     </Container>
   );

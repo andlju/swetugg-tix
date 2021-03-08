@@ -1,16 +1,16 @@
-import { ActivitiesAction, activityCommandComplete, activityCommandFailed, activityCommandSent, loadActivitiesComplete, loadActivity, sendActivityCommand } from "./activities.actions";
+import { ActivitiesAction, activityCommandComplete, activityCommandFailed, activityCommandSent, loadActivitiesComplete, loadActivity } from "./activities.actions";
 import { filter, mergeMap, map, tap, catchError } from "rxjs/operators";
-import { Observable, throwError } from "rxjs";
+import { Observable, of, throwError } from "rxjs";
 import { combineEpics, Epic, ActionsObservable } from "redux-observable";
 import { ajax } from "rxjs/ajax";
 import { isOfType } from "typesafe-actions";
-import { buildUrl } from "../../../src/url-utils";
-import { Activity } from "../activity.models";
+import { buildUrl } from "../../src/url-utils";
+import { Activity } from "../../components/activities/activity.models";
 import { ActivityActionTypes } from "./activities.actions";
-import { getView$ } from "../../../src/services/view-fetcher.service";
-import { RootState } from "../../../store/store";
-import { withToken$ } from "../../auth/store/auth.epic";
-import { sendActivityCommand$, waitForCommandResult$ } from "../../../src/services/activity-command.service";
+import { getView$ } from "../../src/services/view-fetcher.service";
+import { RootState } from "../store";
+import { withToken$ } from "../auth/auth.epic";
+import { CommandLogSeverity, sendActivityCommand$, waitForCommandResult$ } from "../../src/services/activity-command.service";
 
 const fetchActivities = (token: string): Observable<Activity[]> => {
   return ajax.getJSON(buildUrl('/activities'), { 'Authorization': `Bearer ${token}` });
@@ -42,26 +42,27 @@ const loadActivityEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (a
 
 const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withToken$(action$.pipe(filter(isOfType(ActivityActionTypes.SEND_ACTIVITY_COMMAND))), state$).pipe(
-    mergeMap(([action, token]) => sendActivityCommand$(action.payload.commandName, action.payload.body, { method: action.payload.options.method, token: token })),
-    map(status => activityCommandSent(status.commandId)),
-    catchError((err) => {
-      console.log(`Failed when sending command`, err);
-      return throwError(err);
-    })
+    mergeMap(([action, token]) => sendActivityCommand$(action.payload.url, action.payload.body, { method: action.payload.options.method, token: token }).pipe(
+      map(status => activityCommandSent(status.commandId, action.payload.uiId)),
+      catchError((err) => {
+        console.log(`Failed when sending command`, err);
+        return of(activityCommandFailed('', [{ code: 'CommandSendFailed', message: String(err), severity: CommandLogSeverity.Error }], action.payload.uiId));
+      })
+    )),
   );
 
 const waitForResultCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withToken$(action$.pipe(filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_SENT))), state$).pipe(
-    mergeMap(([action, token]) => waitForCommandResult$(action.payload.commandId, token)),
-    map(status => {
-      switch (status.status) {
-        case 'Completed': return activityCommandComplete(status.commandId, status.aggregateId, status.revision);
-        default: {
-          const message = status.messages && status.messages[0];
-          return activityCommandFailed(status.commandId, message?.code || 'UnknownCommandFailure', message?.message || 'An unknown error occurred when sending command. Please update the page.');
+    mergeMap(([action, token]) => waitForCommandResult$(action.payload.commandId, token).pipe(
+      map(status => {
+        switch (status.status) {
+          case 'Completed': return activityCommandComplete(status.commandId, status.aggregateId, status.revision);
+          default: {
+            return activityCommandFailed(status.commandId, status.messages || [], action.payload.uiId);
+          }
         }
-      }
-    })
+      })
+    )),
   );
 
 

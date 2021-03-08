@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 import { combineEpics } from 'redux-observable';
-import { activitiesReducer } from '../components/activities/store/activities.reducer';
-import { activitiesEpic } from '../components/activities/store/activities.epic';
-import { authReducer } from '../components/auth/store/auth.reducer';
-import { authEpic } from '../components/auth/store/auth.epic';
+import { activitiesReducer } from './activities/activities.reducer';
+import { activitiesEpic } from './activities/activities.epic';
+import { authReducer } from './auth/auth.reducer';
+import { authEpic } from './auth/auth.epic';
 
 export const rootReducer = combineReducers({
     activities: activitiesReducer,
