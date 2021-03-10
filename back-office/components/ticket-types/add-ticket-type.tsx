@@ -42,7 +42,7 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
     }
   });
 
-  const [addTicketTypeCommand, addTicketTypeState] = useActivityCommand(`/activities/${activityId}/ticket-types`);
+  const [addTicketTypeCommand, addTicketTypeStatus] = useActivityCommand(`/activities/${activityId}/ticket-types`);
 
   const onSubmit = async (data: FormData) => {
     addTicketTypeCommand({
@@ -58,9 +58,9 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
         <TextField name="ticketTypeName" label="Name"
           size="small" className={classes.input}
           inputRef={register}
-          disabled={formState.isSubmitting || addTicketTypeState?.isProcessing || false} />
+          disabled={addTicketTypeStatus.processing} />
         <Button type="submit" className={classes.button} variant="outlined" color="primary"
-          disabled={formState.isSubmitting || addTicketTypeState?.isProcessing || false}>Add</Button>
+          disabled={addTicketTypeStatus.processing}>Add</Button>
       </form>
     </Container>
   );

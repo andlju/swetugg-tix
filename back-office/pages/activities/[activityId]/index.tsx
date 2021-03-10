@@ -36,12 +36,6 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
     dispatch(loadActivity(activityId));
   }, []);
 
-  const currentCommands = useSelector((s: RootState) => s.activities.commands);
-
-  useEffect(() => {
-    console.log('Current commands', currentCommands);
-  }, [currentCommands]);
-
   const activities = useSelector<RootState, ActivitiesState>(state => state.activities);
 
   const activity = activities.activities[activityId];

@@ -1,6 +1,6 @@
 import { Action } from "redux";
 import { Activity } from "../../components/activities/activity.models";
-import { CommandStatusMessage } from "../../src/services/activity-command.service";
+import { CommandStatus } from "../../src/services/activity-command.service";
 
 export enum ActivityActionTypes {
   LOAD_ACTIVITY = 'LOAD_ACTIVITY',
@@ -11,8 +11,7 @@ export enum ActivityActionTypes {
   SEND_ACTIVITY_COMMAND = 'SEND_ACTIVITY_COMMAND',
 
   ACTIVITY_COMMAND_SENT = 'ACTIVITY_COMMAND_SENT',
-  ACTIVITY_COMMAND_COMPLETE = 'ACTIVITY_COMMAND_COMPLETE',
-  ACTIVITY_COMMAND_FAILED = 'ACTIVITY_COMMAND_FAILED',
+  ACTIVITY_COMMAND_STATUS_SET = 'ACTIVITY_COMMAND_STATUS_SET'
 
 }
 
@@ -62,30 +61,18 @@ export function activityCommandSent(commandId: string, uiId?: string) : Activity
   return {
     type: ActivityActionTypes.ACTIVITY_COMMAND_SENT,
     payload: {
-      uiId: uiId,
+      uiId,
       commandId
     }
   }
 }
 
-export function activityCommandComplete(commandId: string, activityId?: string, revision?: number) : ActivityCommandCompleteAction {
+export function activityCommandStatusSet(commandStatus: CommandStatus, uiId?: string) : ActivityCommandStatusSetAction {
   return {
-    type: ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE,
-    payload: {
-      commandId,
-      activityId,
-      revision
-    }
-  }
-}
-
-export function activityCommandFailed(commandId: string, messages: CommandStatusMessage[], uiId?: string) : ActivityCommandFailedAction {
-  return {
-    type: ActivityActionTypes.ACTIVITY_COMMAND_FAILED,
+    type: ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET,
     payload: {
       uiId,
-      commandId,
-      messages
+      commandStatus
     }
   }
 }
@@ -135,24 +122,14 @@ export interface ActivityCommandSentAction extends Action {
   }
 }
 
-export interface ActivityCommandCompleteAction extends Action {
-  type: ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE;
+export interface ActivityCommandStatusSetAction extends Action {
+  type: ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET;
   payload: {
-    commandId: string;
+    commandStatus: CommandStatus;
     uiId?: string;
-    activityId?: string;
-    revision?: number
   }
 }
 
-export interface ActivityCommandFailedAction extends Action {
-  type: ActivityActionTypes.ACTIVITY_COMMAND_FAILED;
-  payload: {
-    commandId: string;
-    uiId?: string;
-    messages: CommandStatusMessage[];
-  }
-}
 
 export type ActivitiesAction =
   | LoadActivityAction
@@ -161,5 +138,4 @@ export type ActivitiesAction =
   | LoadActivitiesFailedAction
   | SendActivityCommandAction
   | ActivityCommandSentAction
-  | ActivityCommandCompleteAction
-  | ActivityCommandFailedAction;
+  | ActivityCommandStatusSetAction;

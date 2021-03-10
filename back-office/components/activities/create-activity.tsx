@@ -53,7 +53,7 @@ export function CreateActivity() {
     }
   });
 
-  const [createActivityCommand, createActivityState] = useActivityCommand(`/activities`);
+  const [createActivityCommand, createActivityStatus, createActivityState] = useActivityCommand(`/activities`);
 
   const onSubmit = async (data: FormData) => {
     createActivityCommand({
@@ -62,10 +62,10 @@ export function CreateActivity() {
   };
 
   useEffect(() => {
-    if (createActivityState?.activityId) {
-      router.push(`/activities/${createActivityState?.activityId}`);
+    if (createActivityState?.aggregateId) {
+      router.push(`/activities/${createActivityState?.aggregateId}`);
     }
-  }, [createActivityState?.activityId]);
+  }, [createActivityState?.aggregateId]);
 
   return (<Container className={classes.root}>
     <Typography variant="overline">Activity</Typography>
@@ -81,7 +81,7 @@ export function CreateActivity() {
           disabled={formState.isSubmitting}>
           Create
         </Button>
-        {formState.isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
+        {createActivityStatus.processing && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
       </div>
     </form>
   </Container>);

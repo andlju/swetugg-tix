@@ -22,7 +22,6 @@ export function useAuthenticatedUser(scopes?: string[]): AuthenticatedUserResult
     if (scopes) {
       dispatch(getScopes(scopes));
     }
-
   }, []);
 
   return {

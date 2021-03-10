@@ -1,6 +1,6 @@
-import { ActivitiesAction, activityCommandComplete, activityCommandFailed, activityCommandSent, loadActivitiesComplete, loadActivity } from "./activities.actions";
-import { filter, mergeMap, map, tap, catchError } from "rxjs/operators";
-import { Observable, of, throwError } from "rxjs";
+import { ActivitiesAction, activityCommandSent, activityCommandStatusSet, loadActivitiesComplete, loadActivity } from "./activities.actions";
+import { filter, mergeMap, map, tap, catchError, take } from "rxjs/operators";
+import { Observable, of } from "rxjs";
 import { combineEpics, Epic, ActionsObservable } from "redux-observable";
 import { ajax } from "rxjs/ajax";
 import { isOfType } from "typesafe-actions";
@@ -46,7 +46,8 @@ const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootStat
       map(status => activityCommandSent(status.commandId, action.payload.uiId)),
       catchError((err) => {
         console.log(`Failed when sending command`, err);
-        return of(activityCommandFailed('', [{ code: 'CommandSendFailed', message: String(err), severity: CommandLogSeverity.Error }], action.payload.uiId));
+        // TODO Report a generic failure instead of command failure?
+        return of(activityCommandStatusSet({ commandId: '', status: "Failed", messages: [{ code: 'CommandSendFailed', message: String(err), severity: CommandLogSeverity.Error }] }, action.payload.uiId));
       })
     )),
   );
@@ -54,23 +55,16 @@ const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootStat
 const waitForResultCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withToken$(action$.pipe(filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_SENT))), state$).pipe(
     mergeMap(([action, token]) => waitForCommandResult$(action.payload.commandId, token).pipe(
-      map(status => {
-        switch (status.status) {
-          case 'Completed': return activityCommandComplete(status.commandId, status.aggregateId, status.revision);
-          default: {
-            return activityCommandFailed(status.commandId, status.messages || [], action.payload.uiId);
-          }
-        }
-      })
+      map(status => activityCommandStatusSet(status, action.payload.uiId))
     )),
   );
 
-
 const reloadOnCommandCompleteEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$) =>
   action$.pipe(
-    filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE)),
-    filter((action) => !!action.payload.activityId),
-    map((action) => loadActivity(action.payload.activityId || '', action.payload.revision))
+    filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET)),
+    filter((action) => action.payload.commandStatus.status === "Completed"),
+    filter((action) => !!action.payload.commandStatus.aggregateId),
+    map((action) => loadActivity(action.payload.commandStatus.aggregateId || '', action.payload.commandStatus.revision))
   );
 
 

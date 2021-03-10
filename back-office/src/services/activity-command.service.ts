@@ -22,8 +22,8 @@ export interface CommandStatus {
   aggregateId?: string,
   revision?: number,
   status: string,
-  jsonBody: string,
-  body: unknown,
+  jsonBody?: string,
+  body?: unknown,
   messages?: CommandStatusMessage[];
 }
 
@@ -45,7 +45,6 @@ export function waitForCommandResult$(commandId: string, token?: string): Observ
         jsonBody: ''
       });
     }),
-    tap(status => console.log('Current command status', status)),
     filter(commandStatus => commandStatus.status !== 'Created'),
     repeatWhen((obs) => obs.pipe(delay(1000))),
     take(1),

@@ -1,21 +1,17 @@
-import { useImperativeHandle } from "react";
 import { Reducer } from "redux";
 import { Activity } from "../../components/activities/activity.models";
+import { CommandStatus } from "../../src/services/activity-command.service";
 import { ActivitiesAction, ActivityActionTypes } from "./activities.actions";
 
-export interface ActivityCommandState {
+export interface CommandStatusState extends CommandStatus {
   uiId?: string;
-  commandId: string;
-  isProcessing: boolean;
-  activityId?: string;
-  revision?: number;
 }
 
 export interface ActivitiesState {
   activities: {
     [key: string]: Activity;
   },
-  commands: ActivityCommandState[];
+  commands: CommandStatusState[];
   visibleActivities: {
     ids: string[],
     loading: boolean;
@@ -74,26 +70,17 @@ const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, ac
     case ActivityActionTypes.SEND_ACTIVITY_COMMAND:
       return {
         ...state,
-        commands: [{ commandId: action.payload.uiId, uiId: action.payload.uiId, isProcessing: true }, ...state.commands.filter((c, i) => c.isProcessing || i > maxNumberOfOldCommands)]
+        commands: [{ 
+          commandId: action.payload.uiId,
+          uiId: action.payload.uiId,
+          status: "Dispatched",
+          body: action.payload.body,
+          jsonBody: JSON.stringify(action.payload.body)
+        }, ...state.commands.filter((c, i) => c.status === "Dispatched" || c.status === "Created" || i > maxNumberOfOldCommands)]
       };
-    case ActivityActionTypes.ACTIVITY_COMMAND_SENT: {
+    case ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET: {
       const currentCommand = state.commands.find((c) => action.payload.uiId && c.uiId === action.payload.uiId);
-      const commands = currentCommand ? state.commands.map(c => c === currentCommand ? { ...c, ...action.payload } : c) : [{...action.payload, isProcessing: true }, ...state.commands];
-      return {
-        ...state,
-        commands: commands
-      };
-    }
-    case ActivityActionTypes.ACTIVITY_COMMAND_COMPLETE:
-      return {
-        ...state,
-        commands: state.commands.map(c =>
-          c.commandId === action.payload.commandId ? { ...c, isProcessing: false, activityId: action.payload.activityId, revision: action.payload.revision } : c
-        )
-      };
-    case ActivityActionTypes.ACTIVITY_COMMAND_FAILED: {
-      const currentCommand = state.commands.find((c) => c.commandId === action.payload.commandId || action.payload.uiId && c.uiId === action.payload.uiId);
-      const commands = currentCommand ? state.commands.map(c => c === currentCommand ? { ...c, ...action.payload, isProcessing: false } : c) : [{...action.payload, isProcessing: false }, ...state.commands];
+      const commands = currentCommand ? state.commands.map(c => c === currentCommand ? { ...c, ...action.payload.commandStatus } : c) : [{...action.payload.commandStatus }, ...state.commands];
       return {
         ...state,
         commands: commands

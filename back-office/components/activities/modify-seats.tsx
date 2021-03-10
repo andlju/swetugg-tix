@@ -1,11 +1,10 @@
-import { Container, Grid, makeStyles, TextField, Typography } from "@material-ui/core";
+import { CircularProgress, Container, Grid, InputAdornment, makeStyles, TextField, Typography } from "@material-ui/core";
 import { Activity } from "./activity.models";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { sendActivityCommand } from "../../store/activities/activities.actions";
 import { useActivityCommand } from "../../src/user-activity-command.hook";
+import { CommandLogSeverity } from "../../src/services/activity-command.service";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export type ModifySeatsProps = {
-  activity: Activity
+  activity: Activity;
 };
 
 type FormData = {
@@ -48,7 +47,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
 
   const increaseForm = useForm<FormData>({
     defaultValues: {
-      
+
     }
   });
   const decreaseForm = useForm<FormData>({
@@ -56,25 +55,34 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
     }
   });
 
-  const [ addSeatsCommand, addSeatsState ] = useActivityCommand(`/activities/${activity.activityId}/add-seats`);
-  const [ removeSeatsCommand, removeSeatsState ] = useActivityCommand(`/activities/${activity.activityId}/remove-seats`);
+  const [addSeatsCommand, addSeatsStatus, addSeatsState] = useActivityCommand(`/activities/${activity.activityId}/add-seats`);
+  const [removeSeatsCommand, removeSeatsStatus, removeSeatsState] = useActivityCommand(`/activities/${activity.activityId}/remove-seats`);
+
+  const addSeatsError = addSeatsState?.messages && addSeatsState.messages.find(m => m.severity === CommandLogSeverity.Error);
+  const removeSeatsError = removeSeatsState?.messages && removeSeatsState.messages.find(m => m.severity === CommandLogSeverity.Error);
 
   const onSubmitAddSeats = async (data: FormData) => {
     const seats = +(data.seats || 0);
     addSeatsCommand({
       seats: seats
     });
-    increaseForm.setValue("seats", undefined);
   };
 
   const onSubmitRemoveSeats = async (data: FormData) => {
-      const seats = +(data.seats || 0);
-      removeSeatsCommand({
-        seats: seats
-      });
-  
-      decreaseForm.setValue("seats", undefined);
+    const seats = +(data.seats || 0);
+    removeSeatsCommand({
+      seats: seats
+    });
   };
+
+  useEffect(() => {
+    if (addSeatsStatus.completed) {
+      increaseForm.setValue("seats", undefined);
+    }
+    if (removeSeatsStatus.completed) {
+      decreaseForm.setValue("seats", undefined);
+    }
+  }, [addSeatsStatus, removeSeatsStatus]);
 
   return (
     <Container className={classes.root}>
@@ -89,7 +97,12 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
               type="number"
               inputRef={increaseForm.register}
               variant="outlined" className={classes.input}
-              disabled={increaseForm.formState.isSubmitting || addSeatsState?.isProcessing || false} />
+              disabled={addSeatsStatus.processing}
+              error={addSeatsStatus.failed}
+              helperText={addSeatsError?.message}
+              InputProps={{
+                endAdornment: addSeatsStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
+              }} />
           </form>
         </Grid>
         <Grid item xs={12} md={6}>
@@ -99,7 +112,12 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
               type="number"
               inputRef={decreaseForm.register}
               variant="outlined" className={classes.input}
-              disabled={decreaseForm.formState.isSubmitting || removeSeatsState?.isProcessing || false} />
+              disabled={removeSeatsStatus.processing}
+              error={removeSeatsStatus.failed}
+              helperText={removeSeatsError?.message}
+              InputProps={{
+                endAdornment: removeSeatsStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
+              }} />
           </form>
         </Grid>
       </Grid>
