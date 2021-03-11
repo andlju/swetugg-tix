@@ -259,6 +259,7 @@ export = async () => {
         "AzureAdB2C:SignUpSignInPolicyId": azureAdPolicyName,
         "AzureAdB2C:ClientId": azureAdApiApp,
         "AzureAdB2C:ClientSecret": azureAdApiAppSecret,
+        "AzureAdB2C:TokenValidationParameters:NameClaimType": "name",
     };
 
     let activityAppName: pulumi.Output<string> | undefined;

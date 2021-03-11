@@ -7,8 +7,11 @@
 @commandId = 9933c6c3-d811-4b95-928c-d86bede6e94e
 @orderId = 5d7764de-bbad-47e5-b680-17d618d3eda8
 
+@token = 
+
 ### List all activities
 GET {{host}}/api/activities
+Authorization: Bearer {{token}}
 
 ### Create a new Activity
 POST {{host}}/api/activities 
