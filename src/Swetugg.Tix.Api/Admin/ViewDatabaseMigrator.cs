@@ -1,6 +1,8 @@
 ﻿using FluentMigrator.Runner;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Swetugg.Tix.Api.Options;
 using System;
 
 namespace Swetugg.Tix.Api.Admin
@@ -10,17 +12,18 @@ namespace Swetugg.Tix.Api.Admin
         private readonly string _connectionString;
         private readonly IServiceProvider _serviceProvider;
 
-        public ViewDatabaseMigrator(string connectionString)
+        public ViewDatabaseMigrator(ApiOptions options)
         {
-            _connectionString = connectionString;
-            _serviceProvider = CreateServices();
+            _connectionString = options.ViewsDbConnection;
+            _serviceProvider = CreateServices(options);
         }
 
-        private IServiceProvider CreateServices()
+        private IServiceProvider CreateServices(ApiOptions options)
         {
             return new ServiceCollection()
                 // Add common FluentMigrator services
                 .AddFluentMigratorCore()
+                .AddSingleton(options)
                 .ConfigureRunner(rb => rb
                     // Add SQLite support to FluentMigrator
                     .AddSqlServer()

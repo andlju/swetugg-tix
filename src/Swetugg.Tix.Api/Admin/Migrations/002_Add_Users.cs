@@ -1,4 +1,6 @@
 using FluentMigrator;
+using Microsoft.Extensions.Options;
+using Swetugg.Tix.Api.Options;
 using System;
 
 namespace Swetugg.Tix.Api.Admin.Migrations
@@ -6,6 +8,13 @@ namespace Swetugg.Tix.Api.Admin.Migrations
     [Migration(2)]
     public class AddUsers : Migration
     {
+        private readonly string _issuerIdentifier;
+
+        public AddUsers(ApiOptions options)
+        {
+            _issuerIdentifier = options.IssuerIdentifier;
+        }
+
         public override void Up()
         {
             Create.Schema("Users");
@@ -49,7 +58,7 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
             Insert
                 .IntoTable("Issuer").InSchema("Users")
-                .Row(new { IssuerId = Guid.NewGuid(), Name = "Swetugg Local", IssuerIdentifier = "https://swetuggtixlocal.b2clogin.com/866d2d59-fb99-4bbf-b901-4398de29c751/v2.0/" });
+                .Row(new { IssuerId = Guid.NewGuid(), Name = "Swetugg Local", IssuerIdentifier = _issuerIdentifier });
         }
 
         public override void Down()

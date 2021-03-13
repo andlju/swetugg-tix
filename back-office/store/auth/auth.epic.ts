@@ -9,7 +9,7 @@ import { msalService } from "../../src/services/msal-auth.service";
 import { buildUrl } from "../../src/url-utils";
 import { RootState } from "../store";
 import { getScopesPopupEpic, getScopesRedirectEpic, getScopesSilentEpic } from "./auth-scopes.epic";
-import { AuthAction, AuthActionTypes, getScopes, setInProgress, setUser, updateUserComplete, updateUserFailed, User, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
+import { AuthAction, AuthActionTypes, getScopes, requestUserUpdate, setInProgress, setUser, updateUserComplete, updateUserFailed, User, UserStatus, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
 
 const loginEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
   filter(isOfType(AuthActionTypes.LOGIN)),
@@ -65,6 +65,14 @@ const setUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) =
     ))
   );
 
+const requestUserUpdateEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+  filter(isOfType(AuthActionTypes.SET_USER)),
+  map(action => action.payload.user),
+  filter(user => !!user),
+  filter(user => user?.status === UserStatus.None),
+  mergeMap((user) => user && of(requestUserUpdate(user)) || EMPTY)
+);
+
 const inProgressEpic: Epic<AuthAction, AuthAction> = () => msalService.isInProgress$().pipe(
   distinctUntilChanged(),
   map((inProgress) => setInProgress(inProgress))
@@ -108,4 +116,4 @@ export function withToken$<TAction>(action$: Observable<TAction>, state$: StateO
 }
 
 
-export const authEpic = combineEpics(loginEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, updateUserEpic);
+export const authEpic = combineEpics(loginEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, requestUserUpdateEpic, updateUserEpic);

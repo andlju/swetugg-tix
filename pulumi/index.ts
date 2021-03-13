@@ -10,6 +10,7 @@ const config = new pulumi.Config();
 const shouldDeploy = config.requireBoolean("deploy");
 
 const azureAdTenantName = config.require("azure-ad-b2c-tenant-name");
+const azureAdTenantId = config.require("azure-ad-b2c-tenant-id");
 const azureAdPolicyName = config.require("azure-ad-b2c-policy-name");
 const azureAdBackendApp = config.require("azure-ad-b2c-backend-app");
 const azureAdBackendAppSecret = config.requireSecret("azure-ad-b2c-backend-app-secret");
@@ -260,6 +261,7 @@ export = async () => {
         "AzureAdB2C:ClientId": azureAdApiApp,
         "AzureAdB2C:ClientSecret": azureAdApiAppSecret,
         "AzureAdB2C:TokenValidationParameters:NameClaimType": "name",
+        "IssuerIdentifier": `https://${azureAdTenantName}.b2clogin.com/${azureAdTenantId}/v2.0/`,
     };
 
     let activityAppName: pulumi.Output<string> | undefined;

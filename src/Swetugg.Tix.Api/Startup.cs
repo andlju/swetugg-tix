@@ -72,8 +72,7 @@ namespace Swetugg.Tix.Api
             builder.Services.AddSingleton<ViewDatabaseMigrator>(sp =>
             {
                 var options = sp.GetService<IOptions<ApiOptions>>();
-                var viewsConnectionString = options.Value.ViewsDbConnection;
-                var builder = new ViewDatabaseMigrator(viewsConnectionString);
+                var builder = new ViewDatabaseMigrator(options.Value);
 
                 // Ensure that the database is properly initialized
                 builder.InitializeDatabase();

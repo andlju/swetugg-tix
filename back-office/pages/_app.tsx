@@ -5,10 +5,13 @@ import { ThemeProvider } from '@material-ui/core/styles';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { SnackbarProvider } from 'notistack';
 import { withApplicationInsights } from 'next-applicationinsights';
+import routingEpics from '../globals/routing.epic';
 import theme from '../styles/theme';
 import App, { AppProps } from 'next/app';
-import store from '../store/store';
+import configureStore from '../store/store';
 import BackOfficeLayout from '../layout/main-layout';
+
+const store = configureStore(routingEpics);
 
 function MyApp(props: AppProps) {
   const { Component, pageProps } = props;

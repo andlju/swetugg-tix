@@ -16,6 +16,8 @@ export enum AuthActionTypes {
   UPDATE_USER = 'UPDATE_USER',
   UPDATE_USER_COMPLETE = 'UPDATE_USER_COMPLETE',
   UPDATE_USER_FAILED = 'UPDATE_USER_FAILED',
+
+  REQUEST_USER_UPDATE = 'REQUEST_USER_UPDATE',
 }
 
 export enum InteractionKind {
@@ -132,6 +134,15 @@ export function updateUserFailed(errorCode: string, errorMessage: string): Updat
   };
 }
 
+export function requestUserUpdate(user: User): RequestUserUpdateAction {
+  return {
+    type: AuthActionTypes.REQUEST_USER_UPDATE,
+    payload: {
+      user
+    }
+  };
+}
+
 export interface LoginAction extends Action {
   type: AuthActionTypes.LOGIN;
   payload: {
@@ -207,6 +218,13 @@ export interface UpdateUserFailedAction extends Action {
   }
 }
 
+export interface RequestUserUpdateAction extends Action {
+  type: AuthActionTypes.REQUEST_USER_UPDATE;
+  payload: {
+    user: User;
+  };
+}
+
 
 export type AuthAction =
   | LoginAction
@@ -220,4 +238,5 @@ export type AuthAction =
   | SetUserAction
   | UpdateUserAction
   | UpdateUserCompleteAction
-  | UpdateUserFailedAction;
+  | UpdateUserFailedAction
+  | RequestUserUpdateAction;

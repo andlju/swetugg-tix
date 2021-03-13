@@ -1,23 +1,24 @@
-import { createStore, applyMiddleware } from 'redux'
-import { createEpicMiddleware } from 'redux-observable';
+import { createStore, applyMiddleware, Action } from 'redux'
+import { combineEpics, createEpicMiddleware, Epic } from 'redux-observable';
 
 import { rootEpic, rootReducer } from './root.reducer'
 
 const epicMiddleware = createEpicMiddleware();
 
-function configureStore() {
+const configureStore = (uiEpic: Epic<Action, Action, RootState>) => {
+
+  const completeEpic = combineEpics(rootEpic, uiEpic);
+
   const store = createStore(
     rootReducer,
     applyMiddleware(epicMiddleware)
   );
 
-  epicMiddleware.run(rootEpic);
+  epicMiddleware.run(completeEpic);
 
   return store;
 }
 
-const store = configureStore();
-
 export type RootState = ReturnType<typeof rootReducer>;
 
-export default store;
+export default configureStore;
