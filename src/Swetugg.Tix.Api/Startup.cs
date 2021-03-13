@@ -13,6 +13,7 @@ using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.Api.Orders.Commands;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Infrastructure.CommandLog;
+using Swetugg.Tix.User;
 
 [assembly: FunctionsStartup(typeof(Swetugg.Tix.Api.Startup))]
 namespace Swetugg.Tix.Api
@@ -45,6 +46,13 @@ namespace Swetugg.Tix.Api
                 var viewsDbConnectionString = options.Value.ViewsDbConnection;
 
                 return new SqlActivityContentCommands(viewsDbConnectionString);
+            });
+
+            builder.Services.AddSingleton<IUserCommands>(sp =>
+            {
+                var options = sp.GetService<IOptions<ApiOptions>>();
+                var viewsDbConnectionString = options.Value.ViewsDbConnection;
+                return new UserCommands(viewsDbConnectionString);
             });
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {

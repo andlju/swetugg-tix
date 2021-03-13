@@ -24,11 +24,11 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
       return {
         ...state,
       };
-    case AuthActionTypes.VALIDATE_USER:
+    case AuthActionTypes.VALIDATE_LOGIN:
       return {
         ...state,
       };
-    case AuthActionTypes.VALIDATE_USER_FAILED:
+    case AuthActionTypes.VALIDATE_LOGIN_FAILED:
       return {
         ...state,
         user: undefined,

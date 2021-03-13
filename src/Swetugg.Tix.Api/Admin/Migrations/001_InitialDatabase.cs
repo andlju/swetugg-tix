@@ -18,7 +18,7 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
             Create.Table("TicketType")
                 .InSchema("ActivityContent")
-                .WithColumn("ActivityId").AsGuid().NotNullable().NotNullable()
+                .WithColumn("ActivityId").AsGuid().NotNullable()
                 .WithColumn("TicketTypeId").AsGuid().NotNullable()
                 .WithColumn("Name").AsString(400)
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();

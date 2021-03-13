@@ -5,13 +5,17 @@ export enum AuthActionTypes {
   LOGOUT = 'LOGOUT',
   GET_SCOPES = 'GET_SCOPE',
   
-  VALIDATE_USER = 'VALIDATE_USER',
-  VALIDATE_USER_COMPLETE = 'VALIDATE_USER_COMPLETE',
-  VALIDATE_USER_FAILED = 'VALIDATE_USER_FAILED',
+  VALIDATE_LOGIN = 'VALIDATE_LOGIN',
+  VALIDATE_LOGIN_COMPLETE = 'VALIDATE_LOGIN_COMPLETE',
+  VALIDATE_LOGIN_FAILED = 'VALIDATE_LOGIN_FAILED',
 
   SET_ACCESS_TOKEN = 'SET_ACCESS_TOKEN',
   SET_USER = 'SET_USER',
   SET_IN_PROGRESS = 'SET_IN_PROGRESS',
+
+  UPDATE_USER = 'UPDATE_USER',
+  UPDATE_USER_COMPLETE = 'UPDATE_USER_COMPLETE',
+  UPDATE_USER_FAILED = 'UPDATE_USER_FAILED',
 }
 
 export enum InteractionKind {
@@ -20,9 +24,17 @@ export enum InteractionKind {
   REDIRECT = 'Redirect'
 }
 
+export enum UserStatus {
+  None = 0,
+  Created = 1,
+  Validated = 2,
+  Deleted = 100
+}
+
 export interface User {
-  displayName: string,
-  username: string
+  name: string,
+  username: string,
+  status: UserStatus
 }
 
 export function login(interactionKind: InteractionKind = InteractionKind.SILENT): LoginAction {
@@ -40,15 +52,24 @@ export function logout(): LogoutAction {
   };
 }
 
-export function validateUser(): ValidateUserAction {
+export function validateLogin(scopes: string[]): ValidateLoginAction {
   return {
-    type: AuthActionTypes.VALIDATE_USER,
+    type: AuthActionTypes.VALIDATE_LOGIN,
+    payload: {
+      scopes,
+    }
   };
 }
 
-export function validateUserFailed(): ValidateUserFailedAction {
+export function validateLoginComplete(): ValidateLoginCompleteAction {
   return {
-    type: AuthActionTypes.VALIDATE_USER_FAILED,
+    type: AuthActionTypes.VALIDATE_LOGIN_COMPLETE,
+  };
+}
+
+export function validateLoginFailed(): ValidateLoginFailedAction {
+  return {
+    type: AuthActionTypes.VALIDATE_LOGIN_FAILED,
   };
 }
 
@@ -85,6 +106,32 @@ export function setUser(user?: User): SetUserAction {
   };
 }
 
+export function updateUser(user: User): UpdateUserAction {
+  return {
+    type: AuthActionTypes.UPDATE_USER,
+    payload: {
+      user
+    }
+  };
+}
+
+
+export function updateUserComplete(): UpdateUserCompleteAction {
+  return {
+    type: AuthActionTypes.UPDATE_USER_COMPLETE,
+  };
+}
+
+export function updateUserFailed(errorCode: string, errorMessage: string): UpdateUserFailedAction {
+  return {
+    type: AuthActionTypes.UPDATE_USER_FAILED,
+    payload: {
+      errorCode,
+      errorMessage
+    }
+  };
+}
+
 export interface LoginAction extends Action {
   type: AuthActionTypes.LOGIN;
   payload: {
@@ -96,12 +143,19 @@ export interface LogoutAction extends Action {
   type: AuthActionTypes.LOGOUT;
 }
 
-export interface ValidateUserAction extends Action {
-  type: AuthActionTypes.VALIDATE_USER
+export interface ValidateLoginAction extends Action {
+  type: AuthActionTypes.VALIDATE_LOGIN;
+  payload: {
+    scopes: string[];
+  };
 }
 
-export interface ValidateUserFailedAction extends Action {
-  type: AuthActionTypes.VALIDATE_USER_FAILED
+export interface ValidateLoginCompleteAction extends Action {
+  type: AuthActionTypes.VALIDATE_LOGIN_COMPLETE
+}
+
+export interface ValidateLoginFailedAction extends Action {
+  type: AuthActionTypes.VALIDATE_LOGIN_FAILED
 }
 
 export interface GetScopesAction extends Action {
@@ -133,12 +187,37 @@ export interface SetUserAction extends Action {
   };
 }
 
+
+export interface UpdateUserAction extends Action {
+  type: AuthActionTypes.UPDATE_USER,
+  payload: {
+    user: User;
+  };
+}
+
+export interface UpdateUserCompleteAction extends Action {
+  type: AuthActionTypes.UPDATE_USER_COMPLETE
+}
+
+export interface UpdateUserFailedAction extends Action {
+  type: AuthActionTypes.UPDATE_USER_FAILED,
+  payload: {
+    errorCode: string,
+    errorMessage: string
+  }
+}
+
+
 export type AuthAction =
   | LoginAction
   | LogoutAction
-  | ValidateUserAction
-  | ValidateUserFailedAction
+  | ValidateLoginAction
+  | ValidateLoginCompleteAction
+  | ValidateLoginFailedAction
   | GetScopesAction
   | SetAccessTokenAction
   | SetInProgressAction
-  | SetUserAction;
+  | SetUserAction
+  | UpdateUserAction
+  | UpdateUserCompleteAction
+  | UpdateUserFailedAction;

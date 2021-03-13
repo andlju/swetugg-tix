@@ -6,8 +6,8 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { WelcomeName } from '../components/auth/auth';
-import { useAuthenticatedUser } from '../src/use-authenticated-user.hook';
+import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
+import { EditProfile } from '../../components/profile/edit-profile';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -15,12 +15,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   paper: {
-    padding: theme.spacing(1),
-  },
-  activityList: {
-    minHeight: theme.spacing(30),
-    maxHeight: theme.spacing(60),
-    overflow: 'auto',
+    padding: theme.spacing(2)
   }
 }));
 
@@ -32,17 +27,18 @@ export default function Index() {
   return (
     <Container maxWidth={false} className={classes.container}>
       <Typography variant="h4" component="h1" gutterBottom>
-        Swetugg Tix Dashboard
+        Edit Profile
         </Typography>
       <Grid container spacing={3}>
-        {/* List of activities */}
-        <Grid item xs={12}>
-          <Paper className={clsx(classes.paper, classes.activityList)}>
-            <WelcomeName />
+        <Grid item xs={12} md={6}>
+          <Paper className={classes.paper}>
+            { user && <EditProfile user={user} /> }
           </Paper>
         </Grid>
-      </Grid>
+        <Grid item xs={12} md={6}>
 
+        </Grid>
+      </Grid>
     </Container>
   );
 }

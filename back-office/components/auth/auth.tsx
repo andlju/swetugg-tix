@@ -111,7 +111,7 @@ export const WelcomeName = () => {
     const { user } = useSelector((s: RootState) => s.auth);
 
     if (user) {
-        return <Typography variant="h6">Welcome, {user.displayName}</Typography>;
+        return <Typography variant="h6">Welcome, {user.name}</Typography>;
     } else {
         return null;
     }

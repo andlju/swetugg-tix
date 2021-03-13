@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react';
-import router from 'next/router';
 import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 import {
   Typography,
@@ -8,7 +7,8 @@ import {
 } from '@material-ui/core';
 
 import { useForm } from 'react-hook-form';
-import { useActivityCommand } from '../../src/user-activity-command.hook';
+import { updateUser, User } from '../../store/auth/auth.actions';
+import { useDispatch } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     display: 'flex',
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   input: {
     flex: '1',
@@ -39,36 +39,34 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type FormData = {
-  activityName: string;
+  name: string;
 };
 
+export interface EditProfileProps {
+  user: User
+}
 
-export function CreateActivity() {
+export function EditProfile({ user }: EditProfileProps) {
   const classes = useStyles();
+
+  const dispatch = useDispatch();
 
   const { register, handleSubmit, formState } = useForm<FormData>({
     defaultValues: {
+      name: user?.name || ''
     }
   });
 
-  const [createActivityCommand, createActivityStatus, createActivityState] = useActivityCommand(`/activities`);
-
   const onSubmit = async (data: FormData) => {
-    createActivityCommand({
-      name: data.activityName
-    });
+    console.log("Updating user profile", data);
+    user.name = data.name;
+    dispatch(updateUser(user));
   };
 
-  useEffect(() => {
-    if (createActivityState?.aggregateId) {
-      router.push(`/activities/${createActivityState?.aggregateId}`);
-    }
-  }, [createActivityState?.aggregateId]);
-
   return (<Container className={classes.root}>
-    <Typography variant="overline">Activity</Typography>
+    <Typography variant="overline">Profile</Typography>
     <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-      <TextField name="activityName" label="Name"
+      <TextField name="name" label="Name"
         inputRef={register}
         variant="outlined" className={classes.input}
         disabled={formState.isSubmitting} />
@@ -77,9 +75,11 @@ export function CreateActivity() {
         <Button type="submit"
           variant="outlined" className={classes.button}
           disabled={formState.isSubmitting}>
-          Create
+          Update
         </Button>
-        {createActivityStatus.processing && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
+        {
+        //createActivityStatus.processing && <CircularProgress size="1.4rem" className={classes.buttonProgress} />
+        }
       </div>
     </form>
   </Container>);

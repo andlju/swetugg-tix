@@ -5,11 +5,10 @@ import { isOfType } from "typesafe-actions";
 import { msalService } from "../../src/services/msal-auth.service";
 import { RootState } from "../store";
 import { AuthAction, AuthActionTypes, getScopes, InteractionKind, setAccessToken } from "./auth.actions";
-import { withLoggedInUser$ } from "./auth.epic";
+import { whenLoggedIn$ } from "./auth.epic";
 
 export const getScopesSilentEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) =>
-  withLoggedInUser$(action$.pipe(filter(isOfType(AuthActionTypes.GET_SCOPES))), state$).pipe(
-    map(([action]) => action),
+  whenLoggedIn$(action$.pipe(filter(isOfType(AuthActionTypes.GET_SCOPES)))).pipe(
     filter(action => action.payload.interactionKind === InteractionKind.SILENT),
     take(1), // Only try this once
     tap(() => console.log(`Attempting Silent Token Acquire`)),
@@ -27,8 +26,7 @@ export const getScopesSilentEpic: Epic<AuthAction, AuthAction, RootState> = (act
   );
 
 export const getScopesPopupEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) =>
-  withLoggedInUser$(action$.pipe(filter(isOfType(AuthActionTypes.GET_SCOPES))), state$).pipe(
-    map(([action]) => action),
+  whenLoggedIn$(action$.pipe(filter(isOfType(AuthActionTypes.GET_SCOPES)))).pipe(
     filter(action => action.payload.interactionKind === InteractionKind.POPUP),
     tap(() => console.log(`Attempting Popup Token Acquire`)),
     mergeMap((action) => msalService.acquireTokenPopup({ scopes: ["profile", "openid", ...action.payload.scopes] }).pipe(
@@ -51,8 +49,8 @@ export const getScopesPopupEpic: Epic<AuthAction, AuthAction, RootState> = (acti
   );
 
 export const getScopesRedirectEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) =>
-  withLoggedInUser$(action$.pipe(filter(isOfType(AuthActionTypes.GET_SCOPES))), state$).pipe(
-    map(([action]) => action),
+  whenLoggedIn$(action$.pipe(filter(isOfType(AuthActionTypes.GET_SCOPES)))).pipe(
+    map((action) => action),
     filter(action => action.payload.interactionKind === InteractionKind.REDIRECT),
     tap(() => console.log(`Attempting Redirect Token Acquire`)),
     mergeMap((action) => {

@@ -11,29 +11,28 @@ using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Activity.Views;
 using Swetugg.Tix.Activity.Views.TableStorage;
 using Swetugg.Tix.Api.Options;
+using Swetugg.Tix.User.Contract;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities
 {
-    public class ListActivitiesFunc
+    public class GetUserFunc
     {
         private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
 
         private readonly string _connectionString;
-        private readonly TableStorageViewReader _viewReader;
 
-        public ListActivitiesFunc(IOptions<ApiOptions> options)
+        public GetUserFunc(IOptions<ApiOptions> options)
         {
             _connectionString = options.Value.ViewsDbConnection;
-            _viewReader = new TableStorageViewReader(options.Value.AzureWebJobsStorage, "activityview");
         }
 
-        [FunctionName("ListActivities")]
+        [FunctionName("GetUser")]
         // [RequiredScope("access_as_user")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "activities")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "me")]
             HttpRequest req,
             ILogger log)
         {
@@ -45,25 +44,23 @@ namespace Swetugg.Tix.Api.Activities
 
             var identity = req.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
             var userId = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
-
+            var issuer = identity.FindFirst("iss").Value;
             string name = req.HttpContext.User.Identity.IsAuthenticated ? req.HttpContext.User.Identity.Name : null;
-
-            var activities = (await _viewReader.ListAllEntities<ActivityViewEntity, ActivityOverview>()).ToArray();
 
             using (var conn = new SqlConnection(_connectionString))
             {
-                var activityContent = (await conn.QueryAsync<ActivityContent>(
-                    "SELECT ac.ActivityId, ac.Name " +
-                    "FROM ActivityContent.Activity ac " +
-                    "WHERE ac.ActivityId IN @ActivityIds",
-                    new { ActivityIds = activities.Select(a => a.ActivityId).ToArray() })).ToArray();
-
-                foreach (var a in activities)
+                var userInfo = (await conn.QueryFirstOrDefaultAsync<UserInfo>(
+                    "SELECT u.UserId, u.Name, u.Status " +
+                    "FROM [Users].[User] u JOIN [Users].[UserLogin] ul ON ul.UserId = u.UserId JOIN [Users].[Issuer] i ON i.IssuerId = ul.IssuerId " +
+                    "WHERE ul.Subject = @Subject AND i.IssuerIdentifier = @Issuer AND u.Status <> @DeletedStatus",
+                    new { Subject = userId, Issuer = issuer, DeletedStatus = UserStatus.Deleted }));
+                if (userInfo != null)
                 {
-                    a.Name = activityContent.FirstOrDefault(ac => ac.ActivityId == a.ActivityId)?.Name;
+                    return new OkObjectResult(userInfo);
                 }
             }
-            return new OkObjectResult(activities);
+
+            return new OkObjectResult(new UserInfo { Name = name, Status = UserStatus.None });
         }
     }
 }
