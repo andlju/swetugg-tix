@@ -1,14 +1,19 @@
 import { Reducer } from "redux";
+import { setError, setFetching, setState, setUpdating, TixState } from "../common/state.models";
 import { AuthAction, AuthActionTypes, User } from "./auth.actions";
 
 export interface AuthState {
   accessToken?: string,
-  user?: User,
+  user: TixState<User>,
   inProgress: boolean;
 }
 
 const initialState: AuthState = {
-  inProgress: false
+  inProgress: false,
+  user: {
+    fetching: false,
+    updating: false
+  }
 };
 
 const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
@@ -31,7 +36,7 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     case AuthActionTypes.VALIDATE_LOGIN_FAILED:
       return {
         ...state,
-        user: undefined,
+        user: setError(state.user, 'NotLoggedIn', 'The user is not logged in'),
         accessToken: undefined
       };
     case AuthActionTypes.SET_ACCESS_TOKEN:
@@ -47,7 +52,37 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     case AuthActionTypes.SET_USER:
       return {
         ...state,
-        user: action.payload.user
+        user: setState(state.user, action.payload.user)
+      };
+    case AuthActionTypes.CREATE_USER:
+      return {
+        ...state,
+        user: setUpdating(state.user)
+      };
+    case AuthActionTypes.CREATE_USER_COMPLETE:
+      return {
+        ...state,
+        user: setFetching(state.user)
+      };
+    case AuthActionTypes.CREATE_USER_FAILED:
+      return {
+        ...state,
+        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage)
+      };
+    case AuthActionTypes.UPDATE_USER:
+      return {
+        ...state,
+        user: setUpdating(state.user)
+      };
+    case AuthActionTypes.UPDATE_USER_COMPLETE:
+      return {
+        ...state,
+        user: setFetching(state.user)
+      };
+    case AuthActionTypes.UPDATE_USER_FAILED:
+      return {
+        ...state,
+        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage)
       };
     default:
       return state;

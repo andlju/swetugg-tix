@@ -22,11 +22,11 @@ export type UserFormData = {
   name: string;
 };
 
-export interface EditProfileProps {
+export interface NewProfileProps {
   userForm: UseFormMethods<UserFormData>,
 }
 
-export const EditProfile: React.FC<EditProfileProps> = ({ userForm }) => {
+export const NewProfile: React.FC<NewProfileProps> = ({ userForm }) => {
   const classes = useStyles();
 
   const { register, formState } = userForm;

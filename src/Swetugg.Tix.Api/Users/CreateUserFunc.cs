@@ -20,21 +20,21 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities
 {
-    public class SetUserFunc
+    public class CreateUserFunc
     {
         private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
 
         private readonly IUserCommands _userCommands;
 
-        public SetUserFunc(IOptions<ApiOptions> options, IUserCommands userCommands)
+        public CreateUserFunc(IOptions<ApiOptions> options, IUserCommands userCommands)
         {
             _userCommands = userCommands;
         }
 
-        [FunctionName("SetUser")]
+        [FunctionName("CreateUser")]
         // [RequiredScope("access_as_user")]
         public async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "put", Route = "me")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "me")]
             HttpRequest req,
             ILogger log)
         {
@@ -49,15 +49,15 @@ namespace Swetugg.Tix.Api.Activities
             var issuer = identity.FindFirst("iss").Value;
 
             var userInfo = await JsonSerializer.DeserializeAsync<UserInfo>(req.Body, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-            userInfo.Subject = userId;
-            userInfo.IssuerIdentifier = issuer;
-
-            if (userInfo.UserId == null)
+            if (userInfo.UserId != null)
             {
                 return new BadRequestResult();
             }
 
-            await _userCommands.SetUser(userInfo);
+            userInfo.Subject = userId;
+            userInfo.IssuerIdentifier = issuer;
+
+            await _userCommands.CreateUser(userInfo);
 
             return new NoContentResult();
         }

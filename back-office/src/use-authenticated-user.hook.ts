@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { validateLogin, User } from "../store/auth/auth.actions";
+import { TixState } from "../store/common/state.models";
 import { RootState } from "../store/store";
 
 interface AuthenticatedUserResult {
-  user: User | undefined;
+  user: TixState<User>;
 }
 
 export function useAuthenticatedUser(scopes: string[]): AuthenticatedUserResult {

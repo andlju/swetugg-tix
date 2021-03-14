@@ -9,15 +9,15 @@ import { msalService } from "../../src/services/msal-auth.service";
 import { buildUrl } from "../../src/url-utils";
 import { RootState } from "../store";
 import { getScopesPopupEpic, getScopesRedirectEpic, getScopesSilentEpic } from "./auth-scopes.epic";
-import { AuthAction, AuthActionTypes, getScopes, requestUserUpdate, setInProgress, setUser, updateUserComplete, updateUserFailed, User, UserStatus, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
+import { AuthAction, AuthActionTypes, createUserComplete, createUserFailed, getScopes, requestUserUpdate, setInProgress, setUser, updateUserComplete, updateUserFailed, User, UserStatus, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
 
 const loginEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
   filter(isOfType(AuthActionTypes.LOGIN)),
   withLatestFrom(state$),
   mergeMap(([, state]) => {
-    if (state?.auth?.user?.username) {
+    if (state.auth.user.current?.username) {
       console.log(`We have a hint, so let's try a silent login`);
-      return msalService.ssoSilent({ ...loginRequest, loginHint: state?.auth?.user?.username });
+      return msalService.ssoSilent({ ...loginRequest, loginHint: state.auth.user.current?.username });
     }
     throw { errorCode: "No hint found" };
   }),
@@ -57,9 +57,12 @@ const validateLoginEpic: Epic<AuthAction, AuthAction, RootState> = (action$) => 
 );
 
 const setUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => withToken$(action$.pipe(
-  filter(isOfType(AuthActionTypes.VALIDATE_LOGIN_COMPLETE))), state$).pipe(
-    filter(([action, token]) => !!token),
-    mergeMap(([action, token]) => ajax.getJSON<User>(buildUrl(`/me`), { 'Authorization': `Bearer ${token}` }).pipe(
+  filter(action => 
+    isOfType(AuthActionTypes.VALIDATE_LOGIN_COMPLETE)(action) ||
+    isOfType(AuthActionTypes.CREATE_USER_COMPLETE)(action) ||
+    isOfType(AuthActionTypes.UPDATE_USER_COMPLETE)(action))), state$).pipe(
+    filter(([, token]) => !!token),
+    mergeMap(([, token]) => ajax.getJSON<User>(buildUrl(`/me`), { 'Authorization': `Bearer ${token}` }).pipe(
       map(user => setUser(user)),
       // catchError(err => of(validateLoginFailed()))
     ))
@@ -78,6 +81,14 @@ const inProgressEpic: Epic<AuthAction, AuthAction> = () => msalService.isInProgr
   map((inProgress) => setInProgress(inProgress))
 );
 
+const createUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => withToken$(action$.pipe(
+  filter(isOfType(AuthActionTypes.CREATE_USER))), state$).pipe(
+    filter(([, token]) => !!token),
+    mergeMap(([action, token]) => ajax.post(buildUrl(`/me`), action.payload.user, { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })),
+    map(() => createUserComplete()),
+    catchError((err) => of(createUserFailed('CreateUserFailed', err)))
+);
+
 const updateUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => withToken$(action$.pipe(
   filter(isOfType(AuthActionTypes.UPDATE_USER))), state$).pipe(
     filter(([, token]) => !!token),
@@ -92,7 +103,7 @@ const currentAccessToken$ = (state$: StateObservable<RootState>) => state$.pipe(
 );
 
 const currentUser$ = (state$: StateObservable<RootState>) => state$.pipe(
-  map(state => state.auth?.user),
+  map(state => state.auth.user.current),
   distinctUntilChanged()
 );
 
@@ -116,4 +127,4 @@ export function withToken$<TAction>(action$: Observable<TAction>, state$: StateO
 }
 
 
-export const authEpic = combineEpics(loginEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, requestUserUpdateEpic, updateUserEpic);
+export const authEpic = combineEpics(loginEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, requestUserUpdateEpic, createUserEpic, updateUserEpic);

@@ -13,6 +13,10 @@ export enum AuthActionTypes {
   SET_USER = 'SET_USER',
   SET_IN_PROGRESS = 'SET_IN_PROGRESS',
 
+  CREATE_USER = 'CREATE_USER',
+  CREATE_USER_COMPLETE = 'CREATE_USER_COMPLETE',
+  CREATE_USER_FAILED = 'CREATE_USER_FAILED',
+
   UPDATE_USER = 'UPDATE_USER',
   UPDATE_USER_COMPLETE = 'UPDATE_USER_COMPLETE',
   UPDATE_USER_FAILED = 'UPDATE_USER_FAILED',
@@ -108,6 +112,32 @@ export function setUser(user?: User): SetUserAction {
   };
 }
 
+export function createUser(user: User): CreateUserAction {
+  return {
+    type: AuthActionTypes.CREATE_USER,
+    payload: {
+      user
+    }
+  };
+}
+
+export function createUserComplete(): CreateUserCompleteAction {
+  return {
+    type: AuthActionTypes.CREATE_USER_COMPLETE,
+  };
+}
+
+export function createUserFailed(errorCode: string, errorMessage: string): CreateUserFailedAction {
+  return {
+    type: AuthActionTypes.CREATE_USER_FAILED,
+    payload: {
+      errorCode,
+      errorMessage
+    }
+  };
+}
+
+
 export function updateUser(user: User): UpdateUserAction {
   return {
     type: AuthActionTypes.UPDATE_USER,
@@ -116,7 +146,6 @@ export function updateUser(user: User): UpdateUserAction {
     }
   };
 }
-
 
 export function updateUserComplete(): UpdateUserCompleteAction {
   return {
@@ -198,6 +227,24 @@ export interface SetUserAction extends Action {
   };
 }
 
+export interface CreateUserAction extends Action {
+  type: AuthActionTypes.CREATE_USER,
+  payload: {
+    user: User;
+  };
+}
+
+export interface CreateUserCompleteAction extends Action {
+  type: AuthActionTypes.CREATE_USER_COMPLETE
+}
+
+export interface CreateUserFailedAction extends Action {
+  type: AuthActionTypes.CREATE_USER_FAILED,
+  payload: {
+    errorCode: string,
+    errorMessage: string
+  }
+}
 
 export interface UpdateUserAction extends Action {
   type: AuthActionTypes.UPDATE_USER,
@@ -236,6 +283,9 @@ export type AuthAction =
   | SetAccessTokenAction
   | SetInProgressAction
   | SetUserAction
+  | CreateUserAction
+  | CreateUserCompleteAction
+  | CreateUserFailedAction
   | UpdateUserAction
   | UpdateUserCompleteAction
   | UpdateUserFailedAction

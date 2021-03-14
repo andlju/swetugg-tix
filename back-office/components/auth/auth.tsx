@@ -100,7 +100,7 @@ const SignOutButton = () => {
 export const SignInSignOutButton = () => {
     const { user } = useSelector((s: RootState) => s.auth);
 
-    if (user) {
+    if (user.current) {
         return <SignOutButton />;
     } else {
         return <SignInButton />;
@@ -110,8 +110,8 @@ export const SignInSignOutButton = () => {
 export const WelcomeName = () => {
     const { user } = useSelector((s: RootState) => s.auth);
 
-    if (user) {
-        return <Typography variant="h6">Welcome, {user.name}</Typography>;
+    if (user.current) {
+        return <Typography variant="h6">Welcome, {user.current.name}</Typography>;
     } else {
         return null;
     }
