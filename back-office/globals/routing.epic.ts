@@ -8,7 +8,7 @@ import { RootState } from "../store/store";
 
 const userUpdateRequestedEpic: Epic<AuthAction, AuthAction, RootState> = (action$, store$) => action$.pipe(
   filter(isOfType(AuthActionTypes.REQUEST_USER_UPDATE)),
-  tap(action => router.push(`/profile`)),
+//  tap(action => router.push(`/profile`)),
   mergeMap(() => EMPTY)
 );
 

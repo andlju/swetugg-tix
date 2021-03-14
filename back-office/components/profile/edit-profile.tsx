@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useImperativeHandle } from 'react';
 import { CircularProgress, Container, makeStyles } from '@material-ui/core';
 import {
   Typography,
@@ -43,10 +43,14 @@ type FormData = {
 };
 
 export interface EditProfileProps {
-  user: User
+  user: User,
 }
 
-export function EditProfile({ user }: EditProfileProps) {
+export interface EditProfileHandle {
+  submit: () => void
+}
+
+const EditProfile: React.ForwardRefRenderFunction<EditProfileHandle, EditProfileProps> = ({ user }, forwardedRef) => {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -58,10 +62,15 @@ export function EditProfile({ user }: EditProfileProps) {
   });
 
   const onSubmit = async (data: FormData) => {
-    console.log("Updating user profile", data);
     user.name = data.name;
     dispatch(updateUser(user));
   };
+  
+  useImperativeHandle(forwardedRef, () => ({
+    submit() {
+       handleSubmit(onSubmit)();
+    }
+  }));
 
   return (<Container className={classes.root}>
     <Typography variant="overline">Profile</Typography>
@@ -72,11 +81,6 @@ export function EditProfile({ user }: EditProfileProps) {
         disabled={formState.isSubmitting} />
 
       <div className={classes.progressWrapper}>
-        <Button type="submit"
-          variant="outlined" className={classes.button}
-          disabled={formState.isSubmitting}>
-          Update
-        </Button>
         {
         //createActivityStatus.processing && <CircularProgress size="1.4rem" className={classes.buttonProgress} />
         }
@@ -84,3 +88,5 @@ export function EditProfile({ user }: EditProfileProps) {
     </form>
   </Container>);
 }
+
+export default React.forwardRef(EditProfile);

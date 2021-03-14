@@ -10,6 +10,7 @@ import theme from '../styles/theme';
 import App, { AppProps } from 'next/app';
 import configureStore from '../store/store';
 import BackOfficeLayout from '../layout/main-layout';
+import { ProfileModal } from '../components/profile/profile-modal';
 
 const store = configureStore(routingEpics);
 
@@ -32,13 +33,13 @@ function MyApp(props: AppProps) {
       </Head>
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
           <SnackbarProvider maxSnack={3} anchorOrigin={{
             vertical: 'bottom',
             horizontal: 'right',
           }}>
             <BackOfficeLayout>
+              <ProfileModal />
               <Component {...pageProps} />
             </BackOfficeLayout>
           </SnackbarProvider>
