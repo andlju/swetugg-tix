@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given.
-                Activity(ActivityId);
+                Activity(ActivityId, UserId);
         }
 
         protected override object When()

@@ -2,6 +2,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using NEventStore;
 using Swetugg.Tix.Infrastructure;
 using Swetugg.Tix.Tests.Helpers;
+using System;
 using System.Collections.Generic;
 using Xunit.Abstractions;
 
@@ -12,6 +13,8 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected with_activity(ITestOutputHelper output) : base(output)
         {
         }
+
+        protected Guid UserId = Guid.NewGuid();
 
         protected override IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {

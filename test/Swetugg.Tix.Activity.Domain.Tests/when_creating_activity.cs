@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
 
         protected override object When()
         {
-            return new CreateActivity() { ActivityId = ActivityId };
+            return new CreateActivity() { ActivityId = ActivityId, UserId = UserId };
         }
 
         [Fact]
@@ -36,6 +36,20 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         public void then_ActivityId_is_correct()
         {
             Assert.Equal(ActivityId.ToString(), Commits.First().StreamId);
+        }
+
+        [Fact]
+        public void then_CreatedByUserId_is_correct()
+        {
+            var evt = Commits.GetEvent<ActivityCreated>();
+            Assert.Equal(UserId, evt.CreatedByUserId);
+        }
+        
+        [Fact]
+        public void then_UserId_header_is_correct()
+        {
+            var actual = Commits.First().Headers["UserId"];
+            Assert.Equal(UserId.ToString(), actual as string);
         }
     }
 }

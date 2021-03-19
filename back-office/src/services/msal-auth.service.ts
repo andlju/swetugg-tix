@@ -14,7 +14,6 @@ class MsalService {
     this.instance.addEventCallback((evt) => this.handleCallback(evt));
 
     this.instance.handleRedirectPromise()
-      .then(this.handleRedirectResponse)
       .catch((error) => {
         console.error(error);
       });
@@ -44,12 +43,8 @@ class MsalService {
     );
   }
 
-  handleRedirectResponse(resp: any) {
-    console.log("Here's the redirect response", resp);
-  }
-
   handleCallback(evt: EventMessage) {
-    console.log("Publishing event", evt);
+    // console.log("Publishing event", evt);
     this.eventSubject.next(evt);
   }
 

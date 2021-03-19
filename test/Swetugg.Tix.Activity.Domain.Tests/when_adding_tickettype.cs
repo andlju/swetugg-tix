@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId);
+                .Activity(ActivityId, UserId);
         }
 
         protected Guid TicketTypeId = Guid.NewGuid();
@@ -52,7 +52,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         {
 
             Given
-                .Activity(ActivityId)
+                .Activity(ActivityId, UserId)
                 .WithTicketType(TicketTypeId);
         }
 

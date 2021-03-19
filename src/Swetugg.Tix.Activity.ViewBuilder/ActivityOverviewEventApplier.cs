@@ -15,6 +15,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         {
             view = new ActivityOverview();
             view.ActivityId = evt.AggregateId;
+            view.CreatedByUserId = evt.CreatedByUserId;
             view.TicketTypes = new List<TicketType>();
             return view;
         }

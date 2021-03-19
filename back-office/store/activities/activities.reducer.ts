@@ -1,5 +1,5 @@
 import { Reducer } from "redux";
-import { Activity } from "../../components/activities/activity.models";
+import { Activity } from "./activity.models";
 import { CommandStatus } from "../../src/services/activity-command.service";
 import { ActivitiesAction, ActivityActionTypes } from "./activities.actions";
 

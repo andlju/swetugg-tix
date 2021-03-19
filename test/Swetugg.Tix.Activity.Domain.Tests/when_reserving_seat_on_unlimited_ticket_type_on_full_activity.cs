@@ -22,7 +22,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             var activity = Given
-                .Activity(ActivityId);
+                .Activity(ActivityId, UserId);
 
             activity
                 .WithSeats(20)

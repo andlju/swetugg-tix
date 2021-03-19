@@ -56,6 +56,13 @@ namespace Swetugg.Tix.Api.Activities.Commands
             return (await Process(req, log, cmd), cmd);
         }
 
+        protected override async Task<TCommand> HandleUser(HttpRequest req, ILogger log, TCommand cmd)
+        {
+            var user = await AuthManager.GetAuthenticatedUser();
+            cmd.UserId = user.UserId ?? Guid.Empty;
+            return cmd;
+        }
+
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, TCommand cmd)
         {
             await _sender.Send(cmd);

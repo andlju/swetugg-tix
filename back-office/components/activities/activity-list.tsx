@@ -8,7 +8,7 @@ import {
 } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 
-import { Activity } from './activity.models';
+import { Activity } from '../../store/activities/activity.models';
 
 interface ActivityListProps {
   activities: Activity[]

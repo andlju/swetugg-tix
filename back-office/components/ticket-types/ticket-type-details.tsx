@@ -2,8 +2,8 @@ import { makeStyles, Typography } from "@material-ui/core";
 
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
-import { Activity } from "../activities/activity.models";
-import { TicketType } from "./ticket-type.models";
+import { Activity } from "../../store/activities/activity.models";
+import { TicketType } from "../../store/activities/ticket-type.models";
 
 const useStyles = makeStyles((theme) => ({
   root: {

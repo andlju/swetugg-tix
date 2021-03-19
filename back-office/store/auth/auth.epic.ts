@@ -1,5 +1,4 @@
-import { AnyAction } from "redux";
-import { ActionsObservable, combineEpics, Epic, StateObservable } from "redux-observable";
+import { combineEpics, Epic, StateObservable } from "redux-observable";
 import { EMPTY, throwError, combineLatest, Observable, of } from "rxjs";
 import { ajax } from "rxjs/ajax";
 import { filter, map, mergeMap, tap, withLatestFrom, catchError, distinctUntilChanged } from "rxjs/operators";
@@ -114,9 +113,11 @@ export function whenLoggedIn$<TAction>(action$: Observable<TAction>): Observable
   );
 }
 
-export function withLoggedInUser$<TAction>(action$: Observable<TAction>, state$: StateObservable<RootState>): Observable<[TAction, User | undefined]> {
+export function withTokenAndUser$<TAction>(action$: Observable<TAction>, state$: StateObservable<RootState>): Observable<[TAction, string | undefined, User | undefined]> {
   return combineLatest([action$, currentUser$(state$)]).pipe(
-    filter(([, user]) => !!user),
+    filter(([, user]) => !!user && user.status !== UserStatus.None),
+    withLatestFrom(currentAccessToken$(state$)),
+    map(([[action, user], token]) => [action, token, user])
   );
 }
 

@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId)
+                .Activity(ActivityId, UserId)
                 .WithSeats(20)
                 .WithTicketType(TicketTypeId)
                 .WithIncreasedTicketTypeLimit(TicketTypeId, 10);

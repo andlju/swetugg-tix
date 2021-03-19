@@ -32,6 +32,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
                 _repository.Save(activity, Guid.NewGuid(), headers =>
                 {
                     headers.Add("CommandId", cmd.CommandId.ToString());
+                    headers.Add("UserId", cmd.UserId.ToString());
                 });
                 await _commandLog.Complete(cmd.CommandId, activity.Version);
             }

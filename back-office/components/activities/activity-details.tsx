@@ -1,5 +1,5 @@
 import { Button, makeStyles, Typography } from "@material-ui/core";
-import { Activity } from "./activity.models";
+import { Activity } from "../../store/activities/activity.models";
 
 import { Container } from "@material-ui/core";
 import { Table, TableBody, TableRow, TableCell, Grid } from "@material-ui/core";
@@ -37,6 +37,11 @@ export function ActivityDetails({ activity }: ActivityDetailsProps) {
                 <TableCell>Total Seats</TableCell>
                 <TableCell>{activity.totalSeats}</TableCell>
               </TableRow>
+              <TableRow>
+                <TableCell>Created by</TableCell>
+                <TableCell>{activity.createdByUserId}</TableCell>
+              </TableRow>
+              
             </TableBody>
           </Table>
         </Grid>

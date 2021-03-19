@@ -6,6 +6,7 @@ namespace Swetugg.Tix.Activity.Commands
     {
         Guid ActivityId { get; }
         Guid CommandId { get; }
+        Guid UserId { get; }
         int ExpectedRevision { get; }
     }
 }

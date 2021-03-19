@@ -6,7 +6,7 @@ import {
   Typography,
   makeStyles
 } from "@material-ui/core";
-import { TicketType } from "./ticket-type.models";
+import { TicketType } from "../../store/activities/ticket-type.models";
 import { AddTicketType } from "./add-ticket-type";
 
 interface TicketTypeListProps {

@@ -60,6 +60,9 @@ DELETE {{host}}/api/activities/{{activityId}}/ticket-types/{{ticketTypeId}}
 ### Get an order
 GET {{host}}/api/orders/{{orderId}}
 
+### Rebuild all activity views
+POST {{host}}/api/activities-admin/rebuild
+
 ### Rebuild all views for an activity
 POST {{host}}/api/activities-admin/{{activityId}}/rebuild
 

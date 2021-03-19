@@ -5,11 +5,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.Resource;
-using Swetugg.Tix.Activity.Content.Contract;
-using Swetugg.Tix.Activity.Views;
-using Swetugg.Tix.Activity.Views.TableStorage;
+using Swetugg.Tix.Api.Authorization;
 using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.User;
 using Swetugg.Tix.User.Contract;
@@ -20,32 +16,29 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities
 {
-    public class CreateUserFunc
+    public class CreateUserFunc : AuthorizedFunc<EmptyFuncParams>
     {
-        private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
-
         private readonly IUserCommands _userCommands;
 
-        public CreateUserFunc(IOptions<ApiOptions> options, IUserCommands userCommands)
+        public CreateUserFunc(IUserCommands userCommands, IAuthManager authManager) : base(authManager)
         {
             _userCommands = userCommands;
         }
 
         [FunctionName("CreateUser")]
-        // [RequiredScope("access_as_user")]
-        public async Task<IActionResult> Run(
+        public Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "me")]
             HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            return HandleRequest(req, log, null);
+        }
 
-            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
-            if (!authenticationStatus) return authenticationResponse;
-            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
-
+        protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)
+        {
+            // Get logged in user information
             var identity = req.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
-            var userId = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var subject = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
             var issuer = identity.FindFirst("iss").Value;
 
             var userInfo = await JsonSerializer.DeserializeAsync<UserInfo>(req.Body, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
@@ -54,7 +47,7 @@ namespace Swetugg.Tix.Api.Activities
                 return new BadRequestResult();
             }
 
-            userInfo.Subject = userId;
+            userInfo.Subject = subject;
             userInfo.IssuerIdentifier = issuer;
 
             await _userCommands.CreateUser(userInfo);

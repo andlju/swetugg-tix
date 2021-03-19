@@ -5,11 +5,11 @@ import { combineEpics, Epic, ActionsObservable } from "redux-observable";
 import { ajax } from "rxjs/ajax";
 import { isOfType } from "typesafe-actions";
 import { buildUrl } from "../../src/url-utils";
-import { Activity } from "../../components/activities/activity.models";
+import { Activity } from "./activity.models";
 import { ActivityActionTypes } from "./activities.actions";
 import { getView$ } from "../../src/services/view-fetcher.service";
 import { RootState } from "../store";
-import { withToken$ } from "../auth/auth.epic";
+import { withToken$, withTokenAndUser$ } from "../auth/auth.epic";
 import { CommandLogSeverity, sendActivityCommand$, waitForCommandResult$ } from "../../src/services/activity-command.service";
 
 const fetchActivities = (token: string): Observable<Activity[]> => {
@@ -25,7 +25,7 @@ const loadActivityAction$ = (action$: ActionsObservable<ActivitiesAction>) => ac
 );
 
 const loadActivitiesEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
-  withToken$(loadActivitiesAction$(action$), state$).pipe(
+  withTokenAndUser$(loadActivitiesAction$(action$), state$).pipe(
     tap(() => console.log('Loading activities in epic')),
     mergeMap(([, token]) => fetchActivities(token || '').pipe(
       map(resp => loadActivitiesComplete(resp))
@@ -34,14 +34,14 @@ const loadActivitiesEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = 
 
 
 const loadActivityEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
-  withToken$(loadActivityAction$(action$), state$).pipe(
+  withTokenAndUser$(loadActivityAction$(action$), state$).pipe(
     mergeMap(([action, token]) => getView$<Activity>(buildUrl(`/activities/${action.payload.activityId}`), { revision: action.payload.revision, token: token || '' }).pipe(
       map(view => loadActivitiesComplete([view]))
     ))
   );
 
 const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
-  withToken$(action$.pipe(filter(isOfType(ActivityActionTypes.SEND_ACTIVITY_COMMAND))), state$).pipe(
+  withTokenAndUser$(action$.pipe(filter(isOfType(ActivityActionTypes.SEND_ACTIVITY_COMMAND))), state$).pipe(
     mergeMap(([action, token]) => sendActivityCommand$(action.payload.url, action.payload.body, { method: action.payload.options.method, token: token }).pipe(
       map(status => activityCommandSent(status.commandId, action.payload.uiId)),
       catchError((err) => {

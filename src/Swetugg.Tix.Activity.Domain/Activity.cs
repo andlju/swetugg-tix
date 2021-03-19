@@ -31,14 +31,18 @@ namespace Swetugg.Tix.Activity.Domain
         /// Create a new Activity
         /// </summary>
         /// <param name="aggregateId"></param>
-        public Activity(Guid aggregateId) 
+        /// <param name="userId"></param>
+        public Activity(Guid aggregateId, Guid userId) 
         {
             if (aggregateId == Guid.Empty)
                 throw new ActivityException("InvalidId", "Invalid Activity Id specified");
+            if (userId == Guid.Empty)
+                throw new ActivityException("InvalidId", "Invalid User Id specified");
 
             Raise(new ActivityCreated()
             {
-                AggregateId = aggregateId
+                AggregateId = aggregateId,
+                CreatedByUserId = userId
             });
         }
 

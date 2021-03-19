@@ -24,40 +24,38 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities
 {
-    public class CreateOrganizationFunc
+    public class CreateOrganizationFunc : AuthorizedFunc<EmptyFuncParams>
     {
-        private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
 
         private readonly IOrganizationCommands _organizationCommands;
-        private readonly IAuthManager _authManager;
 
-        public CreateOrganizationFunc(IOptions<ApiOptions> options, IOrganizationCommands organizationCommands, IAuthManager authManager)
+        public CreateOrganizationFunc(IOptions<ApiOptions> options, IOrganizationCommands organizationCommands, IAuthManager authManager): base(authManager)
         {
             _organizationCommands = organizationCommands;
-            _authManager = authManager;
         }
 
         [FunctionName("CreateOrganization")]
-        // [RequiredScope("access_as_user")]
-        public async Task<IActionResult> Run(
+        public Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "organization")]
             HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            return Process(req, log, null);
+        }
 
-
-            var identity = req.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
-            var subject = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
-            var issuer = identity.FindFirst("iss").Value;
-
+        protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)
+        {
             var organizationInfo = await JsonSerializer.DeserializeAsync<OrganizationInfo>(req.Body, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
             if (organizationInfo.OrganizationId != null)
             {
                 return new BadRequestResult();
             }
 
-            await _organizationCommands.CreateOrganization(organizationInfo, Guid.Empty);
+            var user = await AuthManager.GetAuthenticatedUser();
+            if (user.UserId == null)
+                return new BadRequestResult();
+
+            await _organizationCommands.CreateOrganization(organizationInfo, user.UserId.Value);
 
             return new NoContentResult();
         }

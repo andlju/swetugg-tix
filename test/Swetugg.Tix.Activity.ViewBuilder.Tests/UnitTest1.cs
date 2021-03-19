@@ -11,11 +11,12 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Tests
         {
             var aggregateId = Guid.NewGuid();
             var ticketTypeId = Guid.NewGuid();
+            var userId = Guid.NewGuid();
 
             var target = new ActivityOverviewEventApplier();
             var events = new EventBase[]
             {
-                new ActivityCreated() { AggregateId = aggregateId },
+                new ActivityCreated() { AggregateId = aggregateId, CreatedByUserId = userId },
                 new TicketTypeAdded() { AggregateId = aggregateId, TicketTypeId = ticketTypeId }
             };
 
@@ -23,6 +24,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Tests
             var activityOverview = target.ApplyEvents(null, events);
 
             Assert.Equal(aggregateId, activityOverview.ActivityId);
+            Assert.Equal(userId, activityOverview.CreatedByUserId);
             Assert.Single(activityOverview.TicketTypes);
         }
     }

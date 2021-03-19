@@ -1,5 +1,5 @@
 import { CircularProgress, Container, Grid, InputAdornment, makeStyles, TextField, Typography } from "@material-ui/core";
-import { Activity } from "./activity.models";
+import { Activity } from "../../store/activities/activity.models";
 
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";

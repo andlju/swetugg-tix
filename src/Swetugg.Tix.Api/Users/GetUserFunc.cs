@@ -10,7 +10,9 @@ using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.Activity.Content.Contract;
 using Swetugg.Tix.Activity.Views;
 using Swetugg.Tix.Activity.Views.TableStorage;
+using Swetugg.Tix.Api.Authorization;
 using Swetugg.Tix.Api.Options;
+using Swetugg.Tix.User;
 using Swetugg.Tix.User.Contract;
 using System.Data.SqlClient;
 using System.Linq;
@@ -18,46 +20,35 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities
 {
-    public class GetUserFunc
+    public class GetUserFunc: AuthorizedFunc<EmptyFuncParams>
     {
-        private static string[] acceptedScopes = new[] { "access_as_user", "access_as_admin" };
+        private readonly IUserQueries _userQueries;
 
-        private readonly string _connectionString;
-
-        public GetUserFunc(IOptions<ApiOptions> options)
+        public GetUserFunc(IUserQueries userQueries, IAuthManager authManager) : base(authManager)
         {
-            _connectionString = options.Value.ViewsDbConnection;
+            _userQueries = userQueries;
         }
 
         [FunctionName("GetUser")]
-        // [RequiredScope("access_as_user")]
-        public async Task<IActionResult> Run(
+        public Task<IActionResult> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "me")]
             HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+            return Process(req, log, null);
+        }
 
-            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
-            if (!authenticationStatus) return authenticationResponse;
-            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
-
+        protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)
+        {
             var identity = req.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
-            var userId = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
+            var subject = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
             var issuer = identity.FindFirst("iss").Value;
             string name = req.HttpContext.User.Identity.IsAuthenticated ? req.HttpContext.User.Identity.Name : null;
 
-            using (var conn = new SqlConnection(_connectionString))
+            var userInfo = await _userQueries.GetUserFromLogin(subject, issuer);
+            if (userInfo != null)
             {
-                var userInfo = (await conn.QueryFirstOrDefaultAsync<UserInfo>(
-                    "SELECT u.UserId, u.Name, u.Status " +
-                    "FROM [Access].[User] u JOIN [Access].[UserLogin] ul ON ul.UserId = u.UserId JOIN [Access].[Issuer] i ON i.IssuerId = ul.IssuerId " +
-                    "WHERE ul.Subject = @Subject AND i.IssuerIdentifier = @Issuer AND u.Status <> @DeletedStatus",
-                    new { Subject = userId, Issuer = issuer, DeletedStatus = UserStatus.Deleted }));
-                if (userInfo != null)
-                {
-                    return new OkObjectResult(userInfo);
-                }
+                return new OkObjectResult(userInfo);
             }
 
             return new OkObjectResult(new UserInfo { Name = name, Status = UserStatus.None });

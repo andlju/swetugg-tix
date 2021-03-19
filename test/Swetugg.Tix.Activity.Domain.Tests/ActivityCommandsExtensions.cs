@@ -6,13 +6,14 @@ namespace Swetugg.Tix.Activity.Domain.Tests
 {
     public static class ActivityCommandsExtensions
     {
-        public static GivenActivityCommands Activity(this IGivenCommands given, Guid activityId)
+        public static GivenActivityCommands Activity(this IGivenCommands given, Guid activityId, Guid userId, Guid? createdByUserId = null)
         {
             given.AddCommand(new CreateActivity()
             {
-                ActivityId = activityId
+                ActivityId = activityId,
+                UserId = createdByUserId ?? userId
             });
-            return new GivenActivityCommands(given, activityId);
+            return new GivenActivityCommands(given, activityId, userId);
         }
 
         public static GivenActivityCommands WithSeats(this GivenActivityCommands given, int seats)

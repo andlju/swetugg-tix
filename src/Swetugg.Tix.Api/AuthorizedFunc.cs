@@ -27,7 +27,7 @@ namespace Swetugg.Tix.Api
             _acceptedScopes = acceptedScopes ?? new[] { "access_as_user", "access_as_admin" };
         }
 
-        protected async Task<IActionResult> Process(HttpRequest req, ILogger log, TFuncParams routeParams = null)
+        protected async Task<IActionResult> Process(HttpRequest req, ILogger log, TFuncParams funcParams = null)
         {
             log.LogInformation("C# HTTP trigger function processed a request.");
 
@@ -35,9 +35,16 @@ namespace Swetugg.Tix.Api
             if (authenticationResponse != null)
                 return authenticationResponse;
 
-            return await HandleRequest(req, log, routeParams);
+            funcParams = await HandleUser(req, log, funcParams);
+
+            return await HandleRequest(req, log, funcParams);
         }
 
-        protected abstract Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, TFuncParams routeParams);
+        protected abstract Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, TFuncParams funcParams);
+
+        protected virtual Task<TFuncParams> HandleUser(HttpRequest req, ILogger log, TFuncParams funcParams)
+        {
+            return Task.FromResult(funcParams);
+        }
     }
 }

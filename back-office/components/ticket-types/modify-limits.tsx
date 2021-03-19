@@ -9,7 +9,7 @@ import { useDispatch } from "react-redux";
 import { CommandLogSeverity } from "../../src/services/activity-command.service";
 import { useActivityCommand } from "../../src/user-activity-command.hook";
 import { sendActivityCommand } from "../../store/activities/activities.actions";
-import { TicketType } from "./ticket-type.models";
+import { TicketType } from "../../store/activities/ticket-type.models";
 
 interface EditTicketTypeProps {
   ticketType: TicketType;

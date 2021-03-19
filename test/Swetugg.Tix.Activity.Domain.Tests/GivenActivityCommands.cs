@@ -8,11 +8,13 @@ namespace Swetugg.Tix.Activity.Domain.Tests
     {
         private readonly IGivenCommands _parent;
         private readonly Guid _activityId;
+        private readonly Guid _userId;
 
-        public GivenActivityCommands(IGivenCommands parent, Guid activityId)
+        public GivenActivityCommands(IGivenCommands parent, Guid activityId, Guid userId)
         {
             _parent = parent;
             _activityId = activityId;
+            _userId = userId;
         }
 
         public Guid ActivityId => _activityId;
@@ -20,6 +22,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         public void AddCommand(ActivityCommand cmd)
         {
             cmd.ActivityId = _activityId;
+            cmd.UserId = _userId;
             _parent.AddCommand(cmd);
         }
     }
