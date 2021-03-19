@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Api.Authorization;
 using System;
 using System.Threading.Tasks;
 
@@ -13,7 +14,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
 {
     public class RemoveSeatsFunc : ActivityCommandFunc<RemoveSeats>
     {
-        public RemoveSeatsFunc(IActivityCommandMessageSender sender) : base(sender)
+        public RemoveSeatsFunc(IActivityCommandMessageSender sender, IAuthManager authManager) : base(sender, authManager)
         {
         }
 
@@ -24,13 +25,9 @@ namespace Swetugg.Tix.Api.Activities.Commands
             Guid activityId,
             ILogger log)
         {
-            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
-            if (!authenticationStatus) return authenticationResponse;
-            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
+            var (res, cmd) = await ProcessCommand(req, log, new { activityId });
 
-            var cmd = await Process(req, new { activityId }, log);
-
-            return new OkObjectResult(new { activityId, commandId = cmd.CommandId });
+            return res;
         }
     }
 }

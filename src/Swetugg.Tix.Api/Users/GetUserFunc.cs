@@ -51,7 +51,7 @@ namespace Swetugg.Tix.Api.Activities
             {
                 var userInfo = (await conn.QueryFirstOrDefaultAsync<UserInfo>(
                     "SELECT u.UserId, u.Name, u.Status " +
-                    "FROM [Users].[User] u JOIN [Users].[UserLogin] ul ON ul.UserId = u.UserId JOIN [Users].[Issuer] i ON i.IssuerId = ul.IssuerId " +
+                    "FROM [Access].[User] u JOIN [Access].[UserLogin] ul ON ul.UserId = u.UserId JOIN [Access].[Issuer] i ON i.IssuerId = ul.IssuerId " +
                     "WHERE ul.Subject = @Subject AND i.IssuerIdentifier = @Issuer AND u.Status <> @DeletedStatus",
                     new { Subject = userId, Issuer = issuer, DeletedStatus = UserStatus.Deleted }));
                 if (userInfo != null)

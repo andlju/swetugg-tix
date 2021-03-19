@@ -17,23 +17,23 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
         public override void Up()
         {
-            Create.Schema("Users");
+            Create.Schema("Access");
 
             Create.Table("User")
-                .InSchema("Users")
+                .InSchema("Access")
                 .WithColumn("UserId").AsGuid().PrimaryKey()
                 .WithColumn("Name").AsString(400)
                 .WithColumn("Status").AsInt32()
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();
 
             Create.Table("Issuer")
-                .InSchema("Users")
+                .InSchema("Access")
                 .WithColumn("IssuerId").AsGuid().PrimaryKey()
                 .WithColumn("Name").AsString(400)
                 .WithColumn("IssuerIdentifier").AsString(1000);
 
             Create.Table("UserLogin")
-                .InSchema("Users")
+                .InSchema("Access")
                 .WithColumn("IssuerId").AsGuid().NotNullable()
                 .WithColumn("Subject").AsString(400).NotNullable()
                 .WithColumn("UserId").AsGuid().NotNullable()
@@ -41,32 +41,32 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
 
             Create.PrimaryKey().OnTable("UserLogin")
-                .WithSchema("Users")
+                .WithSchema("Access")
                 .Columns("IssuerId", "Subject");
 
             Create.ForeignKey()
-                .FromTable("UserLogin").InSchema("Users")
+                .FromTable("UserLogin").InSchema("Access")
                 .ForeignColumn("IssuerId")
-                .ToTable("Issuer").InSchema("Users")
+                .ToTable("Issuer").InSchema("Access")
                 .PrimaryColumn("IssuerId");
 
             Create.ForeignKey()
-                .FromTable("UserLogin").InSchema("Users")
+                .FromTable("UserLogin").InSchema("Access")
                 .ForeignColumn("UserId")
-                .ToTable("User").InSchema("Users")
+                .ToTable("User").InSchema("Access")
                 .PrimaryColumn("UserId");
 
             Insert
-                .IntoTable("Issuer").InSchema("Users")
+                .IntoTable("Issuer").InSchema("Access")
                 .Row(new { IssuerId = Guid.NewGuid(), Name = "Swetugg Local", IssuerIdentifier = _issuerIdentifier });
         }
 
         public override void Down()
         {
-            Delete.Table("UserLogin").InSchema("Users");
-            Delete.Table("Issuer").InSchema("Users");
-            Delete.Table("User").InSchema("Users");
-            Delete.Schema("Users");
+            Delete.Table("UserLogin").InSchema("Access");
+            Delete.Table("Issuer").InSchema("Access");
+            Delete.Table("User").InSchema("Access");
+            Delete.Schema("Access");
         }
     }
 }

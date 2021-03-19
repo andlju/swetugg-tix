@@ -7,6 +7,7 @@ using System.Transactions;
 
 namespace Swetugg.Tix.User
 {
+
     public class UserCommands : IUserCommands
     {
         private readonly string _connectionString;
@@ -22,7 +23,7 @@ namespace Swetugg.Tix.User
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "UPDATE [Users].[User] " +
+                    "UPDATE [Access].[User] " +
                     "SET Name              = @Name " +
                     ",   LastUpdated       = SYSUTCDATETIME() " +
                     "WHERE UserId = @UserId", info);
@@ -45,14 +46,14 @@ namespace Swetugg.Tix.User
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "INSERT INTO [Users].[User] " + 
+                    "INSERT INTO [Access].[User] " + 
                     "(UserId, Name, Status, LastUpdated) " +
                     "VALUES (@UserId, @Name, @Status, SYSUTCDATETIME()) ", info);
 
                 await conn.ExecuteAsync(
-                    "INSERT INTO [Users].[UserLogin] " +
+                    "INSERT INTO [Access].[UserLogin] " +
                     "(IssuerId, Subject, UserId, LastUpdated) " +
-                    "SELECT i.IssuerId, @Subject, @UserId, SYSUTCDATETIME() FROM [Users].[Issuer] i WHERE i.IssuerIdentifier = @IssuerIdentifier ", info
+                    "SELECT i.IssuerId, @Subject, @UserId, SYSUTCDATETIME() FROM [Access].[Issuer] i WHERE i.IssuerIdentifier = @IssuerIdentifier ", info
                     );
 
                 trans.Complete();

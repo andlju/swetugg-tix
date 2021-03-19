@@ -7,6 +7,7 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.Activity.Commands;
 using Swetugg.Tix.Activity.Content.Contract;
+using Swetugg.Tix.Api.Authorization;
 using System;
 using System.Threading.Tasks;
 
@@ -16,7 +17,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
     {
         private readonly IActivityContentCommands _contentCommands;
 
-        public AddTicketTypeFunc(IActivityCommandMessageSender sender, IActivityContentCommands contentCommands) : base(sender)
+        public AddTicketTypeFunc(IActivityCommandMessageSender sender, IActivityContentCommands contentCommands, IAuthManager authManager) : base(sender, authManager)
         {
             _contentCommands = contentCommands;
         }
@@ -28,15 +29,11 @@ namespace Swetugg.Tix.Api.Activities.Commands
             Guid activityId,
             ILogger log)
         {
-            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
-            if (!authenticationStatus) return authenticationResponse;
-            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
-
             var ticketTypeId = Guid.NewGuid();
-            var cmd = await Process(req, new { activityId, ticketTypeId }, log);
+            var (res, cmd) = await ProcessCommand(req, log, new { activityId, ticketTypeId });
             await _contentCommands.StoreTicketTypeContent(new TicketTypeContent { TicketTypeId = ticketTypeId, ActivityId = activityId, Name = cmd.Name });
 
-            return new OkObjectResult(new { activityId, ticketTypeId, commandId = cmd.CommandId });
+            return res;
         }
     }
 

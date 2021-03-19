@@ -18,4 +18,6 @@ namespace Swetugg.Tix.User.Contract
         public string Subject { get; set; }
         public string IssuerIdentifier { get; set; }
     }
+
+
 }

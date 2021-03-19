@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.Activity.Commands;
+using Swetugg.Tix.Api.Authorization;
 using System;
 using System.Reflection;
 using System.Text.Json;
@@ -10,12 +12,13 @@ using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Activities.Commands
 {
-    public abstract class ActivityCommandFunc<TCommand> where TCommand : ActivityCommand, new()
+    public abstract class ActivityCommandFunc<TCommand> : AuthorizedFunc<TCommand>
+        where TCommand : ActivityCommand, new()
     {
         protected static string[] acceptedScopes = new[] { "access_as_admin" };
         private readonly IMessageSender _sender;
 
-        protected ActivityCommandFunc(IActivityCommandMessageSender sender)
+        protected ActivityCommandFunc(IActivityCommandMessageSender sender, IAuthManager authManager) : base(authManager)
         {
             _sender = sender;
         }
@@ -32,7 +35,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
             }
         }
 
-        protected async Task<TCommand> Process(HttpRequest req, object overrides, ILogger log)
+        protected async Task<(IActionResult, TCommand)> ProcessCommand(HttpRequest req, ILogger log, object overrides)
         {
             TCommand cmd;
             if (req.ContentLength > 0)
@@ -50,10 +53,14 @@ namespace Swetugg.Tix.Api.Activities.Commands
             {
                 OverrideProperties(cmd, overrides);
             }
+            return (await Process(req, log, cmd), cmd);
+        }
 
+        protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, TCommand cmd)
+        {
             await _sender.Send(cmd);
 
-            return cmd;
+            return new OkObjectResult(new { activityId = cmd.ActivityId, commandId = cmd.CommandId });
         }
     }
 }

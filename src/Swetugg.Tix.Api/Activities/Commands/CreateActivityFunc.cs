@@ -16,7 +16,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
     {
         private readonly IActivityContentCommands _contentCommands;
 
-        public CreateActivityFunc(IActivityCommandMessageSender sender, IActivityContentCommands contentCommands) : base(sender)
+        public CreateActivityFunc(IActivityCommandMessageSender sender, IActivityContentCommands contentCommands, Authorization.IAuthManager authManager) : base(sender, authManager)
         {
             _contentCommands = contentCommands;
         }
@@ -27,16 +27,12 @@ namespace Swetugg.Tix.Api.Activities.Commands
             HttpRequest req,
             ILogger log)
         {
-            var (authenticationStatus, authenticationResponse) = await req.HttpContext.AuthenticateAzureFunctionAsync();
-            if (!authenticationStatus) return authenticationResponse;
-            req.HttpContext.VerifyUserHasAnyAcceptedScope(acceptedScopes);
-
             var activityId = Guid.NewGuid();
-            var cmd = await Process(req, new { activityId }, log);
+            var (res, cmd) = await ProcessCommand(req, log, new { activityId });
             
             await _contentCommands.StoreActivityContent(new ActivityContent { ActivityId = activityId, Name = cmd.Name });
 
-            return new OkObjectResult(new { activityId, commandId = cmd.CommandId });
+            return res;
         }
     }
 }
