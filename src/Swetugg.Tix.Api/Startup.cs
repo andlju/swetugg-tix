@@ -63,6 +63,12 @@ namespace Swetugg.Tix.Api
                 var viewsDbConnectionString = options.Value.ViewsDbConnection;
                 return new UserQueries(viewsDbConnectionString);
             });
+            builder.Services.AddSingleton<IOrganizationQueries>(sp =>
+            {
+                var options = sp.GetService<IOptions<ApiOptions>>();
+                var viewsDbConnectionString = options.Value.ViewsDbConnection;
+                return new OrganizationQueries(viewsDbConnectionString);
+            });
             builder.Services.AddSingleton<IOrganizationCommands>(sp =>
             {
                 var options = sp.GetService<IOptions<ApiOptions>>();

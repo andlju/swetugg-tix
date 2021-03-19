@@ -10,6 +10,10 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { WelcomeName } from '../../components/auth/auth';
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadOrganizations } from '../../store/organizations/organizations.actions';
+import { RootState } from '../../store/store';
+import { OrganizationList } from '../../components/organizations/organization-list';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -28,69 +32,27 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Index() {
   const classes = useStyles();
-  
-  const [selectedOrg, setSelectedOrg] = React.useState(0);
 
-  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOrg(+event.target.value);
-  }
+  const organizations = useSelector((r: RootState) => r.organizations && r.organizations.visibleOrganizations.ids.map(orgId => r.organizations.organizations[orgId]));
 
   const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(loadOrganizations());
+  }, []);
 
   return (
     <Container maxWidth={false} className={classes.container}>
       <Typography variant="h4" component="h1" gutterBottom>
         Organizations
-        </Typography>
+      </Typography>
       <Grid container spacing={3}>
-        {/* List of activities */}
+        {/* List of organizations for current user */}
         <Grid item xs={6}>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-label="Expand"
-            >
-              <FormControlLabel
-                aria-label="Select"
-                onClick={(event) => event.stopPropagation()}
-                onFocus={(event) => event.stopPropagation()}
-                value={1}
-                control={<Radio 
-                  checked={selectedOrg === 1}
-                  onChange={handleSelect}
-                  />}
-                label="Swetugg Events"
-              />
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography color="textSecondary">
-                Description of the Swetugg Events organization
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
-          <Accordion>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-label="Expand"
-            >
-              <FormControlLabel
-                aria-label="Select"
-                onClick={(event) => event.stopPropagation()}
-                onFocus={(event) => event.stopPropagation()}
-                value={2}
-                control={<Radio 
-                  checked={selectedOrg === 2}
-                  onChange={handleSelect}
-                  />}
-                label="Aptitud"
-              />
-            </AccordionSummary>
-            <AccordionDetails>
-              <Typography color="textSecondary">
-              Description of the Aptitud organization
-              </Typography>
-            </AccordionDetails>
-          </Accordion>
+
+          {organizations && <OrganizationList organizations={organizations} />}
+
         </Grid>
       </Grid>
 

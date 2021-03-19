@@ -26,14 +26,13 @@ namespace Swetugg.Tix.Organization
                     "(OrganizationId, Name, LastUpdated) " +
                     "VALUES (@OrganizationId, @Name, SYSUTCDATETIME()) ", new { 
                         info.OrganizationId, 
-                        info.Name, 
-                        UserId = userId
+                        info.Name
                     });
 
                 await conn.ExecuteAsync(
                     "INSERT INTO [Access].[OrganizationUser] " +
                     "(OrganizationId, UserId, LastUpdated) " +
-                    "VALUES (@OrganizationId, @UserId, SYSUTCDATETIME()", new
+                    "VALUES (@OrganizationId, @UserId, SYSUTCDATETIME()) ", new
                     {
                         info.OrganizationId,
                         UserId = userId
