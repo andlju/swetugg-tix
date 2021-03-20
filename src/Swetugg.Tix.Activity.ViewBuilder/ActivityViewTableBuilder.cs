@@ -12,5 +12,10 @@ namespace Swetugg.Tix.Activity.ViewBuilder
         public ActivityViewTableBuilder(string storageConnectionString) : base(storageConnectionString, _tableName, new ActivityOverviewEventApplier())
         {
         }
+
+        protected override (string, string) GetKeys(string bucketId, string viewId)
+        {
+            return (bucketId, viewId);
+        }
     }
 }

@@ -8,6 +8,7 @@ export interface LoadActivityAction {
   type: typeof LOAD_ACTIVITY;
   payload: { 
     activityId: string,
+    ownerId: string,
     revision?: number
   }
 }

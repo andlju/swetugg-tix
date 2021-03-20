@@ -4,18 +4,19 @@ import { Button, makeStyles } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import Layout from '../../layout/public-layout';
+import Layout from '../../../layout/public-layout';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/root.reducer';
-import { ActivityState } from '../../store/activity.reducer';
-import { TicketTypeCard } from '../../components/ticket-types/ticket-type-card';
-import wrapper, { SagaStore } from '../../store/store';
-import { LOAD_ACTIVITY } from '../../store/activity.actions';
+import { RootState } from '../../../store/root.reducer';
+import { ActivityState } from '../../../store/activity.reducer';
+import { TicketTypeCard } from '../../../components/ticket-types/ticket-type-card';
+import wrapper, { SagaStore } from '../../../store/store';
+import { LOAD_ACTIVITY } from '../../../store/activity.actions';
 import { END } from 'redux-saga';
-import { OrderState } from '../../store/order.reducer';
+import { OrderState } from '../../../store/order.reducer';
 
 interface ActivityProps {
   activityId: string,
+  ownerId: string
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const PublicActivityPage: React.FC<ActivityProps> = ({ activityId }) => {
+const PublicActivityPage: React.FC<ActivityProps> = ({ activityId, ownerId }) => {
   const classes = useStyles();
 
   const { currentActivity: activity } = useSelector<RootState, ActivityState>(state => state.activity);
@@ -99,8 +100,9 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
     }
   }
   const activityId = params?.activityId;
+  const ownerId = params?.ownerId;
 
-  store.dispatch({ type: LOAD_ACTIVITY, payload: { activityId } });
+  store.dispatch({ type: LOAD_ACTIVITY, payload: { activityId, ownerId } });
   store.dispatch(END);
 
   await (store as SagaStore).sagaTask.toPromise();
@@ -108,7 +110,8 @@ export const getServerSideProps: GetServerSideProps = wrapper.getServerSideProps
   console.log(store.getState());
   return {
     props: {
-      activityId: activityId
+      activityId: activityId,
+      ownerId: ownerId
     }
   };
 });

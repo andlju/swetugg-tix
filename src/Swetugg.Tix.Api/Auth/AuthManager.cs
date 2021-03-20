@@ -42,8 +42,8 @@ namespace Swetugg.Tix.Api.Authorization
         public async Task<UserInfo> GetAuthenticatedUser()
         {
             var identity = _currentRequest.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
-            if (identity is null)
-                throw new InvalidOperationException("Must first successfully Authenticate the user");
+            if (identity is null || !identity.IsAuthenticated)
+                return null;
 
             var subject = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
             var issuer = identity.FindFirst("iss").Value;

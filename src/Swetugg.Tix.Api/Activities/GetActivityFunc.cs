@@ -50,8 +50,11 @@ namespace Swetugg.Tix.Api.Activities
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, ActivityRouteParams routeParams)
         {
             var activityId = routeParams.ActivityId;
+            var user = await AuthManager.GetAuthenticatedUser();
+            req.Query.TryGetValue("OwnerId", out var ownerIdQuery);
+            var ownerId = string.IsNullOrEmpty(ownerIdQuery) ? user.UserId.ToString() : ownerIdQuery.ToString();
 
-            var activity = await _viewReader.GetEntity<ActivityViewEntity, ActivityOverview>(activityId, activityId);
+            var activity = await _viewReader.GetEntity<ActivityViewEntity, ActivityOverview>(ownerId, activityId);
             if (activity == null)
             {
                 activity = new ActivityOverview()

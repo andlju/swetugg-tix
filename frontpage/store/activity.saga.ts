@@ -7,7 +7,7 @@ import { LoadActivityAction, LOAD_ACTIVITY, LOAD_ACTIVITY_COMPLETE } from "./act
 
 export function* loadActivityAction(action: LoadActivityAction) : Generator {
   const result = yield call(async () => {
-    const data = await getView<Activity>(buildUrl(`/activities/${action.payload.activityId}`), { revision: action.payload.revision });
+    const data = await getView<Activity>(buildUrl(`/activities/${action.payload.activityId}?ownerId=${action.payload.ownerId}`), { revision: action.payload.revision });
     return data;
   });
 

@@ -64,7 +64,7 @@ namespace Swetugg.Tix.Api
             where TEntity : TableEntity, IViewEntity<TView>, new()
             where TView : class, IView
         {
-            var query = _table.CreateQuery<TEntity>();
+            var query = new TableQuery<TEntity>();
             var result = await _table.ExecuteQueryAsync(query);
 
             return result.Select(e => e?.ToView());
@@ -75,7 +75,7 @@ namespace Swetugg.Tix.Api
             where TView : class, IView
         {
             var filter = TableQuery.GenerateFilterCondition("PartitionKey", QueryComparisons.Equal, partitionKey);
-            var query = _table.CreateQuery<TEntity>().Where(filter);
+            var query = new TableQuery<TEntity>().Where(filter);
             var result = await _table.ExecuteQueryAsync(query);
 
             return result.Select(e => e?.ToView());

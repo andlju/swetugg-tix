@@ -46,7 +46,7 @@ export function ActivityDetails({ activity }: ActivityDetailsProps) {
           </Table>
         </Grid>
         <Grid item xs={12}>
-          <Link href={`${frontpageRoot}/${activity.activityId}`}>
+          <Link href={`${frontpageRoot}/${activity.ownerId}/${activity.activityId}`}>
             <Button
               variant="contained" color="primary">
               Public page

@@ -40,6 +40,7 @@ export interface AddTicketsAction {
   payload: {
     orderId?: string;
     activityId: string;
+    activityOwnerId: string;
     ticketTypeId: string;
     quantity: number;
   }

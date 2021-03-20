@@ -41,6 +41,13 @@ namespace Swetugg.Tix.Order.Domain
 
         public Order(Guid orderId, Guid activityId, Guid activityOwnerId)
         {
+            if (orderId == Guid.Empty)
+                throw new OrderException("OrderEmpty", "OrderId must be specified");
+            if (activityId == Guid.Empty)
+                throw new OrderException("ActivityEmpty", "ActivityId must be specified.");
+            if (activityOwnerId == Guid.Empty)
+                throw new OrderException("ActivityOwnerEmpty", "ActivityOwnerId must be specified.");
+
             Raise(new OrderCreated()
             {
                 AggregateId = orderId,

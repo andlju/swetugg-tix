@@ -52,6 +52,7 @@ function* addTicketsAction(action: AddTicketsAction): Generator {
         method: 'POST',
         body: {
           activityId: action.payload.activityId,
+          activityOwnerId: action.payload.activityOwnerId,
           tickets: [{
             ticketTypeId: action.payload.ticketTypeId,
             quantity: action.payload.quantity
@@ -67,6 +68,7 @@ function* addTicketsAction(action: AddTicketsAction): Generator {
         method: 'POST',
         body: {
           activityId: action.payload.activityId,
+          activityOwnerId: action.payload.activityOwnerId,
           tickets: [{
             ticketTypeId: action.payload.ticketTypeId,
             quantity: action.payload.quantity

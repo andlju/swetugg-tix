@@ -23,9 +23,8 @@ namespace Swetugg.Tix.Activity.Views.TableStorage
 
         public void FromView(ActivityOverview view)
         {
-            var key = view.ActivityId.ToString();
-            PartitionKey = key;
-            RowKey = key;
+            PartitionKey = view.OwnerId.ToString();
+            RowKey = view.ActivityId.ToString();
 
             ActivityId = view.ActivityId;
             OwnerId = view.OwnerId;

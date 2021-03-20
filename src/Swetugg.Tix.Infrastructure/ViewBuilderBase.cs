@@ -28,7 +28,7 @@ namespace Swetugg.Tix.Infrastructure
         {
             foreach (var aggregateEvents in events.GroupBy(e => new { e.BucketId, e.AggregateId }))
             {
-                var oldView = await GetView(aggregateEvents.Key.AggregateId);
+                var oldView = await GetView(aggregateEvents.Key.BucketId, aggregateEvents.Key.AggregateId);
                 ThrowRandomError();
 
                 // Only apply events that are newer than the current revision.
@@ -49,7 +49,7 @@ namespace Swetugg.Tix.Infrastructure
             return e.Headers != null && e.Headers.ContainsKey("RebuildToRevision");
         }
 
-        protected abstract Task<TView> GetView(string viewId);
+        protected abstract Task<TView> GetView(string bucketId, string viewId);
         protected abstract Task StoreView(TView oldView, TView newView);
     }
 }

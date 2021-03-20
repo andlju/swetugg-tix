@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Swetugg.Tix.Infrastructure.Views
 {
 
-    public class TableStorageViewBuilder<TView, TEntity> : ViewBuilderBase<TView>
+    public abstract class TableStorageViewBuilder<TView, TEntity> : ViewBuilderBase<TView>
         where TEntity : TableEntity, IViewEntity<TView>, new()
         where TView: class, IView
     {
@@ -24,9 +24,12 @@ namespace Swetugg.Tix.Infrastructure.Views
             _table.CreateIfNotExists();
         }
 
-        protected async override Task<TView> GetView(string viewId)
+        protected abstract (string, string) GetKeys(string bucketId, string viewId);
+
+        protected async override Task<TView> GetView(string bucketId, string viewId)
         {
-            var retrieveOperation = TableOperation.Retrieve<TEntity>(viewId, viewId);
+            var (partitionKey, rowKey) = GetKeys(bucketId, viewId);
+            var retrieveOperation = TableOperation.Retrieve<TEntity>(partitionKey, rowKey);
             var result = await _table.ExecuteAsync(retrieveOperation);
             var entity = result.Result as TEntity;
 

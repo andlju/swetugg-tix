@@ -40,7 +40,11 @@ namespace Swetugg.Tix.Api.Activities
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams routeParams)
         {
-            var activities = (await _viewReader.ListAllEntities<ActivityViewEntity, ActivityOverview>()).ToArray();
+            var user = await AuthManager.GetAuthenticatedUser();
+            req.Query.TryGetValue("OwnerId", out var ownerIdQuery);
+            var ownerId = string.IsNullOrEmpty(ownerIdQuery) ? user.UserId.ToString() : ownerIdQuery.ToString();
+
+            var activities = (await _viewReader.ListEntitiesForPartition<ActivityViewEntity, ActivityOverview>(ownerId)).ToArray();
 
             using (var conn = new SqlConnection(_connectionString))
             {

@@ -31,15 +31,18 @@ const TicketTypeCard: React.FC<TicketTypeProps> = ({ ticketType, orderId }) => {
   const dispatch = useDispatch();
   
   const onClickBuyOrder = async () => {
-    dispatch({
+    const cmd = {
       type: ADD_TICKETS,
       payload: {
         orderId: orderId,
         activityId: ticketType.activityId,
+        activityOwnerId: ticketType.ownerId,
         ticketTypeId: ticketType.ticketTypeId,
         quantity: 1
       }
-    });
+    };
+    console.log("Command", cmd);
+    dispatch(cmd);
   }
 
   return <Card>

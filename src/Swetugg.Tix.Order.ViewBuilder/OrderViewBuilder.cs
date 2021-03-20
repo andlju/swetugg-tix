@@ -11,6 +11,11 @@ namespace Swetugg.Tix.Order.ViewBuilder
         public OrderViewTableBuilder(string storageConnectionString) : base(storageConnectionString, _tableName, new OrderViewEventApplier())
         {
         }
+
+        protected override (string, string) GetKeys(string bucketId, string viewId)
+        {
+            return (viewId, viewId);
+        }
     }
 
 }
