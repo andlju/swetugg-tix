@@ -43,6 +43,7 @@ export function loadActivitiesComplete(activities: Activity[]) : LoadActivitiesC
 export interface CommandOptions {
   method?: string;
 }
+
 let nextTempCommandId = 0;
 
 export function sendActivityCommand<TBody>(url: string, body?: TBody, options?: CommandOptions) : SendActivityCommandAction {

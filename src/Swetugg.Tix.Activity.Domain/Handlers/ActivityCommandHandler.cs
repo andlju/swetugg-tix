@@ -55,6 +55,9 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
         protected virtual Activity GetActivity(TCmd cmd)
         {
             var activity = _repository.GetById<Activity>(cmd.OwnerId.ToString(), cmd.ActivityId);
+            if (activity.Id == Guid.Empty)
+                throw new InvalidOperationException($"Unable to find Activity {cmd.ActivityId} with Owner {cmd.OwnerId}");
+
             return activity;
         }
 

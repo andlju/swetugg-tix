@@ -11,6 +11,7 @@ namespace Swetugg.Tix.Order.Commands
             public Guid TicketTypeId { get; set; }
         }
         public Guid ActivityId { get; set; }
+        public Guid ActivityOwnerId { get; set; }
         public List<TicketOrder> Tickets { get; set; }
     }
 

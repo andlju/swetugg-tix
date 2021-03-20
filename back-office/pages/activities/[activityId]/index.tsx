@@ -64,7 +64,7 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
               </Grid>
             </Grid>
             <Grid item xs={12} md={7}>
-              <TicketTypeList ticketTypes={ticketTypes} loading={activities.visibleActivities.loading} activityId={activity.activityId} />
+              <TicketTypeList ticketTypes={ticketTypes} loading={activities.visibleActivities.loading} activityId={activity.activityId} ownerId={activity.ownerId} />
             </Grid>
           </Grid>
         </Container>)}

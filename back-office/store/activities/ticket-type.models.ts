@@ -1,6 +1,7 @@
 
 export type TicketType = {
   activityId: string,
+  ownerId: string,
   ticketTypeId: string,
   revision: number,
   name: string,

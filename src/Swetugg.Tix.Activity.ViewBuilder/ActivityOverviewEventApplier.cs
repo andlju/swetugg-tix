@@ -22,7 +22,10 @@ namespace Swetugg.Tix.Activity.ViewBuilder
 
         private ActivityOverview Handle(ActivityOverview view, TicketTypeAdded evt)
         {
-            view.TicketTypes.Add(new TicketType { ActivityId = evt.AggregateId, TicketTypeId = evt.TicketTypeId });
+            view.TicketTypes.Add(new TicketType { 
+                ActivityId = evt.AggregateId, 
+                OwnerId = view.OwnerId,
+                TicketTypeId = evt.TicketTypeId });
             return view;
         }
 

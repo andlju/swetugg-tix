@@ -17,6 +17,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
 
         protected Guid OrderId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
+        protected Guid ActivityOwnerId = Guid.NewGuid();
         protected Guid TicketTypeId_1 = Guid.NewGuid();
         protected Guid TicketTypeId_2 = Guid.NewGuid();
 
@@ -31,6 +32,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
             {
                 OrderId = OrderId,
                 ActivityId = ActivityId,
+                ActivityOwnerId = ActivityOwnerId,
                 Tickets = new List<CreateOrderWithTickets.TicketOrder> {
                     new CreateOrderWithTickets.TicketOrder { Quantity = 2, TicketTypeId = TicketTypeId_1},
                     new CreateOrderWithTickets.TicketOrder { Quantity = 3, TicketTypeId = TicketTypeId_2}
@@ -57,6 +59,13 @@ namespace Swetugg.Tix.Order.Domain.Tests
         {
             var evt = Commits.GetEvent<OrderCreated>();
             Assert.Equal(ActivityId, evt.ActivityId);
+        }
+
+        [Fact]
+        public void then_ActivityOwnerId_is_correct()
+        {
+            var evt = Commits.GetEvent<OrderCreated>();
+            Assert.Equal(ActivityOwnerId, evt.ActivityOwnerId);
         }
 
         [Fact]

@@ -10,6 +10,7 @@ namespace Swetugg.Tix.Process
     public class OrderConfirmationSaga : SagaBase<object>
     {
         private Guid? _activityId;
+        private Guid? _activityOwnerId;
 
         public OrderConfirmationSaga(string id)
         {
@@ -25,6 +26,7 @@ namespace Swetugg.Tix.Process
         void Handle(OrderEvents.OrderCreated evt)
         {
             _activityId = evt.ActivityId;
+            _activityOwnerId = evt.ActivityOwnerId;
         }
 
         void Handle(OrderEvents.TicketAdded evt)
@@ -35,6 +37,7 @@ namespace Swetugg.Tix.Process
                 CommandId = Guid.NewGuid(),
 
                 ActivityId = _activityId.Value,
+                OwnerId = _activityOwnerId.Value,
                 TicketTypeId = evt.TicketTypeId,
                 OrderReference = Id.ToString()
             });
@@ -60,7 +63,7 @@ namespace Swetugg.Tix.Process
 
         void Handle(ActivityEvents.SeatReservationFailed evt)
         {
-            // A seat has been reserved for this order. Let's confirm it.
+            // A seat could not be reserved for this order. Let's deny it.
             Dispatch(new OrderCommands.DenyReservedSeat()
             {
                 CommandId = Guid.NewGuid(),

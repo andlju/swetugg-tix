@@ -11,6 +11,7 @@ import { AddTicketType } from "./add-ticket-type";
 
 interface TicketTypeListProps {
   activityId: string,
+  ownerId: string,
   loading: boolean,
   ticketTypes: TicketType[],
 }
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export function TicketTypeList({ activityId, loading, ticketTypes }: TicketTypeListProps) {
+export function TicketTypeList({ activityId, ownerId, loading, ticketTypes }: TicketTypeListProps) {
   const classes = useStyles();
  
   return (<Paper className={classes.paper}>
@@ -87,7 +88,7 @@ export function TicketTypeList({ activityId, loading, ticketTypes }: TicketTypeL
       </Table>
     </TableContainer>
 
-    <AddTicketType activityId={activityId} />
+    <AddTicketType activityId={activityId} ownerId={ownerId} />
   </Paper>);
 }
 

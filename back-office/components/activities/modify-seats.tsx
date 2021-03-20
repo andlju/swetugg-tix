@@ -3,7 +3,7 @@ import { Activity } from "../../store/activities/activity.models";
 
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { useActivityCommand } from "../../src/user-activity-command.hook";
+import { useActivityCommand } from "../../src/use-activity-command.hook";
 import { CommandLogSeverity } from "../../src/services/activity-command.service";
 import { ControlCameraRounded } from "@material-ui/icons";
 
@@ -57,8 +57,8 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
     }
   });
 
-  const [addSeatsCommand, addSeatsStatus, addSeatsState] = useActivityCommand(`/activities/${activity.activityId}/add-seats`);
-  const [removeSeatsCommand, removeSeatsStatus, removeSeatsState] = useActivityCommand(`/activities/${activity.activityId}/remove-seats`);
+  const [addSeatsCommand, addSeatsStatus, addSeatsState] = useActivityCommand(`/activities/${activity.activityId}/add-seats?ownerId=${activity.ownerId}`);
+  const [removeSeatsCommand, removeSeatsStatus, removeSeatsState] = useActivityCommand(`/activities/${activity.activityId}/remove-seats?ownerId=${activity.ownerId}`);
 
   const addSeatsError = addSeatsState?.messages && addSeatsState.messages.find(m => m.severity === CommandLogSeverity.Error);
   const removeSeatsError = removeSeatsState?.messages && removeSeatsState.messages.find(m => m.severity === CommandLogSeverity.Error);

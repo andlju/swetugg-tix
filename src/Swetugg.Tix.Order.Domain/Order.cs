@@ -25,6 +25,8 @@ namespace Swetugg.Tix.Order.Domain
         }
 
         private Guid _activityId;
+        private Guid _activityOwnerId;
+
         private List<Ticket> _tickets = new List<Ticket>();
 
         internal static Order Build()
@@ -37,12 +39,13 @@ namespace Swetugg.Tix.Order.Domain
 
         }
 
-        public Order(Guid orderId, Guid activityId)
+        public Order(Guid orderId, Guid activityId, Guid activityOwnerId)
         {
             Raise(new OrderCreated()
             {
                 AggregateId = orderId,
-                ActivityId = activityId
+                ActivityId = activityId,
+                ActivityOwnerId = activityOwnerId
             });
         }
 
@@ -121,6 +124,7 @@ namespace Swetugg.Tix.Order.Domain
         {
             Id = evt.AggregateId;
             _activityId = evt.ActivityId;
+            _activityOwnerId = evt.ActivityOwnerId;
         }
 
         private void Apply(TicketAdded evt)

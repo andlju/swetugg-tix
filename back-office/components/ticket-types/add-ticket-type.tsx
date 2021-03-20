@@ -5,12 +5,11 @@ import {
 } from "@material-ui/core";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { useActivityCommand } from "../../src/user-activity-command.hook";
-import { sendActivityCommand } from "../../store/activities/activities.actions";
+import { useActivityCommand } from "../../src/use-activity-command.hook";
 
 interface AddTicketTypeProps {
   activityId: string;
+  ownerId: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +33,7 @@ type FormData = {
   ticketTypeName: string;
 };
 
-export function AddTicketType({ activityId }: AddTicketTypeProps) {
+export function AddTicketType({ activityId, ownerId }: AddTicketTypeProps) {
   const classes = useStyles();
 
   const { register, handleSubmit, setValue, control } = useForm<FormData>({
@@ -43,7 +42,7 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
     }
   });
 
-  const [addTicketTypeCommand, addTicketTypeStatus] = useActivityCommand(`/activities/${activityId}/ticket-types`);
+  const [addTicketTypeCommand, addTicketTypeStatus] = useActivityCommand(`/activities/${activityId}/ticket-types?ownerId=${ownerId}`);
 
   const onSubmit = async (data: FormData) => {
     addTicketTypeCommand({

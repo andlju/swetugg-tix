@@ -27,7 +27,7 @@ namespace Swetugg.Tix.Order.Domain.Handlers
 
         protected override Order GetOrder(CreateOrderWithTickets cmd)
         {
-            return new Order(cmd.OrderId, cmd.ActivityId);
+            return new Order(cmd.OrderId, cmd.ActivityId, cmd.ActivityOwnerId);
         }
     }
 }

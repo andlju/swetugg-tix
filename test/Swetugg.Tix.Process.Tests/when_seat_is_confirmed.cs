@@ -10,7 +10,9 @@ namespace Swetugg.Tix.Process.Tests
         protected Guid OrderId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
-        
+        protected Guid ActivityOwnerId = Guid.NewGuid();
+
+
         protected string TicketReference = Guid.NewGuid().ToString();
 
         public when_seat_is_confirmed(ITestOutputHelper output) : base(output)
@@ -23,6 +25,7 @@ namespace Swetugg.Tix.Process.Tests
             {
                 AggregateId = OrderId,
                 ActivityId = ActivityId,
+                ActivityOwnerId = ActivityOwnerId
             });
         }
 

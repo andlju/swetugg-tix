@@ -9,6 +9,7 @@ namespace Swetugg.Tix.Order.Views
     {
         public Guid OrderId { get; set; }
         public Guid? ActivityId { get; set; }
+        public Guid? ActivityOwnerId { get; set; }
         public int Revision { get; set; }
         public List<OrderTicket> Tickets { get; set; }
     }
@@ -26,6 +27,7 @@ namespace Swetugg.Tix.Order.Views
         public Guid TicketId { get; set; }
         public Guid OrderId { get; set; }
         public Guid ActivityId { get; set; }
+        public Guid ActivityOwnerId { get; set; }
         public Guid TicketTypeId { get; set; }
         public string TicketReference { get; set; }
         public OrderTicketStatus Status { get; set; }

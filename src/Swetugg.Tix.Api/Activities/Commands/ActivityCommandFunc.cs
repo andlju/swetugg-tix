@@ -49,6 +49,9 @@ namespace Swetugg.Tix.Api.Activities.Commands
 
             var commandId = Guid.NewGuid();
             cmd.CommandId = commandId;
+            if (req.Query.TryGetValue("OwnerId", out var ownerId))
+                cmd.OwnerId = Guid.Parse(ownerId);
+
             if (overrides != null)
             {
                 OverrideProperties(cmd, overrides);
@@ -59,8 +62,14 @@ namespace Swetugg.Tix.Api.Activities.Commands
         protected override async Task<TCommand> HandleUser(HttpRequest req, ILogger log, TCommand cmd)
         {
             var user = await AuthManager.GetAuthenticatedUser();
+            
+            // If no user is logged in, you should not be allowed to send an activity command
             if (user.UserId == null)
                 return null;
+
+            // If no Owner has been set, default to the current user
+            if (cmd.OwnerId == Guid.Empty)
+                cmd.OwnerId = user.UserId.Value;
             cmd.Headers.UserId = user.UserId.Value;
             return cmd;
         }
@@ -75,7 +84,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
 
             await _sender.Send(cmd);
 
-            return new OkObjectResult(new { activityId = cmd.ActivityId, commandId = cmd.CommandId });
+            return new OkObjectResult(new { activityId = cmd.ActivityId, ownerId = cmd.OwnerId, commandId = cmd.CommandId });
         }
     }
 }

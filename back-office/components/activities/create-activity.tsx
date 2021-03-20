@@ -9,7 +9,7 @@ import {
 } from '@material-ui/core';
 
 import { useForm, Controller } from 'react-hook-form';
-import { useActivityCommand } from '../../src/user-activity-command.hook';
+import { useActivityCommand } from '../../src/use-activity-command.hook';
 import { User } from '../../store/auth/auth.actions';
 
 const useStyles = makeStyles((theme) => ({

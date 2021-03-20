@@ -16,6 +16,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
 
         protected Guid OrderId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
+        protected Guid ActivityOwnerId = Guid.NewGuid();
 
         protected override void Setup()
         {
@@ -28,6 +29,7 @@ namespace Swetugg.Tix.Order.Domain.Tests
             {
                 OrderId = OrderId,
                 ActivityId = ActivityId,
+                ActivityOwnerId = ActivityOwnerId,
                 Tickets = null
             };
         }
@@ -51,6 +53,13 @@ namespace Swetugg.Tix.Order.Domain.Tests
         {
             var evt = Commits.GetEvent<OrderCreated>();
             Assert.Equal(ActivityId, evt.ActivityId);
+        }
+
+        [Fact]
+        public void then_ActivityOwnerId_is_correct()
+        {
+            var evt = Commits.GetEvent<OrderCreated>();
+            Assert.Equal(ActivityOwnerId, evt.ActivityOwnerId);
         }
 
         [Fact]

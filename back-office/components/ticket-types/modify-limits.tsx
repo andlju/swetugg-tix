@@ -6,7 +6,7 @@ import {
 import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { CommandLogSeverity } from "../../src/services/activity-command.service";
-import { useActivityCommand } from "../../src/user-activity-command.hook";
+import { useActivityCommand } from "../../src/use-activity-command.hook";
 import { TicketType } from "../../store/activities/ticket-type.models";
 
 interface EditTicketTypeProps {
@@ -54,9 +54,9 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
     }
   });
 
-  const [increaseLimitCommand, increaseLimitStatus, increaseLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/increase-limit`);
-  const [decreaseLimitCommand, decreaseLimitStatus, decreaseLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/decrease-limit`);
-  const [removeLimitCommand, removeLimitStatus, removeLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, { method: "DELETE" });
+  const [increaseLimitCommand, increaseLimitStatus, increaseLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/increase-limit?ownerId=${ticketType.ownerId}`);
+  const [decreaseLimitCommand, decreaseLimitStatus, decreaseLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/decrease-limit?ownerId=${ticketType.ownerId}`);
+  const [removeLimitCommand, removeLimitStatus, removeLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit?ownerId=${ticketType.ownerId}`, { method: "DELETE" });
 
   const increaseLimitError = increaseLimitState?.messages && increaseLimitState.messages.find(m => m.severity === CommandLogSeverity.Error);
   const decreaseLimitError = decreaseLimitState?.messages && decreaseLimitState.messages.find(m => m.severity === CommandLogSeverity.Error);

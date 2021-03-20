@@ -13,6 +13,7 @@ namespace Swetugg.Tix.Process.Tests
     {
         protected Guid OrderId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
+        protected Guid ActivityOwnerId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
 
         public when_adding_a_ticket_to_an_order(ITestOutputHelper output) : base(output)
@@ -25,7 +26,8 @@ namespace Swetugg.Tix.Process.Tests
                 AddEvent(new OrderEvents.OrderCreated()
                 {
                     AggregateId = OrderId,
-                    ActivityId = ActivityId
+                    ActivityId = ActivityId,
+                    ActivityOwnerId = ActivityOwnerId
                 });
         }
 
@@ -56,6 +58,13 @@ namespace Swetugg.Tix.Process.Tests
         {
             var cmd = (ActivityCommands.ReserveSeat)DispatchedMessages.First();
             Assert.Equal(ActivityId, cmd.ActivityId);
+        }
+
+        [Fact]
+        public void then_correct_activity_owner_is_used()
+        {
+            var cmd = (ActivityCommands.ReserveSeat)DispatchedMessages.First();
+            Assert.Equal(ActivityOwnerId, cmd.OwnerId);
         }
 
         [Fact]

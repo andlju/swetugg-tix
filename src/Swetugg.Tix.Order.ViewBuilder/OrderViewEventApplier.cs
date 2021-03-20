@@ -17,6 +17,7 @@ namespace Swetugg.Tix.Order.ViewBuilder
             view.Tickets = new List<OrderTicket>();
             view.OrderId = evt.AggregateId;
             view.ActivityId = evt.ActivityId;
+            view.ActivityOwnerId = evt.ActivityOwnerId;
             return view;
         }
 
@@ -25,6 +26,7 @@ namespace Swetugg.Tix.Order.ViewBuilder
             view.Tickets.Add(new OrderTicket
             {
                 ActivityId = view.ActivityId.GetValueOrDefault(),
+                ActivityOwnerId = view.ActivityOwnerId.GetValueOrDefault(),
                 TicketId = evt.TicketId,
                 OrderId = view.OrderId,
                 TicketTypeId = evt.TicketTypeId,
