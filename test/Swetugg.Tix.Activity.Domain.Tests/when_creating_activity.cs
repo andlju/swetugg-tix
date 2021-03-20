@@ -23,7 +23,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
 
         protected override object When()
         {
-            return new CreateActivity() { ActivityId = ActivityId, UserId = UserId };
+            return new CreateActivity() { ActivityId = ActivityId, OwnerId = UserId, Headers = new CommandHeaders { UserId = UserId } };
         }
 
         [Fact]
@@ -39,10 +39,10 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         [Fact]
-        public void then_CreatedByUserId_is_correct()
+        public void then_OwnerId_is_correct()
         {
             var evt = Commits.GetEvent<ActivityCreated>();
-            Assert.Equal(UserId, evt.CreatedByUserId);
+            Assert.Equal(UserId, evt.OwnerId);
         }
         
         [Fact]

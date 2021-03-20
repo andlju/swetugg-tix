@@ -2,11 +2,12 @@
 
 namespace Swetugg.Tix.Activity.Commands
 {
+
     public interface IActivityCommand
     {
         Guid ActivityId { get; }
         Guid CommandId { get; }
-        Guid UserId { get; }
+        CommandHeaders Headers { get; }
         int ExpectedRevision { get; }
     }
 }

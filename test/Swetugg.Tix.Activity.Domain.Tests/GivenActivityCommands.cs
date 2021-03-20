@@ -22,7 +22,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         public void AddCommand(ActivityCommand cmd)
         {
             cmd.ActivityId = _activityId;
-            cmd.UserId = _userId;
+            cmd.Headers.UserId = _userId;
             _parent.AddCommand(cmd);
         }
     }

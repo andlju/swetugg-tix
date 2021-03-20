@@ -32,17 +32,17 @@ namespace Swetugg.Tix.Activity.Domain
         /// </summary>
         /// <param name="aggregateId"></param>
         /// <param name="userId"></param>
-        public Activity(Guid aggregateId, Guid userId) 
+        public Activity(Guid aggregateId, Guid ownerId) 
         {
             if (aggregateId == Guid.Empty)
                 throw new ActivityException("InvalidId", "Invalid Activity Id specified");
-            if (userId == Guid.Empty)
-                throw new ActivityException("InvalidId", "Invalid User Id specified");
+            if (ownerId == Guid.Empty)
+                throw new ActivityException("InvalidId", "Invalid Owner Id specified");
 
             Raise(new ActivityCreated()
             {
                 AggregateId = aggregateId,
-                CreatedByUserId = userId
+                OwnerId = ownerId
             });
         }
 

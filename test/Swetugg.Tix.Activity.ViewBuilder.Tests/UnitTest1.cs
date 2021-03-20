@@ -16,7 +16,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Tests
             var target = new ActivityOverviewEventApplier();
             var events = new EventBase[]
             {
-                new ActivityCreated() { AggregateId = aggregateId, CreatedByUserId = userId },
+                new ActivityCreated() { AggregateId = aggregateId, OwnerId = userId },
                 new TicketTypeAdded() { AggregateId = aggregateId, TicketTypeId = ticketTypeId }
             };
 
@@ -24,7 +24,7 @@ namespace Swetugg.Tix.Activity.ViewBuilder.Tests
             var activityOverview = target.ApplyEvents(null, events);
 
             Assert.Equal(aggregateId, activityOverview.ActivityId);
-            Assert.Equal(userId, activityOverview.CreatedByUserId);
+            Assert.Equal(userId, activityOverview.OwnerId);
             Assert.Single(activityOverview.TicketTypes);
         }
     }

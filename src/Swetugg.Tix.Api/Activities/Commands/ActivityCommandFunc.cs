@@ -59,12 +59,20 @@ namespace Swetugg.Tix.Api.Activities.Commands
         protected override async Task<TCommand> HandleUser(HttpRequest req, ILogger log, TCommand cmd)
         {
             var user = await AuthManager.GetAuthenticatedUser();
-            cmd.UserId = user.UserId ?? Guid.Empty;
+            if (user.UserId == null)
+                return null;
+            cmd.Headers.UserId = user.UserId.Value;
             return cmd;
         }
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, TCommand cmd)
         {
+            if (cmd == null)
+            {
+                // No command body - probably because the user was not found.
+                return new BadRequestResult();
+            }
+
             await _sender.Send(cmd);
 
             return new OkObjectResult(new { activityId = cmd.ActivityId, commandId = cmd.CommandId });

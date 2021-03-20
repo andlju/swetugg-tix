@@ -14,8 +14,8 @@ namespace Swetugg.Tix.Activity.Views.TableStorage
         }
 
         public Guid ActivityId { get; set; }
+        public Guid OwnerId { get; set; }
         public int Revision { get; set; }
-        public Guid CreatedByUserId { get; set; }
         public string Name { get; set; }
         public int TotalSeats { get; set; }
         public int FreeSeats { get; set; }
@@ -26,12 +26,13 @@ namespace Swetugg.Tix.Activity.Views.TableStorage
             var key = view.ActivityId.ToString();
             PartitionKey = key;
             RowKey = key;
+
             ActivityId = view.ActivityId;
+            OwnerId = view.OwnerId;
             Revision = view.Revision;
             Name = view.Name;
             TotalSeats = view.TotalSeats;
             FreeSeats = view.FreeSeats;
-            CreatedByUserId = view.CreatedByUserId;
             TicketTypesJson = JsonSerializer.Serialize(view.TicketTypes, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
         }
 
@@ -40,11 +41,11 @@ namespace Swetugg.Tix.Activity.Views.TableStorage
             return new ActivityOverview
             {
                 ActivityId = this.ActivityId,
+                OwnerId = this.OwnerId,
                 Revision = this.Revision,
                 Name = this.Name,
                 TotalSeats = this.TotalSeats,
                 FreeSeats = this.FreeSeats,
-                CreatedByUserId = this.CreatedByUserId,
                 TicketTypes = this.TicketTypesJson != null ? JsonSerializer.Deserialize<List<TicketType>>(this.TicketTypesJson, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }) : new List<TicketType>()
             };
         }

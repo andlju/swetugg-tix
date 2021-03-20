@@ -38,8 +38,8 @@ export function ActivityDetails({ activity }: ActivityDetailsProps) {
                 <TableCell>{activity.totalSeats}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Created by</TableCell>
-                <TableCell>{activity.createdByUserId}</TableCell>
+                <TableCell>Owner</TableCell>
+                <TableCell>{activity.ownerId}</TableCell>
               </TableRow>
               
             </TableBody>

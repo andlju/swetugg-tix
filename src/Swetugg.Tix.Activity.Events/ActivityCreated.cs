@@ -5,6 +5,6 @@ namespace Swetugg.Tix.Activity.Events
 {
     public class ActivityCreated : EventBase
     {
-        public Guid CreatedByUserId { get; set; }
+        public Guid OwnerId { get; set; }
     }
 }
