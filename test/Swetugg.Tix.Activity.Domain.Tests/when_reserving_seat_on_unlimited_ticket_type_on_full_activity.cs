@@ -22,7 +22,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             var activity = Given
-                .Activity(ActivityId, UserId);
+                .Activity(ActivityId, UserId, OwnerId);
 
             activity
                 .WithSeats(20)
@@ -41,8 +41,9 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new ReserveSeat()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 TicketTypeId = TicketTypeId,
-                OrderReference = OrderReference
+                OrderReference = OrderReference,
             };
         }
 

@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given.
-                Activity(ActivityId, UserId);
+                Activity(ActivityId, UserId, OwnerId);
         }
 
         protected override object When()
@@ -27,6 +27,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new AddSeats()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 Seats = 10
             };
         }

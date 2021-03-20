@@ -26,9 +26,9 @@ namespace Swetugg.Tix.Infrastructure
 
         public async Task HandleEvents(IEnumerable<PublishedEvent> events)
         {
-            foreach (var aggregateEvents in events.GroupBy(e => e.AggregateId))
+            foreach (var aggregateEvents in events.GroupBy(e => new { e.BucketId, e.AggregateId }))
             {
-                var oldView = await GetView(aggregateEvents.Key);
+                var oldView = await GetView(aggregateEvents.Key.AggregateId);
                 ThrowRandomError();
 
                 // Only apply events that are newer than the current revision.

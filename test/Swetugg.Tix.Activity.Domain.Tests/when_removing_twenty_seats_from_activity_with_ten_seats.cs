@@ -15,7 +15,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId, UserId)
+                .Activity(ActivityId, UserId, OwnerId)
                 .WithSeats(10);
         }
 
@@ -24,6 +24,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new RemoveSeats()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 Seats = 20
             };
         }

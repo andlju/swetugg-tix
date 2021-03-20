@@ -22,6 +22,9 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
 
         public async Task Handle(TCmd cmd)
         {
+            if (cmd.OwnerId == Guid.Empty)
+                throw new ArgumentNullException("OwnerId");
+
             await _commandLog.Store(cmd.CommandId, cmd, cmd.ActivityId.ToString());
             try
             {
@@ -29,7 +32,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
 
                 HandleCommand(activity, cmd);
 
-                _repository.Save(activity, Guid.NewGuid(), headers =>
+                _repository.Save(cmd.OwnerId.ToString(), activity, Guid.NewGuid(), headers =>
                 {
                     headers.Add("CommandId", cmd.CommandId.ToString());
                     headers.Add("UserId", cmd.Headers.UserId.ToString());
@@ -51,7 +54,7 @@ namespace Swetugg.Tix.Activity.Domain.Handlers
 
         protected virtual Activity GetActivity(TCmd cmd)
         {
-            var activity = _repository.GetById<Activity>(cmd.ActivityId);
+            var activity = _repository.GetById<Activity>(cmd.OwnerId.ToString(), cmd.ActivityId);
             return activity;
         }
 

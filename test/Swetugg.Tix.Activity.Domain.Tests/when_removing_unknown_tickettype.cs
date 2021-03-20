@@ -16,14 +16,16 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId, UserId);
+                .Activity(ActivityId, UserId, OwnerId);
         }
 
         protected override object When()
         {
             return new RemoveTicketType()
             {
-                TicketTypeId = Guid.NewGuid()
+                ActivityId = ActivityId,
+                OwnerId = OwnerId,
+                TicketTypeId = Guid.NewGuid(),
             };
         }
 

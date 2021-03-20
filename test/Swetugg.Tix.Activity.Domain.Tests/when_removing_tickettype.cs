@@ -21,7 +21,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId, UserId)
+                .Activity(ActivityId, UserId, OwnerId)
                 .WithTicketType(TicketTypeId);
         }
 
@@ -30,6 +30,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new RemoveTicketType()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 TicketTypeId = TicketTypeId
             };
         }
@@ -55,7 +56,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId, UserId)
+                .Activity(ActivityId, UserId, OwnerId)
                 .WithSeats(5)
                 .WithTicketType(TicketTypeId)
                 .WithIncreasedTicketTypeLimit(TicketTypeId, 5)
@@ -67,6 +68,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new RemoveTicketType()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 TicketTypeId = TicketTypeId
             };
         }

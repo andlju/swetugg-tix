@@ -15,6 +15,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         }
 
         protected Guid UserId = Guid.NewGuid();
+        protected Guid OwnerId = Guid.NewGuid();
 
         protected override IMessageDispatcher WithDispatcher(Wireup eventStoreWireup, IEnumerable<IPipelineHook> extraHooks, ICommandLog commandLog)
         {

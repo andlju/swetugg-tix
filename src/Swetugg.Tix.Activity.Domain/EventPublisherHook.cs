@@ -30,6 +30,7 @@ namespace Swetugg.Tix.Activity.Domain
             var evts = committed.Events.Select((e, i) => new PublishedEvent
             {
                 AggregateId = committed.StreamId,
+                BucketId = committed.BucketId,
                 EventType = e.Body.GetType().FullName,
                 Revision = initialRevision + i,
                 Body = e.Body,
@@ -42,6 +43,7 @@ namespace Swetugg.Tix.Activity.Domain
                     new PublishedEvents
                     {
                         AggregateId = committed.StreamId,
+                        BucketId = committed.BucketId,
                         Events = evts
                     });
             }

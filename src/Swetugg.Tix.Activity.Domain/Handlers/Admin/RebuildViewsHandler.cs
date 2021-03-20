@@ -24,11 +24,11 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
         }
         protected override void HandleCommand(RebuildViews command)
         {
-            using (var stream = _eventStore.OpenStream(command.ActivityId))
+            using (var stream = _eventStore.OpenStream(command.OwnerId.ToString(), command.ActivityId))
             {
                 if (stream.StreamRevision == 0)
                 {
-                    throw new ActivityException("UnknownActivity", $"No Activity found with id {command.ActivityId}");
+                    throw new ActivityException("UnknownActivity", $"No Activity found with id {command.ActivityId}, owner {command.OwnerId}");
                 }
 
                 var streamEvents = stream.CommittedEvents.Select((e, revision) => new PublishedEvent
@@ -40,7 +40,11 @@ namespace Swetugg.Tix.Activity.Domain.Handlers.Admin
                     Body = e.Body
                 });
 
-                _eventPublisher.Publish(new PublishedEvents { AggregateId = command.ActivityId.ToString(), Events = streamEvents.ToArray() });
+                _eventPublisher.Publish(new PublishedEvents { 
+                    AggregateId = command.ActivityId.ToString(),
+                    BucketId = command.OwnerId.ToString(),
+                    Events = streamEvents.ToArray()
+                });
             }
         }
     }

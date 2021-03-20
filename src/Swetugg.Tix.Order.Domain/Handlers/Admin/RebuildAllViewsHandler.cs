@@ -35,13 +35,18 @@ namespace Swetugg.Tix.Order.Domain.Handlers.Admin
                 var streamEvents = commit.Events.Select((e, revision) => new PublishedEvent
                 {
                     AggregateId = commit.StreamId,
+                    BucketId = commit.BucketId,
                     EventType = e.Body.GetType().FullName,
                     Revision = initialRevision + revision + 1,
                     Headers = AddRebuildHeaders(e.Headers, commit.StreamRevision),
                     Body = e.Body
                 });
 
-                await _eventPublisher.Publish(new PublishedEvents { AggregateId = commit.StreamId, Events = streamEvents.ToArray() });
+                await _eventPublisher.Publish(new PublishedEvents { 
+                    AggregateId = commit.StreamId, 
+                    BucketId = commit.BucketId,
+                    Events = streamEvents.ToArray()
+                });
             }
         }
     }

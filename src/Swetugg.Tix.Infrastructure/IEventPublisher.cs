@@ -11,12 +11,14 @@ namespace Swetugg.Tix.Infrastructure
     public class PublishedEvents
     {
         public string AggregateId { get; set; }
+        public string BucketId { get; set; }
         public IEnumerable<PublishedEvent> Events { get; set; }
     }
 
     public class PublishedEvent
     {
         public string AggregateId { get; set; }
+        public string BucketId { get; set; }
         public string EventType { get; set; }
         public int Revision { get; set; }
         public object Body { get; set; }
@@ -28,6 +30,7 @@ namespace Swetugg.Tix.Infrastructure
         class EventData
         {
             public string AggregateId { get; set; }
+            public string BucketId { get; set; }
             public string EventType { get; set; }
             public int Revision { get; set; }
             public JsonElement Body { get; set; }
@@ -53,6 +56,7 @@ namespace Swetugg.Tix.Infrastructure
             return new PublishedEvent
             {
                 AggregateId = data.AggregateId,
+                BucketId = data.BucketId,
                 EventType = data.EventType,
                 Headers = data.Headers,
                 Revision = data.Revision,
@@ -64,6 +68,7 @@ namespace Swetugg.Tix.Infrastructure
         {
             writer.WriteStartObject();
             writer.WriteString(nameof(value.AggregateId), value.AggregateId);
+            writer.WriteString(nameof(value.BucketId), value.BucketId);
             writer.WriteString(nameof(value.EventType), value.EventType);
             writer.WriteNumber(nameof(value.Revision), value.Revision);
             writer.WritePropertyName(nameof(value.Headers));

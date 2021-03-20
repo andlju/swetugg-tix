@@ -19,7 +19,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         protected override void Setup()
         {
             Given
-                .Activity(ActivityId, UserId);
+                .Activity(ActivityId, UserId, OwnerId);
         }
 
         protected Guid TicketTypeId = Guid.NewGuid();
@@ -29,6 +29,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new AddTicketType()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 TicketTypeId = TicketTypeId
             };
         }
@@ -38,7 +39,14 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         {
             Assert.True(Commits.HasEvent<TicketTypeAdded>());
         }
+
+        [Fact]
+        public void then_BucketId_in_published_events_is_correct()
+        {
+            Assert.Equal(OwnerId.ToString(), Commits.First().BucketId);
+        }
     }
+
     public class when_adding_tickettype_with_duplicate_id : with_activity
     {
         public when_adding_tickettype_with_duplicate_id(ITestOutputHelper output) : base(output)
@@ -52,7 +60,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
         {
 
             Given
-                .Activity(ActivityId, UserId)
+                .Activity(ActivityId, UserId, OwnerId)
                 .WithTicketType(TicketTypeId);
         }
 
@@ -61,6 +69,7 @@ namespace Swetugg.Tix.Activity.Domain.Tests
             return new AddTicketType()
             {
                 ActivityId = ActivityId,
+                OwnerId = OwnerId,
                 TicketTypeId = TicketTypeId
             };
         }
