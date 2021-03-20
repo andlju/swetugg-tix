@@ -4,13 +4,13 @@ import {
   Button, Typography, Container
 } from "@material-ui/core";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { useActivityCommand } from "../../src/user-activity-command.hook";
 import { sendActivityCommand } from "../../store/activities/activities.actions";
 
 interface AddTicketTypeProps {
-  activityId: string
+  activityId: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -31,14 +31,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type FormData = {
-  ticketTypeName: string
+  ticketTypeName: string;
 };
 
 export function AddTicketType({ activityId }: AddTicketTypeProps) {
   const classes = useStyles();
 
-  const { register, handleSubmit, setValue, formState } = useForm<FormData>({
+  const { register, handleSubmit, setValue, control } = useForm<FormData>({
     defaultValues: {
+      ticketTypeName: ''
     }
   });
 
@@ -49,16 +50,24 @@ export function AddTicketType({ activityId }: AddTicketTypeProps) {
       name: data.ticketTypeName
     });
     setValue("ticketTypeName", "");
-  }
+  };
 
   return (
     <Container className={classes.root}>
       <Typography variant="overline">Add New</Typography>
       <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-        <TextField name="ticketTypeName" label="Name"
-          size="small" className={classes.input}
-          inputRef={register}
-          disabled={addTicketTypeStatus.processing} />
+        <Controller
+          control={control}
+          name="ticketTypeName"
+          render={(props) => (
+            <TextField
+              {...props}  
+              label="Name"
+              size="small" className={classes.input}
+              disabled={addTicketTypeStatus.processing} />
+          )}
+        />
+
         <Button type="submit" className={classes.button} variant="outlined" color="primary"
           disabled={addTicketTypeStatus.processing}>Add</Button>
       </form>

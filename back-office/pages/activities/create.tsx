@@ -26,6 +26,7 @@ export default function CreatePage() {
 
   const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
 
+  console.log("Current user", user.current);
   return (
     <Container maxWidth={false} className={classes.container}>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -34,7 +35,7 @@ export default function CreatePage() {
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <Paper className={classes.paper}>
-            <CreateActivity />
+            { user.current && <CreateActivity user={ user.current }/> }
           </Paper>
         </Grid>
         <Grid item xs={12} md={6}>

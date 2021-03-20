@@ -3,12 +3,10 @@ import {
   TextField,
   Button, IconButton, Typography, Container, Grid, Box, InputAdornment, CircularProgress
 } from "@material-ui/core";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
 import { CommandLogSeverity } from "../../src/services/activity-command.service";
 import { useActivityCommand } from "../../src/user-activity-command.hook";
-import { sendActivityCommand } from "../../store/activities/activities.actions";
 import { TicketType } from "../../store/activities/ticket-type.models";
 
 interface EditTicketTypeProps {
@@ -38,29 +36,27 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 type LimitFormData = {
-  seats?: number;
+  seats: string;
 };
 
 export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
   const classes = useStyles();
 
-  const dispatch = useDispatch();
-
   const increaseLimitForm = useForm<LimitFormData>({
     defaultValues: {
-
+      seats: ''
     }
   });
 
   const decreaseLimitForm = useForm<LimitFormData>({
     defaultValues: {
-
+      seats: ''
     }
   });
 
   const [increaseLimitCommand, increaseLimitStatus, increaseLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/increase-limit`);
   const [decreaseLimitCommand, decreaseLimitStatus, decreaseLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/decrease-limit`);
-  const [removeLimitCommand, removeLimitStatus, removeLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, { method: "DELETE"});
+  const [removeLimitCommand, removeLimitStatus, removeLimitState] = useActivityCommand(`/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit`, { method: "DELETE" });
 
   const increaseLimitError = increaseLimitState?.messages && increaseLimitState.messages.find(m => m.severity === CommandLogSeverity.Error);
   const decreaseLimitError = decreaseLimitState?.messages && decreaseLimitState.messages.find(m => m.severity === CommandLogSeverity.Error);
@@ -70,19 +66,26 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
     increaseLimitCommand({
       seats: +(data.seats || 0)
     });
-    increaseLimitForm.setValue("seats", undefined);
   };
 
   const onSubmitDecreaseLimit = async (data: LimitFormData) => {
     decreaseLimitCommand({
       seats: +(data.seats || 0)
     });
-    decreaseLimitForm.setValue("seats", undefined);
   };
 
   const onClickRemoveLimit = async () => {
     removeLimitCommand({});
   };
+
+  useEffect(() => {
+    if (increaseLimitStatus.completed) {
+      increaseLimitForm.setValue("seats", '');
+    }
+    if (decreaseLimitStatus.completed) {
+      decreaseLimitForm.setValue("seats", '');
+    }
+  }, [increaseLimitStatus, decreaseLimitStatus]);
 
   return (
     <Container className={classes.root}>
@@ -90,28 +93,42 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
       <Grid container spacing={2}>
         <Grid item xs={12} md={4}>
           <form className={classes.form} onSubmit={increaseLimitForm.handleSubmit(onSubmitIncreaseLimit)}>
-            <TextField name="seats" label="Increase limit" type="number"
-              className={classes.input} variant="outlined"
-              inputRef={increaseLimitForm.register}
-              disabled={increaseLimitStatus.processing} 
-              error={increaseLimitStatus.failed}
-              helperText={increaseLimitError?.message}
-              InputProps={{
-                endAdornment: increaseLimitStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
-              }}/>
+            <Controller
+              control={increaseLimitForm.control}
+              name="seats"
+              render={(props) => (
+                <TextField
+                  {...props}
+                  label="Increase limit" type="number"
+                  className={classes.input} variant="outlined"
+                  disabled={increaseLimitStatus.processing}
+                  error={increaseLimitStatus.failed}
+                  helperText={increaseLimitError?.message}
+                  InputProps={{
+                    endAdornment: increaseLimitStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
+                  }} />
+              )}
+            />
           </form>
         </Grid>
         <Grid item xs={12} md={4}>
           <form className={classes.form} onSubmit={decreaseLimitForm.handleSubmit(onSubmitDecreaseLimit)}>
-            <TextField name="seats" label="Decrease limit" type="number"
-              className={classes.input} variant="outlined"
-              inputRef={decreaseLimitForm.register}
-              disabled={decreaseLimitStatus.processing} 
-              error={decreaseLimitStatus.failed}
-              helperText={decreaseLimitError?.message}
-              InputProps={{
-                endAdornment: decreaseLimitStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
-              }}/>
+            <Controller
+              control={decreaseLimitForm.control}
+              name="seats"
+              render={(props) => (
+                <TextField
+                  {...props}
+                  label="Decrease limit" type="number"
+                  className={classes.input} variant="outlined"
+                  disabled={decreaseLimitStatus.processing}
+                  error={decreaseLimitStatus.failed}
+                  helperText={decreaseLimitError?.message}
+                  InputProps={{
+                    endAdornment: decreaseLimitStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
+                  }} />
+              )}
+            />
           </form>
         </Grid>
         <Grid item xs={12} md={4} className={classes.buttonContainer}>

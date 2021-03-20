@@ -7,7 +7,7 @@ import {
   Button
 } from '@material-ui/core';
 
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { createOrganization } from '../../store/organizations/organizations.actions';
 
@@ -48,23 +48,31 @@ export function CreateOrganization() {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  
-  const { register, handleSubmit, formState } = useForm<FormData>({
+
+  const { handleSubmit, formState, control } = useForm<FormData>({
     defaultValues: {
+      name: ''
     }
   });
 
   const onSubmit = async (data: FormData) => {
     dispatch(createOrganization(data.name));
-  }
+  };
 
   return (<Container className={classes.root}>
     <Typography variant="overline">Organization</Typography>
     <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-      <TextField name="name" label="Name"
-        inputRef={register}
-        variant="outlined" className={classes.input}
-        disabled={formState.isSubmitting} />
+      <Controller
+        control={control}
+        name="name"
+        render={(props) => (
+          <TextField
+            {...props}
+            label="Name"
+            variant="outlined" className={classes.input}
+            disabled={formState.isSubmitting} />
+        )}
+      />
 
       <div className={classes.progressWrapper}>
         <Button type="submit"

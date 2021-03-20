@@ -38,8 +38,9 @@ export enum UserStatus {
 }
 
 export interface User {
+  userId?: string,
   name: string,
-  username: string,
+  subject: string,
   status: UserStatus
 }
 

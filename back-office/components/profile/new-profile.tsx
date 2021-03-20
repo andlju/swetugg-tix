@@ -5,7 +5,7 @@ import {
   TextField,
 } from '@material-ui/core';
 
-import { UseFormMethods } from 'react-hook-form';
+import { Controller, UseFormMethods } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -29,13 +29,20 @@ export interface NewProfileProps {
 export const NewProfile: React.FC<NewProfileProps> = ({ userForm }) => {
   const classes = useStyles();
 
-  const { register, formState } = userForm;
+  const { formState, control } = userForm;
 
   return (<Container className={classes.root}>
-      <Typography variant="overline">Profile</Typography>
-      <TextField name="name" label="Name"
-        inputRef={register}
-        variant="outlined" className={classes.input}
-        disabled={formState.isSubmitting} />
+    <Typography variant="overline">Profile</Typography>
+    <Controller
+      control={control}
+      name="name"
+      render={(props) => (
+        <TextField
+          {...props}
+          label="Name"
+          variant="outlined" className={classes.input}
+          disabled={formState.isSubmitting} />
+      )}
+    />
   </Container>);
-}
+};

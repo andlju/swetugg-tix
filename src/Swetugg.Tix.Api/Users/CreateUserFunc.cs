@@ -31,7 +31,7 @@ namespace Swetugg.Tix.Api.Activities
             HttpRequest req,
             ILogger log)
         {
-            return HandleRequest(req, log, null);
+            return Process(req, log, null);
         }
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)

@@ -42,6 +42,7 @@ const loadActivityEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (a
 
 const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withTokenAndUser$(action$.pipe(filter(isOfType(ActivityActionTypes.SEND_ACTIVITY_COMMAND))), state$).pipe(
+    tap(([action]) => console.log(`Sending command to ${action.payload.url}`)),
     mergeMap(([action, token]) => sendActivityCommand$(action.payload.url, action.payload.body, { method: action.payload.options.method, token: token }).pipe(
       map(status => activityCommandSent(status.commandId, action.payload.uiId)),
       catchError((err) => {

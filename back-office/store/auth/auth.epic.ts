@@ -1,7 +1,7 @@
 import { combineEpics, Epic, StateObservable } from "redux-observable";
 import { EMPTY, throwError, combineLatest, Observable, of } from "rxjs";
 import { ajax } from "rxjs/ajax";
-import { filter, map, mergeMap, tap, withLatestFrom, catchError, distinctUntilChanged } from "rxjs/operators";
+import { filter, map, mergeMap, tap, withLatestFrom, catchError, distinctUntilChanged, take } from "rxjs/operators";
 import { isOfType } from "typesafe-actions";
 import { loginRequest } from "../../src/auth-config";
 import { msalService } from "../../src/services/msal-auth.service";
@@ -14,11 +14,11 @@ const loginEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => 
   filter(isOfType(AuthActionTypes.LOGIN)),
   withLatestFrom(state$),
   mergeMap(([, state]) => {
-    if (state.auth.user.current?.username) {
+    if (state.auth.user.current?.subject) {
       console.log(`We have a hint, so let's try a silent login`);
-      return msalService.ssoSilent({ ...loginRequest, loginHint: state.auth.user.current?.username });
+      return msalService.ssoSilent({ ...loginRequest, loginHint: state.auth.user.current?.subject });
     }
-    throw { errorCode: "No hint found" };
+    throw { errorCode: "NoUserHint" };
   }),
   catchError((err) => {
     console.log('Silent failed - try a popup', err);
@@ -56,16 +56,16 @@ const validateLoginEpic: Epic<AuthAction, AuthAction, RootState> = (action$) => 
 );
 
 const setUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => withToken$(action$.pipe(
-  filter(action => 
+  filter(action =>
     isOfType(AuthActionTypes.VALIDATE_LOGIN_COMPLETE)(action) ||
     isOfType(AuthActionTypes.CREATE_USER_COMPLETE)(action) ||
     isOfType(AuthActionTypes.UPDATE_USER_COMPLETE)(action))), state$).pipe(
-    filter(([, token]) => !!token),
-    mergeMap(([, token]) => ajax.getJSON<User>(buildUrl(`/me`), { 'Authorization': `Bearer ${token}` }).pipe(
-      map(user => setUser(user)),
-      // catchError(err => of(validateLoginFailed()))
-    ))
-  );
+      filter(([, token]) => !!token),
+      mergeMap(([, token]) => ajax.getJSON<User>(buildUrl(`/me`), { 'Authorization': `Bearer ${token}` }).pipe(
+        map(user => setUser(user)),
+        // catchError(err => of(validateLoginFailed()))
+      ))
+    );
 
 const requestUserUpdateEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
   filter(isOfType(AuthActionTypes.SET_USER)),
@@ -80,20 +80,24 @@ const inProgressEpic: Epic<AuthAction, AuthAction> = () => msalService.isInProgr
   map((inProgress) => setInProgress(inProgress))
 );
 
-const createUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => withToken$(action$.pipe(
-  filter(isOfType(AuthActionTypes.CREATE_USER))), state$).pipe(
-    filter(([, token]) => !!token),
-    mergeMap(([action, token]) => ajax.post(buildUrl(`/me`), action.payload.user, { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })),
-    map(() => createUserComplete()),
-    catchError((err) => of(createUserFailed('CreateUserFailed', err)))
+const createUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+  filter(isOfType(AuthActionTypes.CREATE_USER)),
+  withLatestFrom(currentAccessToken$(state$)),
+  filter(([, token]) => !!token),
+  take(1),
+  mergeMap(([action, token]) => ajax.post(buildUrl(`/me`), action.payload.user, { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })),
+  map(() => createUserComplete()),
+  catchError((err) => of(createUserFailed('CreateUserFailed', err)))
 );
 
-const updateUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => withToken$(action$.pipe(
-  filter(isOfType(AuthActionTypes.UPDATE_USER))), state$).pipe(
-    filter(([, token]) => !!token),
-    mergeMap(([action, token]) => ajax.put(buildUrl(`/me`), action.payload.user, { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })),
-    map(() => updateUserComplete()),
-    catchError((err) => of(updateUserFailed('UpdateUserFailed', err)))
+const updateUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+  filter(isOfType(AuthActionTypes.UPDATE_USER)),
+  withLatestFrom(currentAccessToken$(state$)),
+  filter(([, token]) => !!token),
+  take(1),
+  mergeMap(([action, token]) => ajax.put(buildUrl(`/me`), action.payload.user, { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' })),
+  map(() => updateUserComplete()),
+  catchError((err) => of(updateUserFailed('UpdateUserFailed', err)))
 );
 
 const currentAccessToken$ = (state$: StateObservable<RootState>) => state$.pipe(
@@ -106,6 +110,18 @@ const currentUser$ = (state$: StateObservable<RootState>) => state$.pipe(
   distinctUntilChanged()
 );
 
+const whenUser$ = (state$: StateObservable<RootState>) =>
+  currentUser$(state$).pipe(
+    filter((user) => !!user && user.status !== UserStatus.None),
+    take(1)
+  );
+
+const whenToken$ = (state$: StateObservable<RootState>) =>
+  currentAccessToken$(state$).pipe(
+    filter((accessToken) => !!accessToken),
+    take(1)
+  );
+
 export function whenLoggedIn$<TAction>(action$: Observable<TAction>): Observable<TAction> {
   return combineLatest([action$, msalService.currentAccount$()]).pipe(
     filter(([, account]) => !!account),
@@ -114,18 +130,16 @@ export function whenLoggedIn$<TAction>(action$: Observable<TAction>): Observable
 }
 
 export function withTokenAndUser$<TAction>(action$: Observable<TAction>, state$: StateObservable<RootState>): Observable<[TAction, string | undefined, User | undefined]> {
-  return combineLatest([action$, currentUser$(state$)]).pipe(
-    filter(([, user]) => !!user && user.status !== UserStatus.None),
+  return combineLatest([action$, whenUser$(state$)]).pipe(
     withLatestFrom(currentAccessToken$(state$)),
-    map(([[action, user], token]) => [action, token, user])
+    map(([[action, user], token]) => [action, token, user]),
   );
 }
 
 export function withToken$<TAction>(action$: Observable<TAction>, state$: StateObservable<RootState>): Observable<[TAction, string | undefined]> {
-  return combineLatest([action$, currentAccessToken$(state$)]).pipe(
+  return combineLatest([action$, whenToken$(state$)]).pipe(
     filter(([, accessToken]) => !!accessToken),
   );
 }
-
 
 export const authEpic = combineEpics(loginEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, requestUserUpdateEpic, createUserEpic, updateUserEpic);

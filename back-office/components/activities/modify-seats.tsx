@@ -2,9 +2,10 @@ import { CircularProgress, Container, Grid, InputAdornment, makeStyles, TextFiel
 import { Activity } from "../../store/activities/activity.models";
 
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useActivityCommand } from "../../src/user-activity-command.hook";
 import { CommandLogSeverity } from "../../src/services/activity-command.service";
+import { ControlCameraRounded } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +40,7 @@ export type ModifySeatsProps = {
 };
 
 type FormData = {
-  seats?: number;
+  seats: string;
 };
 
 export function ModifySeats({ activity }: ModifySeatsProps) {
@@ -47,11 +48,12 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
 
   const increaseForm = useForm<FormData>({
     defaultValues: {
-
+      seats: ''
     }
   });
   const decreaseForm = useForm<FormData>({
     defaultValues: {
+      seats: ''
     }
   });
 
@@ -77,10 +79,10 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
 
   useEffect(() => {
     if (addSeatsStatus.completed) {
-      increaseForm.setValue("seats", undefined);
+      increaseForm.setValue("seats", '');
     }
     if (removeSeatsStatus.completed) {
-      decreaseForm.setValue("seats", undefined);
+      decreaseForm.setValue("seats", '');
     }
   }, [addSeatsStatus, removeSeatsStatus]);
 
@@ -92,32 +94,43 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
           <form className={classes.form} onSubmit={increaseForm.handleSubmit(onSubmitAddSeats)}>
-            <TextField
-              name="seats" label="Seats to add"
-              type="number"
-              inputRef={increaseForm.register}
-              variant="outlined" className={classes.input}
-              disabled={addSeatsStatus.processing}
-              error={addSeatsStatus.failed}
-              helperText={addSeatsError?.message}
-              InputProps={{
-                endAdornment: addSeatsStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
-              }} />
+            <Controller
+              control={increaseForm.control}
+              name="seats"
+              render={(props) => (
+                <TextField
+                  {...props}
+                  label="Seats to add"
+                  type="number"
+                  variant="outlined" className={classes.input}
+                  disabled={addSeatsStatus.processing}
+                  error={addSeatsStatus.failed}
+                  helperText={addSeatsError?.message}
+                  InputProps={{
+                    endAdornment: addSeatsStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
+                  }} />
+              )} />
           </form>
         </Grid>
         <Grid item xs={12} md={6}>
           <form className={classes.form} onSubmit={decreaseForm.handleSubmit(onSubmitRemoveSeats)}>
-            <TextField
-              name="seats" label="Seats to remove"
-              type="number"
-              inputRef={decreaseForm.register}
-              variant="outlined" className={classes.input}
-              disabled={removeSeatsStatus.processing}
-              error={removeSeatsStatus.failed}
-              helperText={removeSeatsError?.message}
-              InputProps={{
-                endAdornment: removeSeatsStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
-              }} />
+            <Controller
+              control={decreaseForm.control}
+              name="seats"
+              render={(props) => (
+                <TextField
+                  {...props}
+                  label="Seats to remove"
+                  type="number"
+                  variant="outlined" className={classes.input}
+                  disabled={removeSeatsStatus.processing}
+                  error={removeSeatsStatus.failed}
+                  helperText={removeSeatsError?.message}
+                  InputProps={{
+                    endAdornment: removeSeatsStatus.processing && <InputAdornment position="end"><CircularProgress color="inherit" size="1.5rem" /></InputAdornment>
+                  }} />
+              )}
+            />
           </form>
         </Grid>
       </Grid>

@@ -44,7 +44,7 @@ namespace Swetugg.Tix.Api.Activities
             string activityId,
             ILogger log)
         {
-            return Process(req, log, new ActivityRouteParams { ActivityId = activityId });
+            return Process(req, log, new ActivityRouteParams { ActivityId = activityId }, allowUnauthorized: true);
         }
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, ActivityRouteParams routeParams)

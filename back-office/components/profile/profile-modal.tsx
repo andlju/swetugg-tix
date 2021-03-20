@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { NewProfile, UserFormData } from './new-profile';
+import { SettingsOverscanOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -44,12 +45,13 @@ export function ProfileModal() {
     }
   });
 
-  const { handleSubmit, formState, reset } = userForm;
+  const { handleSubmit, setValue, reset } = userForm;
 
   useEffect(() => {
-    if (user.current?.status === UserStatus.None) {
-      reset({ name: user.current?.name });
+    if (user.current && user.current?.status === UserStatus.None) {
+      console.log("Setting user name to", user.current?.name);
       setOpen(true);
+      reset({name: user.current?.name || 'Your name here'});
     } else {
       setOpen(false);
     }
