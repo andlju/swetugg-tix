@@ -21,11 +21,12 @@ export function loadActivities() : LoadAllActivitiesAction {
   }
 }
 
-export function loadActivity(activityId: string, revision?: number) : LoadActivityAction {
+export function loadActivity(activityId: string, ownerId: string, revision?: number) : LoadActivityAction {
   return {
     type: ActivityActionTypes.LOAD_ACTIVITY,
     payload: {
       activityId: activityId,
+      ownerId: ownerId,
       revision: revision
     }
   }
@@ -82,6 +83,7 @@ export interface LoadActivityAction extends Action {
   type: ActivityActionTypes.LOAD_ACTIVITY;
   payload: { 
     activityId: string,
+    ownerId: string,
     revision?: number
   }
 }

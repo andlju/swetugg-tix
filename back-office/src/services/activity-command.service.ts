@@ -46,6 +46,7 @@ export function waitForCommandResult$(commandId: string, token?: string): Observ
       });
     }),
     filter(commandStatus => commandStatus.status !== 'Created'),
+    map(status => ({ ...status, body: status.jsonBody && JSON.parse(status.jsonBody)})),
     repeatWhen((obs) => obs.pipe(delay(1000))),
     take(1),
     timeoutWith(10000, of({

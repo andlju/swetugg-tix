@@ -85,7 +85,7 @@ export function ActivityList({ activities }: ActivityListProps) {
               <TableCell className={classes.numberCell}>{row.totalSeats}</TableCell>
               <TableCell className={classes.numberCell}>{row.ticketTypes?.length ?? 0}</TableCell>
               <TableCell>
-                <Link href={`/activities/${row.activityId}`}>
+                <Link href={`/activities/${row.activityId}?ownerId=${row.ownerId}`}>
                   <Button
                     variant="contained" color="secondary">
                     Details

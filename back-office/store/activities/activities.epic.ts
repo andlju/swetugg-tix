@@ -35,7 +35,7 @@ const loadActivitiesEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = 
 
 const loadActivityEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withTokenAndUser$(loadActivityAction$(action$), state$).pipe(
-    mergeMap(([action, token]) => getView$<Activity>(buildUrl(`/activities/${action.payload.activityId}`), { revision: action.payload.revision, token: token || '' }).pipe(
+    mergeMap(([action, token]) => getView$<Activity>(buildUrl(`/activities/${action.payload.activityId}?ownerId=${action.payload.ownerId}`), { revision: action.payload.revision, token: token || '' }).pipe(
       map(view => loadActivitiesComplete([view]))
     ))
   );
@@ -65,7 +65,7 @@ const reloadOnCommandCompleteEpic: Epic<ActivitiesAction, ActivitiesAction, Root
     filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET)),
     filter((action) => action.payload.commandStatus.status === "Completed"),
     filter((action) => !!action.payload.commandStatus.aggregateId),
-    map((action) => loadActivity(action.payload.commandStatus.aggregateId || '', action.payload.commandStatus.revision))
+    map((action) => loadActivity(action.payload.commandStatus.aggregateId || '', (action.payload.commandStatus.body as any).ownerId, action.payload.commandStatus.revision))
   );
 
 

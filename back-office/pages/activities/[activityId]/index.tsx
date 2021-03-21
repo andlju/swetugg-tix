@@ -14,6 +14,7 @@ import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
 
 interface ActivityProps {
   activityId: string;
+  ownerId?: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -26,15 +27,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
+const ActivityPage: NextPage<ActivityProps> = ({ activityId, ownerId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
 
   useEffect(() => {
-    dispatch(loadActivity(activityId));
-  }, []);
+    if (user.current?.userId) {
+      dispatch(loadActivity(activityId, ownerId ?? user.current.userId));
+    }
+  }, [user]);
 
   const activities = useSelector<RootState, ActivitiesState>(state => state.activities);
 
@@ -74,12 +77,14 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId }) => {
 
 export default ActivityPage;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, query }) => {
   const activityId = params?.activityId;
+  const ownerId = query?.ownerId;
 
   return {
     props: {
-      activityId: activityId
+      activityId: activityId,
+      ownerId: ownerId,
     }
   };
 };

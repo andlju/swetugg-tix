@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import router from 'next/router';
-import { CircularProgress, Container, makeStyles } from '@material-ui/core';
+import { CircularProgress, Container, FormControl, InputLabel, makeStyles, MenuItem, Select } from '@material-ui/core';
+import { Autocomplete } from '@material-ui/lab';
 import {
   Typography,
   TextField,
@@ -11,6 +12,7 @@ import {
 import { useForm, Controller } from 'react-hook-form';
 import { useActivityCommand } from '../../src/use-activity-command.hook';
 import { User } from '../../store/auth/auth.actions';
+import { Organization } from '../../store/organizations/organizations.actions';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -21,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'row',
   },
   input: {
+    margin: theme.spacing(1),
     flex: '1',
   },
   button: {
@@ -47,9 +50,10 @@ type FormData = {
 
 interface CreateActivityProps {
   user: User;
+  organizations: Organization[];
 }
 
-export function CreateActivity({ user }: CreateActivityProps) {
+export function CreateActivity({ user, organizations }: CreateActivityProps) {
   const classes = useStyles();
 
   const { handleSubmit, formState, setValue, control } = useForm<FormData>({
@@ -70,6 +74,14 @@ export function CreateActivity({ user }: CreateActivityProps) {
     }
   };
 
+  const options = useMemo(() => ([{
+    ownerId: user.userId, name: user.name
+  },
+  ...organizations.map(o => ({
+    ownerId: o.organizationId, name: o.name
+  }))]),
+    [user, organizations]);
+
   useEffect(() => {
     if (user.userId) {
       setValue("ownerId", user.userId);
@@ -78,31 +90,48 @@ export function CreateActivity({ user }: CreateActivityProps) {
 
   useEffect(() => {
     if (createActivityState?.aggregateId) {
-      router.push(`/activities/${createActivityState?.aggregateId}`);
+      const activityOwnerId = createActivityState?.body.ownerId as string;
+      router.push(`/activities/${createActivityState?.aggregateId}?ownerId=${activityOwnerId}`);
     }
   }, [createActivityState?.aggregateId]);
 
   return (<Container className={classes.root}>
     <Typography variant="overline">Activity</Typography>
     <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-      <Controller 
+      {options[0] &&
+        <Controller
+          control={control}
+          name="ownerId"
+          render={(props) => (
+            <FormControl className={classes.input} variant="outlined">
+              <InputLabel id="select-ownerid-label">Organization</InputLabel>
+              <Select
+                {...props}
+                labelId="select-ownerid-label"
+                label="Organization">
+                {options.map(o => <MenuItem key={o.ownerId} value={o.ownerId}>{o.name}</MenuItem>)}
+              </Select>
+            </FormControl>
+          )} />
+      }
+      <Controller
         control={control}
-        name="activityName" 
-        render={(props) => (<TextField 
+        name="activityName"
+        render={(props) => (<TextField
           {...props}
           label="Name"
           variant="outlined"
           className={classes.input}
           disabled={formState.isSubmitting} />)}
       />
-      <Controller 
+      <Controller
         control={control}
         name="ownerId"
-        render={(props) => (<Input 
-          {...props} 
+        render={(props) => (<Input
+          {...props}
           type="hidden" />)}
       />
-      
+
       <div className={classes.progressWrapper}>
         <Button type="submit"
           variant="outlined" className={classes.button}
