@@ -50,6 +50,9 @@ namespace Swetugg.Tix.Api.Activities
             {
                 return new BadRequestResult();
             }
+            
+            if (string.IsNullOrEmpty(organizationInfo.Name))
+                return new BadRequestResult();
 
             organizationInfo.OrganizationId = Guid.NewGuid();
 

@@ -16,9 +16,7 @@ export function useAuthenticatedUser(scopes: string[]): AuthenticatedUserResult 
 
   useEffect(() => {
     // Validate that we have a currently logged in user with correct scopes
-    console.log(`Hook dispatching validateUser`);
     dispatch(validateLogin(scopes));
-
   }, []);
 
   return {

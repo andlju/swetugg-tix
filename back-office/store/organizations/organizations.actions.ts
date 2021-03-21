@@ -55,6 +55,16 @@ export function createOrganizationComplete() : CreateOrganizationCompleteAction 
   };
 }
 
+export function createOrganizationFailed(errorCode: string, errorMessage: string) : CreateOrganizationFailedAction {
+  return {
+    type: OrganizationActionTypes.CREATE_ORGANIZATION_FAILED,
+    payload: {
+      errorCode,
+      errorMessage
+    }
+  };
+}
+
 export interface LoadOrganizationAction extends Action {
   type: OrganizationActionTypes.LOAD_ORGANIZATION;
   payload: { 

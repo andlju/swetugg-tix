@@ -11,7 +11,6 @@ import { getScopesPopupEpic, getScopesRedirectEpic, getScopesSilentEpic } from "
 import { AuthAction, AuthActionTypes, createUserComplete, createUserFailed, getScopes, InteractionKind, login, loginCompleted, loginFailed, requestUserUpdate, setInProgress, setUser, updateUserComplete, updateUserFailed, User, UserStatus, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
 
 const loginSilentEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
-  tap(() => console.log('From Login Epic')),
   filter(isOfType(AuthActionTypes.LOGIN)),
   filter(action => action.payload.interactionKind === InteractionKind.SILENT),
   tap(() => console.log('Attempt Silent Login')),
@@ -33,7 +32,7 @@ const loginSilentEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state
 
 const loginPopupEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
   filter(isOfType(AuthActionTypes.LOGIN)),
-  filter(action => action.payload.interactionKind === InteractionKind.SILENT),
+  filter(action => action.payload.interactionKind === InteractionKind.POPUP),
   tap(() => console.log('Attempt Popup Login')),
   mergeMap(() => {
     return msalService.loginPopup(loginRequest);
@@ -80,7 +79,6 @@ const logoutEpic: Epic<AuthAction, AuthAction, RootState> = (action$) => action$
 
 const validateLoginEpic: Epic<AuthAction, AuthAction, RootState> = (action$) => action$.pipe(
   filter(isOfType(AuthActionTypes.VALIDATE_LOGIN)),
-  tap(() => console.log(`Validating Login`)),
   mergeMap((action) => msalService.currentAccount$().pipe(
     mergeMap((account) => {
       if (account) {

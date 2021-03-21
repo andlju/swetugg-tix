@@ -7,7 +7,7 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import { Typography } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store/store";
-import { login, logout } from "../../store/auth/auth.actions";
+import { InteractionKind, login, logout } from "../../store/auth/auth.actions";
 
 
 const SignInButton = () => {
@@ -17,12 +17,11 @@ const SignInButton = () => {
 
     const handleLogin = (loginType: string) => {
         setAnchorEl(null);
-        dispatch(login());
 
         if (loginType === "popup") {
-            console.log("Auth with popup");
+            dispatch(login(InteractionKind.POPUP));
         } else if (loginType === "redirect") {
-            console.log("Auth with redirect");
+            dispatch(login(InteractionKind.REDIRECT));
         }
     };
 

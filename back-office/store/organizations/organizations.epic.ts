@@ -1,8 +1,8 @@
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { ActionsObservable, combineEpics, Epic } from "redux-observable";
-import { filter, map, mergeMap, tap } from "rxjs/operators";
+import { catchError, filter, map, mergeMap, tap } from "rxjs/operators";
 import { ajax } from "rxjs/ajax";
-import { createOrganizationComplete, loadOrganizationsComplete, Organization, OrganizationActionTypes, OrganizationsAction } from "./organizations.actions";
+import { createOrganizationComplete, createOrganizationFailed, loadOrganizations, loadOrganizationsComplete, Organization, OrganizationActionTypes, OrganizationsAction } from "./organizations.actions";
 import { buildUrl } from "../../src/url-utils";
 import { isOfType } from "typesafe-actions";
 import { withTokenAndUser$ } from "../auth/auth.epic";
@@ -27,8 +27,20 @@ const loadOrganizationsEpic: Epic<OrganizationsAction, OrganizationsAction, Root
 
 const createOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$, state$) =>
   withTokenAndUser$(action$.pipe(filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION))), state$).pipe(
-    mergeMap(([action, token]) => ajax.post(buildUrl(`/organizations`), action.payload, { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` })),
-    map(a => createOrganizationComplete())
+    mergeMap(([action, token]) =>
+      ajax.post(buildUrl(`/organizations`), action.payload, { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }).pipe(
+        map(a => createOrganizationComplete()),
+        catchError((err, caught) => {
+          const errString = String(err);
+          return of(createOrganizationFailed('CreateOrganizationFailed', errString));
+        })
+      )),
   );
 
-export const organizationsEpic = combineEpics(loadOrganizationsEpic, createOrganizationEpic);
+const reloadOnCreateComplete: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$) =>
+  action$.pipe(
+    filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION_COMPLETE)),
+    map((action) => loadOrganizations())
+  );
+
+export const organizationsEpic = combineEpics(loadOrganizationsEpic, createOrganizationEpic, reloadOnCreateComplete);

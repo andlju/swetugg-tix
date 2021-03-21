@@ -39,11 +39,6 @@ export function OrganizationList({ organizations }: OrganizationListProps) {
       <Typography className={classes.organizationListTitle} variant="h6" component="div">
         Organizations
       </Typography>
-      <Link href="/organizations/create">
-        <Fab size="small" color="primary">
-          <AddIcon />
-        </Fab>
-      </Link>
     </Toolbar>
     {
       organizations.map(org =>

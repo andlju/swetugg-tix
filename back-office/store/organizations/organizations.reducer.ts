@@ -5,6 +5,11 @@ export interface OrganizationsState {
   organizations: {
     [key: string]: Organization;
   },
+  editState: {
+    errorCode?: string,
+    errorMessage?: string,
+    saving: boolean,
+  },
   visibleOrganizations: {
     ids: string[],
     loading: boolean;
@@ -13,6 +18,9 @@ export interface OrganizationsState {
 
 const initialState: OrganizationsState = {
   organizations: {},
+  editState: {
+    saving: false
+  },
   visibleOrganizations: {
     ids: [],
     loading: false
@@ -55,6 +63,33 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         visibleOrganizations: {
           ids: state?.visibleOrganizations.ids ?? [],
           loading: false
+        }
+      };
+    case OrganizationActionTypes.CREATE_ORGANIZATION:
+      return {
+        ...state,
+        editState: {
+          saving: true,
+          errorCode: undefined,
+          errorMessage: undefined
+        }
+      };
+    case OrganizationActionTypes.CREATE_ORGANIZATION_COMPLETE:
+      return {
+        ...state,
+        editState: {
+          saving: false,
+          errorCode: undefined,
+          errorMessage: undefined
+        }
+      };
+    case OrganizationActionTypes.CREATE_ORGANIZATION_FAILED:
+      return {
+        ...state,
+        editState: {
+          saving: false,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage
         }
       };
     default:

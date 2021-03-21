@@ -14,6 +14,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loadOrganizations } from '../../store/organizations/organizations.actions';
 import { RootState } from '../../store/store';
 import { OrganizationList } from '../../components/organizations/organization-list';
+import { CreateOrganization } from '../../components/organizations/create-organization';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -50,9 +51,16 @@ export default function Index() {
       <Grid container spacing={3}>
         {/* List of organizations for current user */}
         <Grid item xs={6}>
-
-          {organizations && <OrganizationList organizations={organizations} />}
-
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              {organizations && <OrganizationList organizations={organizations} />}
+            </Grid>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <CreateOrganization />
+              </Paper>
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
 

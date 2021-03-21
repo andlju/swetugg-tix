@@ -8,8 +8,9 @@ import {
 } from '@material-ui/core';
 
 import { Controller, useForm } from 'react-hook-form';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createOrganization } from '../../store/organizations/organizations.actions';
+import { RootState } from '../../store/store';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -48,8 +49,9 @@ export function CreateOrganization() {
   const classes = useStyles();
 
   const dispatch = useDispatch();
+  const { editState } = useSelector((r: RootState) => r.organizations);
 
-  const { handleSubmit, formState, control } = useForm<FormData>({
+  const { handleSubmit, setValue, control } = useForm<FormData>({
     defaultValues: {
       name: ''
     }
@@ -58,6 +60,12 @@ export function CreateOrganization() {
   const onSubmit = async (data: FormData) => {
     dispatch(createOrganization(data.name));
   };
+
+  useEffect(() => {
+    if (!editState.saving && !editState.errorCode) {
+      setValue("name", '');
+    }
+  }, [editState.saving]);
 
   return (<Container className={classes.root}>
     <Typography variant="overline">Organization</Typography>
@@ -70,17 +78,20 @@ export function CreateOrganization() {
             {...props}
             label="Name"
             variant="outlined" className={classes.input}
-            disabled={formState.isSubmitting} />
+            disabled={editState.saving}
+            error={!!editState.errorCode}
+            helperText={editState.errorMessage}
+            />
         )}
       />
 
       <div className={classes.progressWrapper}>
         <Button type="submit"
           variant="outlined" className={classes.button}
-          disabled={formState.isSubmitting}>
+          disabled={editState.saving}>
           Create
         </Button>
-        {formState.isSubmitting && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
+        {editState.saving && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
       </div>
     </form>
   </Container>);
