@@ -24,7 +24,6 @@ const loginSilentEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state
     return of(login(InteractionKind.POPUP));
   }),
   catchError((err, caught) => {
-    console.log('Silent failed - try a popup', err);
     return caught.pipe(
       map(() => login(InteractionKind.POPUP))
     );
@@ -43,7 +42,7 @@ const loginPopupEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$
     const errString = String(err);
     if (errString.indexOf('popup_window_error') >= 0) {
       // Popup not OK - let's do it with a redirect instead.
-      return of(login(InteractionKind.REDIRECT));
+      return caught.pipe(map(() => login(InteractionKind.REDIRECT)));
     }
     // User cancelled login (or other error)
     console.log('Login Failed', err);
@@ -62,13 +61,15 @@ const loginRedirectEpic: Epic<AuthAction, AuthAction, RootState> = (action$, sta
   mergeMap(() => {
     return msalService.loginRedirect(loginRequest);
   }),
-  catchError((err) => {
+  catchError((err, caught) => {
     const errString = String(err);
     // User cancelled login (or other error)
     console.log('Login Failed', errString);
-    return of(loginFailed('LoginFailed', errString));
+    return caught.pipe(
+      map(() => loginFailed('LoginFailed', errString))
+    );
   }),
-  mergeMap(() => EMPTY)
+  map(() => loginCompleted())
 );
 
 const logoutEpic: Epic<AuthAction, AuthAction, RootState> = (action$) => action$.pipe(
