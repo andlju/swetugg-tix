@@ -8,30 +8,65 @@ import { msalService } from "../../src/services/msal-auth.service";
 import { buildUrl } from "../../src/url-utils";
 import { RootState } from "../store";
 import { getScopesPopupEpic, getScopesRedirectEpic, getScopesSilentEpic } from "./auth-scopes.epic";
-import { AuthAction, AuthActionTypes, createUserComplete, createUserFailed, getScopes, requestUserUpdate, setInProgress, setUser, updateUserComplete, updateUserFailed, User, UserStatus, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
+import { AuthAction, AuthActionTypes, createUserComplete, createUserFailed, getScopes, InteractionKind, login, loginCompleted, loginFailed, requestUserUpdate, setInProgress, setUser, updateUserComplete, updateUserFailed, User, UserStatus, validateLogin, validateLoginComplete, validateLoginFailed } from "./auth.actions";
 
-const loginEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+const loginSilentEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+  tap(() => console.log('From Login Epic')),
   filter(isOfType(AuthActionTypes.LOGIN)),
+  filter(action => action.payload.interactionKind === InteractionKind.SILENT),
+  tap(() => console.log('Attempt Silent Login')),
   withLatestFrom(state$),
   mergeMap(([, state]) => {
     if (state.auth.user.current?.subject) {
       console.log(`We have a hint, so let's try a silent login`);
       return msalService.ssoSilent({ ...loginRequest, loginHint: state.auth.user.current?.subject });
     }
-    throw { errorCode: "NoUserHint" };
+    return of(login(InteractionKind.POPUP));
   }),
-  catchError((err) => {
+  catchError((err, caught) => {
     console.log('Silent failed - try a popup', err);
+    return caught.pipe(
+      map(() => login(InteractionKind.POPUP))
+    );
+  }),
+  map(() => loginCompleted())
+);
+
+const loginPopupEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+  filter(isOfType(AuthActionTypes.LOGIN)),
+  filter(action => action.payload.interactionKind === InteractionKind.SILENT),
+  tap(() => console.log('Attempt Popup Login')),
+  mergeMap(() => {
     return msalService.loginPopup(loginRequest);
   }),
-  catchError((err) => {
+  catchError((err, caught) => {
     const errString = String(err);
     if (errString.indexOf('popup_window_error') >= 0) {
       // Popup not OK - let's do it with a redirect instead.
-      return msalService.loginRedirect(loginRequest);
+      return of(login(InteractionKind.REDIRECT));
     }
     // User cancelled login (or other error)
-    return throwError({ code: "LoginFailed", message: errString });
+    console.log('Login Failed', err);
+    return caught.pipe(
+      map(() => loginFailed('LoginFailed', errString))
+    )
+  }),
+  map(() => loginCompleted())
+);
+
+
+const loginRedirectEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => action$.pipe(
+  filter(isOfType(AuthActionTypes.LOGIN)),
+  filter(action => action.payload.interactionKind === InteractionKind.REDIRECT),
+  tap(() => console.log('Attempt Redirect Login')),
+  mergeMap(() => {
+    return msalService.loginRedirect(loginRequest);
+  }),
+  catchError((err) => {
+    const errString = String(err);
+    // User cancelled login (or other error)
+    console.log('Login Failed', errString);
+    return of(loginFailed('LoginFailed', errString));
   }),
   mergeMap(() => EMPTY)
 );
@@ -142,4 +177,4 @@ export function withToken$<TAction>(action$: Observable<TAction>, state$: StateO
   );
 }
 
-export const authEpic = combineEpics(loginEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, requestUserUpdateEpic, createUserEpic, updateUserEpic);
+export const authEpic = combineEpics(loginSilentEpic, loginPopupEpic, loginRedirectEpic, logoutEpic, getScopesSilentEpic, getScopesPopupEpic, getScopesRedirectEpic, validateLoginEpic, inProgressEpic, setUserEpic, requestUserUpdateEpic, createUserEpic, updateUserEpic);

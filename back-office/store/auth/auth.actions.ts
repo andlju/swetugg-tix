@@ -2,6 +2,9 @@ import { Action } from "redux";
 
 export enum AuthActionTypes {
   LOGIN = 'LOGIN',
+  LOGIN_FAILED = 'LOGIN_FAILED',
+  LOGIN_COMPLETED = 'LOGIN_COMPLETED',
+
   LOGOUT = 'LOGOUT',
   GET_SCOPES = 'GET_SCOPE',
   
@@ -49,6 +52,22 @@ export function login(interactionKind: InteractionKind = InteractionKind.SILENT)
     type: AuthActionTypes.LOGIN,
     payload: {
       interactionKind
+    }
+  };
+}
+
+export function loginCompleted(): LoginCompletedAction {
+  return {
+    type: AuthActionTypes.LOGIN_COMPLETED
+  };
+}
+
+export function loginFailed(errorCode: string, errorMessage: string): LoginFailedAction {
+  return {
+    type: AuthActionTypes.LOGIN_FAILED,
+    payload: {
+      errorCode,
+      errorMessage
     }
   };
 }
@@ -180,6 +199,18 @@ export interface LoginAction extends Action {
   }
 }
 
+export interface LoginCompletedAction extends Action {
+  type: AuthActionTypes.LOGIN_COMPLETED;
+}
+
+export interface LoginFailedAction extends Action {
+  type: AuthActionTypes.LOGIN_FAILED,
+  payload: {
+    errorCode: string,
+    errorMessage: string
+  }
+}
+
 export interface LogoutAction extends Action {
   type: AuthActionTypes.LOGOUT;
 }
@@ -276,6 +307,8 @@ export interface RequestUserUpdateAction extends Action {
 
 export type AuthAction =
   | LoginAction
+  | LoginCompletedAction
+  | LoginFailedAction
   | LogoutAction
   | ValidateLoginAction
   | ValidateLoginCompleteAction
