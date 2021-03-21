@@ -31,7 +31,7 @@ const loginEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) => 
       return msalService.loginRedirect(loginRequest);
     }
     // User cancelled login (or other error)
-    return throwError({ code: "LoginFailed" });
+    return throwError({ code: "LoginFailed", message: errString });
   }),
   mergeMap(() => EMPTY)
 );

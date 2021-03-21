@@ -9,12 +9,13 @@ namespace Swetugg.Tix.Order.Domain.Tests
 {
     public static class OrderCommandsExtensions
     {
-        public static GivenOrderCommands Order(this IGivenCommands given, Guid orderId, Guid activityId)
+        public static GivenOrderCommands Order(this IGivenCommands given, Guid orderId, Guid activityId, Guid activityOwnerId)
         {
             given.AddCommand(new CreateOrder()
             {
                 OrderId = orderId,
                 ActivityId = activityId,
+                ActivityOwnerId = activityOwnerId
             });
             return new GivenOrderCommands(given, orderId);
         }

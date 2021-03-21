@@ -17,13 +17,14 @@ namespace Swetugg.Tix.Order.Domain.Tests
 
         protected Guid OrderId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
+        protected Guid ActivityOwnerId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
 
         protected string Reference = Guid.NewGuid().ToString();
 
         protected override void Setup()
         {
-            Given.Order(OrderId, ActivityId);
+            Given.Order(OrderId, ActivityId, ActivityOwnerId);
         }
 
         protected override object When()

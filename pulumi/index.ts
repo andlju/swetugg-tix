@@ -12,8 +12,8 @@ const shouldDeploy = config.requireBoolean("deploy");
 const azureAdTenantName = config.require("azure-ad-b2c-tenant-name");
 const azureAdTenantId = config.require("azure-ad-b2c-tenant-id");
 const azureAdPolicyName = config.require("azure-ad-b2c-policy-name");
-const azureAdBackendApp = config.require("azure-ad-b2c-backend-app");
-const azureAdBackendAppSecret = config.requireSecret("azure-ad-b2c-backend-app-secret");
+const azureAdBackofficeApp = config.require("azure-ad-b2c-backoffice-app");
+const azureAdBackofficeAppSecret = config.requireSecret("azure-ad-b2c-backoffice-app-secret");
 const azureAdApiApp = config.require("azure-ad-b2c-api-app");
 const azureAdApiAppSecret = config.requireSecret("azure-ad-b2c-api-app-secret");
 
@@ -380,6 +380,10 @@ export = async () => {
                 NEXT_PUBLIC_API_ROOT: pulumi.interpolate `https://${apiHostname}/api`,
                 NEXT_PUBLIC_FRONTPAGE_ROOT: pulumi.interpolate `https://${frontpageApp.defaultSiteHostname}`,
                 NEXT_PUBLIC_APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.instrumentationKey,
+                NEXT_PUBLIC_AUTH_TENANT_NAME: azureAdTenantName,
+                NEXT_PUBLIC_AUTH_TENANT_GUID: azureAdTenantId,
+                NEXT_PUBLIC_AUTH_CLIENT_ID: azureAdBackofficeApp,
+                NEXT_PUBLIC_USER_FLOW: azureAdPolicyName
             },
             siteConfig: {
                 linuxFxVersion: 'NODE|12-lts'

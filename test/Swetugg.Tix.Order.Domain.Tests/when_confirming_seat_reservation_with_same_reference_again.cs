@@ -16,13 +16,14 @@ namespace Swetugg.Tix.Order.Domain.Tests
 
         protected Guid OrderId = Guid.NewGuid();
         protected Guid ActivityId = Guid.NewGuid();
+        public Guid ActivityOwnerId = Guid.NewGuid();
         protected Guid TicketTypeId = Guid.NewGuid();
 
         protected string TicketReference = Guid.NewGuid().ToString();
 
         protected override void Setup()
         {
-            Given.Order(OrderId, ActivityId)
+            Given.Order(OrderId, ActivityId, ActivityOwnerId)
                 .WithAddedTicket(TicketTypeId)
                 .WithReservedSeat(TicketTypeId, TicketReference);
         }

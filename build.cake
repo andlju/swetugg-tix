@@ -74,7 +74,7 @@ Task("BackOffice-Build")
     });
 
 Task("BackOffice-Package")
-    // .IsDependentOn("BackOffice-Build")
+    .IsDependentOn("BackOffice-Build")
     .Does(() => 
     {
         CreateFrontendPackage("back-office");
@@ -100,7 +100,7 @@ Task("Frontpage-Build")
     });
 
 Task("Frontpage-Package")
-    // .IsDependentOn("Frontpage-Build")
+    .IsDependentOn("Frontpage-Build")
     .Does(() => 
     {
         CreateFrontendPackage("frontpage");
