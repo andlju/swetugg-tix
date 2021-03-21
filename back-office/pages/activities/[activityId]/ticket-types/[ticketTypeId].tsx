@@ -15,6 +15,7 @@ import { useAuthenticatedUser } from '../../../../src/use-authenticated-user.hoo
 interface TicketTypeProps {
   activityId: string,
   ticketTypeId: string,
+  ownerId: string,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -27,14 +28,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function TicketTypePage({ activityId, ticketTypeId }: TicketTypeProps) {
+export default function TicketTypePage({ activityId, ownerId, ticketTypeId }: TicketTypeProps) {
   const classes = useStyles();
   const dispatch = useDispatch();
 
   const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
 
   useEffect(() => {
-    dispatch(loadActivity(activityId));
+    dispatch(loadActivity(activityId, ownerId));
   }, []);
 
   const activities = useSelector<RootState, ActivitiesState>(store => store.activities);
@@ -75,7 +76,8 @@ export default function TicketTypePage({ activityId, ticketTypeId }: TicketTypeP
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params, query }) => {
+
   if (!params) {
     return {
       props: {
@@ -83,13 +85,16 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
+  const ownerId = query?.ownerId;
+
   const activityId = params.activityId;
   const ticketTypeId = params.ticketTypeId;
 
   return {
     props: {
       activityId: activityId,
-      ticketTypeId: ticketTypeId
+      ticketTypeId: ticketTypeId,
+      ownerId: ownerId,
     }
   };
 };

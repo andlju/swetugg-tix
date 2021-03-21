@@ -90,7 +90,7 @@ export function CreateActivity({ user, organizations }: CreateActivityProps) {
 
   useEffect(() => {
     if (createActivityState?.aggregateId) {
-      const activityOwnerId = createActivityState?.body.ownerId as string;
+      const activityOwnerId = (createActivityState.body as any).ownerId as string;
       router.push(`/activities/${createActivityState?.aggregateId}?ownerId=${activityOwnerId}`);
     }
   }, [createActivityState?.aggregateId]);
