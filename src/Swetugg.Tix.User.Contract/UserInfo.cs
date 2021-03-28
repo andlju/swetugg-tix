@@ -2,6 +2,7 @@
 
 namespace Swetugg.Tix.User.Contract
 {
+
     public enum UserStatus
     {
         None = 0,

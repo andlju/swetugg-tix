@@ -31,7 +31,6 @@ namespace Swetugg.Tix.Api.Admin.Migrations
         {
             Delete.Table("Organization").InSchema("Access");
             Delete.Table("OrganizationUser").InSchema("Access");
-            Delete.Schema("Access");
         }
     }
 }
