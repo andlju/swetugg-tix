@@ -31,6 +31,20 @@ namespace Swetugg.Tix.User
             }
         }
 
+        public async Task<IEnumerable<UserInfo>> ListUsers()
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var userInfo = (await conn.QueryAsync<UserInfo>(
+                    "SELECT u.UserId, u.Name, u.Status " +
+                    "FROM [Access].[User] u " +
+                    "WHERE u.Status <> @DeletedStatus",
+                    new { DeletedStatus = UserStatus.Deleted }));
+
+                return userInfo;
+            }
+        }
+
         public async Task<UserInfo> GetUserFromLogin(string subject, string issuer)
         {
             using (var conn = new SqlConnection(_connectionString))

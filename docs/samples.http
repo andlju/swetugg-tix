@@ -70,6 +70,11 @@ Content-Type: application/json
 }
 
 
+### List all users
+GET {{host}}/api/users
+Authorization: Bearer {{token}}
+
+
 ### List all raw permissions
 GET {{host}}/api/roles/permissions
 Authorization: Bearer {{token}}

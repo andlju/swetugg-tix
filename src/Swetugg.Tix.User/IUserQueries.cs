@@ -12,5 +12,6 @@ namespace Swetugg.Tix.User
         Task<UserInfo> GetUserFromLogin(string subject, string issuer);
         Task<IEnumerable<UserRole>> ListUserRolesForUser(Guid userId);
         Task<IEnumerable<Permission>> ListPermissions();
+        Task<IEnumerable<UserInfo>> ListUsers();
     }
 }
