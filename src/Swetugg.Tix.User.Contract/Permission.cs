@@ -2,16 +2,14 @@
 
 namespace Swetugg.Tix.User.Contract
 {
-
-    public class PermissionClaimAttrib
+    public class PermissionAttribute
     {
         public string Name { get; set; }
-        public string Value { get; set; }
     }
 
-    public class PermissionClaim
+    public class Permission
     {
         public string PermissionCode { get; set; }
-        public List<PermissionClaimAttrib> Attributes { get; set; }
+        public List<PermissionAttribute> Attributes { get; set; }
     }
 }

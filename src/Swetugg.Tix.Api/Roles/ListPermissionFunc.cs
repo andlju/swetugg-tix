@@ -12,27 +12,26 @@ using Swetugg.Tix.Activity.Views;
 using Swetugg.Tix.Activity.Views.TableStorage;
 using Swetugg.Tix.Api.Authorization;
 using Swetugg.Tix.Api.Options;
-using Swetugg.Tix.Organization;
 using Swetugg.Tix.User;
 using Swetugg.Tix.User.Contract;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Swetugg.Tix.Api.Organizations
+namespace Swetugg.Tix.Api.Roles
 {
-    public class ListOrganizationsFunc: AuthorizedFunc<EmptyFuncParams>
+    public class ListPermissionsFunc: AuthorizedFunc<EmptyFuncParams>
     {
-        private readonly IOrganizationQueries _orgQueries;
+        private readonly IUserQueries _userQueries;
 
-        public ListOrganizationsFunc(IOrganizationQueries orgQueries, IAuthManager authManager) : base(authManager)
+        public ListPermissionsFunc(IUserQueries userQueries, IAuthManager authManager) : base(authManager)
         {
-            _orgQueries = orgQueries;
+            _userQueries = userQueries;
         }
 
-        [FunctionName("ListOrganizations")]
+        [FunctionName("ListPermissions")]
         public Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "organizations")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "roles/permissions")]
             HttpRequest req,
             ILogger log)
         {
@@ -41,15 +40,9 @@ namespace Swetugg.Tix.Api.Organizations
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)
         {
-            var user = await AuthManager.GetAuthenticatedUser();
+            var permissions = await _userQueries.ListPermissions();
 
-            if (user.UserId == null)
-            {
-                return new BadRequestResult();
-            }
-            var organizations = await _orgQueries.ListOrganizations(user.UserId.Value);
-
-            return new OkObjectResult(organizations);
+            return new OkObjectResult(permissions);
         }
     }
 }

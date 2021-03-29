@@ -18,7 +18,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Swetugg.Tix.Api.Activities
+namespace Swetugg.Tix.Api.Users
 {
     public class GetUserFunc: AuthorizedFunc<EmptyFuncParams>
     {

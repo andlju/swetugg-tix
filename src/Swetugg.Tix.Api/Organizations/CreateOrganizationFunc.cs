@@ -22,7 +22,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Swetugg.Tix.Api.Activities
+namespace Swetugg.Tix.Api.Organizations
 {
     public class CreateOrganizationFunc : AuthorizedFunc<EmptyFuncParams>
     {

@@ -55,14 +55,11 @@ namespace Swetugg.Tix.Api.Admin.Migrations
             /* User role assignment */
             Create.Table("UserRole")
                 .InSchema("Access")
+                .WithColumn("UserRoleId").AsGuid().PrimaryKey()
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("RoleId").AsGuid().NotNullable()
                 .WithColumn("Path").AsString(400)
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();
-
-            Create.PrimaryKey().OnTable("UserRole")
-                .WithSchema("Access")
-                .Columns("UserId", "RoleId");
 
             Create.ForeignKey()
                 .FromTable("UserRole").InSchema("Access").ForeignColumn("UserId")
@@ -74,22 +71,14 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
             Create.Table("UserRoleAttribute")
                 .InSchema("Access")
-                .WithColumn("UserId").AsGuid().NotNullable()
-                .WithColumn("RoleId").AsGuid().NotNullable()
+                .WithColumn("UserRoleAttributeId").AsGuid().PrimaryKey()
+                .WithColumn("UserRoleId").AsGuid().NotNullable()
                 .WithColumn("Attribute").AsString(100).NotNullable()
                 .WithColumn("Value").AsString(100).NotNullable();
 
             Create.ForeignKey()
-                .FromTable("UserRoleAttribute").InSchema("Access").ForeignColumn("UserId")
-                .ToTable("User").InSchema("Access").PrimaryColumn("UserId");
-
-            Create.ForeignKey()
-                .FromTable("UserRoleAttribute").InSchema("Access").ForeignColumn("RoleId")
-                .ToTable("Role").InSchema("Access").PrimaryColumn("RoleId");
-
-            Create.ForeignKey()
-                .FromTable("UserRoleAttribute").InSchema("Access").ForeignColumns("UserId", "RoleId")
-                .ToTable("UserRole").InSchema("Access").PrimaryColumns("UserId", "RoleId");
+                .FromTable("UserRoleAttribute").InSchema("Access").ForeignColumn("UserRoleId")
+                .ToTable("UserRole").InSchema("Access").PrimaryColumn("UserRoleId");
 
 
             CreatePermission("ListOrganizations", "Can list organizations in the current scope");
@@ -105,14 +94,14 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
         }
 
-        public void CreatePermission(string code, string description, params string[] attributes)
+        public void CreatePermission(string permissionCode, string description, params string[] attributes)
         {
             Insert.IntoTable("Permission").InSchema("Access")
-                .Row(new { code, description });
+                .Row(new { permissionCode, description });
             foreach(var attribute in attributes)
             {
                 Insert.IntoTable("PermissionAttribute").InSchema("Access")
-                    .Row(new { PermissionCode = code, attribute });
+                    .Row(new { permissionCode, attribute });
             }
         }
 
@@ -136,6 +125,7 @@ namespace Swetugg.Tix.Api.Admin.Migrations
             Delete.Table("RolePermission").InSchema("Access");
             Delete.Table("UserRole").InSchema("Access");
             Delete.Table("Role").InSchema("Access");
+            Delete.Table("PermissionAttribute").InSchema("Access");
             Delete.Table("Permission").InSchema("Access");
         }
     }

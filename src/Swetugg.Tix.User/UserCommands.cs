@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Swetugg.Tix.User.Contract;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 using System.Transactions;
@@ -46,7 +47,7 @@ namespace Swetugg.Tix.User
             using (var conn = new SqlConnection(_connectionString))
             {
                 await conn.ExecuteAsync(
-                    "INSERT INTO [Access].[User] " + 
+                    "INSERT INTO [Access].[User] " +
                     "(UserId, Name, Status, LastUpdated) " +
                     "VALUES (@UserId, @Name, @Status, SYSUTCDATETIME()) ", info);
 
@@ -59,6 +60,51 @@ namespace Swetugg.Tix.User
                 trans.Complete();
             }
             return newUserId;
+        }
+
+        public async Task AssignUserToRole(Guid userId, Guid roleId, IEnumerable<PermissionClaimAttrib> permissionAttributes)
+        {
+            if (userId == Guid.Empty)
+                throw new InvalidOperationException("UserId cannot be empty");
+            if (roleId == Guid.Empty)
+                throw new InvalidOperationException("RoleId cannot be empty");
+
+            using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var userRoleId = Guid.NewGuid();
+                await conn.ExecuteAsync(
+                    "INSERT INTO [Access].[UserRole] " +
+                    "(UserRoleId, UserId, RoleId, LastUpdated) " +
+                    "VALUES (@UserRoleId, @UserId, @RoleId, SYSUTCDATETIME()) ", new { userRoleId, userId, roleId });
+
+                foreach (var attribute in permissionAttributes)
+                {
+                    var userRoleAttributeId = Guid.NewGuid();
+                    await conn.ExecuteAsync(
+                        "INSERT INTO [Access].[UserRoleAttribute] " +
+                        "(UserRoleAttributeId, UserRoleId, Attribute, Value) " +
+                        "VALUES (@UserRoleAttributeId, @UserRoleId, @Attribute, @Value) ", new { userRoleAttributeId, userRoleId, Attribute = attribute.Name, Value = attribute.Value });
+                }
+            }
+        }
+
+        public async Task DeleteUserRole(Guid userRoleId)
+        {
+            if (userRoleId == Guid.Empty)
+                throw new InvalidOperationException("UserRoleId cannot be empty");
+
+            using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                await conn.ExecuteAsync(
+                    "DELETE FROM [Access].[UserRoleAttribute] " +
+                    "WHERE UserRoleId = @UserRoleId ", new { userRoleId });
+
+                await conn.ExecuteAsync(
+                    "DELETE FROM [Access].[UserRole] " +
+                    "WHERE UserRoleId = @UserRoleId ", new { userRoleId });
+            }
         }
     }
 }

@@ -14,7 +14,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Swetugg.Tix.Api.Activities
+namespace Swetugg.Tix.Api.Users
 {
     public class CreateUserFunc : AuthorizedFunc<EmptyFuncParams>
     {
