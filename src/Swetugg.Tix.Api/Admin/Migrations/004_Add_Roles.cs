@@ -12,8 +12,21 @@ namespace Swetugg.Tix.Api.Admin.Migrations
             /* Permissions */
             Create.Table("Permission")
                 .InSchema("Access")
-                .WithColumn("Code").AsString(100).PrimaryKey()
+                .WithColumn("PermissionCode").AsString(100).PrimaryKey()
                 .WithColumn("Description").AsString(400);
+
+            Create.Table("PermissionAttribute")
+                .InSchema("Access")
+                .WithColumn("PermissionCode").AsString(100).NotNullable()
+                .WithColumn("Attribute").AsString(100).NotNullable();
+
+            Create.PrimaryKey()
+                .OnTable("PermissionAttribute").WithSchema("Access")
+                .Columns("PermissionCode", "Attribute");
+
+            Create.ForeignKey()
+                .FromTable("PermissionAttribute").InSchema("Access").ForeignColumn("PermissionCode")
+                .ToTable("Permission").InSchema("Access").PrimaryColumn("PermissionCode");
 
             /* Roles */
             Create.Table("Role")
@@ -37,7 +50,7 @@ namespace Swetugg.Tix.Api.Admin.Migrations
 
             Create.ForeignKey()
                 .FromTable("RolePermission").InSchema("Access").ForeignColumn("PermissionCode")
-                .ToTable("Permission").InSchema("Access").PrimaryColumn("Code");
+                .ToTable("Permission").InSchema("Access").PrimaryColumn("PermissionCode");
 
             /* User role assignment */
             Create.Table("UserRole")
@@ -63,7 +76,7 @@ namespace Swetugg.Tix.Api.Admin.Migrations
                 .InSchema("Access")
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("RoleId").AsGuid().NotNullable()
-                .WithColumn("Key").AsString(100).NotNullable()
+                .WithColumn("Attribute").AsString(100).NotNullable()
                 .WithColumn("Value").AsString(100).NotNullable();
 
             Create.ForeignKey()
@@ -78,20 +91,29 @@ namespace Swetugg.Tix.Api.Admin.Migrations
                 .FromTable("UserRoleAttribute").InSchema("Access").ForeignColumns("UserId", "RoleId")
                 .ToTable("UserRole").InSchema("Access").PrimaryColumns("UserId", "RoleId");
 
-            Insert.IntoTable("Permission").InSchema("Access")
-                .Row(new { Code = "ListOrganizations", Description = "Can list organizations in the current scope" })
-                .Row(new { Code = "ListActivities", Description = "Can list activities in the current scope" })
-                .Row(new { Code = "ReadOrganizationBasic", Description = "Can read basic information about an organization" })
-                .Row(new { Code = "ReadActivityBasic", Description = "Can read basic information about an activity" })
-                .Row(new { Code = "CreateOrganization", Description = "Can create a new Organization" })
-                .Row(new { Code = "CreateActivity", Description = "Can create an Activity" })
-                ;
+
+            CreatePermission("ListOrganizations", "Can list organizations in the current scope");
+            CreatePermission("ListActivities", "Can list activities in the current scope", "OrganizationId");
+            CreatePermission("GetOrganizationBasic", "Can read basic information about an organization", "OrganizationId");
+            CreatePermission("GetActivityBasic", "Can read basic information about an activity", "OrganizationId", "ActivityId");
+            CreatePermission("CreateOrganization", "Can create a new Organization");
+            CreatePermission("CreateActivity", "Can create an Activity", "OrganizationId");
 
             CreateRole(
                 "Admin", "Administrator with full access", 
-                "ListOrganizations", "ListActivities", "ReadOrganizationBasic", "ReadActivityBasic", "CreateOrganization", "CreateActivity");
+                "ListOrganizations", "ListActivities", "GetOrganizationBasic", "GetActivityBasic", "CreateOrganization", "CreateActivity");
 
+        }
 
+        public void CreatePermission(string code, string description, params string[] attributes)
+        {
+            Insert.IntoTable("Permission").InSchema("Access")
+                .Row(new { code, description });
+            foreach(var attribute in attributes)
+            {
+                Insert.IntoTable("PermissionAttribute").InSchema("Access")
+                    .Row(new { PermissionCode = code, attribute });
+            }
         }
 
         public Guid CreateRole(string name, string description, params string[] permissionCodes)
