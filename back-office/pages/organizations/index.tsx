@@ -1,20 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { GetServerSideProps } from 'next';
-import { Accordion, AccordionDetails, AccordionSummary, FormControlLabel, makeStyles, Radio } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import clsx from 'clsx';
+import { Fab, makeStyles, Toolbar } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { WelcomeName } from '../../components/auth/auth';
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadOrganizations } from '../../store/organizations/organizations.actions';
 import { RootState } from '../../store/store';
 import { OrganizationList } from '../../components/organizations/organization-list';
-import { CreateOrganization } from '../../components/organizations/create-organization';
+import { useState } from 'react';
+import { CreateOrganizationModal } from '../../components/organizations/create-organization-modal';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -24,19 +23,34 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     padding: theme.spacing(1),
   },
-  activityList: {
+  organizationList: {
     minHeight: theme.spacing(30),
     maxHeight: theme.spacing(60),
     overflow: 'auto',
+  },
+  organizationListTitle: {
+    flex: '1 1 100%'
+  },
+  organizationListToolbar: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
   }
 }));
 
 export default function Index() {
   const classes = useStyles();
 
-  const organizations = useSelector((r: RootState) => r.organizations && r.organizations.visibleOrganizations.ids.map(orgId => r.organizations.organizations[orgId]));
+  const organizations = useSelector((r: RootState) => r.organizations);
+
+  const orgs = useMemo(() => organizations.visibleOrganizations.ids.map(orgId => organizations.organizations[orgId]), [organizations]);
 
   const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+
+  const [addModalOpen, setAddModalOpen] = useState(false);
+
+  const onAddButtonClick = () => {
+    setAddModalOpen(true);
+  };
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -50,21 +64,23 @@ export default function Index() {
       </Typography>
       <Grid container spacing={3}>
         {/* List of organizations for current user */}
-        <Grid item xs={6}>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              {organizations && <OrganizationList organizations={organizations} />}
-            </Grid>
-            <Grid item xs={12}>
-              <Paper className={classes.paper}>
-                <CreateOrganization />
-              </Paper>
-            </Grid>
-          </Grid>
+        <Grid item xs={12}>
+          <Paper className={clsx(classes.paper, classes.organizationList)}>
+            <Toolbar className={classes.organizationListToolbar}>
+              <Typography className={classes.organizationListTitle} variant="h6" component="div">
+                Organizations
+              </Typography>
+              <Fab size="small" color="primary" onClick={onAddButtonClick}>
+                <AddIcon />
+              </Fab>
+              {user.current && <CreateOrganizationModal organizations={organizations} open={addModalOpen} setOpen={setAddModalOpen} />}
+            </Toolbar>
+            {orgs && <OrganizationList organizations={orgs} />}
+          </Paper>
         </Grid>
-      </Grid>
+      </Grid >
 
-    </Container>
+    </Container >
   );
 }
 

@@ -62,7 +62,7 @@ namespace Swetugg.Tix.User
             return newUserId;
         }
 
-        public async Task AssignUserToRole(Guid userId, Guid roleId, IEnumerable<PermissionClaimAttrib> permissionAttributes)
+        public async Task<Guid> AssignUserToRole(Guid userId, Guid roleId, IEnumerable<PermissionClaimAttrib> permissionAttributes)
         {
             if (userId == Guid.Empty)
                 throw new InvalidOperationException("UserId cannot be empty");
@@ -86,6 +86,8 @@ namespace Swetugg.Tix.User
                         "(UserRoleAttributeId, UserRoleId, Attribute, Value) " +
                         "VALUES (@UserRoleAttributeId, @UserRoleId, @Attribute, @Value) ", new { userRoleAttributeId, userRoleId, Attribute = attribute.Name, Value = attribute.Value });
                 }
+                trans.Complete();
+                return userRoleId;
             }
         }
 
@@ -104,6 +106,8 @@ namespace Swetugg.Tix.User
                 await conn.ExecuteAsync(
                     "DELETE FROM [Access].[UserRole] " +
                     "WHERE UserRoleId = @UserRoleId ", new { userRoleId });
+
+                trans.Complete();
             }
         }
     }

@@ -75,6 +75,10 @@ namespace Swetugg.Tix.Api
                 var viewsDbConnectionString = options.Value.ViewsDbConnection;
                 return new OrganizationCommands(viewsDbConnectionString);
             });
+            builder.Services.AddSingleton<IJwtHelper>(sp => {
+                var options = sp.GetService<IOptions<ApiOptions>>();
+                return new JwtHelper(options.Value.ApiTokenSecurityKey);
+            });
             builder.Services.AddScoped<IAuthManager, AuthManager>();
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { useForm } from 'react-hook-form';
 import { NewProfile, UserFormData } from './new-profile';
-import { SettingsOverscanOutlined } from '@material-ui/icons';
 
 const useStyles = makeStyles((theme) => ({
   form: {

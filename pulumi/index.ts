@@ -207,6 +207,14 @@ export = async () => {
         applicationType: "web",
     });
 
+    const apiTokenSecurityKey = new random.RandomPassword("apitokenkey", {
+        length: 32,
+        special: false,
+        minNumeric:1,
+        minUpper:1,
+        minLower:1
+    });
+
 
     // Collect settings
     const activityEventStoreConnection = pulumi.all([sqlServer.name, activityEventStoreDatabase.name, sqlServer.administratorLoginPassword]).apply(([server, db, pwd]) =>
@@ -262,6 +270,7 @@ export = async () => {
         "AzureAdB2C:ClientSecret": azureAdApiAppSecret,
         "AzureAdB2C:TokenValidationParameters:NameClaimType": "name",
         "IssuerIdentifier": `https://${azureAdTenantName}.b2clogin.com/${azureAdTenantId}/v2.0/`,
+        "ApiTokenSecurityKey": apiTokenSecurityKey.result,
     };
 
     let activityAppName: pulumi.Output<string> | undefined;

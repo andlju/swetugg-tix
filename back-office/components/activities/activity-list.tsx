@@ -3,15 +3,13 @@ import Link from 'next/link';
 import {
   Table, TableBody, TableHead, TableRow, TableCell, TableContainer,
   Typography,
-  Toolbar,
-  makeStyles, Fab, Button
+  makeStyles, Button
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
 
 import { Activity } from '../../store/activities/activity.models';
 
 interface ActivityListProps {
-  activities: Activity[]
+  activities: Activity[];
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -38,31 +36,13 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.secondary,
     fontVariantCaps: "all-small-caps"
   },
-  activityListTitle: {
-    flex: '1 1 100%'
-  },
-  activityListToolbar: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2)
-  }
 }));
 
 export function ActivityList({ activities }: ActivityListProps) {
 
   const classes = useStyles();
 
-  return (<React.Fragment>
-    <Toolbar className={classes.activityListToolbar}>
-      <Typography className={classes.activityListTitle} variant="h6" component="div">
-        Activities
-      </Typography>
-      <Link href="/activities/create">
-        <Fab size="small" color="primary">
-          <AddIcon />
-        </Fab>
-      </Link>
-    </Toolbar>
-
+  return (
     <TableContainer>
       <Table size="small">
         <TableHead>
@@ -96,7 +76,6 @@ export function ActivityList({ activities }: ActivityListProps) {
           )}
         </TableBody>
       </Table>
-    </TableContainer>
-  </React.Fragment>);
+    </TableContainer>);
 }
 

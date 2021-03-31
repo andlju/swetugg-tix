@@ -16,6 +16,20 @@ namespace Swetugg.Tix.Organization
             _connectionString = connectionString;
         }
 
+        public async Task<OrganizationInfo> GetOrganization(Guid organizationId)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var organization = (await conn.QuerySingleOrDefaultAsync<OrganizationInfo>(
+                    "SELECT o.OrganizationId, o.Name " +
+                    "FROM [Access].[Organization] o " +
+                    "WHERE o.OrganizationId = @OrganizationId ",
+                    new { organizationId }));
+
+                return organization;
+            }
+        }
+
         public async Task<OrganizationInfo[]> ListOrganizations(Guid userId)
         {
             using (var conn = new SqlConnection(_connectionString))
@@ -25,7 +39,7 @@ namespace Swetugg.Tix.Organization
                     "FROM [Access].[Organization] o " +
                     "JOIN [Access].[OrganizationUser] ou ON o.OrganizationId = ou.OrganizationId " +
                     "WHERE ou.UserId = @UserId ",
-                    new { UserId = userId }));
+                    new { userId }));
 
                 return organizations.ToArray();
             }

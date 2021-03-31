@@ -5,14 +5,13 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.User;
 using Swetugg.Tix.User.Contract;
-using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Authorization
 {
+
+
     public class AuthManager : IAuthManager
     {
         private readonly IUserQueries _userQueries;

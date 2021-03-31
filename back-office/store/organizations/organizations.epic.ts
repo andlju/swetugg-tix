@@ -2,7 +2,7 @@ import { Observable, of } from "rxjs";
 import { ActionsObservable, combineEpics, Epic } from "redux-observable";
 import { catchError, filter, map, mergeMap, tap } from "rxjs/operators";
 import { ajax } from "rxjs/ajax";
-import { createOrganizationComplete, createOrganizationFailed, loadOrganizations, loadOrganizationsComplete, Organization, OrganizationActionTypes, OrganizationsAction } from "./organizations.actions";
+import { createOrganizationComplete, createOrganizationFailed, createOrganizationInviteComplete, createOrganizationInviteFailed, loadOrganizations, loadOrganizationsComplete, Organization, OrganizationActionTypes, OrganizationsAction } from "./organizations.actions";
 import { buildUrl } from "../../src/url-utils";
 import { isOfType } from "typesafe-actions";
 import { withTokenAndUser$ } from "../auth/auth.epic";
@@ -37,10 +37,22 @@ const createOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, Roo
       )),
   );
 
+const createOrganizationInviteEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$, state$) =>
+  withTokenAndUser$(action$.pipe(filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION_INVITE))), state$).pipe(
+    mergeMap(([action, token]) =>
+      ajax.post(buildUrl(`/organizations/${action.payload.organizationId}/invite`), {}, { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }).pipe(
+        map(a => createOrganizationInviteComplete(a.response)),
+        catchError((err, caught) => {
+          const errString = String(err);
+          return of(createOrganizationInviteFailed('CreateOrganizationInviteFailed', errString));
+        })
+      )),
+  );
+
 const reloadOnCreateComplete: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$) =>
   action$.pipe(
     filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION_COMPLETE)),
     map((action) => loadOrganizations())
   );
 
-export const organizationsEpic = combineEpics(loadOrganizationsEpic, createOrganizationEpic, reloadOnCreateComplete);
+export const organizationsEpic = combineEpics(loadOrganizationsEpic, createOrganizationEpic, createOrganizationInviteEpic, reloadOnCreateComplete);

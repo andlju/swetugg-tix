@@ -5,10 +5,17 @@ export interface OrganizationsState {
   organizations: {
     [key: string]: Organization;
   },
+  selectedOrganizationId?: string,
   editState: {
     errorCode?: string,
     errorMessage?: string,
     saving: boolean,
+  },
+  createInvite: {
+    loading: boolean,
+    token?: string,
+    errorCode?: string,
+    errorMessage?: string,
   },
   visibleOrganizations: {
     ids: string[],
@@ -21,6 +28,9 @@ const initialState: OrganizationsState = {
   editState: {
     saving: false
   },
+  createInvite: {
+    loading: false,
+  },
   visibleOrganizations: {
     ids: [],
     loading: false
@@ -32,6 +42,14 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
     state = initialState;
   }
   switch (action.type) {
+    case OrganizationActionTypes.LOAD_ORGANIZATIONS:
+      return {
+        ...state,
+        visibleOrganizations: {
+          ids: state?.visibleOrganizations.ids ?? [],
+          loading: true
+        }
+      };
     case OrganizationActionTypes.LOAD_ORGANIZATION:
       return {
         ...state,
@@ -40,13 +58,10 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
           loading: true
         }
       };
-    case OrganizationActionTypes.LOAD_ORGANIZATIONS:
+    case OrganizationActionTypes.SELECT_ORGANIZATION:
       return {
         ...state,
-        visibleOrganizations: {
-          ids: state?.visibleOrganizations.ids ?? [],
-          loading: true
-        }
+        selectedOrganizationId: action.payload.organizationId
       };
     case OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE:
       return {
@@ -88,6 +103,36 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         ...state,
         editState: {
           saving: false,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage
+        }
+      };
+    case OrganizationActionTypes.CREATE_ORGANIZATION_INVITE:
+      return {
+        ...state,
+        createInvite: {
+          loading: true,
+          token: undefined,
+          errorCode: undefined,
+          errorMessage: undefined
+        }
+      };
+    case OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_COMPLETE:
+      return {
+        ...state,
+        createInvite: {
+          loading: false,
+          token: action.payload.token,
+          errorCode: undefined,
+          errorMessage: undefined
+        }
+      };
+    case OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_FAILED:
+      return {
+        ...state,
+        createInvite: {
+          loading: false,
+          token: undefined,
           errorCode: action.payload.errorCode,
           errorMessage: action.payload.errorMessage
         }

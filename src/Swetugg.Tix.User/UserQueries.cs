@@ -67,14 +67,15 @@ namespace Swetugg.Tix.User
                 var userRoles = await conn.QueryAsync<UserRole, UserRoleAttribute, UserRole>(new CommandDefinition(
                     "SELECT ur.UserRoleId, r.RoleId, r.Name as RoleName, ura.UserRoleAttributeId, ura.Attribute, ura.Name " +
                     "FROM [Access].[UserRole] ur JOIN [Access].[Role] r ON ur.RoleId = r.RoleId " +
-                    "JOIN [Access].[UserRoleAttribute] ura ON ur.UserRoleId = ura.UserRoleId " +
+                    "LEFT JOIN [Access].[UserRoleAttribute] ura ON ur.UserRoleId = ura.UserRoleId " +
                     "WHERE ur.UserId = @UserId ", new { userId }), (ur, ura) =>
                     {
                         if (!userRoleLookup.TryGetValue(ur.UserRoleId, out var userRole))
                             userRoleLookup.Add(ur.UserRoleId, userRole = ur);
                         if (userRole.UserRoleAttributes == null)
                             userRole.UserRoleAttributes = new List<UserRoleAttribute>();
-                        userRole.UserRoleAttributes.Add(ura);
+                        if (ura != null)
+                            userRole.UserRoleAttributes.Add(ura);
                         return userRole;
                     }, "UserRoleId");
 
@@ -88,9 +89,9 @@ namespace Swetugg.Tix.User
             {
                 var roleLookup = new Dictionary<Guid, Role>();
                 var roles = await conn.QueryAsync<Role, Permission, PermissionAttribute, Role>(
-                    "SELECT r.RoleId, r.Name, r.Description, pa.PermissionCode, pa.Attribute as Name " +
+                    "SELECT r.RoleId, r.Name, r.Description, rp.PermissionCode, pa.Attribute as Name " +
                     "FROM [Access].[Role] r JOIN [Access].[RolePermission] rp ON r.RoleId = rp.RoleId " +
-                    "JOIN [Access].[PermissionAttribute] pa ON rp.PermissionCode = pa.PermissionCode ", (r, p, pa) => {
+                    "LEFT JOIN [Access].[PermissionAttribute] pa ON rp.PermissionCode = pa.PermissionCode ", (r, p, pa) => {
                         if (!roleLookup.TryGetValue(r.RoleId, out var role))
                             roleLookup.Add(r.RoleId, role = r);
                         if (role.Permissions == null)
@@ -100,8 +101,10 @@ namespace Swetugg.Tix.User
                             role.Permissions.Add(permission = p);
                         if (permission.Attributes == null)
                             permission.Attributes = new List<PermissionAttribute>();
-                        permission.Attributes.Add(pa);
-                        
+                        if (pa != null)
+                        {
+                            permission.Attributes.Add(pa);
+                        }
                         return role;
                     }, splitOn: "PermissionCode,Name");
 

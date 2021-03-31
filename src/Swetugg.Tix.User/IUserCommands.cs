@@ -7,8 +7,9 @@ namespace Swetugg.Tix.User
 {
     public interface IUserCommands
     {
-        Task AssignUserToRole(Guid userId, Guid roleId, IEnumerable<PermissionClaimAttrib> permissionAttributes);
+        Task<Guid> AssignUserToRole(Guid userId, Guid roleId, IEnumerable<PermissionClaimAttrib> permissionAttributes);
         Task<Guid> CreateUser(UserInfo info);
+        Task DeleteUserRole(Guid userRoleId);
         Task SetUser(UserInfo info);
     }
 }

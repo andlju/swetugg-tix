@@ -1,7 +1,6 @@
 // Activities 
 export * from "./activities/activity-details";
 export * from "./activities/activity-list";
-export * from "./activities/create-activity";
 export * from "./activities/modify-seats";
 export * from "../store/activities/activity.models";
 

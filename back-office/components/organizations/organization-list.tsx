@@ -3,12 +3,13 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import AddIcon from '@material-ui/icons/Add';
 import React from "react";
-import { Organization } from "../../store/organizations/organizations.actions";
+import { Organization, selectOrganization } from "../../store/organizations/organizations.actions";
+import { RootState } from '../../store/store';
+import { useDispatch, useSelector } from 'react-redux';
 
 export interface OrganizationListProps {
   organizations: Organization[];
 }
-
 
 const useStyles = makeStyles((theme) => ({
   identifier: {
@@ -28,18 +29,15 @@ export function OrganizationList({ organizations }: OrganizationListProps) {
 
   const classes = useStyles();
 
-  const [selectedOrg, setSelectedOrg] = React.useState('');
+  const { selectedOrganizationId, createInvite } = useSelector((r: RootState) => r.organizations);
+  
+  const dispatch = useDispatch();
 
   const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOrg(event.target.value);
+    dispatch(selectOrganization(event.target.value));
   };
 
   return (<React.Fragment>
-    <Toolbar className={classes.organizationListToolbar}>
-      <Typography className={classes.organizationListTitle} variant="h6" component="div">
-        Organizations
-      </Typography>
-    </Toolbar>
     {
       organizations.map(org =>
         <Accordion key={org.organizationId}>
@@ -53,7 +51,7 @@ export function OrganizationList({ organizations }: OrganizationListProps) {
               onFocus={(event) => event.stopPropagation()}
               value={org.organizationId}
               control={<Radio
-                checked={selectedOrg === org.organizationId}
+                checked={selectedOrganizationId === org.organizationId}
                 onChange={handleSelect}
               />}
               label={org.name}
