@@ -1,7 +1,6 @@
-
 export interface TixError {
-  code: string,
-  message: string
+  code: string;
+  message: string;
 }
 
 export interface TixState<TModel> {
@@ -14,15 +13,15 @@ export interface TixState<TModel> {
 export function setFetching<TModel>(state: TixState<TModel>): TixState<TModel> {
   return {
     ...state,
-    fetching: true
-  }
+    fetching: true,
+  };
 }
 
 export function setUpdating<TModel>(state: TixState<TModel>): TixState<TModel> {
   return {
     ...state,
-    updating: true
-  }
+    updating: true,
+  };
 }
 
 export function setState<TModel>(state: TixState<TModel>, model?: TModel): TixState<TModel> {
@@ -32,17 +31,21 @@ export function setState<TModel>(state: TixState<TModel>, model?: TModel): TixSt
     fetching: false,
     updating: false,
     current: model,
-  }
+  };
 }
 
-export function setError<TModel>(state: TixState<TModel>, code: string, message?: string): TixState<TModel> {
+export function setError<TModel>(
+  state: TixState<TModel>,
+  code: string,
+  message?: string
+): TixState<TModel> {
   return {
     ...state,
-    error: { 
-      code, 
-      message: message || code
+    error: {
+      code,
+      message: message || code,
     },
     fetching: false,
-    updating: false
-  }
+    updating: false,
+  };
 }

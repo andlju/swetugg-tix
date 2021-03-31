@@ -1,11 +1,26 @@
-import React, { useEffect, useMemo } from 'react';
+import {
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  FormControl,
+  Grid,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { User } from '../../store/auth/auth.actions';
-import { Button, CircularProgress, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import React, { useEffect, useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useActivityCommand } from '../../src/use-activity-command.hook';
-import { createOrganization } from '../../store/organizations/organizations.actions';
 import { useDispatch } from 'react-redux';
+
+import { useActivityCommand } from '../../src/use-activity-command.hook';
+import { User } from '../../store/auth/auth.actions';
+import { createOrganization } from '../../store/organizations/organizations.actions';
 import { OrganizationsState } from '../../store/organizations/organizations.reducer';
 
 const useStyles = makeStyles((theme) => ({
@@ -21,11 +36,9 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
   cancelButton: {
-    marginRight: "auto"
+    marginRight: 'auto',
   },
-  saveButton: {
-
-  },
+  saveButton: {},
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -42,7 +55,7 @@ type FormData = {
 interface CreateOrganizationProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  organizations: OrganizationsState
+  organizations: OrganizationsState;
 }
 
 export function CreateOrganizationModal({ organizations, open, setOpen }: CreateOrganizationProps) {
@@ -53,8 +66,8 @@ export function CreateOrganizationModal({ organizations, open, setOpen }: Create
 
   const { handleSubmit, setValue, control } = useForm<FormData>({
     defaultValues: {
-      name: ''
-    }
+      name: '',
+    },
   });
 
   const onSubmit = async (data: FormData) => {
@@ -63,7 +76,7 @@ export function CreateOrganizationModal({ organizations, open, setOpen }: Create
 
   useEffect(() => {
     if (!editState.saving && !editState.errorCode) {
-      setValue("name", '');
+      setValue('name', '');
       setOpen(false);
     }
   }, [editState.saving]);
@@ -78,44 +91,49 @@ export function CreateOrganizationModal({ organizations, open, setOpen }: Create
         onBackdropClick={handleCancel}
         BackdropProps={{
           timeout: 500,
-        }}
-      >
+        }}>
         <DialogTitle>Create Organization</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            This will create a new Organization.
-          </DialogContentText>
+          <DialogContentText>This will create a new Organization.</DialogContentText>
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Controller
                   control={control}
                   name="name"
-                  render={(props) => (<TextField
-                    {...props}
-                    label="Organization name"
-                    variant="outlined" fullWidth={true}
-                    disabled={ editState.saving } />)}
+                  render={(props) => (
+                    <TextField
+                      {...props}
+                      label="Organization name"
+                      variant="outlined"
+                      fullWidth={true}
+                      disabled={editState.saving}
+                    />
+                  )}
                 />
               </Grid>
             </Grid>
 
             <DialogActions>
-              <Button onClick={handleCancel}
-                className={classes.cancelButton} color="default">
+              <Button onClick={handleCancel} className={classes.cancelButton} color="default">
                 Cancel
-                </Button>
+              </Button>
               <div className={classes.wrapper}>
-                <Button type="submit"
-                  className={classes.saveButton} color="primary"
-                  disabled={ editState.saving }>
+                <Button
+                  type="submit"
+                  className={classes.saveButton}
+                  color="primary"
+                  disabled={editState.saving}>
                   Save
-                  </Button>
-                {( editState.saving ) && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
+                </Button>
+                {editState.saving && (
+                  <CircularProgress size="1.4rem" className={classes.buttonProgress} />
+                )}
               </div>
             </DialogActions>
           </form>
         </DialogContent>
       </Dialog>
-    </React.Fragment>);
+    </React.Fragment>
+  );
 }

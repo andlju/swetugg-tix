@@ -1,10 +1,16 @@
-import React from 'react';
-import Link from 'next/link';
 import {
-  Table, TableBody, TableHead, TableRow, TableCell, TableContainer,
+  Button,
+  makeStyles,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
-  makeStyles, Button
 } from '@material-ui/core';
+import Link from 'next/link';
+import React from 'react';
 
 import { Activity } from '../../store/activities/activity.models';
 
@@ -14,32 +20,31 @@ interface ActivityListProps {
 
 const useStyles = makeStyles((theme) => ({
   nameColumnHead: {
-    width: "60%",
-    fontWeight: "bold"
+    width: '60%',
+    fontWeight: 'bold',
   },
   freeSeatsColumnHead: {
-    width: "10%"
+    width: '10%',
   },
   totalSeatsColumnHead: {
-    width: "10%"
+    width: '10%',
   },
   ticketTypesColumnHead: {
-    width: "10%"
+    width: '10%',
   },
   actionsColumnHead: {
-    width: "10%"
+    width: '10%',
   },
   numberCell: {
-    textAlign: "right"
+    textAlign: 'right',
   },
   identifier: {
     color: theme.palette.text.secondary,
-    fontVariantCaps: "all-small-caps"
+    fontVariantCaps: 'all-small-caps',
   },
 }));
 
 export function ActivityList({ activities }: ActivityListProps) {
-
   const classes = useStyles();
 
   return (
@@ -55,8 +60,8 @@ export function ActivityList({ activities }: ActivityListProps) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {activities.map(row => (
-            <TableRow hover={true} key={row.activityId} >
+          {activities.map((row) => (
+            <TableRow hover={true} key={row.activityId}>
               <TableCell>
                 <Typography>{row.name}</Typography>
                 <Typography className={classes.identifier}>{row.activityId}</Typography>
@@ -66,16 +71,15 @@ export function ActivityList({ activities }: ActivityListProps) {
               <TableCell className={classes.numberCell}>{row.ticketTypes?.length ?? 0}</TableCell>
               <TableCell>
                 <Link href={`/activities/${row.activityId}?ownerId=${row.ownerId}`}>
-                  <Button
-                    variant="contained" color="secondary">
+                  <Button variant="contained" color="secondary">
                     Details
-                    </Button>
+                  </Button>
                 </Link>
               </TableCell>
-            </TableRow>)
-          )}
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
-    </TableContainer>);
+    </TableContainer>
+  );
 }
-

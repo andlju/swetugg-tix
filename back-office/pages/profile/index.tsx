@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { GetServerSideProps } from 'next';
 import { Button, CircularProgress, makeStyles } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
-import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
-import { EditProfile, UserFormData } from '../../components/profile/edit-profile';
-import { RootState } from '../../store/store';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { GetServerSideProps } from 'next';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { EditProfile, UserFormData } from '../../components/profile/edit-profile';
+import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 import { updateUser } from '../../store/auth/auth.actions';
+import { RootState } from '../../store/store';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -18,7 +19,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   paper: {
-    padding: theme.spacing(2)
+    padding: theme.spacing(2),
   },
   form: {
     display: 'flex',
@@ -28,8 +29,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     position: 'relative',
   },
-  saveButton: {
-  },
+  saveButton: {},
   buttonProgress: {
     position: 'absolute',
     top: '50%',
@@ -42,15 +42,15 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
 
-  useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+  useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   const dispatch = useDispatch();
   const { user } = useSelector((r: RootState) => r.auth);
 
   const userForm = useForm<UserFormData>({
     defaultValues: {
-      name: ''
-    }
+      name: '',
+    },
   });
 
   const { handleSubmit, formState, reset } = userForm;
@@ -64,8 +64,7 @@ export default function Index() {
   };
 
   const onSubmit = async (data: UserFormData) => {
-    if (!user.current)
-      return;
+    if (!user.current) return;
     user.current.name = data.name;
     dispatch(updateUser(user.current));
   };
@@ -85,30 +84,31 @@ export default function Index() {
                 </Grid>
                 <Grid item>
                   <div className={classes.wrapper}>
-                    <Button variant="contained" className={classes.saveButton}
-                      onClick={onReset}>
+                    <Button variant="contained" className={classes.saveButton} onClick={onReset}>
                       Reset
-                  </Button>
+                    </Button>
                   </div>
                 </Grid>
                 <Grid item>
                   <div className={classes.wrapper}>
-                    <Button type="submit"
-                      variant="contained" color="primary" className={classes.saveButton}
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      className={classes.saveButton}
                       disabled={user.fetching || user.updating}>
                       Save
                     </Button>
-                    {(user.fetching || user.updating) && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
+                    {(user.fetching || user.updating) && (
+                      <CircularProgress size="1.4rem" className={classes.buttonProgress} />
+                    )}
                   </div>
                 </Grid>
               </Grid>
             </form>
-
           </Paper>
         </Grid>
-        <Grid item xs={12} md={6}>
-
-        </Grid>
+        <Grid item xs={12} md={6}></Grid>
       </Grid>
     </Container>
   );
@@ -116,8 +116,6 @@ export default function Index() {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   return {
-    props: {
-
-    }
+    props: {},
   };
 };

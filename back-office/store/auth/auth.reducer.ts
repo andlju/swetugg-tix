@@ -1,10 +1,11 @@
-import { Reducer } from "redux";
-import { setError, setFetching, setState, setUpdating, TixState } from "../common/state.models";
-import { AuthAction, AuthActionTypes, User } from "./auth.actions";
+import { Reducer } from 'redux';
+
+import { setError, setFetching, setState, setUpdating, TixState } from '../common/state.models';
+import { AuthAction, AuthActionTypes, User } from './auth.actions';
 
 export interface AuthState {
-  accessToken?: string,
-  user: TixState<User>,
+  accessToken?: string;
+  user: TixState<User>;
   inProgress: boolean;
 }
 
@@ -12,8 +13,8 @@ const initialState: AuthState = {
   inProgress: false,
   user: {
     fetching: false,
-    updating: false
-  }
+    updating: false,
+  },
 };
 
 const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
@@ -37,52 +38,52 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
       return {
         ...state,
         user: setError(state.user, 'NotLoggedIn', 'The user is not logged in'),
-        accessToken: undefined
+        accessToken: undefined,
       };
     case AuthActionTypes.SET_ACCESS_TOKEN:
       return {
         ...state,
-        accessToken: action.payload.token
+        accessToken: action.payload.token,
       };
     case AuthActionTypes.SET_IN_PROGRESS:
       return {
         ...state,
-        inProgress: action.payload.inProgress
+        inProgress: action.payload.inProgress,
       };
     case AuthActionTypes.SET_USER:
       return {
         ...state,
-        user: setState(state.user, action.payload.user)
+        user: setState(state.user, action.payload.user),
       };
     case AuthActionTypes.CREATE_USER:
       return {
         ...state,
-        user: setUpdating(state.user)
+        user: setUpdating(state.user),
       };
     case AuthActionTypes.CREATE_USER_COMPLETE:
       return {
         ...state,
-        user: setFetching(state.user)
+        user: setFetching(state.user),
       };
     case AuthActionTypes.CREATE_USER_FAILED:
       return {
         ...state,
-        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage)
+        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage),
       };
     case AuthActionTypes.UPDATE_USER:
       return {
         ...state,
-        user: setUpdating(state.user)
+        user: setUpdating(state.user),
       };
     case AuthActionTypes.UPDATE_USER_COMPLETE:
       return {
         ...state,
-        user: setFetching(state.user)
+        user: setFetching(state.user),
       };
     case AuthActionTypes.UPDATE_USER_FAILED:
       return {
         ...state,
-        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage)
+        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage),
       };
     default:
       return state;

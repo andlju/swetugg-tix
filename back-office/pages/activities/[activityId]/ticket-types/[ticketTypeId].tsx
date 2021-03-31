@@ -1,21 +1,22 @@
-import React, { useEffect } from 'react';
-import { GetServerSideProps } from 'next';
 import { makeStyles } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import { GetServerSideProps } from 'next';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ActivitiesState } from '../../../../store/activities/activities.reducer';
+
 import { ModifyLimits, TicketTypeDetails } from '../../../../components';
-import { loadActivity } from '../../../../store/activities/activities.actions';
-import { RootState } from '../../../../store/store';
 import { useAuthenticatedUser } from '../../../../src/use-authenticated-user.hook';
+import { loadActivity } from '../../../../store/activities/activities.actions';
+import { ActivitiesState } from '../../../../store/activities/activities.reducer';
+import { RootState } from '../../../../store/store';
 
 interface TicketTypeProps {
-  activityId: string,
-  ticketTypeId: string,
-  ownerId: string,
+  activityId: string;
+  ticketTypeId: string;
+  ownerId: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -32,23 +33,27 @@ export default function TicketTypePage({ activityId, ownerId, ticketTypeId }: Ti
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { user } = useAuthenticatedUser(["https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin"]);
+  const { user } = useAuthenticatedUser([
+    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
+  ]);
 
   useEffect(() => {
     dispatch(loadActivity(activityId, ownerId));
   }, []);
 
-  const activities = useSelector<RootState, ActivitiesState>(store => store.activities);
+  const activities = useSelector<RootState, ActivitiesState>((store) => store.activities);
 
   const activity = activities.activities && activities.activities[activityId];
-  const ticketType = activity?.ticketTypes.find(t => t.ticketTypeId === ticketTypeId);
+  const ticketType = activity?.ticketTypes.find((t) => t.ticketTypeId === ticketTypeId);
 
   if (!ticketType) {
-    return (<Container>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Unknown ticket type
-      </Typography>
-    </Container>);
+    return (
+      <Container>
+        <Typography variant="h4" component="h1" gutterBottom>
+          Unknown ticket type
+        </Typography>
+      </Container>
+    );
   }
 
   return (
@@ -77,11 +82,9 @@ export default function TicketTypePage({ activityId, ownerId, ticketTypeId }: Ti
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ params, query }) => {
-
   if (!params) {
     return {
-      props: {
-      }
+      props: {},
     };
   }
 
@@ -95,6 +98,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params, query }) 
       activityId: activityId,
       ticketTypeId: ticketTypeId,
       ownerId: ownerId,
-    }
+    },
   };
 };

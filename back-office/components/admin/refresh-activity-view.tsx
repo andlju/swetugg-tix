@@ -1,24 +1,28 @@
 import {
+  Button,
+  CircularProgress,
+  Container,
   makeStyles,
   TextField,
-  Button, Typography, Container, CircularProgress
-} from "@material-ui/core";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { sendActivityCommand } from "../../store/activities/activities.actions";
+  Typography,
+} from '@material-ui/core';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { useDispatch } from 'react-redux';
+
+import { sendActivityCommand } from '../../store/activities/activities.actions';
 
 interface RefreshActivityViewProps {
-  initialActivityId?: string
+  initialActivityId?: string;
 }
 
 type FormData = {
-  activityId: string
+  activityId: string;
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(0)
+    padding: theme.spacing(0),
   },
   form: {
     display: 'flex',
@@ -27,8 +31,7 @@ const useStyles = makeStyles((theme) => ({
   input: {
     flex: '1',
   },
-  button: {
-  },
+  button: {},
   progressWrapper: {
     margin: theme.spacing(1),
     position: 'relative',
@@ -48,35 +51,44 @@ export function RefreshActivityView({ initialActivityId }: RefreshActivityViewPr
 
   const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
     defaultValues: {
-      activityId: initialActivityId
-    }
+      activityId: initialActivityId,
+    },
   });
 
   const dispatch = useDispatch();
 
   const onSubmit = async (data: FormData) => {
-    dispatch(sendActivityCommand(`/activities-admin/${data.activityId}/rebuild`, { }));
-    setValue("activityId", "");
-  }
+    dispatch(sendActivityCommand(`/activities-admin/${data.activityId}/rebuild`, {}));
+    setValue('activityId', '');
+  };
 
-  return (<Container className={classes.root}>
-    <Typography variant="overline">Refresh Views</Typography>
-    <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-      <TextField
-        name="activityId" label="Activity Id" variant="outlined" className={classes.input}
-        inputRef={register({ required: "Activity Id is required" })}
-        disabled={formState.isSubmitting}
-        error={!!errors.activityId}
-        helperText={errors.activityId && errors.activityId.message} />
+  return (
+    <Container className={classes.root}>
+      <Typography variant="overline">Refresh Views</Typography>
+      <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+        <TextField
+          name="activityId"
+          label="Activity Id"
+          variant="outlined"
+          className={classes.input}
+          inputRef={register({ required: 'Activity Id is required' })}
+          disabled={formState.isSubmitting}
+          error={!!errors.activityId}
+          helperText={errors.activityId && errors.activityId.message}
+        />
         <div className={classes.progressWrapper}>
-        <Button type="submit" variant="outlined" className={classes.button}
-          disabled={formState.isSubmitting}>
-          Refresh
-        </Button>
-        {formState.isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
-      </div>
-    </form>
-  </Container>
+          <Button
+            type="submit"
+            variant="outlined"
+            className={classes.button}
+            disabled={formState.isSubmitting}>
+            Refresh
+          </Button>
+          {formState.isSubmitting && (
+            <CircularProgress size={24} className={classes.buttonProgress} />
+          )}
+        </div>
+      </form>
+    </Container>
   );
-
 }

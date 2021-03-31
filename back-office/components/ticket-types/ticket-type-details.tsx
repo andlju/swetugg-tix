@@ -1,28 +1,26 @@
-import { makeStyles, Typography } from "@material-ui/core";
+import { makeStyles, Typography } from '@material-ui/core';
+import { Container } from '@material-ui/core';
+import { Table, TableBody, TableCell, TableRow } from '@material-ui/core';
 
-import { Container } from "@material-ui/core";
-import { Table, TableBody, TableRow, TableCell } from "@material-ui/core";
-import { Activity } from "../../store/activities/activity.models";
-import { TicketType } from "../../store/activities/ticket-type.models";
+import { Activity } from '../../store/activities/activity.models';
+import { TicketType } from '../../store/activities/ticket-type.models';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: theme.spacing(0),
   },
-}))
+}));
 
 interface TicketTypeDetailsProps {
-  ticketType: TicketType,
-  activity: Activity,
+  ticketType: TicketType;
+  activity: Activity;
 }
 
 export function TicketTypeDetails({ ticketType, activity }: TicketTypeDetailsProps) {
   const classes = useStyles();
   return (
     <Container className={classes.root}>
-      <Typography variant="overline">
-        Ticket Type
-      </Typography>
+      <Typography variant="overline">Ticket Type</Typography>
       <Table size="small">
         <TableBody>
           <TableRow>
@@ -31,10 +29,12 @@ export function TicketTypeDetails({ ticketType, activity }: TicketTypeDetailsPro
           </TableRow>
           <TableRow>
             <TableCell>Limit / Total seats</TableCell>
-            <TableCell>{ticketType.limit ?? "-"} / {activity.totalSeats}</TableCell>
+            <TableCell>
+              {ticketType.limit ?? '-'} / {activity.totalSeats}
+            </TableCell>
           </TableRow>
         </TableBody>
       </Table>
     </Container>
-  )
+  );
 }

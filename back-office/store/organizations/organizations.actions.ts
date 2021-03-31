@@ -1,4 +1,4 @@
-import { Action } from "redux";
+import { Action } from 'redux';
 
 export interface Organization {
   organizationId: string;
@@ -33,16 +33,18 @@ export function loadOrganization(organizationId: string): LoadOrganizationAction
     type: OrganizationActionTypes.LOAD_ORGANIZATION,
     payload: {
       organizationId: organizationId,
-    }
+    },
   };
 }
 
-export function loadOrganizationsComplete(organizations: Organization[]): LoadOrganizationsCompleteAction {
+export function loadOrganizationsComplete(
+  organizations: Organization[]
+): LoadOrganizationsCompleteAction {
   return {
     type: OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE,
     payload: {
-      organizations: organizations
-    }
+      organizations: organizations,
+    },
   };
 }
 
@@ -51,7 +53,7 @@ export function selectOrganization(organizationId: string): SelectOrganizationAc
     type: OrganizationActionTypes.SELECT_ORGANIZATION,
     payload: {
       organizationId: organizationId,
-    }
+    },
   };
 }
 
@@ -59,8 +61,8 @@ export function createOrganization(name: string): CreateOrganizationAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION,
     payload: {
-      name
-    }
+      name,
+    },
   };
 }
 
@@ -70,13 +72,16 @@ export function createOrganizationComplete(): CreateOrganizationCompleteAction {
   };
 }
 
-export function createOrganizationFailed(errorCode: string, errorMessage: string): CreateOrganizationFailedAction {
+export function createOrganizationFailed(
+  errorCode: string,
+  errorMessage: string
+): CreateOrganizationFailedAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_FAILED,
     payload: {
       errorCode,
-      errorMessage
-    }
+      errorMessage,
+    },
   };
 }
 
@@ -84,27 +89,32 @@ export function createOrganizationInvite(organizationId: string): CreateOrganiza
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_INVITE,
     payload: {
-      organizationId
-    }
+      organizationId,
+    },
   };
 }
 
-export function createOrganizationInviteComplete(token: string): CreateOrganizationInviteCompleteAction {
+export function createOrganizationInviteComplete(
+  token: string
+): CreateOrganizationInviteCompleteAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_COMPLETE,
     payload: {
-      token
-    }
+      token,
+    },
   };
 }
 
-export function createOrganizationInviteFailed(errorCode: string, errorMessage: string): CreateOrganizationInviteFailedAction {
+export function createOrganizationInviteFailed(
+  errorCode: string,
+  errorMessage: string
+): CreateOrganizationInviteFailedAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_FAILED,
     payload: {
       errorCode,
-      errorMessage
-    }
+      errorMessage,
+    },
   };
 }
 
@@ -118,7 +128,6 @@ export interface LoadOrganizationAction extends Action {
     organizationId: string;
   };
 }
-
 
 export interface SelectOrganizationAction extends Action {
   type: OrganizationActionTypes.SELECT_ORGANIZATION;
@@ -161,7 +170,6 @@ export interface CreateOrganizationFailedAction extends Action {
   };
 }
 
-
 export interface CreateOrganizationInviteAction extends Action {
   type: OrganizationActionTypes.CREATE_ORGANIZATION_INVITE;
   payload: {
@@ -184,7 +192,6 @@ export interface CreateOrganizationInviteFailedAction extends Action {
   };
 }
 
-
 export type OrganizationsAction =
   | LoadOrganizationsAction
   | LoadOrganizationAction
@@ -196,5 +203,4 @@ export type OrganizationsAction =
   | CreateOrganizationFailedAction
   | CreateOrganizationInviteAction
   | CreateOrganizationInviteCompleteAction
-  | CreateOrganizationInviteFailedAction
-  ;
+  | CreateOrganizationInviteFailedAction;

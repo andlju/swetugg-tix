@@ -1,11 +1,8 @@
-import {
-  makeStyles,
-  TextField,
-  Button, Typography, Container
-} from "@material-ui/core";
-import React from "react";
-import { useForm, Controller } from "react-hook-form";
-import { useActivityCommand } from "../../src/use-activity-command.hook";
+import { Button, Container, makeStyles, TextField, Typography } from '@material-ui/core';
+import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
+
+import { useActivityCommand } from '../../src/use-activity-command.hook';
 
 interface AddTicketTypeProps {
   activityId: string;
@@ -15,7 +12,7 @@ interface AddTicketTypeProps {
 const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(4),
-    padding: theme.spacing(0)
+    padding: theme.spacing(0),
   },
   form: {
     display: 'flex',
@@ -25,8 +22,8 @@ const useStyles = makeStyles((theme) => ({
     flex: '1',
   },
   button: {
-    marginLeft: theme.spacing(2)
-  }
+    marginLeft: theme.spacing(2),
+  },
 }));
 
 type FormData = {
@@ -38,17 +35,19 @@ export function AddTicketType({ activityId, ownerId }: AddTicketTypeProps) {
 
   const { register, handleSubmit, setValue, control } = useForm<FormData>({
     defaultValues: {
-      ticketTypeName: ''
-    }
+      ticketTypeName: '',
+    },
   });
 
-  const [addTicketTypeCommand, addTicketTypeStatus] = useActivityCommand(`/activities/${activityId}/ticket-types?ownerId=${ownerId}`);
+  const [addTicketTypeCommand, addTicketTypeStatus] = useActivityCommand(
+    `/activities/${activityId}/ticket-types?ownerId=${ownerId}`
+  );
 
   const onSubmit = async (data: FormData) => {
     addTicketTypeCommand({
-      name: data.ticketTypeName
+      name: data.ticketTypeName,
     });
-    setValue("ticketTypeName", "");
+    setValue('ticketTypeName', '');
   };
 
   return (
@@ -60,15 +59,23 @@ export function AddTicketType({ activityId, ownerId }: AddTicketTypeProps) {
           name="ticketTypeName"
           render={(props) => (
             <TextField
-              {...props}  
+              {...props}
               label="Name"
-              size="small" className={classes.input}
-              disabled={addTicketTypeStatus.processing} />
+              size="small"
+              className={classes.input}
+              disabled={addTicketTypeStatus.processing}
+            />
           )}
         />
 
-        <Button type="submit" className={classes.button} variant="outlined" color="primary"
-          disabled={addTicketTypeStatus.processing}>Add</Button>
+        <Button
+          type="submit"
+          className={classes.button}
+          variant="outlined"
+          color="primary"
+          disabled={addTicketTypeStatus.processing}>
+          Add
+        </Button>
       </form>
     </Container>
   );

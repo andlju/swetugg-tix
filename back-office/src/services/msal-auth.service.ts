@@ -1,8 +1,20 @@
-import { AccountInfo, AuthenticationResult, Configuration, EventMessage, EventMessageUtils, InteractionStatus, PopupRequest, PublicClientApplication, RedirectRequest, SilentRequest, SsoSilentRequest } from "@azure/msal-browser";
-import { from, Observable, ReplaySubject } from "rxjs";
-import { distinctUntilChanged, filter, map, tap } from "rxjs/operators";
-import { msalConfig } from "../auth-config";
+import {
+  AccountInfo,
+  AuthenticationResult,
+  Configuration,
+  EventMessage,
+  EventMessageUtils,
+  InteractionStatus,
+  PopupRequest,
+  PublicClientApplication,
+  RedirectRequest,
+  SilentRequest,
+  SsoSilentRequest,
+} from '@azure/msal-browser';
+import { from, Observable, ReplaySubject } from 'rxjs';
+import { distinctUntilChanged, filter, map, tap } from 'rxjs/operators';
 
+import { msalConfig } from '../auth-config';
 
 class MsalService {
   private instance: PublicClientApplication;
@@ -13,21 +25,20 @@ class MsalService {
     this.eventSubject = new ReplaySubject<EventMessage>();
     this.instance.addEventCallback((evt) => this.handleCallback(evt));
 
-    this.instance.handleRedirectPromise()
-      .catch((error) => {
-        console.error(error);
-      });
+    this.instance.handleRedirectPromise().catch((error) => {
+      console.error(error);
+    });
   }
 
   isInProgress$(): Observable<boolean> {
     return this.authEvents$().pipe(
-      map(msg => EventMessageUtils.getInteractionStatusFromEvent(msg) !== InteractionStatus.None)
+      map((msg) => EventMessageUtils.getInteractionStatusFromEvent(msg) !== InteractionStatus.None)
     );
   }
 
   currentAccount$(): Observable<AccountInfo | null> {
     return this.isInProgress$().pipe(
-      filter(inProgress => !inProgress),
+      filter((inProgress) => !inProgress),
       map(() => this.ensureAccountSelected()),
       distinctUntilChanged((acct1, acct2) => acct1?.username === acct2?.username)
     );
@@ -38,9 +49,7 @@ class MsalService {
   }
 
   isLoggedIn$(): Observable<boolean> {
-    return this.currentAccount$().pipe(
-      map(acct => !!acct)
-    );
+    return this.currentAccount$().pipe(map((acct) => !!acct));
   }
 
   handleCallback(evt: EventMessage) {
@@ -91,4 +100,3 @@ class MsalService {
 }
 
 export const msalService = new MsalService(msalConfig);
-

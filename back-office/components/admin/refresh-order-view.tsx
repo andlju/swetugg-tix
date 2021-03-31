@@ -1,23 +1,27 @@
 import {
+  Button,
+  CircularProgress,
+  Container,
   makeStyles,
   TextField,
-  Button, Typography, Container, CircularProgress
-} from "@material-ui/core";
-import React from "react";
-import { useForm } from "react-hook-form";
-import { useOrderCommand } from "../../src/use-order-command.hook";
+  Typography,
+} from '@material-ui/core';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+
+import { useOrderCommand } from '../../src/use-order-command.hook';
 
 interface RefreshOrderViewProps {
-  initialOrderId?: string
+  initialOrderId?: string;
 }
 
 type FormData = {
-  orderId: string
+  orderId: string;
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: theme.spacing(0)
+    padding: theme.spacing(0),
   },
   form: {
     display: 'flex',
@@ -26,8 +30,7 @@ const useStyles = makeStyles((theme) => ({
   input: {
     flex: '1',
   },
-  button: {
-  },
+  button: {},
   progressWrapper: {
     margin: theme.spacing(1),
     position: 'relative',
@@ -45,40 +48,49 @@ const useStyles = makeStyles((theme) => ({
 export function RefreshOrderView({ initialOrderId }: RefreshOrderViewProps) {
   const classes = useStyles();
 
-  const [refreshView] = useOrderCommand("Refresh views");
+  const [refreshView] = useOrderCommand('Refresh views');
   const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
     defaultValues: {
-      orderId: initialOrderId
-    }
+      orderId: initialOrderId,
+    },
   });
 
   const onSubmit = async (data: FormData) => {
     try {
-      await refreshView(`/orders-admin/${data.orderId}/rebuild`, { });
-      setValue("orderId", "");
-    } catch(err) {
-      setError("orderId", { message: "Invalid format" });
+      await refreshView(`/orders-admin/${data.orderId}/rebuild`, {});
+      setValue('orderId', '');
+    } catch (err) {
+      setError('orderId', { message: 'Invalid format' });
     }
-  }
+  };
 
-  return (<Container className={classes.root}>
-    <Typography variant="overline">Refresh Views</Typography>
-    <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-      <TextField
-        name="orderId" label="Order Id" variant="outlined" className={classes.input}
-        inputRef={register({ required: "Order Id is required" })}
-        disabled={formState.isSubmitting}
-        error={!!errors.orderId}
-        helperText={errors.orderId && errors.orderId.message} />
+  return (
+    <Container className={classes.root}>
+      <Typography variant="overline">Refresh Views</Typography>
+      <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
+        <TextField
+          name="orderId"
+          label="Order Id"
+          variant="outlined"
+          className={classes.input}
+          inputRef={register({ required: 'Order Id is required' })}
+          disabled={formState.isSubmitting}
+          error={!!errors.orderId}
+          helperText={errors.orderId && errors.orderId.message}
+        />
         <div className={classes.progressWrapper}>
-        <Button type="submit" variant="outlined" className={classes.button}
-          disabled={formState.isSubmitting}>
-          Refresh
-        </Button>
-        {formState.isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
-      </div>
-    </form>
-  </Container>
+          <Button
+            type="submit"
+            variant="outlined"
+            className={classes.button}
+            disabled={formState.isSubmitting}>
+            Refresh
+          </Button>
+          {formState.isSubmitting && (
+            <CircularProgress size={24} className={classes.buttonProgress} />
+          )}
+        </div>
+      </form>
+    </Container>
   );
-
 }

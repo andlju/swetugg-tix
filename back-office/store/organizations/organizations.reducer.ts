@@ -1,24 +1,29 @@
-import { Reducer } from "redux";
-import { Organization, OrganizationActionTypes, OrganizationsAction } from "./organizations.actions";
+import { Reducer } from 'redux';
+
+import {
+  Organization,
+  OrganizationActionTypes,
+  OrganizationsAction,
+} from './organizations.actions';
 
 export interface OrganizationsState {
   organizations: {
     [key: string]: Organization;
-  },
-  selectedOrganizationId?: string,
+  };
+  selectedOrganizationId?: string;
   editState: {
-    errorCode?: string,
-    errorMessage?: string,
-    saving: boolean,
-  },
+    errorCode?: string;
+    errorMessage?: string;
+    saving: boolean;
+  };
   createInvite: {
-    loading: boolean,
-    token?: string,
-    errorCode?: string,
-    errorMessage?: string,
-  },
+    loading: boolean;
+    token?: string;
+    errorCode?: string;
+    errorMessage?: string;
+  };
   visibleOrganizations: {
-    ids: string[],
+    ids: string[];
     loading: boolean;
   };
 }
@@ -26,15 +31,15 @@ export interface OrganizationsState {
 const initialState: OrganizationsState = {
   organizations: {},
   editState: {
-    saving: false
+    saving: false,
   },
   createInvite: {
     loading: false,
   },
   visibleOrganizations: {
     ids: [],
-    loading: false
-  }
+    loading: false,
+  },
 };
 
 const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (state, action) => {
@@ -47,38 +52,44 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         ...state,
         visibleOrganizations: {
           ids: state?.visibleOrganizations.ids ?? [],
-          loading: true
-        }
+          loading: true,
+        },
       };
     case OrganizationActionTypes.LOAD_ORGANIZATION:
       return {
         ...state,
         visibleOrganizations: {
           ids: state?.visibleOrganizations.ids ?? [],
-          loading: true
-        }
+          loading: true,
+        },
       };
     case OrganizationActionTypes.SELECT_ORGANIZATION:
       return {
         ...state,
-        selectedOrganizationId: action.payload.organizationId
+        selectedOrganizationId: action.payload.organizationId,
       };
     case OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE:
       return {
         ...state,
-        organizations: action.payload.organizations.reduce((organizations, organization) => ({ ...organizations, [organization.organizationId]: organization }), state.organizations),
+        organizations: action.payload.organizations.reduce(
+          (organizations, organization) => ({
+            ...organizations,
+            [organization.organizationId]: organization,
+          }),
+          state.organizations
+        ),
         visibleOrganizations: {
-          ids: action.payload.organizations.map(o => o.organizationId),
-          loading: false
-        }
+          ids: action.payload.organizations.map((o) => o.organizationId),
+          loading: false,
+        },
       };
     case OrganizationActionTypes.LOAD_ORGANIZATIONS_FAILED:
       return {
         ...state,
         visibleOrganizations: {
           ids: state?.visibleOrganizations.ids ?? [],
-          loading: false
-        }
+          loading: false,
+        },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION:
       return {
@@ -86,8 +97,8 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         editState: {
           saving: true,
           errorCode: undefined,
-          errorMessage: undefined
-        }
+          errorMessage: undefined,
+        },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION_COMPLETE:
       return {
@@ -95,8 +106,8 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         editState: {
           saving: false,
           errorCode: undefined,
-          errorMessage: undefined
-        }
+          errorMessage: undefined,
+        },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION_FAILED:
       return {
@@ -104,8 +115,8 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         editState: {
           saving: false,
           errorCode: action.payload.errorCode,
-          errorMessage: action.payload.errorMessage
-        }
+          errorMessage: action.payload.errorMessage,
+        },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION_INVITE:
       return {
@@ -114,8 +125,8 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
           loading: true,
           token: undefined,
           errorCode: undefined,
-          errorMessage: undefined
-        }
+          errorMessage: undefined,
+        },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_COMPLETE:
       return {
@@ -124,8 +135,8 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
           loading: false,
           token: action.payload.token,
           errorCode: undefined,
-          errorMessage: undefined
-        }
+          errorMessage: undefined,
+        },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_FAILED:
       return {
@@ -134,8 +145,8 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
           loading: false,
           token: undefined,
           errorCode: action.payload.errorCode,
-          errorMessage: action.payload.errorMessage
-        }
+          errorMessage: action.payload.errorMessage,
+        },
       };
     default:
       return state;

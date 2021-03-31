@@ -1,4 +1,4 @@
-import { Action } from "redux";
+import { Action } from 'redux';
 
 export enum AuthActionTypes {
   LOGIN = 'LOGIN',
@@ -7,7 +7,7 @@ export enum AuthActionTypes {
 
   LOGOUT = 'LOGOUT',
   GET_SCOPES = 'GET_SCOPE',
-  
+
   VALIDATE_LOGIN = 'VALIDATE_LOGIN',
   VALIDATE_LOGIN_COMPLETE = 'VALIDATE_LOGIN_COMPLETE',
   VALIDATE_LOGIN_FAILED = 'VALIDATE_LOGIN_FAILED',
@@ -30,35 +30,35 @@ export enum AuthActionTypes {
 export enum InteractionKind {
   SILENT = 'Silent',
   POPUP = 'Popup',
-  REDIRECT = 'Redirect'
+  REDIRECT = 'Redirect',
 }
 
 export enum UserStatus {
   None = 0,
   Created = 1,
   Validated = 2,
-  Deleted = 100
+  Deleted = 100,
 }
 
 export interface User {
-  userId?: string,
-  name: string,
-  subject: string,
-  status: UserStatus
+  userId?: string;
+  name: string;
+  subject: string;
+  status: UserStatus;
 }
 
 export function login(interactionKind: InteractionKind = InteractionKind.SILENT): LoginAction {
   return {
     type: AuthActionTypes.LOGIN,
     payload: {
-      interactionKind
-    }
+      interactionKind,
+    },
   };
 }
 
 export function loginCompleted(): LoginCompletedAction {
   return {
-    type: AuthActionTypes.LOGIN_COMPLETED
+    type: AuthActionTypes.LOGIN_COMPLETED,
   };
 }
 
@@ -67,14 +67,14 @@ export function loginFailed(errorCode: string, errorMessage: string): LoginFaile
     type: AuthActionTypes.LOGIN_FAILED,
     payload: {
       errorCode,
-      errorMessage
-    }
+      errorMessage,
+    },
   };
 }
 
 export function logout(): LogoutAction {
   return {
-    type: AuthActionTypes.LOGOUT
+    type: AuthActionTypes.LOGOUT,
   };
 }
 
@@ -83,7 +83,7 @@ export function validateLogin(scopes: string[]): ValidateLoginAction {
     type: AuthActionTypes.VALIDATE_LOGIN,
     payload: {
       scopes,
-    }
+    },
   };
 }
 
@@ -99,27 +99,30 @@ export function validateLoginFailed(): ValidateLoginFailedAction {
   };
 }
 
-export function getScopes(scopes: string[], interactionKind: InteractionKind = InteractionKind.SILENT): GetScopesAction {
+export function getScopes(
+  scopes: string[],
+  interactionKind: InteractionKind = InteractionKind.SILENT
+): GetScopesAction {
   return {
     type: AuthActionTypes.GET_SCOPES,
     payload: {
       scopes,
-      interactionKind
-    }
+      interactionKind,
+    },
   };
 }
 
 export function setAccessToken(token: string): SetAccessTokenAction {
   return {
     type: AuthActionTypes.SET_ACCESS_TOKEN,
-    payload: { token }
+    payload: { token },
   };
 }
 
 export function setInProgress(inProgress: boolean): SetInProgressAction {
   return {
     type: AuthActionTypes.SET_IN_PROGRESS,
-    payload: { inProgress }
+    payload: { inProgress },
   };
 }
 
@@ -127,8 +130,8 @@ export function setUser(user?: User): SetUserAction {
   return {
     type: AuthActionTypes.SET_USER,
     payload: {
-      user
-    }
+      user,
+    },
   };
 }
 
@@ -136,8 +139,8 @@ export function createUser(user: User): CreateUserAction {
   return {
     type: AuthActionTypes.CREATE_USER,
     payload: {
-      user
-    }
+      user,
+    },
   };
 }
 
@@ -152,18 +155,17 @@ export function createUserFailed(errorCode: string, errorMessage: string): Creat
     type: AuthActionTypes.CREATE_USER_FAILED,
     payload: {
       errorCode,
-      errorMessage
-    }
+      errorMessage,
+    },
   };
 }
-
 
 export function updateUser(user: User): UpdateUserAction {
   return {
     type: AuthActionTypes.UPDATE_USER,
     payload: {
-      user
-    }
+      user,
+    },
   };
 }
 
@@ -178,8 +180,8 @@ export function updateUserFailed(errorCode: string, errorMessage: string): Updat
     type: AuthActionTypes.UPDATE_USER_FAILED,
     payload: {
       errorCode,
-      errorMessage
-    }
+      errorMessage,
+    },
   };
 }
 
@@ -187,8 +189,8 @@ export function requestUserUpdate(user: User): RequestUserUpdateAction {
   return {
     type: AuthActionTypes.REQUEST_USER_UPDATE,
     payload: {
-      user
-    }
+      user,
+    },
   };
 }
 
@@ -196,7 +198,7 @@ export interface LoginAction extends Action {
   type: AuthActionTypes.LOGIN;
   payload: {
     interactionKind: InteractionKind;
-  }
+  };
 }
 
 export interface LoginCompletedAction extends Action {
@@ -204,11 +206,11 @@ export interface LoginCompletedAction extends Action {
 }
 
 export interface LoginFailedAction extends Action {
-  type: AuthActionTypes.LOGIN_FAILED,
+  type: AuthActionTypes.LOGIN_FAILED;
   payload: {
-    errorCode: string,
-    errorMessage: string
-  }
+    errorCode: string;
+    errorMessage: string;
+  };
 }
 
 export interface LogoutAction extends Action {
@@ -223,78 +225,78 @@ export interface ValidateLoginAction extends Action {
 }
 
 export interface ValidateLoginCompleteAction extends Action {
-  type: AuthActionTypes.VALIDATE_LOGIN_COMPLETE
+  type: AuthActionTypes.VALIDATE_LOGIN_COMPLETE;
 }
 
 export interface ValidateLoginFailedAction extends Action {
-  type: AuthActionTypes.VALIDATE_LOGIN_FAILED
+  type: AuthActionTypes.VALIDATE_LOGIN_FAILED;
 }
 
 export interface GetScopesAction extends Action {
-  type: AuthActionTypes.GET_SCOPES,
+  type: AuthActionTypes.GET_SCOPES;
   payload: {
     scopes: string[];
-    interactionKind: InteractionKind
+    interactionKind: InteractionKind;
   };
 }
 
 export interface SetAccessTokenAction extends Action {
-  type: AuthActionTypes.SET_ACCESS_TOKEN,
+  type: AuthActionTypes.SET_ACCESS_TOKEN;
   payload: {
     token: string;
   };
 }
 
 export interface SetInProgressAction extends Action {
-  type: AuthActionTypes.SET_IN_PROGRESS,
+  type: AuthActionTypes.SET_IN_PROGRESS;
   payload: {
     inProgress: boolean;
   };
 }
 
 export interface SetUserAction extends Action {
-  type: AuthActionTypes.SET_USER,
+  type: AuthActionTypes.SET_USER;
   payload: {
     user?: User;
   };
 }
 
 export interface CreateUserAction extends Action {
-  type: AuthActionTypes.CREATE_USER,
+  type: AuthActionTypes.CREATE_USER;
   payload: {
     user: User;
   };
 }
 
 export interface CreateUserCompleteAction extends Action {
-  type: AuthActionTypes.CREATE_USER_COMPLETE
+  type: AuthActionTypes.CREATE_USER_COMPLETE;
 }
 
 export interface CreateUserFailedAction extends Action {
-  type: AuthActionTypes.CREATE_USER_FAILED,
+  type: AuthActionTypes.CREATE_USER_FAILED;
   payload: {
-    errorCode: string,
-    errorMessage: string
-  }
+    errorCode: string;
+    errorMessage: string;
+  };
 }
 
 export interface UpdateUserAction extends Action {
-  type: AuthActionTypes.UPDATE_USER,
+  type: AuthActionTypes.UPDATE_USER;
   payload: {
     user: User;
   };
 }
 
 export interface UpdateUserCompleteAction extends Action {
-  type: AuthActionTypes.UPDATE_USER_COMPLETE
+  type: AuthActionTypes.UPDATE_USER_COMPLETE;
 }
 
 export interface UpdateUserFailedAction extends Action {
-  type: AuthActionTypes.UPDATE_USER_FAILED,
+  type: AuthActionTypes.UPDATE_USER_FAILED;
   payload: {
-    errorCode: string,
-    errorMessage: string
-  }
+    errorCode: string;
+    errorMessage: string;
+  };
 }
 
 export interface RequestUserUpdateAction extends Action {
@@ -303,7 +305,6 @@ export interface RequestUserUpdateAction extends Action {
     user: User;
   };
 }
-
 
 export type AuthAction =
   | LoginAction
