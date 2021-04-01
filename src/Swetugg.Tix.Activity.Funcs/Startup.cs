@@ -67,6 +67,7 @@ namespace Swetugg.Tix.Activity.Funcs
                 var registry = new PolicyRegistry();
 
                 registry.Add(typeof(ActivityViewTableBuilder).Name, retryPolicy);
+                registry.Add(typeof(OrganizationViewTableBuilder).Name, retryPolicy);
                 return registry;
             });
 
@@ -81,6 +82,7 @@ namespace Swetugg.Tix.Activity.Funcs
                 var host = ViewBuilderHost.Build(sp.GetService<ILoggerFactory>(), sp.GetService<IPolicyRegistry<string>>());
 
                 host.RegisterViewBuilder(new ActivityViewTableBuilder(storageConnectionString));
+                host.RegisterViewBuilder(new OrganizationViewTableBuilder(storageConnectionString));
 
                 return host;
             });

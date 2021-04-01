@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace Swetugg.Tix.Activity.Views.TableStorage
 {
+
     public class ActivityViewEntity : TableEntity, IViewEntity<ActivityOverview>
     {
         public ActivityViewEntity()

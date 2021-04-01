@@ -36,7 +36,7 @@ namespace Swetugg.Tix.Activity.Domain
                 Body = e.Body,
                 Headers = CombineHeaders(committed.Headers, e.Headers),
             }).ToArray();
-
+            
             foreach (var publisher in _publishers)
             {
                 publisher.Publish(

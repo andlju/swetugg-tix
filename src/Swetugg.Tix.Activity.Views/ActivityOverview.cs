@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace Swetugg.Tix.Activity.Views
 {
+
     public class ActivityOverview : IView
     {
         public ActivityOverview()

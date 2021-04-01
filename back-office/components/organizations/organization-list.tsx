@@ -1,79 +1,81 @@
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Fab,
-  FormControlLabel,
+  Button,
   Link,
   makeStyles,
-  Radio,
-  Toolbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   Typography,
 } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { Organization, selectOrganization } from '../../store/organizations/organizations.actions';
-import { RootState } from '../../store/store';
+import { Organization } from '../../store/organizations/organizations.actions';
 
 export interface OrganizationListProps {
   organizations: Organization[];
 }
 
 const useStyles = makeStyles((theme) => ({
+  nameColumnHead: {
+    width: '60%',
+    fontWeight: 'bold',
+  },
+  freeSeatsColumnHead: {
+    width: '10%',
+  },
+  totalSeatsColumnHead: {
+    width: '10%',
+  },
+  ticketTypesColumnHead: {
+    width: '10%',
+  },
+  actionsColumnHead: {
+    width: '10%',
+  },
+  numberCell: {
+    textAlign: 'right',
+  },
   identifier: {
     color: theme.palette.text.secondary,
     fontVariantCaps: 'all-small-caps',
-  },
-  organizationListTitle: {
-    flex: '1 1 100%',
-  },
-  organizationListToolbar: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(2),
   },
 }));
 
 export function OrganizationList({ organizations }: OrganizationListProps) {
   const classes = useStyles();
 
-  const { selectedOrganizationId, createInvite } = useSelector((r: RootState) => r.organizations);
-
-  const dispatch = useDispatch();
-
-  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(selectOrganization(event.target.value));
-  };
-
   return (
-    <React.Fragment>
-      {organizations.map((org) => (
-        <Accordion key={org.organizationId}>
-          <AccordionSummary expandIcon={<ExpandMoreIcon />} aria-label="Expand">
-            <FormControlLabel
-              aria-label="Select"
-              onClick={(event) => event.stopPropagation()}
-              onFocus={(event) => event.stopPropagation()}
-              value={org.organizationId}
-              control={
-                <Radio
-                  checked={selectedOrganizationId === org.organizationId}
-                  onChange={handleSelect}
-                />
-              }
-              label={org.name}
-            />
-          </AccordionSummary>
-          <AccordionDetails>
-            <Typography color="textSecondary">
-              Description of the {org.name} organization
-            </Typography>
-          </AccordionDetails>
-        </Accordion>
-      ))}
-    </React.Fragment>
+    <TableContainer>
+      <Table size="small">
+        <TableHead>
+          <TableRow>
+            <TableCell className={classes.nameColumnHead}>Name</TableCell>
+            <TableCell className={classes.ticketTypesColumnHead}>Ticket Types</TableCell>
+            <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {organizations.map((row) => (
+            <TableRow hover={true} key={row.organizationId}>
+              <TableCell>
+                <Typography>{row.name}</Typography>
+                <Typography className={classes.identifier}>{row.organizationId}</Typography>
+              </TableCell>
+              <TableCell className={classes.numberCell}>{0}</TableCell>
+              <TableCell>
+                <Link href={`/organizations/${row.organizationId}`}>
+                  <Button variant="contained" color="secondary">
+                    Details
+                  </Button>
+                </Link>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }

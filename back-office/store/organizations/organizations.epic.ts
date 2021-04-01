@@ -23,8 +23,17 @@ const fetchOrganizations = (token: string): Observable<Organization[]> => {
   return ajax.getJSON(buildUrl('/organizations'), { Authorization: `Bearer ${token}` });
 };
 
+const fetchOrganization = (organizationId: string, token: string): Observable<Organization> => {
+  return ajax.getJSON(buildUrl(`/organizations/${organizationId}`), {
+    Authorization: `Bearer ${token}`,
+  });
+};
+
 const loadOrganizationsAction$ = (action$: ActionsObservable<OrganizationsAction>) =>
   action$.pipe(filter(isOfType(OrganizationActionTypes.LOAD_ORGANIZATIONS)));
+
+const loadOrganizationAction$ = (action$: ActionsObservable<OrganizationsAction>) =>
+  action$.pipe(filter(isOfType(OrganizationActionTypes.LOAD_ORGANIZATION)));
 
 const loadOrganizationsEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
   action$,
@@ -34,6 +43,19 @@ const loadOrganizationsEpic: Epic<OrganizationsAction, OrganizationsAction, Root
     tap(() => console.log('Loading organizations in epic')),
     mergeMap(([, token]) =>
       fetchOrganizations(token || '').pipe(map((resp) => loadOrganizationsComplete(resp)))
+    )
+  );
+
+const loadOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
+  action$,
+  state$
+) =>
+  withTokenAndUser$(loadOrganizationAction$(action$), state$).pipe(
+    tap(() => console.log('Loading organizations in epic')),
+    mergeMap(([action, token]) =>
+      fetchOrganization(action.payload.organizationId, token || '').pipe(
+        map((resp) => loadOrganizationsComplete([resp]))
+      )
     )
   );
 
@@ -96,6 +118,7 @@ const reloadOnCreateComplete: Epic<OrganizationsAction, OrganizationsAction, Roo
 
 export const organizationsEpic = combineEpics(
   loadOrganizationsEpic,
+  loadOrganizationEpic,
   createOrganizationEpic,
   createOrganizationInviteEpic,
   reloadOnCreateComplete
