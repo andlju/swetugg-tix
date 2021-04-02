@@ -1,10 +1,7 @@
 import { Reducer } from 'redux';
 
-import {
-  Organization,
-  OrganizationActionTypes,
-  OrganizationsAction,
-} from './organizations.actions';
+import { User } from '../auth/auth.actions';
+import { Organization, OrganizationActionTypes, OrganizationsAction } from './organizations.actions';
 
 export interface OrganizationsState {
   organizations: {
@@ -16,6 +13,7 @@ export interface OrganizationsState {
     errorMessage?: string;
     saving: boolean;
   };
+  organizationUsers: User[];
   createInvite: {
     loading: boolean;
     token?: string;
@@ -33,6 +31,7 @@ const initialState: OrganizationsState = {
   editState: {
     saving: false,
   },
+  organizationUsers: [],
   createInvite: {
     loading: false,
   },
@@ -63,10 +62,10 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
           loading: true,
         },
       };
-    case OrganizationActionTypes.SELECT_ORGANIZATION:
+    case OrganizationActionTypes.LOAD_ORGANIZATION_USERS:
       return {
         ...state,
-        selectedOrganizationId: action.payload.organizationId,
+        organizationUsers: [],
       };
     case OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE:
       return {
@@ -90,6 +89,11 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
           ids: state?.visibleOrganizations.ids ?? [],
           loading: false,
         },
+      };
+    case OrganizationActionTypes.SELECT_ORGANIZATION:
+      return {
+        ...state,
+        selectedOrganizationId: action.payload.organizationId,
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION:
       return {

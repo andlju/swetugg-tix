@@ -34,13 +34,7 @@ export const NewProfile: React.FC<NewProfileProps> = ({ userForm }) => {
         control={control}
         name="name"
         render={(props) => (
-          <TextField
-            {...props}
-            label="Name"
-            variant="outlined"
-            className={classes.input}
-            disabled={formState.isSubmitting}
-          />
+          <TextField {...props} label="Name" variant="outlined" className={classes.input} disabled={formState.isSubmitting} />
         )}
       />
     </Container>

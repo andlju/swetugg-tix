@@ -1,4 +1,5 @@
 import { Action } from 'redux';
+import { User } from '../auth/auth.actions';
 
 export interface Organization {
   organizationId: string;
@@ -10,6 +11,10 @@ export enum OrganizationActionTypes {
   LOAD_ORGANIZATIONS = 'LOAD_ORGANIZATIONS',
   LOAD_ORGANIZATIONS_COMPLETE = 'LOAD_ORGANIZATIONS_COMPLETE',
   LOAD_ORGANIZATIONS_FAILED = 'LOAD_ORGANIZATIONS_FAILED',
+
+  LOAD_ORGANIZATION_USERS = 'LOAD_ORGANIZATION_USERS',
+  LOAD_ORGANIZATION_USERS_COMPLETE = 'LOAD_ORGANIZATION_USERS_COMPLETE',
+  LOAD_ORGANIZATION_USERS_FAILED = 'LOAD_ORGANIZATION_USERS_FAILED',
 
   SELECT_ORGANIZATION = 'SELECT_ORGANIZATION',
 
@@ -53,6 +58,24 @@ export function selectOrganization(organizationId: string): SelectOrganizationAc
     type: OrganizationActionTypes.SELECT_ORGANIZATION,
     payload: {
       organizationId: organizationId,
+    },
+  };
+}
+
+export function loadOrganizationUsers(organizationId: string): LoadOrganizationUsersAction {
+  return {
+    type: OrganizationActionTypes.LOAD_ORGANIZATION_USERS,
+    payload: {
+      organizationId: organizationId,
+    },
+  };
+}
+
+export function loadOrganizationUsersComplete(users: User[]): LoadOrganizationUsersCompleteAction {
+  return {
+    type: OrganizationActionTypes.LOAD_ORGANIZATION_USERS_COMPLETE,
+    payload: {
+      users: users,
     },
   };
 }
@@ -129,13 +152,6 @@ export interface LoadOrganizationAction extends Action {
   };
 }
 
-export interface SelectOrganizationAction extends Action {
-  type: OrganizationActionTypes.SELECT_ORGANIZATION;
-  payload: {
-    organizationId: string;
-  };
-}
-
 export interface LoadOrganizationsCompleteAction extends Action {
   type: OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE;
   payload: {
@@ -148,6 +164,35 @@ export interface LoadOrganizationsFailedAction extends Action {
   payload: {
     errorCode: string;
     errorMessage: string;
+  };
+}
+
+export interface LoadOrganizationUsersAction extends Action {
+  type: OrganizationActionTypes.LOAD_ORGANIZATION_USERS;
+  payload: {
+    organizationId: string;
+  };
+}
+
+export interface LoadOrganizationUsersCompleteAction extends Action {
+  type: OrganizationActionTypes.LOAD_ORGANIZATION_USERS_COMPLETE;
+  payload: {
+    users: User[];
+  };
+}
+
+export interface LoadOrganizationUsersFailedAction extends Action {
+  type: OrganizationActionTypes.LOAD_ORGANIZATION_USERS_FAILED;
+  payload: {
+    errorCode: string;
+    errorMessage: string;
+  };
+}
+
+export interface SelectOrganizationAction extends Action {
+  type: OrganizationActionTypes.SELECT_ORGANIZATION;
+  payload: {
+    organizationId: string;
   };
 }
 
@@ -198,6 +243,9 @@ export type OrganizationsAction =
   | SelectOrganizationAction
   | LoadOrganizationsCompleteAction
   | LoadOrganizationsFailedAction
+  | LoadOrganizationUsersAction
+  | LoadOrganizationUsersCompleteAction
+  | LoadOrganizationUsersFailedAction
   | CreateOrganizationAction
   | CreateOrganizationCompleteAction
   | CreateOrganizationFailedAction

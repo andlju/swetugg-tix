@@ -1,6 +1,7 @@
 import { Reducer } from 'redux';
 
 import { CommandStatus } from '../../src/services/activity-command.service';
+import { initListState, loadList, loadListComplete, loadListFailed, loadListItem, TixListState } from '../common/list-state.models';
 import { ActivitiesAction, ActivityActionTypes } from './activities.actions';
 import { Activity } from './activity.models';
 
@@ -9,23 +10,13 @@ export interface CommandStatusState extends CommandStatus {
 }
 
 export interface ActivitiesState {
-  activities: {
-    [key: string]: Activity;
-  };
+  activities: TixListState<Activity>;
   commands: CommandStatusState[];
-  visibleActivities: {
-    ids: string[];
-    loading: boolean;
-  };
 }
 
 const initialState: ActivitiesState = {
-  activities: {},
+  activities: initListState<Activity>((activity) => activity.activityId),
   commands: [],
-  visibleActivities: {
-    ids: [],
-    loading: false,
-  },
 };
 
 const maxNumberOfOldCommands = 10;
@@ -38,38 +29,22 @@ const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, ac
     case ActivityActionTypes.LOAD_ACTIVITY:
       return {
         ...state,
-        visibleActivities: {
-          ids: state?.visibleActivities.ids ?? [],
-          loading: true,
-        },
+        activities: loadListItem(state.activities, action.payload.activityId),
       };
     case ActivityActionTypes.LOAD_ACTIVITIES:
       return {
         ...state,
-        visibleActivities: {
-          ids: state?.visibleActivities.ids ?? [],
-          loading: true,
-        },
+        activities: loadList(state.activities),
       };
     case ActivityActionTypes.LOAD_ACTIVITIES_COMPLETE:
       return {
         ...state,
-        activities: action.payload.activities.reduce(
-          (activities, activity) => ({ ...activities, [activity.activityId]: activity }),
-          state.activities
-        ),
-        visibleActivities: {
-          ids: action.payload.activities.map((a) => a.activityId),
-          loading: false,
-        },
+        activities: loadListComplete(state.activities, action.payload.activities),
       };
     case ActivityActionTypes.LOAD_ACTIVITIES_FAILED:
       return {
         ...state,
-        visibleActivities: {
-          ids: state?.visibleActivities.ids ?? [],
-          loading: false,
-        },
+        activities: loadListFailed(state.activities, action.payload.errorCode, action.payload.errorMessage),
       };
     case ActivityActionTypes.SEND_ACTIVITY_COMMAND:
       return {
@@ -82,20 +57,13 @@ const activitiesReducer: Reducer<ActivitiesState, ActivitiesAction> = (state, ac
             body: action.payload.body,
             jsonBody: JSON.stringify(action.payload.body),
           },
-          ...state.commands.filter(
-            (c, i) =>
-              c.status === 'Dispatched' || c.status === 'Created' || i > maxNumberOfOldCommands
-          ),
+          ...state.commands.filter((c, i) => c.status === 'Dispatched' || c.status === 'Created' || i > maxNumberOfOldCommands),
         ],
       };
     case ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET: {
-      const currentCommand = state.commands.find(
-        (c) => action.payload.uiId && c.uiId === action.payload.uiId
-      );
+      const currentCommand = state.commands.find((c) => action.payload.uiId && c.uiId === action.payload.uiId);
       const commands = currentCommand
-        ? state.commands.map((c) =>
-            c === currentCommand ? { ...c, ...action.payload.commandStatus } : c
-          )
+        ? state.commands.map((c) => (c === currentCommand ? { ...c, ...action.payload.commandStatus } : c))
         : [{ ...action.payload.commandStatus }, ...state.commands];
       return {
         ...state,

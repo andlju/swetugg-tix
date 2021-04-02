@@ -13,6 +13,7 @@ import { CreateActivityModal } from '../../components/activities/create-activity
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
 import { loadActivities } from '../../store/activities/activities.actions';
 import { ActivitiesState } from '../../store/activities/activities.reducer';
+import { listVisible } from '../../store/common/list-state.models';
 import { loadOrganizations } from '../../store/organizations/organizations.actions';
 import { RootState } from '../../store/store';
 
@@ -41,9 +42,7 @@ const useStyles = makeStyles((theme) => ({
 function IndexPage() {
   const classes = useStyles();
 
-  const { user } = useAuthenticatedUser([
-    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
-  ]);
+  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
 
@@ -59,16 +58,9 @@ function IndexPage() {
 
   const { organizations, visibleOrganizations } = useSelector((r: RootState) => r.organizations);
 
-  const orgs = useMemo(() => visibleOrganizations.ids.map((oId) => organizations[oId]), [
-    organizations,
-    visibleOrganizations,
-  ]);
+  const orgs = useMemo(() => visibleOrganizations.ids.map((oId) => organizations[oId]), [organizations, visibleOrganizations]);
 
-  const activitiesState = useSelector<RootState, ActivitiesState>((state) => state.activities);
-
-  const activities = activitiesState.visibleActivities.ids.map(
-    (id) => activitiesState.activities[id]
-  );
+  const activities = useSelector((r: RootState) => listVisible(r.activities.activities));
 
   return (
     <Container maxWidth={false} className={classes.container}>
@@ -87,12 +79,7 @@ function IndexPage() {
                 <AddIcon />
               </Fab>
               {user.current && (
-                <CreateActivityModal
-                  user={user.current}
-                  organizations={orgs}
-                  open={addModalOpen}
-                  setOpen={setAddModalOpen}
-                />
+                <CreateActivityModal user={user.current} organizations={orgs} open={addModalOpen} setOpen={setAddModalOpen} />
               )}
             </Toolbar>
             <ActivityList activities={activities} />

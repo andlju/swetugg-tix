@@ -85,8 +85,8 @@ export function ProfileModal() {
           <DialogTitle>New user</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              Hello and welcome to Swetugg Tix. Since you are a new user we would like to know a
-              little bit more about you. Please fill out the following form.
+              Hello and welcome to Swetugg Tix. Since you are a new user we would like to know a little bit more about you. Please
+              fill out the following form.
             </DialogContentText>
             <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
               <NewProfile userForm={userForm} />
@@ -95,16 +95,10 @@ export function ProfileModal() {
                   Logout
                 </Button>
                 <div className={classes.wrapper}>
-                  <Button
-                    type="submit"
-                    className={classes.saveButton}
-                    color="primary"
-                    disabled={user.fetching || user.updating}>
+                  <Button type="submit" className={classes.saveButton} color="primary" disabled={user.fetching || user.updating}>
                     Save
                   </Button>
-                  {(user.fetching || user.updating) && (
-                    <CircularProgress size="1.4rem" className={classes.buttonProgress} />
-                  )}
+                  {(user.fetching || user.updating) && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
                 </div>
               </DialogActions>
             </form>

@@ -58,13 +58,7 @@ export function AddTicketType({ activityId, ownerId }: AddTicketTypeProps) {
           control={control}
           name="ticketTypeName"
           render={(props) => (
-            <TextField
-              {...props}
-              label="Name"
-              size="small"
-              className={classes.input}
-              disabled={addTicketTypeStatus.processing}
-            />
+            <TextField {...props} label="Name" size="small" className={classes.input} disabled={addTicketTypeStatus.processing} />
           )}
         />
 

@@ -76,14 +76,11 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
   );
 
   const increaseLimitError =
-    increaseLimitState?.messages &&
-    increaseLimitState.messages.find((m) => m.severity === CommandLogSeverity.Error);
+    increaseLimitState?.messages && increaseLimitState.messages.find((m) => m.severity === CommandLogSeverity.Error);
   const decreaseLimitError =
-    decreaseLimitState?.messages &&
-    decreaseLimitState.messages.find((m) => m.severity === CommandLogSeverity.Error);
+    decreaseLimitState?.messages && decreaseLimitState.messages.find((m) => m.severity === CommandLogSeverity.Error);
   const removeLimitError =
-    removeLimitState?.messages &&
-    removeLimitState.messages.find((m) => m.severity === CommandLogSeverity.Error);
+    removeLimitState?.messages && removeLimitState.messages.find((m) => m.severity === CommandLogSeverity.Error);
 
   const onSubmitIncreaseLimit = async (data: LimitFormData) => {
     increaseLimitCommand({
@@ -115,9 +112,7 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
       <Typography variant="overline">Limits</Typography>
       <Grid container spacing={2}>
         <Grid item xs={12} md={4}>
-          <form
-            className={classes.form}
-            onSubmit={increaseLimitForm.handleSubmit(onSubmitIncreaseLimit)}>
+          <form className={classes.form} onSubmit={increaseLimitForm.handleSubmit(onSubmitIncreaseLimit)}>
             <Controller
               control={increaseLimitForm.control}
               name="seats"
@@ -144,9 +139,7 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
           </form>
         </Grid>
         <Grid item xs={12} md={4}>
-          <form
-            className={classes.form}
-            onSubmit={decreaseLimitForm.handleSubmit(onSubmitDecreaseLimit)}>
+          <form className={classes.form} onSubmit={decreaseLimitForm.handleSubmit(onSubmitDecreaseLimit)}>
             <Controller
               control={decreaseLimitForm.control}
               name="seats"

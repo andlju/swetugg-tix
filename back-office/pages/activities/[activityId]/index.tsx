@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ActivityDetails, ModifySeats, TicketTypeList } from '../../../components';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
 import { loadActivity } from '../../../store/activities/activities.actions';
-import { ActivitiesState } from '../../../store/activities/activities.reducer';
 import { RootState } from '../../../store/store';
 
 interface ActivityProps {
@@ -32,9 +31,7 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId, ownerId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { user } = useAuthenticatedUser([
-    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
-  ]);
+  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   useEffect(() => {
     if (user.current?.userId) {
@@ -42,14 +39,14 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId, ownerId }) => {
     }
   }, [user]);
 
-  const activities = useSelector<RootState, ActivitiesState>((state) => state.activities);
+  const { models: activities, fetching } = useSelector((r: RootState) => r.activities.activities);
 
-  const activity = activities.activities[activityId];
+  const activity = activities[activityId];
   const ticketTypes = activity?.ticketTypes;
 
   return (
     <React.Fragment>
-      {activity && (
+      {activity && activity.activityId && (
         <Container maxWidth={false} className={classes.container}>
           <Typography variant="h4" component="h1" gutterBottom>
             {activity.name}
@@ -72,7 +69,7 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId, ownerId }) => {
             <Grid item xs={12} md={7}>
               <TicketTypeList
                 ticketTypes={ticketTypes}
-                loading={activities.visibleActivities.loading}
+                loading={fetching}
                 activityId={activity.activityId}
                 ownerId={activity.ownerId}
               />

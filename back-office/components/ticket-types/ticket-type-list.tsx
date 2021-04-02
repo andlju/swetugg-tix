@@ -83,8 +83,7 @@ export function TicketTypeList({ activityId, ownerId, loading, ticketTypes }: Ti
                   <Typography>{row.limit ?? '-'}</Typography>
                 </TableCell>
                 <TableCell>
-                  <Link
-                    href={`/activities/${row.activityId}/ticket-types/${row.ticketTypeId}?ownerId=${row.ownerId}`}>
+                  <Link href={`/activities/${row.activityId}/ticket-types/${row.ticketTypeId}?ownerId=${row.ownerId}`}>
                     <Button variant="outlined">Edit</Button>
                   </Link>
                 </TableCell>

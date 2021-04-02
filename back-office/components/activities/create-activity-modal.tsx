@@ -69,9 +69,7 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
     },
   });
 
-  const [createActivityCommand, createActivityStatus, createActivityState] = useActivityCommand(
-    `/activities`
-  );
+  const [createActivityCommand, createActivityStatus, createActivityState] = useActivityCommand(`/activities`);
 
   const onSubmit = async (data: FormData) => {
     if (data.ownerId) {
@@ -85,10 +83,7 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
   const handleCancel = () => setOpen(false);
 
   const options = useMemo(
-    () => [
-      { ownerId: user.userId, name: user.name },
-      ...organizations.map((o) => ({ ownerId: o.organizationId, name: o.name })),
-    ],
+    () => [{ ownerId: user.userId, name: user.name }, ...organizations.map((o) => ({ ownerId: o.organizationId, name: o.name }))],
     [user, organizations]
   );
 
@@ -118,8 +113,7 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
         <DialogTitle>Create Activity</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            This will create a new activity in one of the Organizations that you are allowed to
-            manage.
+            This will create a new activity in one of the Organizations that you are allowed to manage.
           </DialogContentText>
           <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={2}>
@@ -165,16 +159,10 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
                 Cancel
               </Button>
               <div className={classes.wrapper}>
-                <Button
-                  type="submit"
-                  className={classes.saveButton}
-                  color="primary"
-                  disabled={createActivityStatus.processing}>
+                <Button type="submit" className={classes.saveButton} color="primary" disabled={createActivityStatus.processing}>
                   Save
                 </Button>
-                {createActivityStatus.processing && (
-                  <CircularProgress size="1.4rem" className={classes.buttonProgress} />
-                )}
+                {createActivityStatus.processing && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
               </div>
             </DialogActions>
           </form>

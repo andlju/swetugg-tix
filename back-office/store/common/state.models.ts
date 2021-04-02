@@ -34,11 +34,7 @@ export function setState<TModel>(state: TixState<TModel>, model?: TModel): TixSt
   };
 }
 
-export function setError<TModel>(
-  state: TixState<TModel>,
-  code: string,
-  message?: string
-): TixState<TModel> {
+export function setError<TModel>(state: TixState<TModel>, code: string, message?: string): TixState<TModel> {
   return {
     ...state,
     error: {

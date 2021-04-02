@@ -8,8 +8,9 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { OrganizationDetails } from '../../../components/organizations/organization-details';
+import { UserList } from '../../../components/organizations/user-list';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
-import { loadOrganization } from '../../../store/organizations/organizations.actions';
+import { loadOrganization, loadOrganizationUsers } from '../../../store/organizations/organizations.actions';
 import { RootState } from '../../../store/store';
 
 interface OrganizationProps {
@@ -30,15 +31,14 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { user } = useAuthenticatedUser([
-    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
-  ]);
+  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   useEffect(() => {
     if (user.current?.userId) {
       dispatch(loadOrganization(organizationId));
+      dispatch(loadOrganizationUsers(organizationId));
     }
-  }, [user]);
+  }, [user, organizationId]);
 
   const organizations = useSelector((r: RootState) => r.organizations);
 
@@ -64,7 +64,9 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid item xs={12} md={7}></Grid>
+            <Grid item xs={12}>
+              <UserList organization={organization} users={[]} />
+            </Grid>
           </Grid>
         </Container>
       )}

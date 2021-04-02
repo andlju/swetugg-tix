@@ -33,17 +33,15 @@ export default function TicketTypePage({ activityId, ownerId, ticketTypeId }: Ti
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { user } = useAuthenticatedUser([
-    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
-  ]);
+  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   useEffect(() => {
     dispatch(loadActivity(activityId, ownerId));
-  }, []);
+  }, [activityId, ownerId, user]);
 
-  const activities = useSelector<RootState, ActivitiesState>((store) => store.activities);
+  const activities = useSelector((r: RootState) => r.activities.activities.models);
 
-  const activity = activities.activities && activities.activities[activityId];
+  const activity = activities[activityId];
   const ticketType = activity?.ticketTypes.find((t) => t.ticketTypeId === ticketTypeId);
 
   if (!ticketType) {

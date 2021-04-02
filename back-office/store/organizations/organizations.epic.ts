@@ -35,38 +35,22 @@ const loadOrganizationsAction$ = (action$: ActionsObservable<OrganizationsAction
 const loadOrganizationAction$ = (action$: ActionsObservable<OrganizationsAction>) =>
   action$.pipe(filter(isOfType(OrganizationActionTypes.LOAD_ORGANIZATION)));
 
-const loadOrganizationsEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
-  action$,
-  state$
-) =>
+const loadOrganizationsEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$, state$) =>
   withTokenAndUser$(loadOrganizationsAction$(action$), state$).pipe(
     tap(() => console.log('Loading organizations in epic')),
-    mergeMap(([, token]) =>
-      fetchOrganizations(token || '').pipe(map((resp) => loadOrganizationsComplete(resp)))
-    )
+    mergeMap(([, token]) => fetchOrganizations(token || '').pipe(map((resp) => loadOrganizationsComplete(resp))))
   );
 
-const loadOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
-  action$,
-  state$
-) =>
+const loadOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$, state$) =>
   withTokenAndUser$(loadOrganizationAction$(action$), state$).pipe(
     tap(() => console.log('Loading organizations in epic')),
     mergeMap(([action, token]) =>
-      fetchOrganization(action.payload.organizationId, token || '').pipe(
-        map((resp) => loadOrganizationsComplete([resp]))
-      )
+      fetchOrganization(action.payload.organizationId, token || '').pipe(map((resp) => loadOrganizationsComplete([resp])))
     )
   );
 
-const createOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
-  action$,
-  state$
-) =>
-  withTokenAndUser$(
-    action$.pipe(filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION))),
-    state$
-  ).pipe(
+const createOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$, state$) =>
+  withTokenAndUser$(action$.pipe(filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION))), state$).pipe(
     mergeMap(([action, token]) =>
       ajax
         .post(buildUrl(`/organizations`), action.payload, {
@@ -83,14 +67,8 @@ const createOrganizationEpic: Epic<OrganizationsAction, OrganizationsAction, Roo
     )
   );
 
-const createOrganizationInviteEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
-  action$,
-  state$
-) =>
-  withTokenAndUser$(
-    action$.pipe(filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION_INVITE))),
-    state$
-  ).pipe(
+const createOrganizationInviteEpic: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$, state$) =>
+  withTokenAndUser$(action$.pipe(filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION_INVITE))), state$).pipe(
     mergeMap(([action, token]) =>
       ajax
         .post(
@@ -108,9 +86,7 @@ const createOrganizationInviteEpic: Epic<OrganizationsAction, OrganizationsActio
     )
   );
 
-const reloadOnCreateComplete: Epic<OrganizationsAction, OrganizationsAction, RootState> = (
-  action$
-) =>
+const reloadOnCreateComplete: Epic<OrganizationsAction, OrganizationsAction, RootState> = (action$) =>
   action$.pipe(
     filter(isOfType(OrganizationActionTypes.CREATE_ORGANIZATION_COMPLETE)),
     map((action) => loadOrganizations())

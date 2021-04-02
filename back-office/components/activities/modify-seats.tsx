@@ -1,13 +1,4 @@
-import {
-  CircularProgress,
-  Container,
-  Grid,
-  InputAdornment,
-  makeStyles,
-  TextField,
-  Typography,
-} from '@material-ui/core';
-import { ControlCameraRounded } from '@material-ui/icons';
+import { CircularProgress, Container, Grid, InputAdornment, makeStyles, TextField, Typography } from '@material-ui/core';
 import React, { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
@@ -70,12 +61,10 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
     `/activities/${activity.activityId}/remove-seats?ownerId=${activity.ownerId}`
   );
 
-  const addSeatsError =
-    addSeatsState?.messages &&
-    addSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
+  const addSeatsError = 
+    addSeatsState?.messages && addSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
   const removeSeatsError =
-    removeSeatsState?.messages &&
-    removeSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
+    removeSeatsState?.messages && removeSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
 
   const onSubmitAddSeats = async (data: FormData) => {
     const seats = +(data.seats || 0);
