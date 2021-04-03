@@ -1,15 +1,18 @@
-import { makeStyles } from '@material-ui/core';
+import { Fab, makeStyles, Toolbar } from '@material-ui/core';
 import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import AddIcon from '@material-ui/icons/Add';
 import { GetServerSideProps, NextPage } from 'next';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { InviteUserModal } from '../../../components/organizations/invite-user-modal';
 
 import { OrganizationDetails } from '../../../components/organizations/organization-details';
 import { UserList } from '../../../components/organizations/user-list';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
+import { listVisible } from '../../../store/common/list-state.models';
 import { loadOrganization, loadOrganizationUsers } from '../../../store/organizations/organizations.actions';
 import { RootState } from '../../../store/store';
 
@@ -24,6 +27,18 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
+  },
+  organizationUsersList: {
+    minHeight: theme.spacing(30),
+    maxHeight: theme.spacing(60),
+    overflow: 'auto',
+  },
+  organizationUsersListTitle: {
+    flex: '1 1 100%',
+  },
+  organizationUsersListToolbar: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
 }));
 
@@ -40,9 +55,16 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
     }
   }, [user, organizationId]);
 
-  const organizations = useSelector((r: RootState) => r.organizations);
+  const [inviteUserModalOpen, setInviteUserModalOpen] = useState(false);
 
-  const organization = organizations.organizations[organizationId];
+  const onInviteUserButtonClick = () => {
+    setInviteUserModalOpen(true);
+  };
+
+  const organizations = useSelector((r: RootState) => r.organizations);
+  
+  const organization = organizations.organizations.models[organizationId];
+  const users = listVisible(organizations.organizationUsers);
 
   return (
     <React.Fragment>
@@ -65,7 +87,23 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
               </Grid>
             </Grid>
             <Grid item xs={12}>
-              <UserList organization={organization} users={[]} />
+              <Paper className={classes.paper}>
+                <Toolbar className={classes.organizationUsersListToolbar}>
+                  <Typography className={classes.organizationUsersListTitle} variant="h6" component="div">
+                    Users
+                  </Typography>
+                  <Fab size="small" color="primary" onClick={onInviteUserButtonClick}>
+                    <AddIcon />
+                  </Fab>
+                  <InviteUserModal
+                    organizations={organizations}
+                    organizationId={organizationId}
+                    open={inviteUserModalOpen}
+                    setOpen={setInviteUserModalOpen}
+                  />
+                </Toolbar>
+                <UserList organization={organization} users={users} />
+              </Paper>
             </Grid>
           </Grid>
         </Container>

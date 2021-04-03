@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { CreateOrganizationModal } from '../../components/organizations/create-organization-modal';
 import { OrganizationList } from '../../components/organizations/organization-list';
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';
+import { listVisible } from '../../store/common/list-state.models';
 import { loadOrganizations } from '../../store/organizations/organizations.actions';
 import { RootState } from '../../store/store';
 
@@ -43,14 +44,9 @@ export default function Index() {
 
   const organizations = useSelector((r: RootState) => r.organizations);
 
-  const orgs = useMemo(
-    () => organizations.visibleOrganizations.ids.map((orgId) => organizations.organizations[orgId]),
-    [organizations]
-  );
+  const orgs = useMemo(() => listVisible(organizations.organizations), [organizations]);
 
-  const { user } = useAuthenticatedUser([
-    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
-  ]);
+  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
 
@@ -80,11 +76,7 @@ export default function Index() {
                 <AddIcon />
               </Fab>
               {user.current && (
-                <CreateOrganizationModal
-                  organizations={organizations}
-                  open={addModalOpen}
-                  setOpen={setAddModalOpen}
-                />
+                <CreateOrganizationModal organizations={organizations} open={addModalOpen} setOpen={setAddModalOpen} />
               )}
             </Toolbar>
             {orgs && <OrganizationList organizations={orgs} />}

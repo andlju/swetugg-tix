@@ -64,7 +64,7 @@ namespace Swetugg.Tix.Api.Organizations
                 ["OrganizationId"] = funcParams.OrganizationId.ToString(),
             });
 
-            return new OkObjectResult(token);
+            return new OkObjectResult(new { token });
         }
     }
 }

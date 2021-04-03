@@ -1,9 +1,15 @@
 import { Action } from 'redux';
+
 import { User } from '../auth/auth.actions';
 
 export interface Organization {
   organizationId: string;
   name: string;
+}
+
+export interface OrganizationInvite {
+  organization: Organization;
+  invitedByUser: User;
 }
 
 export enum OrganizationActionTypes {
@@ -16,6 +22,10 @@ export enum OrganizationActionTypes {
   LOAD_ORGANIZATION_USERS_COMPLETE = 'LOAD_ORGANIZATION_USERS_COMPLETE',
   LOAD_ORGANIZATION_USERS_FAILED = 'LOAD_ORGANIZATION_USERS_FAILED',
 
+  LOAD_ORGANIZATION_INVITE = 'LOAD_ORGANIZATION_INVITE',
+  LOAD_ORGANIZATION_INVITE_COMPLETE = 'LOAD_ORGANIZATION_INVITE_COMPLETE',
+  LOAD_ORGANIZATION_INVITE_FAILED = 'LOAD_ORGANIZATION_INVITE_FAILED',
+
   SELECT_ORGANIZATION = 'SELECT_ORGANIZATION',
 
   CREATE_ORGANIZATION = 'CREATE_ORGANIZATION',
@@ -25,6 +35,10 @@ export enum OrganizationActionTypes {
   CREATE_ORGANIZATION_INVITE = 'CREATE_ORGANIZATION_INVITE',
   CREATE_ORGANIZATION_INVITE_COMPLETE = 'CREATE_ORGANIZATION_INVITE_COMPLETE',
   CREATE_ORGANIZATION_INVITE_FAILED = 'CREATE_ORGANIZATION_INVITE_FAILED',
+
+  ACCEPT_ORGANIZATION_INVITE = 'ACCEPT_ORGANIZATION_INVITE',
+  ACCEPT_ORGANIZATION_INVITE_COMPLETE = 'ACCEPT_ORGANIZATION_INVITE_COMPLETE',
+  ACCEPT_ORGANIZATION_INVITE_FAILED = 'ACCEPT_ORGANIZATION_INVITE_FAILED',
 }
 
 export function loadOrganizations(): LoadOrganizationsAction {
@@ -42,9 +56,7 @@ export function loadOrganization(organizationId: string): LoadOrganizationAction
   };
 }
 
-export function loadOrganizationsComplete(
-  organizations: Organization[]
-): LoadOrganizationsCompleteAction {
+export function loadOrganizationsComplete(organizations: Organization[]): LoadOrganizationsCompleteAction {
   return {
     type: OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE,
     payload: {
@@ -80,6 +92,44 @@ export function loadOrganizationUsersComplete(users: User[]): LoadOrganizationUs
   };
 }
 
+export function loadOrganizationUsersFailed(errorCode: string, errorMessage: string): LoadOrganizationUsersFailedAction {
+  return {
+    type: OrganizationActionTypes.LOAD_ORGANIZATION_USERS_FAILED,
+    payload: {
+      errorCode,
+      errorMessage,
+    },
+  };
+}
+
+export function loadOrganizationInvite(token: string): LoadOrganizationInviteAction {
+  return {
+    type: OrganizationActionTypes.LOAD_ORGANIZATION_INVITE,
+    payload: {
+      token: token,
+    },
+  };
+}
+
+export function loadOrganizationInviteComplete(invite: OrganizationInvite): LoadOrganizationInviteCompleteAction {
+  return {
+    type: OrganizationActionTypes.LOAD_ORGANIZATION_INVITE_COMPLETE,
+    payload: {
+      invite: invite,
+    },
+  };
+}
+
+export function loadOrganizationInviteFailed(errorCode: string, errorMessage: string): LoadOrganizationInviteFailedAction {
+  return {
+    type: OrganizationActionTypes.LOAD_ORGANIZATION_INVITE_FAILED,
+    payload: {
+      errorCode,
+      errorMessage,
+    },
+  };
+}
+
 export function createOrganization(name: string): CreateOrganizationAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION,
@@ -95,10 +145,7 @@ export function createOrganizationComplete(): CreateOrganizationCompleteAction {
   };
 }
 
-export function createOrganizationFailed(
-  errorCode: string,
-  errorMessage: string
-): CreateOrganizationFailedAction {
+export function createOrganizationFailed(errorCode: string, errorMessage: string): CreateOrganizationFailedAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_FAILED,
     payload: {
@@ -117,9 +164,7 @@ export function createOrganizationInvite(organizationId: string): CreateOrganiza
   };
 }
 
-export function createOrganizationInviteComplete(
-  token: string
-): CreateOrganizationInviteCompleteAction {
+export function createOrganizationInviteComplete(token: string): CreateOrganizationInviteCompleteAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_COMPLETE,
     payload: {
@@ -128,12 +173,34 @@ export function createOrganizationInviteComplete(
   };
 }
 
-export function createOrganizationInviteFailed(
-  errorCode: string,
-  errorMessage: string
-): CreateOrganizationInviteFailedAction {
+export function createOrganizationInviteFailed(errorCode: string, errorMessage: string): CreateOrganizationInviteFailedAction {
   return {
     type: OrganizationActionTypes.CREATE_ORGANIZATION_INVITE_FAILED,
+    payload: {
+      errorCode,
+      errorMessage,
+    },
+  };
+}
+
+export function acceptOrganizationInvite(token: string): AcceptOrganizationInviteAction {
+  return {
+    type: OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE,
+    payload: {
+      token,
+    },
+  };
+}
+
+export function acceptOrganizationInviteComplete(): AcceptOrganizationInviteCompleteAction {
+  return {
+    type: OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE_COMPLETE,
+  };
+}
+
+export function acceptOrganizationInviteFailed(errorCode: string, errorMessage: string): AcceptOrganizationInviteFailedAction {
+  return {
+    type: OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE_FAILED,
     payload: {
       errorCode,
       errorMessage,
@@ -189,6 +256,28 @@ export interface LoadOrganizationUsersFailedAction extends Action {
   };
 }
 
+export interface LoadOrganizationInviteAction extends Action {
+  type: OrganizationActionTypes.LOAD_ORGANIZATION_INVITE;
+  payload: {
+    token: string;
+  };
+}
+
+export interface LoadOrganizationInviteCompleteAction extends Action {
+  type: OrganizationActionTypes.LOAD_ORGANIZATION_INVITE_COMPLETE;
+  payload: {
+    invite: OrganizationInvite;
+  };
+}
+
+export interface LoadOrganizationInviteFailedAction extends Action {
+  type: OrganizationActionTypes.LOAD_ORGANIZATION_INVITE_FAILED;
+  payload: {
+    errorCode: string;
+    errorMessage: string;
+  };
+}
+
 export interface SelectOrganizationAction extends Action {
   type: OrganizationActionTypes.SELECT_ORGANIZATION;
   payload: {
@@ -237,6 +326,25 @@ export interface CreateOrganizationInviteFailedAction extends Action {
   };
 }
 
+export interface AcceptOrganizationInviteAction extends Action {
+  type: OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE;
+  payload: {
+    token: string;
+  };
+}
+
+export interface AcceptOrganizationInviteCompleteAction extends Action {
+  type: OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE_COMPLETE;
+}
+
+export interface AcceptOrganizationInviteFailedAction extends Action {
+  type: OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE_FAILED;
+  payload: {
+    errorCode: string;
+    errorMessage: string;
+  };
+}
+
 export type OrganizationsAction =
   | LoadOrganizationsAction
   | LoadOrganizationAction
@@ -246,9 +354,15 @@ export type OrganizationsAction =
   | LoadOrganizationUsersAction
   | LoadOrganizationUsersCompleteAction
   | LoadOrganizationUsersFailedAction
+  | LoadOrganizationInviteAction
+  | LoadOrganizationInviteCompleteAction
+  | LoadOrganizationInviteFailedAction
   | CreateOrganizationAction
   | CreateOrganizationCompleteAction
   | CreateOrganizationFailedAction
   | CreateOrganizationInviteAction
   | CreateOrganizationInviteCompleteAction
-  | CreateOrganizationInviteFailedAction;
+  | CreateOrganizationInviteFailedAction
+  | AcceptOrganizationInviteAction
+  | AcceptOrganizationInviteCompleteAction
+  | AcceptOrganizationInviteFailedAction;

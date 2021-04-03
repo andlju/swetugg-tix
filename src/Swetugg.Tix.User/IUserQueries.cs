@@ -13,5 +13,6 @@ namespace Swetugg.Tix.User
         Task<IEnumerable<UserRole>> ListUserRolesForUser(Guid userId);
         Task<IEnumerable<Permission>> ListPermissions();
         Task<IEnumerable<UserInfo>> ListUsers();
+        Task<IEnumerable<UserInfo>> ListUsersByOrganization(Guid organizationId);
     }
 }

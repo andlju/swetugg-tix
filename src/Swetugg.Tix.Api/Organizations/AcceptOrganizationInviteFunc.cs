@@ -47,7 +47,7 @@ namespace Swetugg.Tix.Api.Organizations
             HttpRequest req,
             ILogger log)
         {
-            var token = req.Query["token"];
+            var token = req.Form["token"];
             return Process(req, log, new AcceptOrganizationInviteFuncParams { Token = token });
         }
 

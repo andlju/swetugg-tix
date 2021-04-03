@@ -35,13 +35,28 @@ namespace Swetugg.Tix.User
         {
             using (var conn = new SqlConnection(_connectionString))
             {
-                var userInfo = (await conn.QueryAsync<UserInfo>(
+                var users = (await conn.QueryAsync<UserInfo>(
                     "SELECT u.UserId, u.Name, u.Status " +
                     "FROM [Access].[User] u " +
                     "WHERE u.Status <> @DeletedStatus",
                     new { DeletedStatus = UserStatus.Deleted }));
 
-                return userInfo;
+                return users;
+            }
+        }
+
+        public async Task<IEnumerable<UserInfo>> ListUsersByOrganization(Guid organizationId)
+        {
+            using (var conn = new SqlConnection(_connectionString))
+            {
+                var users = (await conn.QueryAsync<UserInfo>(
+                    "SELECT u.UserId, u.Name, u.Status " +
+                    "FROM [Access].[User] u JOIN [Access].[OrganizationUser] ou ON u.UserId = ou.UserId " +
+                    "WHERE ou.OrganizationId = @OrganizationId " +
+                    "AND u.Status <> @DeletedStatus",
+                    new { organizationId, DeletedStatus = UserStatus.Deleted }));
+
+                return users;
             }
         }
 

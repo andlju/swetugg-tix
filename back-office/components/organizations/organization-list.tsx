@@ -53,7 +53,7 @@ export function OrganizationList({ organizations }: OrganizationListProps) {
         <TableHead>
           <TableRow>
             <TableCell className={classes.nameColumnHead}>Name</TableCell>
-            <TableCell className={classes.ticketTypesColumnHead}>Ticket Types</TableCell>
+            <TableCell className={classes.ticketTypesColumnHead}>Activities</TableCell>
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>

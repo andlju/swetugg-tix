@@ -38,7 +38,7 @@ namespace Swetugg.Tix.Api.Organizations
 
         [FunctionName("GetOrganization")]
         public Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "organizations/{organizationId}")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "organizations/{organizationId:guid}")]
             HttpRequest req,
             ILogger log,
             Guid organizationId)

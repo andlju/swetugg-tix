@@ -56,9 +56,9 @@ function IndexPage() {
     setAddModalOpen(true);
   };
 
-  const { organizations, visibleOrganizations } = useSelector((r: RootState) => r.organizations);
+  const { organizations } = useSelector((r: RootState) => r.organizations);
 
-  const orgs = useMemo(() => visibleOrganizations.ids.map((oId) => organizations[oId]), [organizations, visibleOrganizations]);
+  const orgs = useMemo(() => listVisible(organizations), [organizations]);
 
   const activities = useSelector((r: RootState) => listVisible(r.activities.activities));
 

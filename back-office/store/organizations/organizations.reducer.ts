@@ -1,43 +1,53 @@
 import { Reducer } from 'redux';
 
 import { User } from '../auth/auth.actions';
+import {
+  initListState,
+  loadList,
+  loadListComplete,
+  loadListFailed,
+  loadListItem,
+  TixListState,
+} from '../common/list-state.models';
 import { Organization, OrganizationActionTypes, OrganizationsAction } from './organizations.actions';
 
 export interface OrganizationsState {
-  organizations: {
-    [key: string]: Organization;
-  };
+  organizations: TixListState<Organization>;
   selectedOrganizationId?: string;
   editState: {
     errorCode?: string;
     errorMessage?: string;
     saving: boolean;
   };
-  organizationUsers: User[];
+  organizationUsers: TixListState<User>;
   createInvite: {
     loading: boolean;
     token?: string;
     errorCode?: string;
     errorMessage?: string;
   };
-  visibleOrganizations: {
-    ids: string[];
+  invite: {
     loading: boolean;
+    invitedByUser?: User;
+    organization?: Organization;
+    accepted: boolean;
+    errorCode?: string;
+    errorMessage?: string;
   };
 }
 
 const initialState: OrganizationsState = {
-  organizations: {},
+  organizations: initListState((org) => org.organizationId),
   editState: {
     saving: false,
   },
-  organizationUsers: [],
+  organizationUsers: initListState((user) => user.userId || ''),
   createInvite: {
     loading: false,
   },
-  visibleOrganizations: {
-    ids: [],
+  invite: {
     loading: false,
+    accepted: false,
   },
 };
 
@@ -49,44 +59,65 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
     case OrganizationActionTypes.LOAD_ORGANIZATIONS:
       return {
         ...state,
-        visibleOrganizations: {
-          ids: state?.visibleOrganizations.ids ?? [],
-          loading: true,
-        },
+        organizations: loadList(state.organizations),
       };
     case OrganizationActionTypes.LOAD_ORGANIZATION:
       return {
         ...state,
-        visibleOrganizations: {
-          ids: state?.visibleOrganizations.ids ?? [],
-          loading: true,
-        },
-      };
-    case OrganizationActionTypes.LOAD_ORGANIZATION_USERS:
-      return {
-        ...state,
-        organizationUsers: [],
+        organizations: loadListItem(state.organizations, action.payload.organizationId),
       };
     case OrganizationActionTypes.LOAD_ORGANIZATIONS_COMPLETE:
       return {
         ...state,
-        organizations: action.payload.organizations.reduce(
-          (organizations, organization) => ({
-            ...organizations,
-            [organization.organizationId]: organization,
-          }),
-          state.organizations
-        ),
-        visibleOrganizations: {
-          ids: action.payload.organizations.map((o) => o.organizationId),
-          loading: false,
-        },
+        organizations: loadListComplete(state.organizations, action.payload.organizations),
       };
     case OrganizationActionTypes.LOAD_ORGANIZATIONS_FAILED:
       return {
         ...state,
-        visibleOrganizations: {
-          ids: state?.visibleOrganizations.ids ?? [],
+        organizations: loadListFailed(state.organizations, action.payload.errorCode, action.payload.errorMessage),
+      };
+    case OrganizationActionTypes.LOAD_ORGANIZATION_USERS:
+      return {
+        ...state,
+        organizationUsers: loadList(state.organizationUsers),
+      };
+    case OrganizationActionTypes.LOAD_ORGANIZATION_USERS_COMPLETE:
+      return {
+        ...state,
+        organizationUsers: loadListComplete(state.organizationUsers, action.payload.users),
+      };
+    case OrganizationActionTypes.LOAD_ORGANIZATION_USERS_FAILED:
+      return {
+        ...state,
+        organizationUsers: loadListFailed(state.organizationUsers, action.payload.errorCode, action.payload.errorMessage),
+      };
+    case OrganizationActionTypes.LOAD_ORGANIZATION_INVITE:
+      return {
+        ...state,
+        invite: {
+          ...state.invite,
+          errorCode: undefined,
+          errorMessage: undefined,
+          loading: true,
+        },
+      };
+    case OrganizationActionTypes.LOAD_ORGANIZATION_INVITE_COMPLETE:
+      return {
+        ...state,
+        invite: {
+          ...state.invite,
+          invitedByUser: action.payload.invite.invitedByUser,
+          organization: action.payload.invite.organization,
+          loading: false,
+        },
+      };
+    case OrganizationActionTypes.LOAD_ORGANIZATION_INVITE_FAILED:
+      return {
+        ...state,
+        invite: {
+          ...state.invite,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
           loading: false,
         },
       };
@@ -109,8 +140,6 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         ...state,
         editState: {
           saving: false,
-          errorCode: undefined,
-          errorMessage: undefined,
         },
       };
     case OrganizationActionTypes.CREATE_ORGANIZATION_FAILED:
@@ -148,6 +177,37 @@ const organizationsReducer: Reducer<OrganizationsState, OrganizationsAction> = (
         createInvite: {
           loading: false,
           token: undefined,
+          errorCode: action.payload.errorCode,
+          errorMessage: action.payload.errorMessage,
+        },
+      };
+    case OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE:
+      return {
+        ...state,
+        invite: {
+          ...state.invite,
+          accepted: true,
+          loading: true,
+        },
+      };
+    case OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE_COMPLETE:
+      return {
+        ...state,
+        invite: {
+          ...state.invite,
+          loading: false,
+          accepted: true,
+          errorCode: undefined,
+          errorMessage: undefined,
+        },
+      };
+    case OrganizationActionTypes.ACCEPT_ORGANIZATION_INVITE_FAILED:
+      return {
+        ...state,
+        invite: {
+          ...state.invite,
+          loading: false,
+          accepted: false,
           errorCode: action.payload.errorCode,
           errorMessage: action.payload.errorMessage,
         },
