@@ -7,9 +7,14 @@ export interface Organization {
   name: string;
 }
 
+export interface OrganizationInviteToken {
+  token: string;
+}
+
 export interface OrganizationInvite {
   organization: Organization;
   invitedByUser: User;
+  accepted: boolean;
 }
 
 export enum OrganizationActionTypes {

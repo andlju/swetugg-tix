@@ -96,10 +96,10 @@ export default function Index() {
                       variant="contained"
                       color="primary"
                       className={classes.saveButton}
-                      disabled={user.fetching || user.updating}>
+                      disabled={user.fetching || user.saving}>
                       Save
                     </Button>
-                    {(user.fetching || user.updating) && (
+                    {(user.fetching || user.saving) && (
                       <CircularProgress size="1.4rem" className={classes.buttonProgress} />
                     )}
                   </div>

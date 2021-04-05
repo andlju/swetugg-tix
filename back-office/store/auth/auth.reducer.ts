@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 
-import { setError, setFetching, setState, setUpdating, TixState } from '../common/state.models';
+import { setFailed, setFetching, setState, setSaving, TixState } from '../common/state.models';
 import { AuthAction, AuthActionTypes, User } from './auth.actions';
 
 export interface AuthState {
@@ -13,7 +13,7 @@ const initialState: AuthState = {
   inProgress: false,
   user: {
     fetching: false,
-    updating: false,
+    saving: false,
   },
 };
 
@@ -37,7 +37,7 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     case AuthActionTypes.VALIDATE_LOGIN_FAILED:
       return {
         ...state,
-        user: setError(state.user, 'NotLoggedIn', 'The user is not logged in'),
+        user: setFailed(state.user, 'NotLoggedIn', 'The user is not logged in'),
         accessToken: undefined,
       };
     case AuthActionTypes.SET_ACCESS_TOKEN:
@@ -58,7 +58,7 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     case AuthActionTypes.CREATE_USER:
       return {
         ...state,
-        user: setUpdating(state.user),
+        user: setSaving(state.user),
       };
     case AuthActionTypes.CREATE_USER_COMPLETE:
       return {
@@ -68,22 +68,22 @@ const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {
     case AuthActionTypes.CREATE_USER_FAILED:
       return {
         ...state,
-        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage),
+        user: setFailed(state.user, action.payload.errorCode, action.payload.errorMessage),
       };
     case AuthActionTypes.UPDATE_USER:
       return {
         ...state,
-        user: setUpdating(state.user),
+        user: setSaving(state.user),
       };
     case AuthActionTypes.UPDATE_USER_COMPLETE:
       return {
         ...state,
-        user: setFetching(state.user),
+        user: setState(state.user, state.user.current),
       };
     case AuthActionTypes.UPDATE_USER_FAILED:
       return {
         ...state,
-        user: setError(state.user, action.payload.errorCode, action.payload.errorMessage),
+        user: setFailed(state.user, action.payload.errorCode, action.payload.errorMessage),
       };
     default:
       return state;

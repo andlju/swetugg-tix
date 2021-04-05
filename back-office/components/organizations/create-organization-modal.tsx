@@ -20,7 +20,8 @@ import { useDispatch } from 'react-redux';
 
 import { useActivityCommand } from '../../src/use-activity-command.hook';
 import { User } from '../../store/auth/auth.actions';
-import { createOrganization } from '../../store/organizations/organizations.actions';
+import { TixState } from '../../store/common/state.models';
+import { createOrganization, Organization } from '../../store/organizations/organizations.actions';
 import { OrganizationsState } from '../../store/organizations/organizations.reducer';
 
 const useStyles = makeStyles((theme) => ({
@@ -55,14 +56,13 @@ type FormData = {
 interface CreateOrganizationProps {
   open: boolean;
   setOpen: (open: boolean) => void;
-  organizations: OrganizationsState;
+  organization: TixState<Organization>;
 }
 
-export function CreateOrganizationModal({ organizations, open, setOpen }: CreateOrganizationProps) {
+export function CreateOrganizationModal({ organization, open, setOpen }: CreateOrganizationProps) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
-  const { editState } = organizations;
 
   const { handleSubmit, setValue, control } = useForm<FormData>({
     defaultValues: {
@@ -75,11 +75,11 @@ export function CreateOrganizationModal({ organizations, open, setOpen }: Create
   };
 
   useEffect(() => {
-    if (!editState.saving && !editState.errorCode) {
+    if (!organization.saving && !organization.error) {
       setValue('name', '');
       setOpen(false);
     }
-  }, [editState.saving]);
+  }, [organization.saving, organization.error]);
 
   const handleCancel = () => setOpen(false);
 
@@ -107,7 +107,7 @@ export function CreateOrganizationModal({ organizations, open, setOpen }: Create
                       label="Organization name"
                       variant="outlined"
                       fullWidth={true}
-                      disabled={editState.saving}
+                      disabled={organization.saving}
                     />
                   )}
                 />
@@ -119,16 +119,10 @@ export function CreateOrganizationModal({ organizations, open, setOpen }: Create
                 Cancel
               </Button>
               <div className={classes.wrapper}>
-                <Button
-                  type="submit"
-                  className={classes.saveButton}
-                  color="primary"
-                  disabled={editState.saving}>
+                <Button type="submit" className={classes.saveButton} color="primary" disabled={organization.saving}>
                   Save
                 </Button>
-                {editState.saving && (
-                  <CircularProgress size="1.4rem" className={classes.buttonProgress} />
-                )}
+                {organization.saving && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
               </div>
             </DialogActions>
           </form>

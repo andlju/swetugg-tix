@@ -1,4 +1,4 @@
-import { Typography } from '@material-ui/core';
+import { CircularProgress, makeStyles, Typography } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
@@ -7,8 +7,23 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { InteractionKind, login, logout } from '../../store/auth/auth.actions';
+import { InteractionKind, login, logout, User } from '../../store/auth/auth.actions';
+import { TixState } from '../../store/common/state.models';
 import { RootState } from '../../store/store';
+
+const useStyles = makeStyles((theme) => ({
+  wrapper: {
+    margin: theme.spacing(1),
+    position: 'relative',
+  },
+  buttonProgress: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -12,
+    marginLeft: -12,
+  },
+}));
 
 const SignInButton = () => {
   const [anchorEl, setAnchorEl] = useState<Element | null>(null);
@@ -91,19 +106,24 @@ const SignOutButton = () => {
   );
 };
 
-export const SignInSignOutButton = () => {
-  const { user } = useSelector((s: RootState) => s.auth);
+interface SignInButtonState {
+  user: TixState<User>;
+  inProgress: boolean;
+}
 
-  if (user.current) {
-    return <SignOutButton />;
-  } else {
-    return <SignInButton />;
-  }
+export const SignInSignOutButton = ({ user, inProgress }: SignInButtonState) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.wrapper}>
+      {(user.fetching || user.loading || inProgress) && (
+        <CircularProgress size="1.5rem" color="inherit" className={classes.buttonProgress} />
+      )}
+      {user.current ? <SignOutButton /> : <SignInButton />}
+    </div>
+  );
 };
 
-export const WelcomeName = () => {
-  const { user } = useSelector((s: RootState) => s.auth);
-
+export const WelcomeName = ({ user }: { user: TixState<User> }) => {
   if (user.current) {
     return <Typography variant="h6">Welcome, {user.current.name}</Typography>;
   } else {

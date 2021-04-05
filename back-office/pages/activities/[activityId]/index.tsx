@@ -37,7 +37,7 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId, ownerId }) => {
     if (user.current?.userId) {
       dispatch(loadActivity(activityId, ownerId ?? user.current.userId));
     }
-  }, [user]);
+  }, [user.current]);
 
   const { models: activities, fetching } = useSelector((r: RootState) => r.activities.activities);
 

@@ -87,11 +87,11 @@ export function InviteUserModal({ organizations, organizationId, open, setOpen }
   }, [open, organizationId]);
 
   useEffect(() => {
-    if (createInvite.token) {
+    if (createInvite.current?.token) {
       const basePath = window && window.location.origin;
-      setValue('inviteUrl', `${basePath}/organizations/accept-invite?token=${createInvite.token}`);
+      setValue('inviteUrl', `${basePath}/organizations/accept-invite?token=${createInvite.current.token}`);
     }
-  }, [createInvite.token]);
+  }, [createInvite.current]);
 
   const handleCancel = () => setOpen(false);
 
@@ -134,10 +134,10 @@ export function InviteUserModal({ organizations, organizationId, open, setOpen }
                 Cancel
               </Button>
               <div className={classes.wrapper}>
-                <Button onClick={handleReload} className={classes.reloadButton} color="primary" disabled={createInvite.loading}>
+                <Button onClick={handleReload} className={classes.reloadButton} color="primary" disabled={createInvite.fetching}>
                   Reload
                 </Button>
-                {createInvite.loading && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
+                {createInvite.saving && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
               </div>
             </DialogActions>
           </form>

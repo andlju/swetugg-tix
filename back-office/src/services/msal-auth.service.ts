@@ -20,6 +20,8 @@ class MsalService {
   private instance: PublicClientApplication;
   private eventSubject: ReplaySubject<EventMessage>;
 
+  private authEvent$?: Observable<EventMessage>;
+
   constructor(config: Configuration) {
     this.instance = new PublicClientApplication(config);
     this.eventSubject = new ReplaySubject<EventMessage>();
@@ -31,9 +33,7 @@ class MsalService {
   }
 
   isInProgress$(): Observable<boolean> {
-    return this.authEvents$().pipe(
-      map((msg) => EventMessageUtils.getInteractionStatusFromEvent(msg) !== InteractionStatus.None)
-    );
+    return this.authEvents$().pipe(map((msg) => msg.eventType.indexOf('Start') >= 0));
   }
 
   currentAccount$(): Observable<AccountInfo | null> {
@@ -45,7 +45,8 @@ class MsalService {
   }
 
   authEvents$(): Observable<EventMessage> {
-    return this.eventSubject.asObservable();
+    if (this.authEvent$) return this.authEvent$;
+    return (this.authEvent$ = this.eventSubject.asObservable());
   }
 
   isLoggedIn$(): Observable<boolean> {
@@ -53,7 +54,6 @@ class MsalService {
   }
 
   handleCallback(evt: EventMessage) {
-    // console.log("Publishing event", evt);
     this.eventSubject.next(evt);
   }
 

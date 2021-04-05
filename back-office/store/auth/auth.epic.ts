@@ -157,6 +157,7 @@ const requestUserUpdateEpic: Epic<AuthAction, AuthAction, RootState> = (action$,
 const inProgressEpic: Epic<AuthAction, AuthAction> = () =>
   msalService.isInProgress$().pipe(
     distinctUntilChanged(),
+    tap((inProgress) => console.log(inProgress)),
     map((inProgress) => setInProgress(inProgress))
   );
 

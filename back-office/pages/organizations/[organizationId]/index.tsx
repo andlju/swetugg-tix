@@ -53,7 +53,7 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
       dispatch(loadOrganization(organizationId));
       dispatch(loadOrganizationUsers(organizationId));
     }
-  }, [user, organizationId]);
+  }, [user.current, organizationId]);
 
   const [inviteUserModalOpen, setInviteUserModalOpen] = useState(false);
 

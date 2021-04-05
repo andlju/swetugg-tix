@@ -135,7 +135,6 @@ const acceptOrganizationInviteEpic: Epic<OrganizationsAction, OrganizationsActio
           { Authorization: `Bearer ${token}` }
         )
         .pipe(
-          tap((a) => console.log('Accepted an invite', a)),
           map((a) => acceptOrganizationInviteComplete()),
           catchError((err, caught) => {
             const errString = String(err);

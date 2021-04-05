@@ -55,14 +55,7 @@ export default function AcceptInvitePage({ inviteToken }: AcceptInvitePageParams
       <Grid container spacing={3}>
         <Grid item xs={12}>
           <Paper className={clsx(classes.paper)}>
-            {invite.invitedByUser && invite.organization && (
-              <AcceptOrganizationInvite
-                invite={invite}
-                accepted={invite.accepted}
-                loading={invite.loading}
-                inviteToken={inviteToken}
-              />
-            )}
+            <AcceptOrganizationInvite invite={invite} inviteToken={inviteToken} />
           </Paper>
         </Grid>
       </Grid>

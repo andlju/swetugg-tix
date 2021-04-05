@@ -28,9 +28,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
 
-  const { user } = useAuthenticatedUser([
-    'https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin',
-  ]);
+  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
   return (
     <Container maxWidth={false} className={classes.container}>
@@ -41,7 +39,6 @@ export default function Index() {
         {/* List of activities */}
         <Grid item xs={12}>
           <Paper className={clsx(classes.paper, classes.activityList)}>
-            <WelcomeName />
           </Paper>
         </Grid>
       </Grid>

@@ -42,9 +42,9 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
 
-  const organizations = useSelector((r: RootState) => r.organizations);
+  const { organizations, organization } = useSelector((r: RootState) => r.organizations);
 
-  const orgs = useMemo(() => listVisible(organizations.organizations), [organizations]);
+  const visibleOrgs = useMemo(() => listVisible(organizations), [organizations]);
 
   const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
 
@@ -76,10 +76,10 @@ export default function Index() {
                 <AddIcon />
               </Fab>
               {user.current && (
-                <CreateOrganizationModal organizations={organizations} open={addModalOpen} setOpen={setAddModalOpen} />
+                <CreateOrganizationModal organization={organization} open={addModalOpen} setOpen={setAddModalOpen} />
               )}
             </Toolbar>
-            {orgs && <OrganizationList organizations={orgs} />}
+            {visibleOrgs && <OrganizationList organizations={visibleOrgs} />}
           </Paper>
         </Grid>
       </Grid>

@@ -5,7 +5,7 @@ export interface TixError {
 
 export interface TixState<TModel> {
   fetching: boolean;
-  updating: boolean;
+  saving: boolean;
   current?: TModel;
   error?: TixError;
 }
@@ -17,10 +17,10 @@ export function setFetching<TModel>(state: TixState<TModel>): TixState<TModel> {
   };
 }
 
-export function setUpdating<TModel>(state: TixState<TModel>): TixState<TModel> {
+export function setSaving<TModel>(state: TixState<TModel>): TixState<TModel> {
   return {
     ...state,
-    updating: true,
+    saving: true,
   };
 }
 
@@ -29,12 +29,12 @@ export function setState<TModel>(state: TixState<TModel>, model?: TModel): TixSt
     ...state,
     error: undefined,
     fetching: false,
-    updating: false,
+    saving: false,
     current: model,
   };
 }
 
-export function setError<TModel>(state: TixState<TModel>, code: string, message?: string): TixState<TModel> {
+export function setFailed<TModel>(state: TixState<TModel>, code: string, message?: string): TixState<TModel> {
   return {
     ...state,
     error: {
@@ -42,6 +42,13 @@ export function setError<TModel>(state: TixState<TModel>, code: string, message?
       message: message || code,
     },
     fetching: false,
-    updating: false,
+    saving: false,
+  };
+}
+
+export function initState<TModel>(): TixState<TModel> {
+  return {
+    fetching: false,
+    saving: false,
   };
 }

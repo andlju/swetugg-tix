@@ -7,7 +7,6 @@ import { SnackbarProvider } from 'notistack';
 import React from 'react';
 import { Provider } from 'react-redux';
 
-import { ProfileModal } from '../components/profile/profile-modal';
 import routingEpics from '../globals/routing.epic';
 import BackOfficeLayout from '../layout/main-layout';
 import configureStore from '../store/store';
@@ -42,7 +41,6 @@ function MyApp(props: AppProps) {
               horizontal: 'right',
             }}>
             <BackOfficeLayout>
-              <ProfileModal />
               <Component {...pageProps} />
             </BackOfficeLayout>
           </SnackbarProvider>

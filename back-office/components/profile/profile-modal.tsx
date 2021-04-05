@@ -12,7 +12,8 @@ import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { createUser, logout, UserStatus } from '../../store/auth/auth.actions';
+import { createUser, logout, User, UserStatus } from '../../store/auth/auth.actions';
+import { TixState } from '../../store/common/state.models';
 import { RootState } from '../../store/store';
 import { NewProfile, UserFormData } from './new-profile';
 
@@ -38,11 +39,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function ProfileModal() {
+interface ProfileModalProps {
+  user: TixState<User>;
+}
+
+export function ProfileModal({ user }: ProfileModalProps) {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const dispatch = useDispatch();
-  const { user } = useSelector((r: RootState) => r.auth);
 
   const userForm = useForm<UserFormData>({
     defaultValues: {
@@ -95,10 +99,10 @@ export function ProfileModal() {
                   Logout
                 </Button>
                 <div className={classes.wrapper}>
-                  <Button type="submit" className={classes.saveButton} color="primary" disabled={user.fetching || user.updating}>
+                  <Button type="submit" className={classes.saveButton} color="primary" disabled={user.fetching || user.saving}>
                     Save
                   </Button>
-                  {(user.fetching || user.updating) && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
+                  {(user.fetching || user.saving) && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
                 </div>
               </DialogActions>
             </form>
