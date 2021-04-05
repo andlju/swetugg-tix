@@ -18,7 +18,7 @@ export function loadListItem<TModel>(state: TixListState<TModel>, key: string): 
     ...state,
     models: {
       ...state.models,
-      [key]: { ...state.models[key], loading: true }
+      [key]: { ...state.models[key], loading: true },
     },
     fetching: true,
   };

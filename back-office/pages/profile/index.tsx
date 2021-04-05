@@ -99,9 +99,7 @@ export default function Index() {
                       disabled={user.fetching || user.saving}>
                       Save
                     </Button>
-                    {(user.fetching || user.saving) && (
-                      <CircularProgress size="1.4rem" className={classes.buttonProgress} />
-                    )}
+                    {(user.fetching || user.saving) && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
                   </div>
                 </Grid>
               </Grid>

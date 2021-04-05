@@ -4,11 +4,7 @@ import { ajax } from 'rxjs/ajax';
 import { catchError, filter, map, mergeMap, take, tap } from 'rxjs/operators';
 import { isOfType } from 'typesafe-actions';
 
-import {
-  CommandLogSeverity,
-  sendActivityCommand$,
-  waitForCommandResult$,
-} from '../../src/services/activity-command.service';
+import { CommandLogSeverity, sendActivityCommand$, waitForCommandResult$ } from '../../src/services/activity-command.service';
 import { getView$ } from '../../src/services/view-fetcher.service';
 import { buildUrl } from '../../src/url-utils';
 import { withToken$, withTokenAndUser$ } from '../auth/auth.epic';
@@ -36,29 +32,21 @@ const loadActivityAction$ = (action$: ActionsObservable<ActivitiesAction>) =>
 const loadActivitiesEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withTokenAndUser$(loadActivitiesAction$(action$), state$).pipe(
     tap(() => console.log('Loading activities in epic')),
-    mergeMap(([, token]) =>
-      fetchActivities(token || '').pipe(map((resp) => loadActivitiesComplete(resp)))
-    )
+    mergeMap(([, token]) => fetchActivities(token || '').pipe(map((resp) => loadActivitiesComplete(resp))))
   );
 
 const loadActivityEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
   withTokenAndUser$(loadActivityAction$(action$), state$).pipe(
     mergeMap(([action, token]) =>
-      getView$<Activity>(
-        buildUrl(`/activities/${action.payload.activityId}?ownerId=${action.payload.ownerId}`),
-        { revision: action.payload.revision, token: token || '' }
-      ).pipe(map((view) => loadActivitiesComplete([view])))
+      getView$<Activity>(buildUrl(`/activities/${action.payload.activityId}?ownerId=${action.payload.ownerId}`), {
+        revision: action.payload.revision,
+        token: token || '',
+      }).pipe(map((view) => loadActivitiesComplete([view])))
     )
   );
 
-const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (
-  action$,
-  state$
-) =>
-  withTokenAndUser$(
-    action$.pipe(filter(isOfType(ActivityActionTypes.SEND_ACTIVITY_COMMAND))),
-    state$
-  ).pipe(
+const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
+  withTokenAndUser$(action$.pipe(filter(isOfType(ActivityActionTypes.SEND_ACTIVITY_COMMAND))), state$).pipe(
     tap(([action]) => console.log(`Sending command to ${action.payload.url}`)),
     mergeMap(([action, token]) =>
       sendActivityCommand$(action.payload.url, action.payload.body, {
@@ -90,14 +78,8 @@ const sendActivityCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootStat
     )
   );
 
-const waitForResultCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (
-  action$,
-  state$
-) =>
-  withToken$(
-    action$.pipe(filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_SENT))),
-    state$
-  ).pipe(
+const waitForResultCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$, state$) =>
+  withToken$(action$.pipe(filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_SENT))), state$).pipe(
     mergeMap(([action, token]) =>
       waitForCommandResult$(action.payload.commandId, token).pipe(
         map((status) => activityCommandStatusSet(status, action.payload.uiId))
@@ -105,9 +87,7 @@ const waitForResultCommandEpic: Epic<ActivitiesAction, ActivitiesAction, RootSta
     )
   );
 
-const reloadOnCommandCompleteEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (
-  action$
-) =>
+const reloadOnCommandCompleteEpic: Epic<ActivitiesAction, ActivitiesAction, RootState> = (action$) =>
   action$.pipe(
     filter(isOfType(ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET)),
     filter((action) => action.payload.commandStatus.status === 'Completed'),

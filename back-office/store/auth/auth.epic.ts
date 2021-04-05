@@ -1,16 +1,7 @@
 import { combineEpics, Epic, StateObservable } from 'redux-observable';
-import { combineLatest, EMPTY, Observable, of, throwError } from 'rxjs';
+import { combineLatest, EMPTY, Observable, of } from 'rxjs';
 import { ajax } from 'rxjs/ajax';
-import {
-  catchError,
-  distinctUntilChanged,
-  filter,
-  map,
-  mergeMap,
-  take,
-  tap,
-  withLatestFrom,
-} from 'rxjs/operators';
+import { catchError, distinctUntilChanged, filter, map, mergeMap, take, tap, withLatestFrom } from 'rxjs/operators';
 import { isOfType } from 'typesafe-actions';
 
 import { loginRequest } from '../../src/auth-config';
@@ -34,7 +25,6 @@ import {
   updateUserFailed,
   User,
   UserStatus,
-  validateLogin,
   validateLoginComplete,
   validateLoginFailed,
 } from './auth.actions';
@@ -154,7 +144,7 @@ const requestUserUpdateEpic: Epic<AuthAction, AuthAction, RootState> = (action$,
     mergeMap((user) => (user && of(requestUserUpdate(user))) || EMPTY)
   );
 
-const inProgressEpic: Epic<AuthAction, AuthAction> = () =>
+const inProgressEpic: Epic<AuthAction, AuthAction, RootState> = () =>
   msalService.isInProgress$().pipe(
     distinctUntilChanged(),
     tap((inProgress) => console.log(inProgress)),
@@ -238,9 +228,7 @@ export function withToken$<TAction>(
   action$: Observable<TAction>,
   state$: StateObservable<RootState>
 ): Observable<[TAction, string | undefined]> {
-  return combineLatest([action$, whenToken$(state$)]).pipe(
-    filter(([, accessToken]) => !!accessToken)
-  );
+  return combineLatest([action$, whenToken$(state$)]).pipe(filter(([, accessToken]) => !!accessToken));
 }
 
 export const authEpic = combineEpics(

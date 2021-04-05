@@ -1,6 +1,6 @@
 import { Reducer } from 'redux';
 
-import { setFailed, setFetching, setState, setSaving, TixState } from '../common/state.models';
+import { initState, setFailed, setFetching, setSaving, setState, TixState } from '../common/state.models';
 import { AuthAction, AuthActionTypes, User } from './auth.actions';
 
 export interface AuthState {
@@ -11,10 +11,7 @@ export interface AuthState {
 
 const initialState: AuthState = {
   inProgress: false,
-  user: {
-    fetching: false,
-    saving: false,
-  },
+  user: initState(),
 };
 
 const authReducer: Reducer<AuthState, AuthAction> = (state, action) => {

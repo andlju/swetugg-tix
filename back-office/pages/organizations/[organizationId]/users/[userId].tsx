@@ -7,17 +7,16 @@ import AddIcon from '@material-ui/icons/Add';
 import { GetServerSideProps, NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { InviteUserModal } from '../../../components/organizations/invite-user-modal';
 
-import { OrganizationDetails } from '../../../components/organizations/organization-details';
-import { UserList } from '../../../components/organizations/user-list';
-import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';
-import { listVisible } from '../../../store/common/list-state.models';
-import { loadOrganization, loadOrganizationUsers } from '../../../store/organizations/organizations.actions';
-import { RootState } from '../../../store/store';
+import { useAuthenticatedUser } from '../../../../src/use-authenticated-user.hook';
+import { listVisible } from '../../../../store/common/list-state.models';
+import { loadOrganization } from '../../../../store/organizations/organizations.actions';
+import { RootState } from '../../../../store/store';
+import { loadUserRoles } from '../../../../store/users/users.actions';
 
-interface OrganizationProps {
+interface OrganizationUserProps {
   organizationId: string;
+  userId: string;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
+const OrganizationUserPage: NextPage<OrganizationUserProps> = ({ userId, organizationId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -51,14 +50,14 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
   useEffect(() => {
     if (user.current?.userId) {
       dispatch(loadOrganization(organizationId));
-      dispatch(loadOrganizationUsers(organizationId));
+      dispatch(loadUserRoles(userId, organizationId));
     }
-  }, [user.current, organizationId]);
+  }, [user.current, organizationId, userId]);
 
-  const [inviteUserModalOpen, setInviteUserModalOpen] = useState(false);
+  const [addRoleModalOpen, setAddRoleModalOpen] = useState(false);
 
-  const onInviteUserButtonClick = () => {
-    setInviteUserModalOpen(true);
+  const onAddRoleButtonClick = () => {
+    setAddRoleModalOpen(true);
   };
 
   const organizations = useSelector((r: RootState) => r.organizations);
@@ -77,9 +76,7 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
             <Grid item xs={12} md={5}>
               <Grid container spacing={2}>
                 <Grid item xs={12}>
-                  <Paper className={classes.paper}>
-                    <OrganizationDetails organization={organization} />
-                  </Paper>
+                  <Paper className={classes.paper}></Paper>
                 </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}></Paper>
@@ -90,19 +87,22 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
               <Paper className={classes.paper}>
                 <Toolbar className={classes.organizationUsersListToolbar}>
                   <Typography className={classes.organizationUsersListTitle} variant="h6" component="div">
-                    Users
+                    Roles
                   </Typography>
-                  <Fab size="small" color="primary" onClick={onInviteUserButtonClick}>
+                  <Fab size="small" color="primary" onClick={onAddRoleButtonClick}>
                     <AddIcon />
                   </Fab>
-                  <InviteUserModal
+                  {/*
+                  <AddRoleModal
                     organizations={organizations}
                     organizationId={organizationId}
-                    open={inviteUserModalOpen}
-                    setOpen={setInviteUserModalOpen}
-                  />
+                    open={addRoleModalOpen}
+                    setOpen={setAddRoleModalOpen}
+/> */}
                 </Toolbar>
-                <UserList organization={organization} users={users} />
+                {
+                  // <UserRoleList organization={organization} users={users} />
+                }
               </Paper>
             </Grid>
           </Grid>
@@ -112,14 +112,16 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
   );
 };
 
-export default OrganizationPage;
+export default OrganizationUserPage;
 
 export const getServerSideProps: GetServerSideProps = async ({ params, query }) => {
   const organizationId = params?.organizationId;
+  const userId = params?.userId;
 
   return {
     props: {
       organizationId: organizationId,
+      userId: userId,
     },
   };
 };

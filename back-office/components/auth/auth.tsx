@@ -115,7 +115,7 @@ export const SignInSignOutButton = ({ user, inProgress }: SignInButtonState) => 
   const classes = useStyles();
   return (
     <div className={classes.wrapper}>
-      {(user.fetching || user.loading || inProgress) && (
+      {(user.fetching || user.saving || inProgress) && (
         <CircularProgress size="1.5rem" color="inherit" className={classes.buttonProgress} />
       )}
       {user.current ? <SignOutButton /> : <SignInButton />}

@@ -61,8 +61,7 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
     `/activities/${activity.activityId}/remove-seats?ownerId=${activity.ownerId}`
   );
 
-  const addSeatsError = 
-    addSeatsState?.messages && addSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
+  const addSeatsError = addSeatsState?.messages && addSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
   const removeSeatsError =
     removeSeatsState?.messages && removeSeatsState.messages.find((m) => m.severity === CommandLogSeverity.Error);
 

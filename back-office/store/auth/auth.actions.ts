@@ -99,10 +99,7 @@ export function validateLoginFailed(): ValidateLoginFailedAction {
   };
 }
 
-export function getScopes(
-  scopes: string[],
-  interactionKind: InteractionKind = InteractionKind.SILENT
-): GetScopesAction {
+export function getScopes(scopes: string[], interactionKind: InteractionKind = InteractionKind.SILENT): GetScopesAction {
   return {
     type: AuthActionTypes.GET_SCOPES,
     payload: {

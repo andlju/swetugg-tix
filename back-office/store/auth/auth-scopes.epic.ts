@@ -5,13 +5,7 @@ import { isOfType } from 'typesafe-actions';
 
 import { msalService } from '../../src/services/msal-auth.service';
 import { RootState } from '../store';
-import {
-  AuthAction,
-  AuthActionTypes,
-  getScopes,
-  InteractionKind,
-  setAccessToken,
-} from './auth.actions';
+import { AuthAction, AuthActionTypes, getScopes, InteractionKind, setAccessToken } from './auth.actions';
 import { whenLoggedIn$ } from './auth.epic';
 
 export const getScopesSilentEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) =>
@@ -20,19 +14,17 @@ export const getScopesSilentEpic: Epic<AuthAction, AuthAction, RootState> = (act
     take(1), // Only try this once
     tap(() => console.log(`Attempting Silent Token Acquire`)),
     mergeMap((action) =>
-      msalService
-        .acquireTokenSilent({ scopes: ['profile', 'openid', ...action.payload.scopes] })
-        .pipe(
-          map((res) => {
-            if (!res.accessToken) {
-              throw { code: 'NoAccessToken' };
-            }
-            return setAccessToken(res.accessToken);
-          }),
-          catchError((err) => {
-            return of(getScopes(action.payload.scopes, InteractionKind.POPUP));
-          })
-        )
+      msalService.acquireTokenSilent({ scopes: ['profile', 'openid', ...action.payload.scopes] }).pipe(
+        map((res) => {
+          if (!res.accessToken) {
+            throw { code: 'NoAccessToken' };
+          }
+          return setAccessToken(res.accessToken);
+        }),
+        catchError((err) => {
+          return of(getScopes(action.payload.scopes, InteractionKind.POPUP));
+        })
+      )
     )
   );
 
@@ -41,25 +33,23 @@ export const getScopesPopupEpic: Epic<AuthAction, AuthAction, RootState> = (acti
     filter((action) => action.payload.interactionKind === InteractionKind.POPUP),
     tap(() => console.log(`Attempting Popup Token Acquire`)),
     mergeMap((action) =>
-      msalService
-        .acquireTokenPopup({ scopes: ['profile', 'openid', ...action.payload.scopes] })
-        .pipe(
-          map((res) => {
-            if (!res.accessToken) {
-              throw { code: 'NoAccessToken' };
-            }
-            return setAccessToken(res.accessToken);
-          }),
-          catchError((err) => {
-            const errString = String(err);
-            if (errString.indexOf('popup_window_error') >= 0) {
-              // Popup not OK - let's do it with a redirect instead.
-              return of(getScopes(action.payload.scopes, InteractionKind.REDIRECT));
-            }
-            // Other error
-            return throwError({ code: 'AcquireTokenFailed', message: err });
-          })
-        )
+      msalService.acquireTokenPopup({ scopes: ['profile', 'openid', ...action.payload.scopes] }).pipe(
+        map((res) => {
+          if (!res.accessToken) {
+            throw { code: 'NoAccessToken' };
+          }
+          return setAccessToken(res.accessToken);
+        }),
+        catchError((err) => {
+          const errString = String(err);
+          if (errString.indexOf('popup_window_error') >= 0) {
+            // Popup not OK - let's do it with a redirect instead.
+            return of(getScopes(action.payload.scopes, InteractionKind.REDIRECT));
+          }
+          // Other error
+          return throwError({ code: 'AcquireTokenFailed', message: err });
+        })
+      )
     )
   );
 

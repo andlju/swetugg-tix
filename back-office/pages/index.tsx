@@ -38,8 +38,7 @@ export default function Index() {
       <Grid container spacing={3}>
         {/* List of activities */}
         <Grid item xs={12}>
-          <Paper className={clsx(classes.paper, classes.activityList)}>
-          </Paper>
+          <Paper className={clsx(classes.paper, classes.activityList)}></Paper>
         </Grid>
       </Grid>
     </Container>

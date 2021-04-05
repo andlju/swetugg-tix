@@ -1,7 +1,14 @@
 import { Reducer } from 'redux';
 
 import { CommandStatus } from '../../src/services/activity-command.service';
-import { initListState, loadList, loadListComplete, loadListFailed, loadListItem, TixListState } from '../common/list-state.models';
+import {
+  initListState,
+  loadList,
+  loadListComplete,
+  loadListFailed,
+  loadListItem,
+  TixListState,
+} from '../common/list-state.models';
 import { ActivitiesAction, ActivityActionTypes } from './activities.actions';
 import { Activity } from './activity.models';
 

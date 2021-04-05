@@ -12,10 +12,7 @@ interface View {
   revision: number;
 }
 
-export function getView$<TView extends View>(
-  url: string,
-  options?: GetViewOptions<TView>
-): Observable<TView> {
+export function getView$<TView extends View>(url: string, options?: GetViewOptions<TView>): Observable<TView> {
   return ajax
     .getJSON<TView>(url, { Authorization: `Bearer ${options?.token}` })
     .pipe(

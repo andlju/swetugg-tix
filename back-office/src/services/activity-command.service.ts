@@ -33,10 +33,7 @@ interface SendCommandOptions {
   token?: string;
 }
 
-export function waitForCommandResult$(
-  commandId: string,
-  token?: string
-): Observable<CommandStatus> {
+export function waitForCommandResult$(commandId: string, token?: string): Observable<CommandStatus> {
   const url = buildUrl(`/activities/commands/${commandId}`);
 
   return ajax
@@ -74,11 +71,7 @@ export function waitForCommandResult$(
     );
 }
 
-export function sendActivityCommand$<TBody>(
-  url: string,
-  body: TBody,
-  options: SendCommandOptions
-): Observable<CommandStatus> {
+export function sendActivityCommand$<TBody>(url: string, body: TBody, options: SendCommandOptions): Observable<CommandStatus> {
   const headers = { Authorization: `Bearer ${options.token}`, 'Content-Type': 'application/json' };
   const commandUrl = buildUrl(url);
 

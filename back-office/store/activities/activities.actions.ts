@@ -21,11 +21,7 @@ export function loadActivities(): LoadAllActivitiesAction {
   };
 }
 
-export function loadActivity(
-  activityId: string,
-  ownerId: string,
-  revision?: number
-): LoadActivityAction {
+export function loadActivity(activityId: string, ownerId: string, revision?: number): LoadActivityAction {
   return {
     type: ActivityActionTypes.LOAD_ACTIVITY,
     payload: {
@@ -51,11 +47,7 @@ export interface CommandOptions {
 
 let nextTempCommandId = 0;
 
-export function sendActivityCommand<TBody>(
-  url: string,
-  body?: TBody,
-  options?: CommandOptions
-): SendActivityCommandAction {
+export function sendActivityCommand<TBody>(url: string, body?: TBody, options?: CommandOptions): SendActivityCommandAction {
   return {
     type: ActivityActionTypes.SEND_ACTIVITY_COMMAND,
     payload: {
@@ -77,10 +69,7 @@ export function activityCommandSent(commandId: string, uiId?: string): ActivityC
   };
 }
 
-export function activityCommandStatusSet(
-  commandStatus: CommandStatus,
-  uiId?: string
-): ActivityCommandStatusSetAction {
+export function activityCommandStatusSet(commandStatus: CommandStatus, uiId?: string): ActivityCommandStatusSetAction {
   return {
     type: ActivityActionTypes.ACTIVITY_COMMAND_STATUS_SET,
     payload: {

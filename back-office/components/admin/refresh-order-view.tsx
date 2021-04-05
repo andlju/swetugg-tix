@@ -1,11 +1,4 @@
-import {
-  Button,
-  CircularProgress,
-  Container,
-  makeStyles,
-  TextField,
-  Typography,
-} from '@material-ui/core';
+import { Button, CircularProgress, Container, makeStyles, TextField, Typography } from '@material-ui/core';
 import React from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -79,16 +72,10 @@ export function RefreshOrderView({ initialOrderId }: RefreshOrderViewProps) {
           helperText={errors.orderId && errors.orderId.message}
         />
         <div className={classes.progressWrapper}>
-          <Button
-            type="submit"
-            variant="outlined"
-            className={classes.button}
-            disabled={formState.isSubmitting}>
+          <Button type="submit" variant="outlined" className={classes.button} disabled={formState.isSubmitting}>
             Refresh
           </Button>
-          {formState.isSubmitting && (
-            <CircularProgress size={24} className={classes.buttonProgress} />
-          )}
+          {formState.isSubmitting && <CircularProgress size={24} className={classes.buttonProgress} />}
         </div>
       </form>
     </Container>
