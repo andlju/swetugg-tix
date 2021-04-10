@@ -1,7 +1,7 @@
 import { Container, makeStyles } from '@material-ui/core';
 import { TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { Controller, UseFormMethods } from 'react-hook-form';
+import { Control, Controller, FormState } from 'react-hook-form';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -19,7 +19,7 @@ export type UserFormData = {
 };
 
 export interface NewProfileProps {
-  userForm: UseFormMethods<UserFormData>;
+  userForm: { formState: FormState<UserFormData>; control: Control<UserFormData> };
 }
 
 export const NewProfile: React.FC<NewProfileProps> = ({ userForm }) => {
@@ -33,8 +33,8 @@ export const NewProfile: React.FC<NewProfileProps> = ({ userForm }) => {
       <Controller
         control={control}
         name="name"
-        render={(props) => (
-          <TextField {...props} label="Name" variant="outlined" className={classes.input} disabled={formState.isSubmitting} />
+        render={({ field }) => (
+          <TextField {...field} label="Name" variant="outlined" className={classes.input} disabled={formState.isSubmitting} />
         )}
       />
     </Container>

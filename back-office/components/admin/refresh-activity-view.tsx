@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Container, makeStyles, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 
 import { sendActivityCommand } from '../../store/activities/activities.actions';
@@ -42,11 +42,13 @@ const useStyles = makeStyles((theme) => ({
 export function RefreshActivityView({ initialActivityId }: RefreshActivityViewProps) {
   const classes = useStyles();
 
-  const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState, setError } = useForm<FormData>({
     defaultValues: {
       activityId: initialActivityId,
     },
   });
+
+  const { errors } = formState;
 
   const dispatch = useDispatch();
 
@@ -59,16 +61,21 @@ export function RefreshActivityView({ initialActivityId }: RefreshActivityViewPr
     <Container className={classes.root}>
       <Typography variant="overline">Refresh Views</Typography>
       <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-        <TextField
+        <Controller
           name="activityId"
-          label="Activity Id"
-          variant="outlined"
-          className={classes.input}
-          inputRef={register({ required: 'Activity Id is required' })}
-          disabled={formState.isSubmitting}
-          error={!!errors.activityId}
-          helperText={errors.activityId && errors.activityId.message}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Activity Id"
+              variant="outlined"
+              className={classes.input}
+              disabled={formState.isSubmitting}
+              error={!!errors.activityId}
+              helperText={errors.activityId && errors.activityId.message}
+            />
+          )}
         />
+
         <div className={classes.progressWrapper}>
           <Button type="submit" variant="outlined" className={classes.button} disabled={formState.isSubmitting}>
             Refresh

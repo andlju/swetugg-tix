@@ -116,9 +116,9 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
             <Controller
               control={increaseLimitForm.control}
               name="seats"
-              render={(props) => (
+              render={({ field }) => (
                 <TextField
-                  {...props}
+                  {...field}
                   label="Increase limit"
                   type="number"
                   className={classes.input}
@@ -143,9 +143,9 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
             <Controller
               control={decreaseLimitForm.control}
               name="seats"
-              render={(props) => (
+              render={({ field }) => (
                 <TextField
-                  {...props}
+                  {...field}
                   label="Decrease limit"
                   type="number"
                   className={classes.input}

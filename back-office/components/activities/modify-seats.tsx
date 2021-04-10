@@ -97,9 +97,9 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
             <Controller
               control={increaseForm.control}
               name="seats"
-              render={(props) => (
+              render={({ field }) => (
                 <TextField
-                  {...props}
+                  {...field}
                   label="Seats to add"
                   type="number"
                   variant="outlined"
@@ -124,9 +124,9 @@ export function ModifySeats({ activity }: ModifySeatsProps) {
             <Controller
               control={decreaseForm.control}
               name="seats"
-              render={(props) => (
+              render={({ field }) => (
                 <TextField
-                  {...props}
+                  {...field}
                   label="Seats to remove"
                   type="number"
                   variant="outlined"

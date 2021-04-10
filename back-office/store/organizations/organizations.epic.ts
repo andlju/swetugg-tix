@@ -113,7 +113,6 @@ const createOrganizationInviteEpic: Epic<OrganizationsAction, OrganizationsActio
           { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` }
         )
         .pipe(
-          tap((a) => console.log('Created an invite', a)),
           map((a) => createOrganizationInviteComplete(a.response.token)),
           catchError((err, caught) => {
             const errString = String(err);

@@ -101,9 +101,9 @@ export function CreateOrganizationModal({ organization, open, setOpen }: CreateO
                 <Controller
                   control={control}
                   name="name"
-                  render={(props) => (
+                  render={({ field }) => (
                     <TextField
-                      {...props}
+                      {...field}
                       label="Organization name"
                       variant="outlined"
                       fullWidth={true}

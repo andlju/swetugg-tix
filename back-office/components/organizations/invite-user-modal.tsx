@@ -115,9 +115,9 @@ export function InviteUserModal({ organizations, organizationId, open, setOpen }
                 <Controller
                   control={control}
                   name="inviteUrl"
-                  render={(props) => (
+                  render={({ field }) => (
                     <TextField
-                      {...props}
+                      {...field}
                       label="Invitation Url"
                       variant="outlined"
                       multiline={true}

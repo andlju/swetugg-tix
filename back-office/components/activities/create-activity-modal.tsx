@@ -122,10 +122,10 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
                   <Controller
                     control={control}
                     name="ownerId"
-                    render={(props) => (
+                    render={({ field }) => (
                       <FormControl variant="outlined" fullWidth={true}>
                         <InputLabel id="select-ownerid-label">Organization</InputLabel>
-                        <Select {...props} labelId="select-ownerid-label" label="Organization">
+                        <Select {...field} labelId="select-ownerid-label" label="Organization">
                           {options.map((o) => (
                             <MenuItem key={o.ownerId} value={o.ownerId}>
                               {o.name}
@@ -141,9 +141,9 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
                 <Controller
                   control={control}
                   name="activityName"
-                  render={(props) => (
+                  render={({ field }) => (
                     <TextField
-                      {...props}
+                      {...field}
                       label="Activity name"
                       variant="outlined"
                       fullWidth={true}

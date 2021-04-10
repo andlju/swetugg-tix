@@ -1,6 +1,6 @@
 import { Button, CircularProgress, Container, makeStyles, TextField, Typography } from '@material-ui/core';
 import React from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 
 import { useOrderCommand } from '../../src/use-order-command.hook';
 
@@ -42,11 +42,13 @@ export function RefreshOrderView({ initialOrderId }: RefreshOrderViewProps) {
   const classes = useStyles();
 
   const [refreshView] = useOrderCommand('Refresh views');
-  const { register, handleSubmit, setValue, errors, formState, setError } = useForm<FormData>({
+  const { register, handleSubmit, setValue, formState, setError, control } = useForm<FormData>({
     defaultValues: {
       orderId: initialOrderId,
     },
   });
+
+  const { errors } = formState;
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -61,15 +63,20 @@ export function RefreshOrderView({ initialOrderId }: RefreshOrderViewProps) {
     <Container className={classes.root}>
       <Typography variant="overline">Refresh Views</Typography>
       <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
-        <TextField
+        <Controller
+          control={control}
           name="orderId"
-          label="Order Id"
-          variant="outlined"
-          className={classes.input}
-          inputRef={register({ required: 'Order Id is required' })}
-          disabled={formState.isSubmitting}
-          error={!!errors.orderId}
-          helperText={errors.orderId && errors.orderId.message}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              label="Order Id"
+              variant="outlined"
+              className={classes.input}
+              disabled={formState.isSubmitting}
+              error={!!errors.orderId}
+              helperText={errors.orderId && errors.orderId.message}
+            />
+          )}
         />
         <div className={classes.progressWrapper}>
           <Button type="submit" variant="outlined" className={classes.button} disabled={formState.isSubmitting}>
