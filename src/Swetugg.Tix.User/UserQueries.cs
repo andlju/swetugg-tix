@@ -80,7 +80,7 @@ namespace Swetugg.Tix.User
             {
                 var userRoleLookup = new Dictionary<Guid, UserRole>();
                 var userRoles = await conn.QueryAsync<UserRole, UserRoleAttribute, UserRole>(new CommandDefinition(
-                    "SELECT ur.UserRoleId, r.RoleId, r.Name as RoleName, ura.UserRoleAttributeId, ura.Attribute, ura.Name " +
+                    "SELECT ur.UserRoleId, r.RoleId, r.Name as RoleName, ura.UserRoleAttributeId, ura.Attribute, ura.Value " +
                     "FROM [Access].[UserRole] ur JOIN [Access].[Role] r ON ur.RoleId = r.RoleId " +
                     "LEFT JOIN [Access].[UserRoleAttribute] ura ON ur.UserRoleId = ura.UserRoleId " +
                     "WHERE ur.UserId = @UserId ", new { userId }), (ur, ura) =>
@@ -92,7 +92,7 @@ namespace Swetugg.Tix.User
                         if (ura != null)
                             userRole.UserRoleAttributes.Add(ura);
                         return userRole;
-                    }, "UserRoleId");
+                    }, "UserRoleAttributeId");
 
                 return userRoleLookup.Values.ToArray();
             }

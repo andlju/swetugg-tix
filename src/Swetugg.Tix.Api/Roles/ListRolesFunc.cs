@@ -14,12 +14,25 @@ using Swetugg.Tix.Api.Authorization;
 using Swetugg.Tix.Api.Options;
 using Swetugg.Tix.User;
 using Swetugg.Tix.User.Contract;
+using System;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace Swetugg.Tix.Api.Roles
 {
+    public class RoleAttributeView
+    {
+        public string Name { get; set; }
+    }
+
+    public class RoleView
+    {
+        public Guid RoleId { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public RoleAttributeView[] Attributes { get; set; }
+    }
     public class ListRolesFunc: AuthorizedFunc<EmptyFuncParams>
     {
         private readonly IUserQueries _userQueries;
@@ -41,8 +54,15 @@ namespace Swetugg.Tix.Api.Roles
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)
         {
             var roles = await _userQueries.ListRoles();
-
-            return new OkObjectResult(roles);
+            var roleViews = roles.Select(r => new RoleView
+            {
+                RoleId = r.RoleId,
+                Name = r.Name,
+                Description = r.Description,
+                // Get a list of unique attributes from the underlying permissions
+                Attributes = r.Permissions.SelectMany(p => p.Attributes).GroupBy(p => p.Name).Select(a => new RoleAttributeView { Name = a.Key }).ToArray()
+            });
+            return new OkObjectResult(roleViews);
         }
     }
 }

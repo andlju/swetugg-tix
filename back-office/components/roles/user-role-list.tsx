@@ -14,10 +14,12 @@ import React from 'react';
 
 import { User } from '../../store/auth/auth.actions';
 import { Organization } from '../../store/organizations/organizations.actions';
+import { UserRole } from '../../store/users/users.actions';
 
-export interface UserListProps {
+export interface UserRoleListProps {
   organization: Organization;
-  users: User[];
+  user: User;
+  userRoles: UserRole[];
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -25,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     width: '80%',
     fontWeight: 'bold',
   },
-  rolesColumnHead: {
+  attributesColumnHead: {
     width: '10%',
   },
   actionsColumnHead: {
@@ -40,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function UserList({ organization, users }: UserListProps) {
+export function UserRoleList({ organization, user, userRoles }: UserRoleListProps) {
   const classes = useStyles();
 
   return (
@@ -49,24 +51,22 @@ export function UserList({ organization, users }: UserListProps) {
         <TableHead>
           <TableRow>
             <TableCell className={classes.nameColumnHead}>Name</TableCell>
-            <TableCell className={classes.rolesColumnHead}>Roles</TableCell>
+            <TableCell className={classes.attributesColumnHead}>Attributes</TableCell>
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {users.map((row) => (
-            <TableRow hover={true} key={row.userId}>
+          {userRoles.map((row) => (
+            <TableRow hover={true} key={row.code}>
               <TableCell>
-                <Typography>{row.name}</Typography>
-                <Typography className={classes.identifier}>{row.userId}</Typography>
+                <Typography>{row.code}</Typography>
+                <Typography className={classes.identifier}>{row.code}</Typography>
               </TableCell>
               <TableCell className={classes.numberCell}>{0}</TableCell>
               <TableCell>
-                <Link href={`/organizations/${organization.organizationId}/users/${row.userId}`}>
-                  <Button variant="contained" color="primary">
-                    Details
-                  </Button>
-                </Link>
+                <Button variant="contained" color="primary">
+                  Remove
+                </Button>
               </TableCell>
             </TableRow>
           ))}

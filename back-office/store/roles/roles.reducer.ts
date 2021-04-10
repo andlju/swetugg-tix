@@ -16,7 +16,7 @@ export interface RolesState {
 }
 
 const initialState: RolesState = {
-  roles: initListState((role) => role.code),
+  roles: initListState((role) => role.roleId),
 };
 
 const rolesReducer: Reducer<RolesState, RolesAction> = (state, action) => {

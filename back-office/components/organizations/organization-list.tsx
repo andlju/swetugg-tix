@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   totalSeatsColumnHead: {
     width: '10%',
   },
-  ticketTypesColumnHead: {
+  activitiesColumnHead: {
     width: '10%',
   },
   actionsColumnHead: {
@@ -53,7 +53,7 @@ export function OrganizationList({ organizations }: OrganizationListProps) {
         <TableHead>
           <TableRow>
             <TableCell className={classes.nameColumnHead}>Name</TableCell>
-            <TableCell className={classes.ticketTypesColumnHead}>Activities</TableCell>
+            <TableCell className={classes.activitiesColumnHead}>Activities</TableCell>
             <TableCell className={classes.actionsColumnHead}>Actions</TableCell>
           </TableRow>
         </TableHead>

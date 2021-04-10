@@ -1,8 +1,14 @@
 import { Action } from 'redux';
 
+export interface RoleAttribute {
+  name: string;
+}
+
 export interface Role {
-  code: string;
+  roleId: string;
+  name: string;
   description: string;
+  attributes: RoleAttribute[];
 }
 
 export enum RoleActionTypes {

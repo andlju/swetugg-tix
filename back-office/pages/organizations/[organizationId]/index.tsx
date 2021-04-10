@@ -81,9 +81,6 @@ const OrganizationPage: NextPage<OrganizationProps> = ({ organizationId }) => {
                     <OrganizationDetails organization={organization} />
                   </Paper>
                 </Grid>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}></Paper>
-                </Grid>
               </Grid>
             </Grid>
             <Grid item xs={12}>

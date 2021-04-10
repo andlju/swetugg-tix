@@ -7,12 +7,16 @@ import AddIcon from '@material-ui/icons/Add';
 import { GetServerSideProps, NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { AddUserRoleModal } from '../../../../components/roles/add-user-role-modal';
 
+import { UserRoleList } from '../../../../components/roles/user-role-list';
 import { useAuthenticatedUser } from '../../../../src/use-authenticated-user.hook';
+import { loadActivities } from '../../../../store/activities/activities.actions';
 import { listVisible } from '../../../../store/common/list-state.models';
-import { loadOrganization } from '../../../../store/organizations/organizations.actions';
+import { loadOrganization, loadOrganizationUsers } from '../../../../store/organizations/organizations.actions';
+import { loadRoles } from '../../../../store/roles/roles.actions';
 import { RootState } from '../../../../store/store';
-import { loadUserRoles } from '../../../../store/users/users.actions';
+import { loadUserRoles, UserRole } from '../../../../store/users/users.actions';
 
 interface OrganizationUserProps {
   organizationId: string;
@@ -50,7 +54,10 @@ const OrganizationUserPage: NextPage<OrganizationUserProps> = ({ userId, organiz
   useEffect(() => {
     if (user.current?.userId) {
       dispatch(loadOrganization(organizationId));
+      dispatch(loadOrganizationUsers(organizationId));
       dispatch(loadUserRoles(userId, organizationId));
+      dispatch(loadActivities());
+      dispatch(loadRoles());
     }
   }, [user.current, organizationId, userId]);
 
@@ -61,23 +68,25 @@ const OrganizationUserPage: NextPage<OrganizationUserProps> = ({ userId, organiz
   };
 
   const organizations = useSelector((r: RootState) => r.organizations);
+  const roles = useSelector((r: RootState) => r.roles);
+  const users = useSelector((r: RootState) => r.users);
 
   const organization = organizations.organizations.models[organizationId];
-  const users = listVisible(organizations.organizationUsers);
+  const orgUser = organizations.organizationUsers.models[userId];
+
+  const visibleUserRoles = listVisible(users.userRoles);
+  const visibleRoles = listVisible(roles.roles);
 
   return (
     <React.Fragment>
-      {organization && (
+      {orgUser && (
         <Container maxWidth={false} className={classes.container}>
           <Typography variant="h4" component="h1" gutterBottom>
-            {organization.name}
+            {orgUser.name}
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} md={5}>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Paper className={classes.paper}></Paper>
-                </Grid>
                 <Grid item xs={12}>
                   <Paper className={classes.paper}></Paper>
                 </Grid>
@@ -92,17 +101,16 @@ const OrganizationUserPage: NextPage<OrganizationUserProps> = ({ userId, organiz
                   <Fab size="small" color="primary" onClick={onAddRoleButtonClick}>
                     <AddIcon />
                   </Fab>
-                  {/*
-                  <AddRoleModal
-                    organizations={organizations}
-                    organizationId={organizationId}
-                    open={addRoleModalOpen}
-                    setOpen={setAddRoleModalOpen}
-/> */}
+                  {
+                    <AddUserRoleModal
+                      roles={visibleRoles}
+                      userId={userId}
+                      open={addRoleModalOpen}
+                      setOpen={setAddRoleModalOpen}
+                    />
+                  }
                 </Toolbar>
-                {
-                  // <UserRoleList organization={organization} users={users} />
-                }
+                {<UserRoleList organization={organization} user={orgUser} userRoles={visibleUserRoles} />}
               </Paper>
             </Grid>
           </Grid>
