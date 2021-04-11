@@ -25,45 +25,43 @@ using System.Transactions;
 
 namespace Swetugg.Tix.Api.Roles
 {
-    public class AddUserRoleFuncParams
+    public class RemoveUserRoleFuncParams
     {
         public Guid UserId { get; set; }
+        public Guid UserRoleId { get; set; }
 
     }
 
-    public class AddUserRoleFunc : AuthorizedFunc<AddUserRoleFuncParams>
+    public class RemoveUserRoleFunc : AuthorizedFunc<RemoveUserRoleFuncParams>
     {
 
         private readonly IUserAuthorizationService _userAuthorizationService;
 
-        public AddUserRoleFunc(IAuthManager authManager, IUserAuthorizationService userAuthorizationService) : base(authManager)
+        public RemoveUserRoleFunc(IAuthManager authManager, IUserAuthorizationService userAuthorizationService) : base(authManager)
         {
             _userAuthorizationService = userAuthorizationService;
         }
 
-        [FunctionName("AddUserRole")]
+        [FunctionName("RemoveUserRole")]
         public Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "users/{userId}/roles")]
+            [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "users/{userId}/roles/{userRoleId}")]
             HttpRequest req,
             ILogger log,
-            Guid userId)
+            Guid userId,
+            Guid userRoleId)
         {
-            return Process(req, log, new AddUserRoleFuncParams { UserId = userId });
+            return Process(req, log, new RemoveUserRoleFuncParams { UserId = userId, UserRoleId = userRoleId });
         }
 
-        protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, AddUserRoleFuncParams funcParams)
+        protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, RemoveUserRoleFuncParams funcParams)
         {
-            var userRole = await JsonSerializer.DeserializeAsync<UserRole>(req.Body, new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
-            if (userRole.UserRoleId != Guid.Empty)
-                return new BadRequestResult();
-
             var user = await AuthManager.GetAuthorizedUser();
             if (user.UserId == null)
                 return new BadRequestResult();
 
-            var userRoleId = await _userAuthorizationService.AddUserRoleById(funcParams.UserId, userRole.RoleId, userRole.Attributes);
-
-            return new ObjectResult(new { UserRoleId = userRoleId });
+            await _userAuthorizationService.RemoveUserRole(funcParams.UserId, funcParams.UserRoleId);
+            
+            return new NoContentResult();
         }
     }
 }

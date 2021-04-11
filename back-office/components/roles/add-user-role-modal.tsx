@@ -86,7 +86,6 @@ export function AddUserRoleModal({ userId, roles, open, setOpen }: AddUserRoleMo
   const visibleActivities = listVisible(activities.activities);
 
   const onSubmit = async (data: AddUserRoleFormData) => {
-    console.log('Submitting', data);
     dispatch(addUserRole(userId, data));
   };
 
@@ -106,6 +105,13 @@ export function AddUserRoleModal({ userId, roles, open, setOpen }: AddUserRoleMo
     const newFields = selectedRole.attributes.map((a) => ({ name: a.name, value: '' }));
     append(newFields);
   }, [fields]);
+
+  const { addUserRoleCommand } = useSelector((r: RootState) => r.users);
+  useEffect(() => {
+    if (addUserRoleCommand.result) {
+      setOpen(false);
+    }
+  }, [addUserRoleCommand.result]);
 
   const handleCancel = () => setOpen(false);
 
@@ -183,10 +189,10 @@ export function AddUserRoleModal({ userId, roles, open, setOpen }: AddUserRoleMo
                 Cancel
               </Button>
               <div className={classes.wrapper}>
-                <Button type="submit" className={classes.saveButton} color="primary" disabled={false}>
+                <Button type="submit" className={classes.saveButton} color="primary" disabled={addUserRoleCommand.sending}>
                   Save
                 </Button>
-                {/*organization.saving && <CircularProgress size="1.4rem" className={classes.buttonProgress} />*/}
+                {addUserRoleCommand.sending && <CircularProgress size="1.4rem" className={classes.buttonProgress} />}
               </div>
             </DialogActions>
           </form>

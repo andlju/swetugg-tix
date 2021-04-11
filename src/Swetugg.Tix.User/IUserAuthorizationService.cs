@@ -7,8 +7,8 @@ namespace Swetugg.Tix.User
 {
     public interface IUserAuthorizationService
     {
-        Task AddUserRoleById(Guid userId, Guid roleId, IEnumerable<UserRoleAttribute> attributes);
-        Task AddUserRoleByName(Guid userId, string roleName, IEnumerable<UserRoleAttribute> attributes);
+        Task<Guid> AddUserRoleById(Guid userId, Guid roleId, IEnumerable<UserRoleAttribute> attributes);
+        Task<Guid> AddUserRoleByName(Guid userId, string roleName, IEnumerable<UserRoleAttribute> attributes);
         Task<IUserWithAuth> GetUserFromLogin(string subject, string issuer, string name);
         Task RemoveUserRole(Guid userId, Guid userRoleId);
     }

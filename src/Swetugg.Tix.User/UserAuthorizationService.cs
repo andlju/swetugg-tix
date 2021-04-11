@@ -51,22 +51,22 @@ namespace Swetugg.Tix.User
             _rolesByName = roles.ToDictionary(r => r.Name);
         }
 
-        public async Task AddUserRoleByName(Guid userId, string roleName, IEnumerable<UserRoleAttribute> attributes)
+        public async Task<Guid> AddUserRoleByName(Guid userId, string roleName, IEnumerable<UserRoleAttribute> attributes)
         {
             await EnsureRoles();
             var role = GetRoleByName(roleName);
-            await AddUserRole(userId, role, attributes);
+            return await AddUserRole(userId, role, attributes);
         }
 
 
-        public async Task AddUserRoleById(Guid userId, Guid roleId, IEnumerable<UserRoleAttribute> attributes)
+        public async Task<Guid> AddUserRoleById(Guid userId, Guid roleId, IEnumerable<UserRoleAttribute> attributes)
         {
             await EnsureRoles();
             var role = GetRoleById(roleId);
-            await AddUserRole(userId, role, attributes);
+            return await AddUserRole(userId, role, attributes);
         }
 
-        private async Task AddUserRole(Guid userId, Role role, IEnumerable<UserRoleAttribute> attributes)
+        private async Task<Guid> AddUserRole(Guid userId, Role role, IEnumerable<UserRoleAttribute> attributes)
         {
             foreach(var rolePermission in role.Permissions)
             {
@@ -76,7 +76,7 @@ namespace Swetugg.Tix.User
                         throw new InvalidOperationException($"Please specify a value for the {attrib.Name} attribute");
                 }    
             }
-            await _userCommands.AddUserRole(userId, role.RoleId, attributes);
+            return await _userCommands.AddUserRole(userId, role.RoleId, attributes);
         }
 
         public async Task RemoveUserRole(Guid userId, Guid userRoleId)

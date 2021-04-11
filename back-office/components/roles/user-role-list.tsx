@@ -11,10 +11,11 @@ import {
   Typography,
 } from '@material-ui/core';
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import { User } from '../../store/auth/auth.actions';
 import { Organization } from '../../store/organizations/organizations.actions';
-import { UserRole } from '../../store/users/users.actions';
+import { removeUserRole, UserRole } from '../../store/users/users.actions';
 
 export interface UserRoleListProps {
   organization: Organization;
@@ -44,6 +45,13 @@ const useStyles = makeStyles((theme) => ({
 
 export function UserRoleList({ organization, user, userRoles }: UserRoleListProps) {
   const classes = useStyles();
+  const dispatch = useDispatch();
+
+  const handleRemove = (userRoleId: string) => {
+    if (user.userId) {
+      dispatch(removeUserRole(user.userId, userRoleId));
+    }
+  };
 
   return (
     <TableContainer>
@@ -64,7 +72,7 @@ export function UserRoleList({ organization, user, userRoles }: UserRoleListProp
               </TableCell>
               <TableCell className={classes.numberCell}>{0}</TableCell>
               <TableCell>
-                <Button variant="contained" color="primary">
+                <Button variant="contained" color="primary" onClick={() => handleRemove(row.userRoleId)}>
                   Remove
                 </Button>
               </TableCell>

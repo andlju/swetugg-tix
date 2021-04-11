@@ -10,7 +10,10 @@ import { RootState } from '../store';
 import {
   addUserRoleComplete,
   addUserRoleFailed,
+  loadUserRoles,
   loadUserRolesComplete,
+  removeUserRoleComplete,
+  removeUserRoleFailed,
   UserAction,
   UserRole,
   UsersActionTypes,
@@ -42,7 +45,7 @@ const addUserRoleEpic: Epic<UserAction, UserAction, RootState> = (action$, state
           Authorization: `Bearer ${token}`,
         })
         .pipe(
-          map((a) => addUserRoleComplete()),
+          mergeMap((a) => of(addUserRoleComplete(a.response.userRoleId), loadUserRoles(action.payload.userId))),
           catchError((err, caught) => {
             const errString = String(err);
             return of(addUserRoleFailed('AddUserRoleFailed', errString));
@@ -51,4 +54,22 @@ const addUserRoleEpic: Epic<UserAction, UserAction, RootState> = (action$, state
     )
   );
 
-export const usersEpic = combineEpics(loadRolesEpic, addUserRoleEpic);
+const removeUserRoleEpic: Epic<UserAction, UserAction, RootState> = (action$, state$) =>
+  withTokenAndUser$(action$.pipe(filter(isOfType(UsersActionTypes.REMOVE_USER_ROLE))), state$).pipe(
+    mergeMap(([action, token]) =>
+      ajax
+        .delete(buildUrl(`/users/${action.payload.userId}/roles/${action.payload.userRoleId}`), {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        })
+        .pipe(
+          mergeMap((a) => of(removeUserRoleComplete(), loadUserRoles(action.payload.userId))),
+          catchError((err, caught) => {
+            const errString = String(err);
+            return of(removeUserRoleFailed('RemoveUserRoleFailed', errString));
+          })
+        )
+    )
+  );
+
+export const usersEpic = combineEpics(loadRolesEpic, addUserRoleEpic, removeUserRoleEpic);
