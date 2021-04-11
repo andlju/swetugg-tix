@@ -58,7 +58,6 @@ namespace Swetugg.Tix.Api.Admin.Migrations
                 .WithColumn("UserRoleId").AsGuid().PrimaryKey()
                 .WithColumn("UserId").AsGuid().NotNullable()
                 .WithColumn("RoleId").AsGuid().NotNullable()
-                .WithColumn("Path").AsString(400)
                 .WithColumn("LastUpdated").AsDateTime2().NotNullable();
 
             Create.ForeignKey()
@@ -89,8 +88,12 @@ namespace Swetugg.Tix.Api.Admin.Migrations
             CreatePermission("CreateActivity", "Can create an Activity", "OrganizationId");
 
             CreateRole(
-                "Admin", "Administrator with full access", 
+                "Admin", "Administrator with full access to all back-office functionality",
                 "ListOrganizations", "ListActivities", "GetOrganizationBasic", "GetActivityBasic", "CreateOrganization", "CreateActivity");
+
+            CreateRole(
+                "Read Only", "Read-only access to all back-office functionality",
+                "ListOrganizations", "ListActivities", "GetOrganizationBasic", "GetActivityBasic");
 
         }
 

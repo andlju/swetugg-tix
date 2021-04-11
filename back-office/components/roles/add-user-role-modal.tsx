@@ -27,6 +27,7 @@ import { createOrganization, Organization } from '../../store/organizations/orga
 import { OrganizationsState } from '../../store/organizations/organizations.reducer';
 import { Role } from '../../store/roles/roles.actions';
 import { RootState } from '../../store/store';
+import { addUserRole } from '../../store/users/users.actions';
 
 const useStyles = makeStyles((theme) => ({
   form: {
@@ -65,7 +66,7 @@ interface AddUserRoleModalProps {
   roles: Role[];
 }
 
-export function AddUserRoleModal({ roles, open, setOpen }: AddUserRoleModalProps) {
+export function AddUserRoleModal({ userId, roles, open, setOpen }: AddUserRoleModalProps) {
   const classes = useStyles();
 
   const dispatch = useDispatch();
@@ -86,7 +87,7 @@ export function AddUserRoleModal({ roles, open, setOpen }: AddUserRoleModalProps
 
   const onSubmit = async (data: AddUserRoleFormData) => {
     console.log('Submitting', data);
-    // dispatch(addUserRole(data.roleCode));
+    dispatch(addUserRole(userId, data));
   };
 
   const roleId = watch('roleId');
@@ -112,6 +113,8 @@ export function AddUserRoleModal({ roles, open, setOpen }: AddUserRoleModalProps
     <React.Fragment>
       <Dialog
         open={open}
+        maxWidth="sm"
+        fullWidth={true}
         closeAfterTransition
         onBackdropClick={handleCancel}
         BackdropProps={{

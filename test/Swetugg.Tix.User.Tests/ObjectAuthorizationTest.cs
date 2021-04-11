@@ -11,8 +11,8 @@ namespace Swetugg.Tix.User.Tests
         public void one_attribute_with_matching_property_value()
         {
             var activityId = Guid.NewGuid();
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = activityId.ToString()},
                 } },
             });
@@ -32,8 +32,8 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = activityId.ToString()},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
@@ -53,8 +53,8 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = "*"},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
@@ -75,8 +75,8 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = "*"},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
@@ -95,8 +95,8 @@ namespace Swetugg.Tix.User.Tests
         {
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "CreateOrganization", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "CreateOrganization", Attributes = new PermissionClaimAttrib[] {
                 } },
             });
 
@@ -113,12 +113,12 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = Guid.NewGuid().ToString()},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = activityId.ToString()},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
@@ -139,12 +139,12 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = Guid.NewGuid().ToString()},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value =  Guid.NewGuid().ToString()},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
@@ -164,8 +164,8 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = "*"},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },
@@ -185,8 +185,8 @@ namespace Swetugg.Tix.User.Tests
             var activityId = Guid.NewGuid();
             var organizationId = Guid.NewGuid();
 
-            var target = new ObjectAuthorization(new[] {
-                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new List<PermissionClaimAttrib> {
+            var target = new ObjectAuthorizationManager(new[] {
+                new PermissionClaim { PermissionCode = "ReadActivityBasic", Attributes = new [] {
                     new PermissionClaimAttrib() { Name = "ActivityId", Value = "*"},
                     new PermissionClaimAttrib() { Name = "OrganizationId", Value = organizationId.ToString()},
                 } },

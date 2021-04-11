@@ -100,6 +100,8 @@ export function InviteUserModal({ organizations, organizationId, open, setOpen }
       <Dialog
         open={open}
         closeAfterTransition
+        maxWidth="sm"
+        fullWidth={true}
         onBackdropClick={handleCancel}
         BackdropProps={{
           timeout: 500,

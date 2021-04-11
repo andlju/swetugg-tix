@@ -62,7 +62,7 @@ namespace Swetugg.Tix.User
             return newUserId;
         }
 
-        public async Task<Guid> AssignUserToRole(Guid userId, Guid roleId, IEnumerable<PermissionClaimAttrib> permissionAttributes)
+        public async Task<Guid> AddUserRole(Guid userId, Guid roleId, IEnumerable<UserRoleAttribute> attributes)
         {
             if (userId == Guid.Empty)
                 throw new InvalidOperationException("UserId cannot be empty");
@@ -78,13 +78,13 @@ namespace Swetugg.Tix.User
                     "(UserRoleId, UserId, RoleId, LastUpdated) " +
                     "VALUES (@UserRoleId, @UserId, @RoleId, SYSUTCDATETIME()) ", new { userRoleId, userId, roleId });
 
-                foreach (var attribute in permissionAttributes)
+                foreach (var attribute in attributes)
                 {
                     var userRoleAttributeId = Guid.NewGuid();
                     await conn.ExecuteAsync(
                         "INSERT INTO [Access].[UserRoleAttribute] " +
                         "(UserRoleAttributeId, UserRoleId, Attribute, Value) " +
-                        "VALUES (@UserRoleAttributeId, @UserRoleId, @Attribute, @Value) ", new { userRoleAttributeId, userRoleId, Attribute = attribute.Name, Value = attribute.Value });
+                        "VALUES (@UserRoleAttributeId, @UserRoleId, @Attribute, @Value) ", new { userRoleAttributeId, userRoleId, Attribute = attribute.Name, attribute.Value });
                 }
                 trans.Complete();
                 return userRoleId;

@@ -40,18 +40,9 @@ namespace Swetugg.Tix.Api.Users
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, EmptyFuncParams funcParams)
         {
-            var identity = req.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
-            var subject = identity.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value;
-            var issuer = identity.FindFirst("iss").Value;
-            string name = req.HttpContext.User.Identity.IsAuthenticated ? req.HttpContext.User.Identity.Name : null;
+            var currentUser = await AuthManager.GetAuthorizedUser();
 
-            var userInfo = await _userQueries.GetUserFromLogin(subject, issuer);
-            if (userInfo != null)
-            {
-                return new OkObjectResult(userInfo);
-            }
-
-            return new OkObjectResult(new UserInfo { Name = name, Status = UserStatus.None });
+            return new OkObjectResult(currentUser.UserInfo);
         }
     }
 }

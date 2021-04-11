@@ -9,7 +9,7 @@ export interface UsersState {
 }
 
 const initialState: UsersState = {
-  userRoles: initListState((userRole) => userRole.code),
+  userRoles: initListState((userRole) => userRole.userRoleId || ''),
   users: initListState((user) => user.userId),
 };
 

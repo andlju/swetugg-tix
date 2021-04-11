@@ -79,6 +79,7 @@ namespace Swetugg.Tix.Api
                 var options = sp.GetService<IOptions<ApiOptions>>();
                 return new JwtHelper(options.Value.ApiTokenSecurityKey);
             });
+            builder.Services.AddSingleton<IUserAuthorizationService, UserAuthorizationService>();
             builder.Services.AddScoped<IAuthManager, AuthManager>();
             builder.Services.AddSingleton<ICommandLog>(sp =>
             {

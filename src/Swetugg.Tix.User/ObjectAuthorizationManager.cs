@@ -7,11 +7,12 @@ using System.Text;
 
 namespace Swetugg.Tix.User
 {
-    public class ObjectAuthorization
+
+    public class ObjectAuthorizationManager
     {
         readonly Dictionary<string, PermissionClaim[]> _claims;
 
-        public ObjectAuthorization(IEnumerable<PermissionClaim> claims)
+        public ObjectAuthorizationManager(IEnumerable<PermissionClaim> claims)
         {
             _claims = claims.GroupBy(c => c.PermissionCode, StringComparer.InvariantCultureIgnoreCase).ToDictionary(c => c.Key, c => c.ToArray());
         }

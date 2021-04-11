@@ -4,6 +4,10 @@ export enum UsersActionTypes {
   LOAD_USER_ROLES = 'LOAD_USER_ROLES',
   LOAD_USER_ROLES_COMPLETE = 'LOAD_USER_ROLES_COMPLETE',
   LOAD_USER_ROLES_FAILED = 'LOAD_USER_ROLES_FAILED',
+
+  ADD_USER_ROLE = 'ADD_USER_ROLE',
+  ADD_USER_ROLE_COMPLETE = 'ADD_USER_ROLE_COMPLETE',
+  ADD_USER_ROLE_FAILED = 'ADD_USER_ROLE_FAILED',
 }
 
 export interface User {
@@ -12,8 +16,10 @@ export interface User {
 }
 
 export interface UserRole {
-  code: string;
-  attributes: { [key: string]: string };
+  userRoleId?: string;
+  roleName?: string;
+  roleId: string;
+  attributes: { name: string; value: string }[];
 }
 
 export function loadUserRoles(userId: string, organizationId?: string): LoadUserRolesAction {
@@ -45,6 +51,32 @@ export function loadUserRolesFailed(errorCode: string, errorMessage: string): Lo
   };
 }
 
+export function addUserRole(userId: string, userRole: UserRole): AddUserRoleAction {
+  return {
+    type: UsersActionTypes.ADD_USER_ROLE,
+    payload: {
+      userId,
+      userRole,
+    },
+  };
+}
+
+export function addUserRoleComplete(): AddUserRoleCompleteAction {
+  return {
+    type: UsersActionTypes.ADD_USER_ROLE_COMPLETE,
+  };
+}
+
+export function addUserRoleFailed(errorCode: string, errorMessage: string): AddUserRoleFailedAction {
+  return {
+    type: UsersActionTypes.ADD_USER_ROLE_FAILED,
+    payload: {
+      errorCode,
+      errorMessage,
+    },
+  };
+}
+
 export interface LoadUserRolesAction extends Action {
   type: UsersActionTypes.LOAD_USER_ROLES;
   payload: {
@@ -68,4 +100,30 @@ export interface LoadUserRolesFailedAction extends Action {
   };
 }
 
-export type UserAction = LoadUserRolesAction | LoadUserRolesCompleteAction | LoadUserRolesFailedAction;
+export interface AddUserRoleAction extends Action {
+  type: UsersActionTypes.ADD_USER_ROLE;
+  payload: {
+    userId: string;
+    userRole: UserRole;
+  };
+}
+
+export interface AddUserRoleCompleteAction extends Action {
+  type: UsersActionTypes.ADD_USER_ROLE_COMPLETE;
+}
+
+export interface AddUserRoleFailedAction extends Action {
+  type: UsersActionTypes.ADD_USER_ROLE_FAILED;
+  payload: {
+    errorCode: string;
+    errorMessage: string;
+  };
+}
+
+export type UserAction =
+  | LoadUserRolesAction
+  | LoadUserRolesCompleteAction
+  | LoadUserRolesFailedAction
+  | AddUserRoleAction
+  | AddUserRoleCompleteAction
+  | AddUserRoleFailedAction;

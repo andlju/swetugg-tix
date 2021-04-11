@@ -57,10 +57,10 @@ export function UserRoleList({ organization, user, userRoles }: UserRoleListProp
         </TableHead>
         <TableBody>
           {userRoles.map((row) => (
-            <TableRow hover={true} key={row.code}>
+            <TableRow hover={true} key={row.userRoleId}>
               <TableCell>
-                <Typography>{row.code}</Typography>
-                <Typography className={classes.identifier}>{row.code}</Typography>
+                <Typography>{row.roleName}</Typography>
+                <Typography className={classes.identifier}>{row.userRoleId}</Typography>
               </TableCell>
               <TableCell className={classes.numberCell}>{0}</TableCell>
               <TableCell>

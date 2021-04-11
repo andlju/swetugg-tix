@@ -106,6 +106,8 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
       <Dialog
         open={open}
         closeAfterTransition
+        maxWidth="sm"
+        fullWidth={true}
         onBackdropClick={handleCancel}
         BackdropProps={{
           timeout: 500,
@@ -124,7 +126,7 @@ export function CreateActivityModal({ user, organizations, open, setOpen }: Crea
                     name="ownerId"
                     render={({ field }) => (
                       <FormControl variant="outlined" fullWidth={true}>
-                        <InputLabel id="select-ownerid-label">Organization</InputLabel>
+                        <InputLabel id="select-ownerid-label">Owner</InputLabel>
                         <Select {...field} labelId="select-ownerid-label" label="Organization">
                           {options.map((o) => (
                             <MenuItem key={o.ownerId} value={o.ownerId}>

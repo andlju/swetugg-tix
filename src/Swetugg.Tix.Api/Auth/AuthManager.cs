@@ -5,6 +5,7 @@ using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
 using Swetugg.Tix.User;
 using Swetugg.Tix.User.Contract;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -14,13 +15,13 @@ namespace Swetugg.Tix.Api.Authorization
 
     public class AuthManager : IAuthManager
     {
-        private readonly IUserQueries _userQueries;
+        private readonly IUserAuthorizationService _userService;
         private readonly HttpRequest _currentRequest;
 
-        public AuthManager(IHttpContextAccessor httpContextAccessor, IUserQueries userQueries)
+        public AuthManager(IHttpContextAccessor httpContextAccessor, IUserAuthorizationService userService)
         {
             _currentRequest = httpContextAccessor.HttpContext.Request;
-            _userQueries = userQueries;
+            _userService = userService;
         }
 
         public async Task<IActionResult> Authenticate(string[] acceptedScopes)
@@ -38,7 +39,7 @@ namespace Swetugg.Tix.Api.Authorization
             return null;
         }
 
-        public async Task<UserInfo> GetAuthenticatedUser()
+        public async Task<IUserWithAuth> GetAuthorizedUser()
         {
             var identity = _currentRequest.HttpContext.User.Identity as System.Security.Claims.ClaimsIdentity;
             if (identity is null || !identity.IsAuthenticated)
@@ -48,16 +49,7 @@ namespace Swetugg.Tix.Api.Authorization
             var issuer = identity.FindFirst("iss").Value;
             string name = identity.IsAuthenticated ? identity.Name : null;
 
-            var user = await _userQueries.GetUserFromLogin(subject, issuer);
-            if (user == null)
-            {
-                return new UserInfo
-                {
-                    Name = name,
-                    Status = UserStatus.None,
-                };
-            }
-            return user;
+            return await _userService.GetUserFromLogin(subject, issuer, name);
         }
     }
 }

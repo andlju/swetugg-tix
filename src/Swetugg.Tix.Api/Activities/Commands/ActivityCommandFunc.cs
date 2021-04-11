@@ -61,7 +61,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
 
         protected override async Task<TCommand> HandleUser(HttpRequest req, ILogger log, TCommand cmd)
         {
-            var user = await AuthManager.GetAuthenticatedUser();
+            var user = await AuthManager.GetAuthorizedUser();
             
             // If no user is logged in, you should not be allowed to send an activity command
             if (user.UserId == null)

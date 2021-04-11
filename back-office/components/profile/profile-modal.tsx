@@ -82,6 +82,8 @@ export function ProfileModal({ user }: ProfileModalProps) {
         <Dialog
           open={open}
           disableBackdropClick={true}
+          maxWidth="sm"
+          fullWidth={true}
           closeAfterTransition
           BackdropProps={{
             timeout: 500,

@@ -21,6 +21,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Swetugg.Tix.Api.Organizations
 {
@@ -28,10 +29,12 @@ namespace Swetugg.Tix.Api.Organizations
     {
 
         private readonly IOrganizationCommands _organizationCommands;
+        private readonly IUserAuthorizationService _userAuthorizationService;
 
-        public CreateOrganizationFunc(IOrganizationCommands organizationCommands, IAuthManager authManager): base(authManager)
+        public CreateOrganizationFunc(IOrganizationCommands organizationCommands, IAuthManager authManager, IUserAuthorizationService userAuthorizationService) : base(authManager)
         {
             _organizationCommands = organizationCommands;
+            _userAuthorizationService = userAuthorizationService;
         }
 
         [FunctionName("CreateOrganization")]
@@ -50,17 +53,25 @@ namespace Swetugg.Tix.Api.Organizations
             {
                 return new BadRequestResult();
             }
-            
+
             if (string.IsNullOrEmpty(organizationInfo.Name))
                 return new BadRequestResult();
 
             organizationInfo.OrganizationId = Guid.NewGuid();
 
-            var user = await AuthManager.GetAuthenticatedUser();
+            var user = await AuthManager.GetAuthorizedUser();
             if (user.UserId == null)
                 return new BadRequestResult();
 
-            await _organizationCommands.CreateOrganization(organizationInfo, user.UserId.Value);
+            using (var trans = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
+                await _organizationCommands.CreateOrganization(organizationInfo, user.UserId.Value);
+                // Automatically set the user who created the Organization to Admin
+                await _userAuthorizationService.AddUserRoleByName(user.UserId.Value, "Admin", new[] {
+                    new UserRoleAttribute { Name = "OrganizationId", Value = organizationInfo.OrganizationId.ToString() },
+                    new UserRoleAttribute { Name = "ActivityId", Value = "*" } });
+                trans.Complete();
+            }
 
             return new NoContentResult();
         }

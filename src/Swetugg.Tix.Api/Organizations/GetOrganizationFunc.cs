@@ -48,7 +48,7 @@ namespace Swetugg.Tix.Api.Organizations
 
         protected override async Task<IActionResult> HandleRequest(HttpRequest req, ILogger log, GetOrganizationFuncParams funcParams)
         {
-            var user = await AuthManager.GetAuthenticatedUser();
+            var user = await AuthManager.GetAuthorizedUser();
 
             if (user.UserId == null)
             {
