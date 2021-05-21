@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
 
-  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
+  const { user } = useAuthenticatedUser(['https://swetuggtixdev.onmicrosoft.com/tix-api/access_as_backoffice']);
 
   return (
     <Container maxWidth={false} className={classes.container}>

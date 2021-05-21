@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Index() {
   const classes = useStyles();
 
-  useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
+  useAuthenticatedUser(['https://swetuggtixdev.onmicrosoft.com/tix-api/access_as_backoffice']);
 
   const dispatch = useDispatch();
   const { user } = useSelector((r: RootState) => r.auth);

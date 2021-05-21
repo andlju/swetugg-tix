@@ -5,11 +5,11 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { ClientOnly } from 'react-client-only';
+import { useDispatch } from 'react-redux';
 
 import { InteractionKind, login, logout, User } from '../../store/auth/auth.actions';
 import { TixState } from '../../store/common/state.models';
-import { RootState } from '../../store/store';
 
 const useStyles = makeStyles((theme) => ({
   wrapper: {
@@ -113,13 +113,16 @@ interface SignInButtonState {
 
 export const SignInSignOutButton = ({ user, inProgress }: SignInButtonState) => {
   const classes = useStyles();
+
   return (
-    <div className={classes.wrapper}>
-      {(user.fetching || user.saving || inProgress) && (
-        <CircularProgress size="1.5rem" color="inherit" className={classes.buttonProgress} />
-      )}
-      {user.current ? <SignOutButton /> : <SignInButton />}
-    </div>
+    <ClientOnly>
+      <div className={classes.wrapper}>
+        {(user.fetching || user.saving || inProgress) && (
+          <CircularProgress size="1.5rem" color="inherit" className={classes.buttonProgress} />
+        )}
+        {user.current ? <SignOutButton /> : <SignInButton />}
+      </div>
+    </ClientOnly>
   );
 };
 

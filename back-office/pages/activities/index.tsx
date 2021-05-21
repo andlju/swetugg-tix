@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 function IndexPage() {
   const classes = useStyles();
 
-  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
+  const { user } = useAuthenticatedUser(['https://swetuggtixdev.onmicrosoft.com/tix-api/access_as_backoffice']);
 
   const [addModalOpen, setAddModalOpen] = useState(false);
 

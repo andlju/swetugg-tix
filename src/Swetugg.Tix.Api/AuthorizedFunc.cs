@@ -24,7 +24,7 @@ namespace Swetugg.Tix.Api
         protected AuthorizedFunc(IAuthManager authManager, string[] acceptedScopes = null)
         {
             _authManager = authManager;
-            _acceptedScopes = acceptedScopes ?? new[] { "access_as_user", "access_as_admin" };
+            _acceptedScopes = acceptedScopes ?? new[] { "access_as_user", "access_as_backoffice" };
         }
 
         protected async Task<IActionResult> Process(HttpRequest req, ILogger log, TFuncParams funcParams = null, bool allowUnauthorized = false)

@@ -15,7 +15,7 @@ namespace Swetugg.Tix.Api.Activities.Commands
     public abstract class ActivityCommandFunc<TCommand> : AuthorizedFunc<TCommand>
         where TCommand : ActivityCommand, new()
     {
-        protected static string[] acceptedScopes = new[] { "access_as_admin" };
+        protected static string[] acceptedScopes = new[] { "access_as_backoffice" };
         private readonly IMessageSender _sender;
 
         protected ActivityCommandFunc(IActivityCommandMessageSender sender, IAuthManager authManager) : base(authManager)

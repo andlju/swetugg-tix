@@ -31,7 +31,7 @@ const ActivityPage: NextPage<ActivityProps> = ({ activityId, ownerId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
 
-  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
+  const { user } = useAuthenticatedUser(['https://swetuggtixdev.onmicrosoft.com/tix-api/access_as_backoffice']);
 
   useEffect(() => {
     if (user.current?.userId) {

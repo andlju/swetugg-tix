@@ -2703,6 +2703,11 @@ raw-body@2.4.1:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
+react-client-only@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/react-client-only/-/react-client-only-1.0.2.tgz#53f3e3a1f3d33fadfc8163fd6b2326095133df3d"
+  integrity sha512-mfD/jfT2Vwy70/dRG05njzQgZyMpU2q3PY1uOOLxR/W2ikHEvTE+rm2o5mwxT66pxGoxWRSx/TSa1gjURHexjQ==
+
 react-dom@^17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"

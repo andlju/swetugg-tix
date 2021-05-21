@@ -35,7 +35,7 @@ interface AcceptInvitePageParams {
 export default function AcceptInvitePage({ inviteToken }: AcceptInvitePageParams) {
   const classes = useStyles();
 
-  const { user } = useAuthenticatedUser(['https://swetuggtixlocal.onmicrosoft.com/tix-api/access_as_admin']);
+  const { user } = useAuthenticatedUser(['https://swetuggtixdev.onmicrosoft.com/tix-api/access_as_backoffice']);
 
   const { invite } = useSelector((r: RootState) => r.organizations);
 

@@ -20,7 +20,7 @@ namespace Swetugg.Tix.Api.Activities
 
     public class GetActivityCommandStatusFunc : AuthorizedFunc<CommandStatusRouteParams>
     {
-        private static string[] acceptedScopes = new[] { "access_as_admin" };
+        private static string[] acceptedScopes = new[] { "access_as_backoffice" };
         private readonly ICommandLog _commandLog;
 
         public GetActivityCommandStatusFunc(ICommandLog commandLog, IAuthManager authManager): base(authManager)
