@@ -122,17 +122,16 @@ export = async () => {
     //
     // Redis Cache
     //
-
     const redisCache = new azure.redis.Cache('cmds', {
         resourceGroupName: resourceGroup.name,
         capacity: 0,
         family: 'C',
-        skuName: 'Basic'
+        skuName: 'Basic',
     }, {
         customTimeouts: { 
-            create: '30m',
-            update: '30m',
-            delete: '30m'
+            create: '40m',
+            update: '40m',
+            delete: '40m'
         }
     });
 

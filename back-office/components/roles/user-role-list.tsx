@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export function UserRoleList({ organization, user, userRoles }: UserRoleListProps) {
+export function UserRoleList({ organization, user, userRoles }: UserRoleListProps): JSX.Element {
   const classes = useStyles();
   const dispatch = useDispatch();
 
@@ -71,7 +71,7 @@ export function UserRoleList({ organization, user, userRoles }: UserRoleListProp
               </TableCell>
               <TableCell className={classes.numberCell}>{0}</TableCell>
               <TableCell>
-                <Button variant="contained" color="primary" onClick={() => handleRemove(row.userRoleId)}>
+                <Button variant="contained" color="primary" onClick={() => row.userRoleId && handleRemove(row.userRoleId)}>
                   Remove
                 </Button>
               </TableCell>
