@@ -70,7 +70,7 @@ namespace Swetugg.Tix.Infrastructure.CommandLog
 
             var jsonBody = res[0].ToString();
             var aggregateId = res[1].ToString();
-            var commandStatus = Enum.Parse<CommandStatus>(res[2]);
+            Enum.TryParse<CommandStatus>(res[2], out var commandStatus);
             var revision = (int?)res[3];
             var code = res[4].HasValue ? res[4].ToString() : null;
             var message = res[5].HasValue ? res[5].ToString() : null;
