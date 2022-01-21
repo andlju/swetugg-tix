@@ -162,9 +162,15 @@ export = async () => {
         resourceGroupName,
         name,
       });
+      
       return keys;
     });
-
+  
+  const redisCacheConnectionString = pulumi
+    .all([redisCache.hostName, redisCache.sslPort, redisCacheKeys])
+    .apply(([hostName, sslPort, keys]) => {
+      return `${hostName}:${sslPort},password=${keys.primaryKey},ssl=True,abortConnect=False`;
+    });
   //
   // SignalR
   //
@@ -351,7 +357,7 @@ export = async () => {
     ViewsDbConnection: tixViewsConnection,
     AzureWebJobsStorage: storageAccountConnection,
     EventHubConnectionString: eventHubConnectionString,
-    CommandLogCache: redisCacheKeys.primaryKey,
+    CommandLogCache: redisCacheConnectionString,
   };
   const orderAppSettings = {
     runtime: "dotnet",
@@ -361,7 +367,7 @@ export = async () => {
     ViewsDbConnection: tixViewsConnection,
     AzureWebJobsStorage: storageAccountConnection,
     EventHubConnectionString: eventHubConnectionString,
-    CommandLogCache: redisCacheKeys.primaryKey,
+    CommandLogCache: redisCacheConnectionString,
   };
   const processAppSettings = {
     runtime: "dotnet",
@@ -379,7 +385,7 @@ export = async () => {
     ViewsDbConnection: tixViewsConnection,
     //SignalRConnection: signalR.primaryConnectionString,
     //SignalRHost: signalR.hostname,
-    CommandLogCache: redisCacheKeys.primaryKey,
+    CommandLogCache: redisCacheConnectionString,
     "AzureAdB2C:Instance": `https://${azureAdTenantName}.b2clogin.com/`,
     "AzureAdB2C:Domain": `${azureAdTenantName}.onmicrosoft.com`,
     "AzureAdB2C:SignUpSignInPolicyId": azureAdPolicyName,
