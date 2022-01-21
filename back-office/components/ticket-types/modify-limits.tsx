@@ -66,11 +66,7 @@ export function ModifyLimits({ ticketType }: EditTicketTypeProps) {
   const [decreaseLimitCommand, decreaseLimitStatus, decreaseLimitState] = useActivityCommand(
     `/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/decrease-limit?ownerId=${ticketType.ownerId}`
   );
-  const [
-    removeLimitCommand,
-    removeLimitStatus,
-    removeLimitState,
-  ] = useActivityCommand(
+  const [removeLimitCommand, removeLimitStatus, removeLimitState] = useActivityCommand(
     `/activities/${ticketType.activityId}/ticket-types/${ticketType.ticketTypeId}/limit?ownerId=${ticketType.ownerId}`,
     { method: 'DELETE' }
   );

@@ -7,8 +7,8 @@ import AddIcon from '@material-ui/icons/Add';
 import { GetServerSideProps, NextPage } from 'next';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { InviteUserModal } from '../../../components/organizations/invite-user-modal';
 
+import { InviteUserModal } from '../../../components/organizations/invite-user-modal';
 import { OrganizationDetails } from '../../../components/organizations/organization-details';
 import { UserList } from '../../../components/organizations/user-list';
 import { useAuthenticatedUser } from '../../../src/use-authenticated-user.hook';

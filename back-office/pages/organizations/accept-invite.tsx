@@ -9,8 +9,8 @@ import { GetServerSideProps } from 'next';
 import React, { useEffect, useMemo } from 'react';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AcceptOrganizationInvite } from '../../components/organizations/accept-organization-invite';
 
+import { AcceptOrganizationInvite } from '../../components/organizations/accept-organization-invite';
 import { CreateOrganizationModal } from '../../components/organizations/create-organization-modal';
 import { OrganizationList } from '../../components/organizations/organization-list';
 import { useAuthenticatedUser } from '../../src/use-authenticated-user.hook';

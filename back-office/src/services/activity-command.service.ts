@@ -36,39 +36,37 @@ interface SendCommandOptions {
 export function waitForCommandResult$(commandId: string, token?: string): Observable<CommandStatus> {
   const url = buildUrl(`/activities/commands/${commandId}`);
 
-  return ajax
-    .getJSON<CommandStatus>(url, { Authorization: `Bearer ${token}` })
-    .pipe(
-      catchError((err) => {
-        console.log('Error getting CommandStatus', err);
-        return of({
-          commandId: commandId,
-          status: 'Created',
-          body: null,
-          jsonBody: '',
-        });
-      }),
-      filter((commandStatus) => commandStatus.status !== 'Created'),
-      map((status) => ({ ...status, body: status.jsonBody && JSON.parse(status.jsonBody) })),
-      repeatWhen((obs) => obs.pipe(delay(1000))),
-      take(1),
-      timeoutWith(
-        10000,
-        of({
-          commandId: commandId,
-          status: 'Failed',
-          body: null,
-          jsonBody: '',
-          messages: [
-            {
-              code: 'Timeout',
-              message: 'Command timed out',
-              severity: CommandLogSeverity.Error,
-            },
-          ],
-        })
-      )
-    );
+  return ajax.getJSON<CommandStatus>(url, { Authorization: `Bearer ${token}` }).pipe(
+    catchError((err) => {
+      console.log('Error getting CommandStatus', err);
+      return of({
+        commandId: commandId,
+        status: 'Created',
+        body: null,
+        jsonBody: '',
+      });
+    }),
+    filter((commandStatus) => commandStatus.status !== 'Created'),
+    map((status) => ({ ...status, body: status.jsonBody && JSON.parse(status.jsonBody) })),
+    repeatWhen((obs) => obs.pipe(delay(1000))),
+    take(1),
+    timeoutWith(
+      10000,
+      of({
+        commandId: commandId,
+        status: 'Failed',
+        body: null,
+        jsonBody: '',
+        messages: [
+          {
+            code: 'Timeout',
+            message: 'Command timed out',
+            severity: CommandLogSeverity.Error,
+          },
+        ],
+      })
+    )
+  );
 }
 
 export function sendActivityCommand$<TBody>(url: string, body: TBody, options: SendCommandOptions): Observable<CommandStatus> {

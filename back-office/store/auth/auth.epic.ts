@@ -126,12 +126,10 @@ const setUserEpic: Epic<AuthAction, AuthAction, RootState> = (action$, state$) =
   ).pipe(
     filter(([, token]) => !!token),
     mergeMap(([, token]) =>
-      ajax
-        .getJSON<User>(buildUrl(`/me`), { Authorization: `Bearer ${token}` })
-        .pipe(
-          map((user) => setUser(user))
-          // catchError(err => of(validateLoginFailed()))
-        )
+      ajax.getJSON<User>(buildUrl(`/me`), { Authorization: `Bearer ${token}` }).pipe(
+        map((user) => setUser(user))
+        // catchError(err => of(validateLoginFailed()))
+      )
     )
   );
 
