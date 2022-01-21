@@ -19,7 +19,7 @@ function* loadOrderAction(action: LoadOrderAction): Generator {
   });
 }
 
-function* sendOrderCommandAction(action: SendOrderCommandAction) {
+function* sendOrderCommandAction(action: SendOrderCommandAction): Generator {
   const result = yield call(async () => {
     return await sendOrderCommand(action.payload.url, action.payload.body, { method: action.payload.method });
   });

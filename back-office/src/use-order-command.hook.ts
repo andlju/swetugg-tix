@@ -21,7 +21,7 @@ export function useOrderCommand<TBody>(
       const result = await sendOrderCommand(commandUrl, data, { method });
       enqueueSnackbar(`${commandName} completed`, { variant: 'success' });
       return result;
-    } catch (err) {
+    } catch (err: any) {
       enqueueSnackbar(err.message, { variant: 'error' });
       throw err;
     } finally {
