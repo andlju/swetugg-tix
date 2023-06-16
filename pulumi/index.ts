@@ -59,9 +59,17 @@ export = async () => {
 
   const sqlServer = new azure.sql.Server("tixdb", {
     resourceGroupName: resourceGroup.name,
-    version: "12.0",
     administratorLogin: sqlAdminUser,
     administratorLoginPassword: sqlAdminPassword.result,
+  });
+
+  const sqlElasticPool = new azure.sql.ElasticPool("tix-pool", {
+    resourceGroupName: resourceGroup.name,
+    serverName: sqlServer.name,
+    sku: {
+      name: 'BasicPool',
+      tier: 'Basic',
+    }
   });
 
   const allAzureFirewallRule = new azure.sql.FirewallRule("tix-fw", {
@@ -81,21 +89,41 @@ export = async () => {
   const activityEventStoreDatabase = new azure.sql.Database("activityevents", {
     resourceGroupName: resourceGroup.name,
     serverName: sqlServer.name,
+    sku: {
+      name: 'ElasticPool',
+      tier: 'Basic'
+    },
+    elasticPoolId: sqlElasticPool.id
   });
 
   const orderEventStoreDatabase = new azure.sql.Database("orderevents", {
     resourceGroupName: resourceGroup.name,
     serverName: sqlServer.name,
+    sku: {
+      name: 'ElasticPool',
+      tier: 'Basic'
+    },
+    elasticPoolId: sqlElasticPool.id
   });
 
   const processEventStoreDatabase = new azure.sql.Database("processevents", {
     resourceGroupName: resourceGroup.name,
     serverName: sqlServer.name,
+    sku: {
+      name: 'ElasticPool',
+      tier: 'Basic'
+    },
+    elasticPoolId: sqlElasticPool.id
   });
 
   const tixViewsDatabase = new azure.sql.Database("tixviews", {
     resourceGroupName: resourceGroup.name,
     serverName: sqlServer.name,
+    sku: {
+      name: 'ElasticPool',
+      tier: 'Basic'
+    },
+    elasticPoolId: sqlElasticPool.id
   });
 
   //
